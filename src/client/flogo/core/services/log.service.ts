@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
+import { format } from 'date-fns';
 import * as io from 'socket.io-client';
+
 @Injectable()
 export class LogService {
     // TODO define config interface
@@ -41,7 +43,7 @@ export class LogService {
     addLine(data) {
         const message = {
             level: data.level,
-            timestamp: moment(data.timestamp).format('HH:mm:ss.SSS ll'),
+            timestamp: format(data.timestamp, 'HH:mm:ss.SSS YYYY-MMM-DD'),
             message: data.message
         };
 

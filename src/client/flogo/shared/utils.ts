@@ -310,21 +310,6 @@ export function copyToClipboard(element: HTMLElement) {
   return res;
 }
 
-/**
- * Get the difference between two dates
- *
- * @param beginDate: Inital date
- * @param endDate: Final date
- * @param timeUnit: Measurement unit
- */
-export function diffDates(beginDate: any, endDate: any, timeUnit: any) {
-  const begin = moment(beginDate);
-  const end = moment(endDate);
-
-  return begin.diff(end, timeUnit);
-
-}
-
 export function createSubFlowTask(schema: any) {
   return {
     type: FLOGO_TASK_TYPE.TASK_SUB_PROC,
