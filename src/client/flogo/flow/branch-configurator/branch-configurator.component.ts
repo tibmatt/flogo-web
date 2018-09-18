@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {FlowState} from '@flogo/flow/core/state';
 import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
-import {PostService} from '@flogo/core/services/post.service';
 import {FLOGO_TASK_TYPE, GraphNode, ItemBranch, LanguageService} from '@flogo/core';
 import {MapperController, MapperControllerFactory} from '@flogo/flow/shared/mapper';
 import {
@@ -55,7 +54,6 @@ export class BranchConfiguratorComponent implements OnInit {
   constructor(
     private store: Store<FlowState>,
     private _flowService: FlowsService,
-    private _postService: PostService,
     private translate: LanguageService,
     private mapperControllerFactory: MapperControllerFactory,
   ) {

@@ -2,14 +2,12 @@ import { Component, Input, SimpleChanges, OnChanges, ViewChild, EventEmitter, Ou
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { BsModalComponent } from 'ng2-bs3-modal';
 
-import { PostService } from '../../core/services/post.service';
 import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
 import { UniqueNameValidator } from './unique-name.validator';
 
 
 @Component({
     selector: 'flogo-new-flow',
-    // moduleId: module.id,
     templateUrl: 'new-flow.component.html',
     styleUrls: ['new-flow.component.less']
 })
@@ -21,7 +19,6 @@ export class FlogoNewFlowComponent implements OnChanges {
   private triggerId: string;
 
   constructor(
-    private postService: PostService,
     private flowsService: APIFlowsService,
     private formBuilder: FormBuilder,
   ) {

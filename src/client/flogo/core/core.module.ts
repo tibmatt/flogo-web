@@ -12,7 +12,6 @@ import { APIFlowsService } from './services/restapi/v2/flows-api.service';
 import { AppsApiService } from './services/restapi/v2/apps-api.service';
 import { RunApiService } from './services/restapi/run-api.service';
 import { ConfigurationService } from './services/configuration.service';
-import { PostService } from './services/post.service';
 import { SanitizeService } from './services/sanitize.service';
 import { ErrorService } from './services/error.service';
 import { WindowRef } from './services/window-ref';
@@ -62,7 +61,6 @@ import { NotificationsModule } from './notifications';
     ChildWindowService,
     ErrorService,
     ConfigurationService,
-    PostService,
     SanitizeService,
     WindowRef,
     FlowsService,

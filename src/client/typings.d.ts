@@ -7,7 +7,6 @@ interface NodeModule {
 /*  */
 import * as __lodash from 'lodash';
 import * as __jQuery from 'jquery';
-import * as postal from 'postal';
 import 'monaco-editor/monaco.d';
 
 declare global {
