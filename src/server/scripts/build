@@ -21,7 +21,7 @@ const log = message => console.log(`[@flogo-web/server:build] ${message}`);
   });
 
   log('2 of 2: Copying files ...');
-  await copy(['*/**', '!**/*.js', '!**/{node_modules,test}/**'], dest, { parents: true });
+  await copy(['*/**', '!**/*.js', '!**/{node_modules,test,scripts}/**'], dest, { parents: true });
 })().catch(e => {
   console.error(e);
   process.exit(1);

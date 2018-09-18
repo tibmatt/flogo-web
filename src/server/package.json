@@ -16,7 +16,8 @@
     "test:api": "mocha",
     "serve": "babel-node server.js",
     "build": "node scripts/build",
-    "build:transpile": "yarn babel --ignore '**/tests/**,**/node_modules/**,*.spec.js' ."
+    "configure-engines": "babel-node configure-engines.js",
+    "build:transpile": "babel --ignore '**/tests/**,**/node_modules/**,*.spec.js' ."
   },
   "author": "TIBCO Software Inc.",
   "devDependencies": {
