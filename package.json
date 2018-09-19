@@ -34,7 +34,7 @@
     "services:pull": "docker-compose -p flogo-dev -f docker/services.docker-compose.yml pull",
     "services:start": "docker-compose -p flogo-dev -f docker/services.docker-compose.yml up -d",
     "services:stop": "docker-compose -p flogo-dev -f docker/services.docker-compose.yml stop flogo-flow-service flogo-state-service",
-    "services:clear": "docker-compose -p flogo-dev -f docker/services.docker-compose.yml down"
+    "services:clear": "docker-compose -p flogo-dev -f docker/services.docker-compose.yml down",
     "release": "npm-run-all -l release:build-palette submodules:link release:client-version release:pre-build-parser release:server release:bundle-client release:parser release:build-engines release:copy-docker-files",
     "release:server": "node -r esm tools/release/build-server.js",
     "release:pre-build-parser": "yarn --cwd src/parser run installbuild",
