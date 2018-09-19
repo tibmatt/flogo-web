@@ -7,7 +7,7 @@
     "url": "https://github.com/TIBCOSoftware/flogo-web.git"
   },
   "scripts": {
-    "start": "npm-run-all release",
+    "start": "npm-run-all release --",
     "postinstall": "yarn run submodules:link",
     "gulp": "gulp",
     "dev": "npm-run-all --parallel -l dev:*",
@@ -31,14 +31,15 @@
     "clean:local": "del ./dist/local",
     "update-global-flogo": "go get -u github.com/TIBCOSoftware/flogo-cli/...",
     "submodules:link": "yarn --cwd src/parser link && yarn link flogo-parser && yarn --cwd src/client link flogo-parser && yarn --cwd src/server link flogo-parser",
-    "release": "npm-run-all -l release:build-palette submodules:link release:client-version release:pre-build-parser release:server release:bundle-client release:parser release:build-engines",
+    "release": "npm-run-all -l release:build-palette submodules:link release:client-version release:pre-build-parser release:server release:bundle-client release:parser release:build-engines release:copy-docker-files",
     "release:server": "node -r esm tools/release/build-server.js",
     "release:pre-build-parser": "yarn --cwd src/parser run installbuild",
     "release:parser": "node -r esm tools/release/build-parser.js",
     "release:build-palette": "node -r esm tools/release/build-palette.js",
     "release:client-version": "node -r esm tools/release/client-version.js",
     "release:bundle-client": "node -r esm tools/release/bundle-client",
-    "release:build-engines": "node -r esm tools/release/build-engines.js"
+    "release:build-engines": "node -r esm tools/release/build-engines.js",
+    "release:copy-docker-files": "node -r esm tools/release/copy-docker-files.js"
   },
   "author": "TIBCO Software Inc.",
   "devDependencies": {
