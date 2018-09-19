@@ -9,7 +9,6 @@
   "scripts": {
     "start": "npm-run-all release --",
     "postinstall": "yarn run submodules:link",
-    "gulp": "gulp",
     "dev": "npm-run-all --parallel -l dev:*",
     "dev:server": "yarn --cwd src/server run start",
     "dev:client": "yarn --cwd src/client run start",
