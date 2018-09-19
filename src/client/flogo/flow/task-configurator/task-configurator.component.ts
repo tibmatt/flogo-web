@@ -1,4 +1,4 @@
-import {isEmpty, cloneDeep, assign} from 'lodash';
+import { isEmpty, cloneDeep } from 'lodash';
 import { skip, takeUntil } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -6,16 +6,16 @@ import { Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 import { Task } from '@flogo/core/interfaces';
-import { PostService } from '@flogo/core/services/post.service';
 import { mergeItemWithSchema, PartialActivitySchema, SingleEmissionSubject } from '@flogo/core/models';
+import { NotificationsService } from '@flogo/core/notifications';
 
 import { MapperTranslator, MapperControllerFactory, MapperController } from '../shared/mapper';
 
 import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
 import {Tabs} from '../shared/tabs/models/tabs.model';
 import {SubFlowConfig} from './subflow-config';
-import { isIterableTask, isMapperActivity, isSubflowTask, notification } from '@flogo/shared/utils';
-import {ActionBase, FLOGO_TASK_TYPE, Item, ItemActivityTask, ItemSubflow, ItemTask, LanguageService} from '@flogo/core';
+import { isIterableTask, isMapperActivity, isSubflowTask } from '@flogo/shared/utils';
+import {ActionBase, FLOGO_TASK_TYPE, Item, ItemActivityTask, ItemSubflow, ItemTask} from '@flogo/core';
 import { createIteratorMappingContext, getIteratorOutputSchema, ITERABLE_VALUE_KEY, ITERATOR_OUTPUT_KEY } from './models';
 import { FlowState, FlowActions } from '@flogo/flow/core/state';
 import { getFlowMetadata, getInputContext } from '@flogo/flow/core/models/task-configure/get-input-context';
@@ -84,14 +84,12 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   private inputMapperStateSubscription: Subscription;
   private contextChange$ = SingleEmissionSubject.create();
   private destroy$ = SingleEmissionSubject.create();
-  private _subscriptions: any[];
 
   constructor(
     private store: Store<FlowState>,
     private _flowService: FlowsService,
-    private _postService: PostService,
-    private translate: LanguageService,
     private mapperControllerFactory: MapperControllerFactory,
+    private notificationsService: NotificationsService,
   ) {
     this.isSubflowType = false;
     this.resetState();
@@ -114,7 +112,6 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.emitAndComplete();
-    this.cancelSubscriptions();
     if (!this.contextChange$.isStopped) {
       this.contextChange$.emitAndComplete();
     }
@@ -222,14 +219,6 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     iteratorTab.isDirty = isDirty;
   }
 
-  private cancelSubscriptions() {
-    if (isEmpty(this._subscriptions)) {
-      return true;
-    }
-    this._subscriptions.forEach(this._postService.unsubscribe);
-    return true;
-  }
-
   private configureOutputMapperLabels() {
     this.inputsSearchPlaceholderKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
     this.tabs.get(TASK_TABS.INPUT_MAPPINGS).labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
@@ -261,8 +250,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
         this.actionId = state.id;
         this.createSubflowConfig(subflowSchema);
       } else {
-        return this.translate.get('SUBFLOW:REFERENCE-ERROR-TEXT')
-          .subscribe(message => notification(message, 'error'));
+        return this.notificationsService.error({ key: 'SUBFLOW:REFERENCE-ERROR-TEXT' });
       }
     }
 

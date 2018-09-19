@@ -14,11 +14,12 @@ AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, Tri
 import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
 import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
 import { TriggerShimBuildComponent } from '../shim-trigger/shim-trigger.component';
-import { diffDates, notification } from '../../shared/utils';
+import { diffDates } from '../../shared/utils';
 import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
 import {ConfirmationResult} from '@flogo/core/confirmation';
 import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
 import {switchMap} from 'rxjs/operators';
+import { NotificationsService } from '@flogo/core/notifications';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
@@ -79,7 +80,8 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
               private confirmationModalService: ConfirmationModalService,
               private sanitizer: SanitizeService,
               private contributionService: RESTAPIContributionsService,
-              private shimtriggersApiService: ShimTriggerBuildApiService
+              private shimTriggersApiService: ShimTriggerBuildApiService,
+              private notificationsService: NotificationsService,
   ) {
   }
 
@@ -136,13 +138,11 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
         }];
       }).catch(errRsp => {
         this.closeExportBox();
-        if (errRsp.errors[0].code === ERROR_CODE.HAS_SUBFLOW) {
-          this.translate.get('DETAILS-EXPORT:CANNOT-EXPORT').toPromise()
-            .then(msg => notification(msg, 'error'));
+        if (errRsp && errRsp.errors && errRsp.errors[0] && errRsp.errors[0].code === ERROR_CODE.HAS_SUBFLOW) {
+          this.notificationsService.error({ key: 'DETAILS-EXPORT:CANNOT-EXPORT' });
         } else {
           console.error(errRsp.errors);
-          this.translate.get('DETAILS-EXPORT:ERROR_UNKNOWN').toPromise()
-            .then(msg => notification(msg, 'error'));
+          this.notificationsService.error({ key: 'DETAILS-EXPORT:ERROR_UNKNOWN' });
         }
       });
   }
@@ -162,7 +162,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
 
   buildShimTrigger(selectedTriggerDetails) {
     this.shimTriggersBuild.closeModal();
-    this.handleBuildDownload(this.shimtriggersApiService.buildShimTrigger(selectedTriggerDetails));
+    this.handleBuildDownload(this.shimTriggersApiService.buildShimTrigger(selectedTriggerDetails));
   }
 
   openCreateFlowFromTrigger(trigger: Trigger) {
@@ -301,12 +301,10 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
 
   private handleBuildDownload(download: Observable<any>) {
     const restoreBuildFlag = () => this.isBuilding = false;
-    const handleBuildError = () => this.translate
-      .get('DETAILS:BUILD-ERROR')
-      .subscribe(msg => {
-        notification(msg, 'error');
-        restoreBuildFlag();
-      });
+    const handleBuildError = () => {
+      this.notificationsService.error({ key: 'DETAILS:BUILD-ERROR' });
+      restoreBuildFlag();
+    };
 
     this.isBuilding = true;
     download.subscribe(restoreBuildFlag, handleBuildError);
@@ -364,7 +362,4 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     });
   }
 
-  private extractFlows() {
-    return clone(this.application.flows || []);
-  }
 }

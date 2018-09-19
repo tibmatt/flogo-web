@@ -3,15 +3,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, Params as RouteParams } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LanguageService } from '@flogo/core';
-import { notification } from '../shared/utils';
 import { ApplicationDetail, AppDetailService} from './core';
 
 import { FlowsService } from '../core/services/flows.service';
+import { NotificationsService } from '@flogo/core/notifications';
 
 @Component({
   selector: 'flogo-app',
-  // moduleId: module.id,
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.less']
 })
@@ -19,11 +17,11 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
   public appDetail: ApplicationDetail = null;
   private appObserverSubscription: Subscription;
 
-  constructor(private translate: LanguageService,
-              private router: Router,
+  constructor(private router: Router,
               private route: ActivatedRoute,
               private appService: AppDetailService,
-              private flowsService: FlowsService) {
+              private flowsService: FlowsService,
+              private notificationsService: NotificationsService) {
   }
 
   public ngOnInit() {
@@ -72,14 +70,11 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
     const appId = this.appDetail.app.id;
     const profileType = this.appDetail.app.profileType;
     this.flowsService.createFlow(appId, { name, description: description }, triggerId, profileType)
-      .then(() => this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-CREATED').toPromise())
-      .then(message => notification(message, 'success', 3000))
+      .then(() => this.notificationsService.success({ key: 'FLOWS:SUCCESS-MESSAGE-FLOW-CREATED' }))
       .then(() => this.appService.reload())
     .catch((err) => {
       console.error(err);
-      return this.translate.get('FLOWS:CREATE_FLOW_ERROR', err)
-        .toPromise()
-        .then(message => notification(message, 'error'));
+      this.notificationsService.error({ key: 'FLOWS:CREATE_FLOW_ERROR', params: err });
     });
   }
 

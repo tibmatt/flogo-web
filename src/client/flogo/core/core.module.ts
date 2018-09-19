@@ -31,16 +31,18 @@ import {SharedModule as FlogoSharedModule} from '@flogo/shared';
 import {ConfirmationModalComponent} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.component';
 import {ConfirmationService} from '@flogo/core/confirmation/confirmation.service';
 import {OverlayModule} from '@angular/cdk/overlay';
-import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
+import {ConfirmationModalService} from './confirmation/confirmation-modal/confirmation-modal.service';
+import { NotificationsModule } from './notifications';
 
 @NgModule({
   imports: [
     HttpClientModule,
     RouterModule,
+    OverlayModule,
     WalkthroughModule,
     TranslateModule,
     FlogoSharedModule,
-    OverlayModule
+    NotificationsModule,
   ],
   providers: [ // services
     { provide: DEFAULT_REST_HEADERS, useValue: createDefaultRestApiHttpHeaders() },
@@ -77,6 +79,7 @@ import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-mo
   ],
   exports: [
     FlogoNavbarComponent,
+    NotificationsModule,
   ],
   entryComponents: [
     ConfirmationModalComponent

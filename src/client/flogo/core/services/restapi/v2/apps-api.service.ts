@@ -86,7 +86,7 @@ export class AppsApiService {
     return this.restApi
       .get<any>(`apps/${appId}:export`, requestOptions)
       .toPromise()
-      .catch(err => Promise.reject(err.json()));
+      .catch(err => Promise.reject(err && err.error ? err.error : err));
   }
 
   // todo: combine with exportapp
@@ -101,7 +101,7 @@ export class AppsApiService {
     }
     return this.restApi.get(`apps/${appId}:export`, { params: requestParams })
       .toPromise()
-      .catch(err => Promise.reject(err.json()));
+      .catch(err => Promise.reject(err && err.error ? err.error : err));
   }
 
   uploadApplication(application) {
