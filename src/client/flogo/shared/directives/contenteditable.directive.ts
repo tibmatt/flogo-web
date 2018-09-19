@@ -58,11 +58,12 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
     this.renderer.setAttribute(this.elementRef.nativeElement, 'contenteditable', 'true');
 
     const computedStyles = getComputedStyle(this.elementRef.nativeElement);
+    const padding = `4px`;
     this.style = this.domSanitizer.bypassSecurityTrustStyle(`
-      padding-right: 10px;
-      margin-left: -10px;
-      padding-left: 10px;
-      border-radius: 4px;
+      padding-right: ${padding};
+      margin-left: -${padding};
+      padding-left: ${padding};
+      border-radius: ${padding};
       outline: none;
       line-height: ${parseInt(computedStyles.lineHeight, 10) - 2}px;
       border: 1px solid transparent;
@@ -169,7 +170,7 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
     this.checkTextOverflow();
   }
 
-  checkColor() {
+  private checkColor() {
     this.color = null;
     if (!this.colorFlag) {
       return;
@@ -181,11 +182,11 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  checkOverflow() {
+  private checkOverflow() {
     this.overflow = this.hasFocus ? 'auto' : 'hidden';
   }
 
-  checkTextOverflow() {
+  private checkTextOverflow() {
     this.textOverflow = this.hasFocus ? 'clip' : 'ellipsis';
   }
 
