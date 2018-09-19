@@ -1,6 +1,48 @@
 # Third party dependencies change log
 All notable changes to this project's dependencies will be documented in this file.
 
+## v0.5.7
+
+### Production Dependencies
+
+- ** New **
+  - [dotenv@^6.0.0](https://github.com/motdotla/dotenv) [BSD-2-Clause]
+  - [find-up@^3.0.0](https://github.com/sindresorhus/find-up) [MIT]
+  - [npm-run-all@^4.1.3](https://github.com/mysticatea/npm-run-all) [MIT]
+
+
+### Development Dependencies
+  
+  - ** New **
+    - [@babel/cli@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-cli) [MIT]
+    - [@babel/core@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-core) [MIT]
+    - [@babel/node@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-node) [MIT]
+    - [@babel/plugin-syntax-object-rest-spread@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-object-rest-spread) [MIT]
+    - [@babel/preset-env@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-preset-env) [MIT]
+    - [cpy@^7.0.1](https://github.com/sindresorhus/cpy) [MIT]
+    - [del-cli@^1.1.0](https://github.com/sindresorhus/del-cli) [MIT]
+    - [esm@^3.0.84](https://github.com/standard-things/esm) [MIT]
+    - [npm-run-all@^4.1.3](https://github.com/mysticatea/npm-run-all) [MIT]
+    - [nodemon@^1.18.4](https://github.com/remy/nodemon) [MIT]
+  - ** Removed **
+    - gulp
+    - gulp-babel
+    - gulp-changed
+    - gulp-concat
+    - gulp-filter
+    - gulp-help
+    - gulp-nodemon
+    - gulp-plumber
+    - gulp-rename
+    - gulp-sourcemaps
+    - gulp-uglify
+    - run-sequence
+    - vinyl-fs
+    - babel-cli
+    - babel-core
+    - babel-plugin-syntax-object-rest-spread
+    - babel-preset-env
+
 ## v0.5.6
 
 ### Production Dependencies

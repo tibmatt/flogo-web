@@ -1,10 +1,9 @@
+import '../utils/crash-on-unhandled-rejection';
 import fs from 'fs';
 import path from 'path';
 import { promisify, inspect } from 'util';
 
-import gulp from 'gulp';
-
-import {CONFIG} from '../../config';
+import { Sources } from './config';
 
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
@@ -17,10 +16,9 @@ const ignoreRefs = [ 'github.com/TIBCOSoftware/flogo-contrib/activity/inference'
 
 const pathToContrib = process.env.FLOGO_WEB_BUILD_CONTRIB_PATH || path.resolve('/flogo', 'flogo-contrib');
 console.log('Will look for flogo-contrib in: ', pathToContrib);
-/**
- *
- */
-gulp.task('palette.build', 'Build default palette', [], async () => {
+buildPalette();
+
+export async function buildPalette() {
   const [activities, triggers] = await Promise.all([getAll('activity'), getAll('trigger')]);
 
   const contribs = [...activities, ...triggers]
@@ -33,8 +31,8 @@ gulp.task('palette.build', 'Build default palette', [], async () => {
   const palette = makePalette(contribs);
   console.log('** Generated new default palette **');
   console.log(inspect(palette));
-  return writeJsonFile(path.resolve(CONFIG.paths.source.server, 'config', DEFAULT_PALETTE_FILENAME), palette);
-});
+  return writeJsonFile(path.resolve(Sources.server, 'config', DEFAULT_PALETTE_FILENAME), palette);
+}
 
 function makePalette(extensions) {
   return {

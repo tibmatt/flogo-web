@@ -6,47 +6,51 @@ This document describes how to set up your development environment to build, run
 
 > Additional developer documentation can be found in [docs](/docs)
 
-* [Prerequisite Software](#prerequisite-software)
-* [Getting the Sources](#getting-the-sources)
-* [Getting the Images](#getting-the-images)
-* [Setting Up the Build Environment](#setting-up-the-build-environment)
-* [Running the Application](#running-the-application)
-* [Debugging the Application](#debugging-the-application)
-* [Running Tests Locally](#running-tests-locally)
-* [Advanced Usage](#advanced-usage)
-* [Troubleshooting and Known Issues](#troubleshooting-and-known-issues)
+**Table of Contents**
 
-## Prerequisite Software
+- [Building and Testing Flogo Web](#building-and-testing-flogo-web)
+  * [Setup](#setup)
+    + [Prerequisite Software](#prerequisite-software)
+    + [Getting the Sources](#getting-the-sources)
+    + [Getting the Service Images](#getting-the-service-images)
+  * [Running the application locally](#running-the-application-locally)
+    + [Start the services](#start-the-services)
+    + [Before running the application](#before-running-the-application)
+    + [Running the Application in Development Mode](#running-the-application-in-development-mode)
+  * [Running Tests Locally](#running-tests-locally)
+    + [Before running the tests](#before-running-the-tests)
+    + [Running the tests](#running-the-tests)
+  * [Customize the server environment](#customize-the-server-environment)
+  * [Other tasks](#other-tasks)
+    + [Install/update third party dependencies (node modules)](#installupdate-third-party-dependencies-node-modules)
+    + [Managing the services:](#managing-the-services)
+    + [Managing engine/local data](#managing-enginelocal-data)
+    + [Misc](#misc)
+  * [Project structure and advanced usage.](#project-structure-and-advanced-usage)
+
+## Setup
+
+### Prerequisite Software
+
 - git
-- [Docker and docker-compose](https://www.docker.com) for Mac or Windows or Linux (https://www.docker.com) 1.12.0-rc4-beta20 or later
-- For windows you will need basic support for bash scripting, you can use git's bash replacement or any other terminal emulator instead of the dos/window standard command line
-
-- Required only for local mode:
-  - GO Lang 1.9 - Follow the instructions here https://golang.org/doc/install
+- [Docker and docker-compose](https://www.docker.com) for Mac or Windows or Linux (https://www.docker.com) 17.12.0 or later
+- [Node JS 8.9.3 or greater](https://nodejs.org/en/download/releases/)
+- [yarn](https://yarnpkg.com) 
+- [Latest Flogo CLI (flogo-cli)](https://github.com/TIBCOSoftware/flogo-cli)
+  - The following will be necessary and they should be installed as part of installing the flogo-cli tool:
+    - GO Lang 1.9 - Follow the instructions here https://golang.org/doc/install
+    - [Go dep](https://golang.github.io/dep/)
     - Make sure you add $GOPATH/bin to your $PATH variable. Instructions related to the $GOPATH variable are found in the above link in the ["Test your installation" section](https://golang.org/doc/install#testing).
-  - [Go dep](https://golang.github.io/dep/)
-  - [Node JS 8.9.3](https://nodejs.org/en/download/releases/)
-  - [yarn](https://yarnpkg.com) 
-  - Install the flogo CLI tool: https://github.com/TIBCOSoftware/flogo-cli
 
-## Getting the Sources
+### Getting the Sources
 
-### Make sure you have git access for following repositories:
-
-1. [flogo-web](https://github.com/TIBCOSoftware/flogo-web.git)
-1. [flogo-cicd](https://github.com/TIBCOSoftware/flogo-cicd.git)
-
-### Get the Source Code
-
-After you get git access, clone the [flogo-web repository](https://github.com/TIBCOSoftware/flogo-web.git)
-and the [flogo-cicd repository](https://github.com/TIBCOSoftware/flogo-cicd.git)
+Make sure you have git access to the [flogo-web repository](https://github.com/TIBCOSoftware/flogo-web.git) and clone it.
 
 ```sh
 git clone https://github.com/TIBCOSoftware/flogo-web.git
-git clone https://github.com/TIBCOSoftware/flogo-cicd.git
 ```
 
-## Getting the Images
+### Getting the Service Images
 
 The development environment depends on flogo services images (flow-service and state-service), if you have access to
 TIBCO's reldocker or flogo's private dockerhub you can pull the images from them, otherwise you will need to build the images locally.
@@ -57,26 +61,19 @@ Chose and follow **one** of these methods to get the images:
 1. Pull from TIBCO reldocker
 1. Build the images locally
 
-### Method 1: Pull from dockerhub
+**METHOD 1: Pull from dockerhub**
 
 In your terminal log into docker hub
 ```
 docker login
 ```
 
-After you authenticated, pull the images.
-
-Pull the state service image
+After you authenticated in a terminal make sure you're in flogo-web's project root and run: 
 ```sh
-docker pull flogo/state-service
+yarn run services:pull
 ```
 
-Pull the flow service image
-```sh
-docker pull flogo/flow-service
-```
-
-### Method 2: Pull from TIBCO reldocker
+**METHOD 2: Pull from TIBCO reldocker**
 
 In your terminal login to reldocker using you LDAP credentials
 ```sh
@@ -85,34 +82,23 @@ docker login reldocker.tibco.com
 
 After you authenticated, pull the images:
 
-Rename the base image:
-```sh
-docker tag reldocker.tibco.com/flogo/flogo-base:latest flogo/flogo-base:latest 
-```
-
-Pull the state service image
+Pull and rename the state service image
 ```sh
 docker pull reldocker.tibco.com/flogo/state-service:latest
-```
-
-Rename the state service image:
-```sh
 docker tag reldocker.tibco.com/flogo/state-service:latest flogo/state-service:latest 
 ```
 
-Pull the flow service image
+Pull and rename the flow service image
 ```sh
 docker pull reldocker.tibco.com/flogo/flow-service:latest
+docker tag reldocker.tibco.com/flogo/flow-service:latest flogo/flow-service:latest
 ```
 
-Rename the flow service image:
-```sh
-docker tag reldocker.tibco.com/flogo/flow-service:latest flogo/flow-service:latest 
-```
+**METHOD 3: Build the images locally**
 
-### Method 3: Build the images locally
-
-Follow the instructions in https://github.com/TIBCOSoftware/flogo-cicd using the private registry method and build *only* the following images (in the specified order, do not use the "build-all.sh" script):
+For this method you will need access to the [flogo-cicd repository](https://github.com/TIBCOSoftware/flogo-cicd).
+Once you have access follow the instructions in flogo-cicd's readme using the private registry method
+and build *only* the following images (in the specified order, do not use the "build-all.sh" script):
 
 1. flogo/go-builder
 1. flogo/state-service
@@ -120,195 +106,149 @@ Follow the instructions in https://github.com/TIBCOSoftware/flogo-cicd using the
 
 Run `docker images` to make sure they were correctly built.
 
-## Setting Up the Build Environment
+## Running the application locally
 
-Open a terminal and run the following command replacing the actual path where you cloned the flogo-web repository. This will tell the start script where to look for the source code.
+### Start the services
+
+flow-services and state-service must be running in order to the test run a flow from the UI.
+
+To start the services from the project root run:
+```sh
+yarn run services:start
+```
+
+### Before running the application
+
+Make sure your local dependencies are up to date by running the following commands from the project root:
 
 ```sh
-export FLOGO_WEB_DEV_ROOT=<path where you cloned flogo-web>
+yarn install
+yarn install:submodules
 ```
 
-Example:
+### Running the Application in Development Mode
+
+Flogo Web development environment is composed of a client side application and a server side application. During development time
+they run as two separate services and as such you will need two terminal windows to run them.
+
+**Start the Server Application**
+
+In terminal 1 go to flogo-web project root and run:
 ```sh
-export FLOGO_WEB_DEV_ROOT=/home/user/projects/flogo-web
+yarn run dev:server
 ```
 
-You can add the export sentence to your profile to avoid manually executing it each time you open a new terminal. 
+Server will start running. Please be patient if this is the first time you run the server app as it can take several 
+minutes to finish the startup process because it will need to create a Flogo engine instance and install the 
+default activities and triggers.
 
-*TIP:* You can add an alias to your profile for easier flogo start, for example:
-
-```sh
-alias fg-dev="bash <path where you cloned flogo-cicd>/docker/flogo-web/dev.sh"
-```
-
-That way you will only need to run `fg-dev start local` instead of the long path.
-
-
-## Running the Application
-
-You can:
-- Run flogo-web locally or
-- Run flogo-web inside a docker-container (recommended for windows users)
-
-### Run flogo-web locally
-
-1. `cd` to the directory where you cloned the [flogo-cicd repository](https://github.com/TIBCOSoftware/flogo-cicd.git) or clone it if you haven't already.
-1. Run
-```sh
-./docker/flogo-web/dev.sh start local
-```
-
-Application and services will be started, when you see the following banner in the console flogo will be ready to be used in your browser:
+When you see the following banner in the console Flogo Web's server will be ready to respond:
 
 ```
 
-=============================================================================================
-[success] open http://localhost:3303 or http://localhost:3303/_config in your browser
-=============================================================================================
+ ======================================================
+                 ___       __   __   __ TM
+                |__  |    /  \ / _` /  \
+                |    |___ \__/ \__| \__/
+
+   [success] open http://localhost:3303 in your browser
+  ======================================================
 
 ```
 
-### Run flogo-web in a docker container
+**Start the client application**
 
-1. `cd` to the directory where you cloned the [flogo-cicd repository](https://github.com/TIBCOSoftware/flogo-cicd.git) or clone it if you haven't already.
-1. Run
-```sh
-./docker/flogo-web/dev.sh start container
-```
-
-Application and services will be started, when you see the following banner in the console flogo will be ready to be used in your browser:
-
-```
-
-=============================================================================================
-[success] open http://localhost:3303 or http://localhost:3303/_config in your browser
-=============================================================================================
-
-```
-
-## Debugging the Application
-
-### Debugging the server application
-
-**Note**: Server debugging is not supported in the container/docker run mode.
-
-#### Local debug
-
-In this mode server database will be started and source files will be watched and will be automatically processed when
-they change.
-
-However, server application won't be started and it needs to be manually started. This will allow you
-to configure your IDE and debugger to suit your needs. 
-
-Replace with your path to flogo-cicd and run:
+In a second terminal flogo-web project root and run:
 
 ```sh
-FLOGO_WEB_TASK=local-debug <flogo-cicd>/docker/flogo-web/dev.sh start local
-
-``` 
-
-Follow your IDE instructions to configure your debugger to run the file `server.js` that will be generated
- in `<FLOGO_WEB_DEV_ROOT>/dist/server`.
- 
-Breakpoints can be added directly to the javascript source files in `/src/server` or to the generated files in `dist/server`.
-
-
-#### Remote debug
-
-Replace with your path to flogo-cicd and run:
-
-```sh
-FLOGO_DEBUG=1 <flogo-cicd>/docker/flogo-web/dev.sh start local
+yarn run dev:client
 ```
 
-Server will be started in debug mode and debugger will listen to port 5858. Will also watch for changes
-and automatically update.
+Client application will start, when you see the following banner in the console flogo client app will be ready to be used in your browser:
 
-Follow your IDE instructions to attach your debugger to the port 5858.
+```
+** Angular Live Development Server is listening on localhost:4200, open your browser on http://localhost:4200/ **
+```
 
-Breakpoints can be added directly to the javascript source files in `/src/server` or to the generated files in `dist/server`.
-
+> Note: You can also run both client and server at once in a single terminal by running `yarn run dev`.
+> The caveat is that the output is not as clear as when running the processes separately, also during development it is usually 
+> helpful to be able to restart one application and not the other. 
 
 ## Running Tests Locally
 
-*TBA*
+### Before running the tests 
 
-### Running Client Unit Tests
-<!-- TODO: How to build the client app only without starting the application? -->
-
-Start the application. See [Running the Application](#running-the-application) 
-
-Navigate to root project directory
-
-Run:
-
+Make sure your dependencies are up to date:
 ```sh
-npm test:client
+yarn install
+yarn install:submodules
 ```
 
-### Running Server Integration Tests
-<!-- TODO: How to build the client app only without starting the application? -->
+### Running the tests
 
-Build the application and start the database. See [Running the Application](#running-the-application) 
-
-Navigate to the root project directory
-
+From the project root:
 ```sh
-cd <project root>/dist/public 
+yarn run test
 ```
 
-Run:
+This will run the unit test for all the sub packages i.e. server, client and parser.
+
+## Customize the server environment
+
+Before starting the server copy and rename the [`.env.example`](/.env.example) to `.env`. Add or modify/uncomment
+the environment variables defined in created `.env` file.
+
+You can alternatively set regular environment variables.
+
+## Other tasks
+
+All the commands listed in the following subsections are specified as `<command>: description` and they can be run from
+the root of the project as:
 
 ```sh
-npm run test:server
+yarn run <command>
 ```
 
-*WARNING* Running this test will delete your local database, to avoid these specify where you want the application
-to create the temporal test database by passing or setting the `FLOGO_WEB_DBDIR` environment variable.
+For example: `yarn run services:status`
 
-Example (in linux/mac):
+### Install/update third party dependencies (node modules)
+- `install:submodules`: Install all submodules dependencies
+- `install:submodule:client`: Install client dependencies
+- `install:submodule:server`: Install server dependencies
+- `install:submodule:parser`: Install parser dependencies
+- `clean:all-node-modules`: Warning: Will delete all node_modules in the project, including those of subpackages
 
-```sh
-FLOGO_WEB_DBDIR="/absolute/path/to/some/dir" npm run test:server
+### Managing the services:
+- `services:status`: Check services status (running, stopped, etc.)
+- `services:pull`: Try to pull (download) newer versions of the services (Only availabe for dockerhub)
+- `services:stop`: Stop the services
+- `services:clear`: Warning: destructive. Remove all the service instances and cleanup all services database.
+
+### Managing engine/local data
+- `clean:local`: Clean ALL your local data. This will remove the engine, database and logs. 
+- `clean:engines`: Remove the local engines only. This will force the server to rebuild the engine on next startup.
+
+### Misc
+- `update-global-flogo`: Update global flogo-cli to the latest available
+
+## Project structure and advanced usage.
+
+Flogo Web is composed of a root package and other subpackages. Each package is independent and can handle most of its own lifecycle.
+The root mostly delegates the tasks to the subpackages and orchestrates them during the release (production build) process.
+
+Flogo Web uses npm/yarn scripts for its build process. Take a look at README.md of the packages as well as at the scripts section
+in the `package.json` of the root project and the subpackages to find other commands available.
+
+Root package is at the root project level and subpackages are located in `src`. Project structure is following:
+
 ```
-
-You can also pass/set the `FLOGO_WEB_LOGLEVEL='error'` environment variable to reduce log verbosity.
-
-## Advanced Usage
-
-The `dev.sh` script used throughout this guide executes roughly the following steps:
- 
-1. Updates the flogo CLI tool installed in the system by fetching it again via `go get`
-1. Starts the flow and state services (required to test-execute a flow when using the UI)
-1. Starts the gulp build process. By default it runs the `dev` task
-
-You can chose which gulp task(s) to run by setting the `FLOGO_WEB_TASK` environment variable.
-For example, to run the "prod" task execute:
-
-```sh
-FLOGO_WEB_TASK=prod /path/to/dev.sh start local
+-- flogo-web (root package.json)
+  |--- package.json (root package)
+  |--- src/
+       |---- client/
+       |        `--- package.json
+       |---- server/
+       |       `--- package.json
+       `---- parser/
+               `--- package.json
 ```
-
-If you want to run more than one task you will need to quote them to avoid issues with white spaces. 
-For example to run the "dev.build" and "dev.watch" tasks execute:
-
-```sh
-FLOGO_WEB_TASK="dev.build dev.watch" /path/to/dev.sh start local
-```
-
-To see all available tasks navigate to your <flogo-web> root directory and run:
-
-```sh
-yarn gulp help
-```
-
-If for some reason you are starting the services manually or don't need to start them, you can skip
-using the dev.sh script and directly execute the gulp process by navigating to your <flogo-web> root
-and run `yarn start [...your tasks]`.
-
-## Troubleshooting and Known Issues
-
-## Running issues
-
-Try deleting the `dist` folder inside your flogo-web copy and start the application again.
-

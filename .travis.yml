@@ -19,9 +19,11 @@ jobs:
   fast_finish: true
   include:
     - stage: test
+      name: "Code linting"
       install: yarn --cwd src/client install
       script: yarn --cwd src/client travis:lint
     - stage: test
+      name: "Unit tests"
       addons:
         chrome: stable
       install:

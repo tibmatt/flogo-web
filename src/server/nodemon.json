@@ -1,0 +1,6 @@
+{
+  "execMap": {
+    "js": "npm run serve"
+  },
+  "ignore": ["*.spec.js", "tests/*", "scripts/*", "*.log"]
+}
