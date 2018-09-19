@@ -151,6 +151,7 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
     if (!this.placeholderEl) {
       const placeholderText = this.renderer.createText(this.placeholder);
       this.placeholderEl = this.renderer.createElement('span');
+      this.renderer.setStyle(this.placeholderEl, 'pointer-events', 'none');
       this.renderer.appendChild(this.placeholderEl, placeholderText);
       this.renderer.appendChild(this.elementRef.nativeElement, this.placeholderEl);
     }
