@@ -271,6 +271,9 @@ export class FlowComponent implements OnInit, OnDestroy {
   public changeFlowDetailName(name, property) {
     if (name === this.flowName) {
       return Promise.resolve(true);
+    } else if (!name || !name.trim()) {
+      this.flowState.name = this.flowName;
+      return Promise.resolve(true);
     }
 
     return this._flowService.listFlowsByName(this.flowState.appId, name)

@@ -46,9 +46,7 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
     if (!changes.fgContentEditable) {
       return;
     }
-    if (this.fgContentEditable) {
-      this.setContent(this.fgContentEditable);
-    }
+    this.setContent(this.fgContentEditable);
   }
 
   ngOnInit() {
@@ -113,8 +111,9 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
     this.isHovered = false;
     const text = this.elementRef.nativeElement.textContent;
     this.renderer.setProperty(this.elementRef.nativeElement, 'scrollLeft', '0');
-    if (text !== '' && text !== undefined && text !== this.fgContentEditable) {
+    if (text !== this.fgContentEditable) {
       this.fgContentEditableChange.emit(text);
+      this.setContent(this.fgContentEditable);
     }
     this.updateStyles();
     this.initPlaceholder();

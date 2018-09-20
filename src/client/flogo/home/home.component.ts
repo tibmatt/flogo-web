@@ -29,7 +29,9 @@ export class FlogoHomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.flynnFlightSubscription.unsubscribe();
+    if (this.flynnFlightSubscription) {
+      this.flynnFlightSubscription.unsubscribe();
+    }
   }
 
   loadFlows() {
