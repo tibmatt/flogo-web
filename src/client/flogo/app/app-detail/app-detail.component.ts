@@ -2,12 +2,12 @@ import { sortBy, snakeCase } from 'lodash';
 import { differenceInSeconds } from 'date-fns';
 
 import {
-  Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter,
+  Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter, InjectionToken,
 } from '@angular/core';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import {LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER} from '@flogo/core';
+import {LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER, ConfirmationService} from '@flogo/core';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { SanitizeService } from '@flogo/core/services/sanitize.service';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
@@ -15,7 +15,7 @@ import {
 AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
 } from '../core';
 import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
-import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
+import { EXPORT_FLOW_MODAL_TOKEN, FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
 import { TriggerShimBuildComponent } from '../shim-trigger/shim-trigger.component';
 
 import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
@@ -34,7 +34,6 @@ const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 })
 export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   @ViewChild(FlogoNewFlowComponent) addFlow: FlogoNewFlowComponent;
-  @ViewChild('exportFlowModal') exportFlow: FlogoExportFlowsComponent;
   @ViewChild('shimTriggersModal') shimTriggersBuild: TriggerShimBuildComponent;
   @Input() appDetail: ApplicationDetail;
 
@@ -86,6 +85,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
               private contributionService: RESTAPIContributionsService,
               private shimTriggersApiService: ShimTriggerBuildApiService,
               private notificationsService: NotificationsService,
+              private confirmationService: ConfirmationService
   ) {
   }
 
@@ -178,7 +178,11 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   openExportFlow() {
-    this.exportFlow.openExport();
+    const flows = this.application.actions;
+    const isLegacyExport = this.application.profileType === FLOGO_PROFILE_TYPE.DEVICE;
+    const data = new WeakMap<any, any>();
+    data.set(EXPORT_FLOW_MODAL_TOKEN, {flows, isLegacyExport});
+    return this.confirmationService.openModal(FlogoExportFlowsComponent, data);
   }
 
   onNameSave() {
