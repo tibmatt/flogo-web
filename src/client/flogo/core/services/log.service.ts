@@ -43,7 +43,7 @@ export class LogService {
     addLine(data) {
         const message = {
             level: data.level,
-            timestamp: format(data.timestamp, 'HH:mm:ss.SSS YYYY-MMM-DD'),
+            timestamp: format(data.timestamp, 'PP HH:mm:ss.SSS'),
             message: data.message
         };
 

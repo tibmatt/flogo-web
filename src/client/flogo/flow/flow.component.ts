@@ -73,7 +73,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     disableReason?: string;
   };
 
-  _subscriptions: any[];
   _id: any;
 
   _isDiagramEdited: boolean;
