@@ -16,6 +16,8 @@ import {
 import { DOCUMENT } from '@angular/common';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
+const isEmptyValue = (value): boolean => value === undefined || value === null || value.trim().length === 0;
+
 @Directive({
   selector: '[fgContentEditable]',
 })
@@ -43,10 +45,11 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: { fgContentEditable?: SimpleChange }) {
-    if (!changes.fgContentEditable) {
+    if (!changes.fgContentEditable || changes.fgContentEditable.isFirstChange()) {
       return;
     }
     this.setContent(this.fgContentEditable);
+    this.checkPlaceholder();
   }
 
   ngOnInit() {
@@ -57,17 +60,19 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
 
     const computedStyles = getComputedStyle(this.elementRef.nativeElement);
     const padding = `4px`;
+    const height = parseInt(computedStyles.lineHeight, 10) - 2;
     this.style = this.domSanitizer.bypassSecurityTrustStyle(`
       padding-right: ${padding};
       margin-left: -${padding};
       padding-left: ${padding};
       border-radius: ${padding};
       outline: none;
-      line-height: ${parseInt(computedStyles.lineHeight, 10) - 2}px;
+      line-height: ${height}px;
+      min-height: ${height}px;
       border: 1px solid transparent;
     `);
 
-    this.initPlaceholder();
+    this.checkPlaceholder();
 
     const origColor = computedStyles.color;
     // todo: why this value?
@@ -116,7 +121,7 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
       this.setContent(this.fgContentEditable);
     }
     this.updateStyles();
-    this.initPlaceholder();
+    this.checkPlaceholder();
   }
 
   @HostListener('keydown.esc')
@@ -133,11 +138,11 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
   }
 
   private setContent(value) {
-    value = value !== undefined ? value : '';
+    value = !isEmptyValue(value) ? value : '';
     this.renderer.setProperty(this.elementRef.nativeElement, 'textContent', value);
   }
 
-  private initPlaceholder() {
+  private checkPlaceholder() {
     const text = this.elementRef.nativeElement.textContent;
     if (text === '') {
       this.appendPlaceholder();
@@ -147,20 +152,26 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
   }
 
   private appendPlaceholder() {
-    if (!this.placeholderEl) {
-      const placeholderText = this.renderer.createText(this.placeholder);
-      this.placeholderEl = this.renderer.createElement('span');
-      this.renderer.setStyle(this.placeholderEl, 'pointer-events', 'none');
-      this.renderer.appendChild(this.placeholderEl, placeholderText);
-      this.renderer.appendChild(this.elementRef.nativeElement, this.placeholderEl);
+    if (this.placeholderEl) {
+      return;
     }
+    Array.from(this.elementRef.nativeElement.children).forEach(this.removeChild.bind(this));
+    const placeholderText = this.renderer.createText(this.placeholder);
+    this.placeholderEl = this.renderer.createElement('span');
+    this.renderer.setStyle(this.placeholderEl, 'pointer-events', 'none');
+    this.renderer.appendChild(this.placeholderEl, placeholderText);
+    this.renderer.appendChild(this.elementRef.nativeElement, this.placeholderEl);
   }
 
   private removePlaceholder() {
     if (this.placeholderEl) {
-      this.renderer.removeChild(this.elementRef.nativeElement, this.placeholderEl);
+      this.removeChild(this.placeholderEl);
       this.placeholderEl = null;
     }
+  }
+
+  private removeChild(child) {
+    this.renderer.removeChild(this.elementRef.nativeElement, child);
   }
 
   private updateStyles() {

@@ -55,8 +55,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: flex;
-  align-items: center;
 }
 
 .flogo-flow-detail-menu-container {
@@ -109,6 +107,7 @@
   font-size: 12px;
   display: inline-block;
   min-width: 2rem;
+  max-width: 100%;
 }
 
 .flogo-flow-detail-header {
@@ -140,6 +139,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    // avoid last character is cut because italics + hidden overflow
+    padding-right: 0.2em;
   }
 
   &.--hover {

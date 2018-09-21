@@ -9,6 +9,7 @@ import { SanitizeService } from '../../core/services/sanitize.service';
   selector: 'flogo-test-container',
   template: `
             <h3 [(fgContentEditable)]="name"
+                placeholder="Test placeholder"
             (fgContentEditableChange)="changed($event,null)"></h3>
             `
 })
@@ -24,33 +25,28 @@ class ContainerComponent {
 
 describe('Directive: ContenteditableDirective', () => {
   let fixture: ComponentFixture<ContainerComponent>;
-  let de: DebugElement;
+  let debugElement: DebugElement;
   let container: ContainerComponent;
-  let element: HTMLElement;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [SanitizeService],
       declarations: [ContenteditableDirective, ContainerComponent]
     });
+    fixture = TestBed.createComponent(ContainerComponent);
+    container = fixture.componentInstance;
+    debugElement = fixture.debugElement.query(By.directive(ContenteditableDirective));
   });
 
 
   it('Changing the model variable should change the inner text', () => {
-    fixture = TestBed.createComponent(ContainerComponent);
-    container = fixture.componentInstance;
-    de = fixture.debugElement.query(By.directive(ContenteditableDirective));
-    element = de.nativeElement;
     container.name = 'a new name';
     fixture.detectChanges();
-    expect(element.innerText).toBe('a new name');
+    expect(debugElement.nativeElement.innerText).toBe('a new name');
   });
 
   it('Blur event should emit the edited value', done => {
-    fixture = TestBed.createComponent(ContainerComponent);
-    container = fixture.componentInstance;
     fixture.detectChanges();
-
     const h3Debug = fixture.debugElement.query(By.directive(ContenteditableDirective));
 
     container.changes.subscribe(value => {
@@ -66,5 +62,12 @@ describe('Directive: ContenteditableDirective', () => {
     fixture.detectChanges();
 
   });
+
+  it('Should display a placeholder when initialized empty', () => {
+    container.name = '';
+    fixture.detectChanges();
+    expect(debugElement.nativeElement.innerText).toBe('Test placeholder');
+  });
+
 });
 
