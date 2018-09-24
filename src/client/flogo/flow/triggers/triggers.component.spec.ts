@@ -17,7 +17,6 @@ import { TriggersApiService } from '@flogo/core/services';
 import { RESTAPIHandlersService } from '@flogo/core/services/restapi/v2/handlers-api.service';
 import { HttpUtilsService } from '@flogo/core/services/restapi/http-utils.service';
 import { RESTAPIContributionsService } from '@flogo/core/services/restapi/v2/contributions.service';
-import { PostService } from '@flogo/core/services/post.service';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
 import { FlogoProfileServiceMock } from '@flogo/core/services/profile.service.mock';
 
@@ -200,18 +199,6 @@ class MockRouterService {
   });
 }
 
-const postServiceStub = {
-  subscribe(options: any) {
-    this.subscribeData = options;
-  },
-
-  publish(envelope: any) {
-    this.published = envelope;
-  },
-
-  unsubscribe() {},
-};
-
 describe('Component: FlogoFlowTriggersPanelComponent', () => {
   let fixture: ComponentFixture<FlogoFlowTriggersPanelComponent>;
   let store: Store<FlowState>;
@@ -229,7 +216,6 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
       ],
       declarations: [FlogoFlowTriggersPanelComponent, TriggerBlockComponent, FlogoSelectTriggerComponent],
       providers: [
-        { provide: PostService, useValue: postServiceStub },
         { provide: Router, useClass: MockRouterService },
         { provide: FlogoProfileService, useClass: FlogoProfileServiceMock },
         { provide: RESTAPIContributionsService, useClass: MockActivityContribService },

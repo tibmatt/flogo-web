@@ -1,6 +1,5 @@
 import {
   cloneDeep,
-  each,
   filter as _filter,
   get,
   isEmpty,
@@ -15,11 +14,10 @@ import {
   LanguageService,
   Item,
 } from '@flogo/core';
+
 import { NotificationsService } from '@flogo/core/notifications';
-import { PostService } from '@flogo/core/services/post.service';
 
 import { FlowData } from './core';
-
 import { FlowMetadata } from './task-configurator/models/flow-metadata';
 
 import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
@@ -75,7 +73,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     disableReason?: string;
   };
 
-  _subscriptions: any[];
   _id: any;
 
   _isDiagramEdited: boolean;
@@ -94,7 +91,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   private ngOnDestroy$ = SingleEmissionSubject.create();
 
   constructor(public translate: LanguageService,
-              private _postService: PostService,
               private _flowService: FlowsService,
               private _restAPIHandlerService: RESTAPIHandlersService,
               private _restAPIAppsService: AppsApiService,
@@ -158,10 +154,6 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.ngOnDestroy$.emitAndComplete();
-    each(this._subscriptions, sub => {
-        this._postService.unsubscribe(sub);
-      }
-    );
   }
 
   deleteFlow() {

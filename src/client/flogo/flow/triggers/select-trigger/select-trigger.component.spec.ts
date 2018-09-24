@@ -5,7 +5,6 @@ import { TriggersApiService } from '@flogo/core/services';
 import { TriggersApiServiceMock } from '@flogo/core/services/restapi/v2/triggers-api.service.mock';
 import { FlogoSelectTriggerComponent } from './select-trigger.component';
 import { RESTAPIContributionsService } from '@flogo/core/services/restapi/v2/contributions.service';
-import { PostService } from '@flogo/core/services/post.service';
 import { HttpUtilsService } from '@flogo/core/services/restapi/http-utils.service';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
 import { FlogoProfileServiceMock } from '@flogo/core/services/profile.service.mock';
@@ -13,20 +12,6 @@ import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import {TriggersModule} from '@flogo/flow/triggers';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 
-const postServiceStub = {
-
-  subscribe(options: any) {
-    this.subscribeData = options;
-  },
-
-  publish(envelope: any) {
-    this.published = envelope;
-  },
-
-  unsubscribe(sub: any) {
-  }
-
-};
 
 describe('FlogoSelectTrigger component', () => {
   let comp: FlogoSelectTriggerComponent;
@@ -58,7 +43,6 @@ describe('FlogoSelectTrigger component', () => {
         TriggersModule,
       ],
       providers: [
-        { provide: PostService, useValue: postServiceStub },
         { provide: FlogoProfileService, useClass: FlogoProfileServiceMock },
         { provide: TriggersApiService, useClass: TriggersApiServiceMock },
         { provide: RESTAPIContributionsService },

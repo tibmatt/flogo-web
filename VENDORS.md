@@ -9,6 +9,10 @@ All notable changes to this project's dependencies will be documented in this fi
   - [dotenv@^6.0.0](https://github.com/motdotla/dotenv) [BSD-2-Clause]
   - [find-up@^3.0.0](https://github.com/sindresorhus/find-up) [MIT]
   - [npm-run-all@^4.1.3](https://github.com/mysticatea/npm-run-all) [MIT]
+  - [date-fns@2.0.0](https://github.com/date-fns/date-fns) [MIT]
+- **Removed**
+  - moment
+  - postal
 
 
 ### Development Dependencies
@@ -25,6 +29,11 @@ All notable changes to this project's dependencies will be documented in this fi
     - [npm-run-all@^4.1.3](https://github.com/mysticatea/npm-run-all) [MIT]
     - [nodemon@^1.18.4](https://github.com/remy/nodemon) [MIT]
   - ** Removed **
+    - @types/postal
+    - babel-cli
+    - babel-core
+    - babel-plugin-syntax-object-rest-spread
+    - babel-preset-env
     - gulp
     - gulp-babel
     - gulp-changed
@@ -38,10 +47,7 @@ All notable changes to this project's dependencies will be documented in this fi
     - gulp-uglify
     - run-sequence
     - vinyl-fs
-    - babel-cli
-    - babel-core
-    - babel-plugin-syntax-object-rest-spread
-    - babel-preset-env
+
 
 ## v0.5.6
 

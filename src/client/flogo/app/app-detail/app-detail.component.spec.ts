@@ -118,7 +118,7 @@ describe('FlogoApplicationDetailComponent component', () => {
 
   it('Should display creation date', () => {
     const creation = fixture.debugElement.query(By.css('.flogo-app-header__date--creation span'));
-    expect(creation.nativeElement.innerText).toEqual('a few seconds ago.');
+    expect(creation.nativeElement.innerText).toEqual('less than a minute ago.');
   });
 
 

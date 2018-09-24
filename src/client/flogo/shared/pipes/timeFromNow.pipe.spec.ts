@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TimeFromNowPipe } from './time-from-now.pipe';
@@ -17,33 +17,28 @@ class ContainerComponent {
 
 describe('Pipe: timeFromNow', () => {
   let fixture: ComponentFixture<ContainerComponent>;
-  let container: ContainerComponent;
+  let directiveHost: DebugElement;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [TimeFromNowPipe, ContainerComponent]
     });
+    fixture = TestBed.createComponent(ContainerComponent);
+    directiveHost = fixture.debugElement.query(By.css('span'));
+    fixture.detectChanges();
   });
 
-  it('The newly created component should be a recent one', done => {
-    fixture = TestBed.createComponent(ContainerComponent);
-    container = fixture.componentInstance;
-    fixture.detectChanges();
-    const de = fixture.debugElement.query(By.css('span'));
-    const elText = de.nativeElement.innerHTML;
-    expect(elText).toEqual('a few seconds ago');
-    done();
+  it('The newly created component should be a recent one', () => {
+    expect(directiveHost.nativeElement.innerHTML).toEqual('less than a minute ago');
   });
 
-  it('Changing the dateCreated should update the text', done => {
-    fixture = TestBed.createComponent(ContainerComponent);
-    container = fixture.componentInstance;
-    container.dateCreated.setHours(container.dateCreated.getHours() - 1);
+  it('When date changes the text should update', () => {
+    const container = fixture.componentInstance;
+    const anHourAgo = new Date(container.dateCreated.getTime());
+    anHourAgo.setHours(anHourAgo.getHours() - 1);
+    container.dateCreated = anHourAgo;
     fixture.detectChanges();
-    const de = fixture.debugElement.query(By.css('span'));
-    const elText = de.nativeElement.innerHTML;
-    expect(elText).toEqual('an hour ago');
-    done();
+    expect(directiveHost.nativeElement.innerHTML).toEqual('about 1 hour ago');
   });
 
 });

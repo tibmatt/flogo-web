@@ -1,9 +1,12 @@
-import { sortBy, snakeCase, clone } from 'lodash';
+import { sortBy, snakeCase } from 'lodash';
+import { differenceInSeconds } from 'date-fns';
 
 import {
   Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter,
 } from '@angular/core';
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
 import {LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER} from '@flogo/core';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { SanitizeService } from '@flogo/core/services/sanitize.service';
@@ -14,12 +17,13 @@ AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, Tri
 import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
 import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
 import { TriggerShimBuildComponent } from '../shim-trigger/shim-trigger.component';
-import { diffDates } from '../../shared/utils';
+
 import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
 import {ConfirmationResult} from '@flogo/core/confirmation';
 import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
-import {switchMap} from 'rxjs/operators';
+
 import { NotificationsService } from '@flogo/core/notifications';
+
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
@@ -319,7 +323,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     this.isNameInEditMode = false;
     this.isNewApp = !this.application.updatedAt;
     if (this.isNewApp) {
-      const secondsSinceCreation = diffDates(Date.now(), this.application.createdAt, 'seconds');
+      const secondsSinceCreation = differenceInSeconds(Date.now(), this.application.createdAt);
       this.isNewApp = secondsSinceCreation <= MAX_SECONDS_TO_ASK_APP_NAME;
       this.isNameInEditMode = this.isNewApp;
     }
