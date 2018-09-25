@@ -24,6 +24,7 @@
                                   (mouseout)="onMouseOutBackControl()">{{flowState?.app?.name}}</span>
           </div>
           <p class="flow-detail-description" [(fgContentEditable)]="flowState.description"
+             [allowNewLines]="true"
              placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
              (fgContentEditableChange)="changeFlowDetail($event, 'descrption')"></p>
         </div>

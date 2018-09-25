@@ -16,8 +16,7 @@
   flex: 1;
   flex-direction: column;
   width: 100%;
-
-  transition: width .5s;
+  max-width: 100%;
 }
 
 .diagram-container {
@@ -55,8 +54,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: flex;
-  align-items: center;
 }
 
 .flogo-flow-detail-menu-container {
@@ -100,7 +97,6 @@
 }
 
 .flow-detail-description {
-  width: 100%;
   color: @warm-grey;
   padding: 0 10px;
   margin: 0 0 7px;
@@ -108,6 +104,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 12px;
+  display: inline-block;
+  min-width: 2rem;
+  max-width: 100%;
 }
 
 .flogo-flow-detail-header {
@@ -139,6 +138,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    // avoid last character is cut because italics + hidden overflow
+    padding-right: 0.2em;
   }
 
   &.--hover {
