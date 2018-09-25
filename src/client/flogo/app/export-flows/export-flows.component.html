@@ -1,14 +1,14 @@
-<div  class="flogo-export-flow-modal" [@exportFlowsDialog]>
-  <i class="flogo-icon-close flogo-export-flow-close" (click)="control.cancel()"></i>
-  <div *ngIf="data.flows?.length === 0" class="content-empty__message">No Flows to Export</div>
-  <div *ngIf="data.flows?.length > 0">
+<div  class="flogo-export-flow-modal">
+  <i class="flogo-icon-close flogo-export-flow-close" (click)="control.close()"></i>
+  <div *ngIf="exportFlowsData.flows?.length === 0" class="content-empty__message">No Flows to Export</div>
+  <div *ngIf="exportFlowsData.flows?.length > 0">
     <form novalidate>
       <div class="flogo-export-flow-header">{{ 'FLOWS:EXPORT-FLOWS' | translate }}</div>
       <div class="flogo-select-flow-link">
         <a class="js-btn-select-all" (click)="selectAllFlows()">Select All</a> <span class="flogo-select-separator">|</span>
         <a id="unselectAll" (click)="unselectAllFlows()">Unselect All</a></div>
         <div class="export-flow-container">
-          <div *ngFor="let flow of data.flows; let index = index" class="flogo-export-flow-list-item"
+          <div *ngFor="let flow of exportFlowsData.flows; let index = index" class="flogo-export-flow-list-item"
                [ngClass]="{'flogo-export-flow-selected': checkAllFlows.indexOf(index) != -1}">
             <div class="checkbox flogo-checkbox flogo-checkbox-primary">
               <input id="flowCheckbox_{{index}}" type="checkbox" [checked]="checkAllFlows.indexOf(index) != -1"
@@ -23,7 +23,7 @@
           </div>
         </div>
       <div class="flogo-export-flow-footer">
-        <button type="button" class="flogo-button--secondary flogo-flows-add-cancel" (click)="control.cancel()">{{
+        <button type="button" class="flogo-button--secondary flogo-flows-add-cancel" (click)="control.close()">{{
           'DETAILS:EXPORT-CANCEL' | translate }}
         </button>
         <button type="submit" class="js-btn-export flogo-button--default" [fgJsonDownloader]="exportFlows()"

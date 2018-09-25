@@ -15,10 +15,10 @@ import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
 import {FlogoNewFlowComponent} from './new-flow/new-flow.component';
 import {TriggerShimBuildComponent} from './shim-trigger/shim-trigger.component';
 import { AppRoutingModule } from './app-routing.module';
-import {ConfirmationService} from '@flogo/core/confirmation/confirmation.service';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {PortalModule} from '@angular/cdk/portal';
 import {ScrollDispatchModule} from '@angular/cdk/scrolling';
+import {ModalService} from '@flogo/core/modal/modal.service';
 
 @NgModule({
   imports: [
@@ -46,7 +46,7 @@ import {ScrollDispatchModule} from '@angular/cdk/scrolling';
   bootstrap: [],
   providers: [
     AppDetailService,
-    ConfirmationService
+    ModalService
   ],
   entryComponents: [
     FlogoExportFlowsComponent

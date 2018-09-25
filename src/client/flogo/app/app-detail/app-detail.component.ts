@@ -7,7 +7,7 @@ import {
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import {LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER, ConfirmationService} from '@flogo/core';
+import {LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER} from '@flogo/core';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { SanitizeService } from '@flogo/core/services/sanitize.service';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
@@ -15,7 +15,10 @@ import {
 AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
 } from '../core';
 import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
-import { EXPORT_FLOW_MODAL_TOKEN, FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
+import {
+  ExportFlowsData,
+  FlogoExportFlowsComponent
+} from '../export-flows/export-flows.component';
 import { TriggerShimBuildComponent } from '../shim-trigger/shim-trigger.component';
 
 import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
@@ -23,6 +26,7 @@ import {ConfirmationResult} from '@flogo/core/confirmation';
 import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
 
 import { NotificationsService } from '@flogo/core/notifications';
+import {ModalService} from '@flogo/core/modal/modal.service';
 
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
@@ -85,7 +89,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
               private contributionService: RESTAPIContributionsService,
               private shimTriggersApiService: ShimTriggerBuildApiService,
               private notificationsService: NotificationsService,
-              private confirmationService: ConfirmationService
+              private modalService: ModalService
   ) {
   }
 
@@ -180,9 +184,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   openExportFlow() {
     const flows = this.application.actions;
     const isLegacyExport = this.application.profileType === FLOGO_PROFILE_TYPE.DEVICE;
-    const data = new WeakMap<any, any>();
-    data.set(EXPORT_FLOW_MODAL_TOKEN, {flows, isLegacyExport});
-    return this.confirmationService.openModal(FlogoExportFlowsComponent, data);
+    return this.modalService.openModal<ExportFlowsData>(FlogoExportFlowsComponent, {flows, isLegacyExport});
   }
 
   onNameSave() {
