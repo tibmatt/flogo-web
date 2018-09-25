@@ -1,20 +1,6 @@
-import path from 'path';
-import npm from 'npm';
 import _ from 'lodash';
-import fs from 'fs';
-import {DatabaseService} from '../../common/database.service';
-import { fileExists, readDirectoriesSync} from '../../common/utils';
-import {config} from '../../config/app-config';
-import { DEFAULT_SCHEMA_ROOT_FOLDER_NAME } from '../../common/constants';
 import { logger } from '../../common/logging';
 
-const execSync = require('child_process').execSync;
-
-// default options
-const defaultOptions = {
-  path: 'modules/base-registered',
-  jsonTplName: 'package.tpl.json',
-};
 
 /**
  * Base class of registered

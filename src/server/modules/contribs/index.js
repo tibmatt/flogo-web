@@ -2,7 +2,7 @@ import pick from 'lodash/pick';
 
 import { contribs as contribsDb  } from '../../common/db';
 import { normalizeContribSchema } from '../../common/contrib-schema-normalize';
-import { RemoteInstallerContrib } from './../remote-installer-contrib';
+import { RemoteInstallerContrib } from '../contrib-installer/device';
 import { Validator } from './../apps/validator';
 
 const EDITABLE_FIELDS_CREATION = [

@@ -1,8 +1,6 @@
-import _ from 'lodash';
-import path from 'path';
 import { fromUrl } from 'hosted-git-info';
 import * as URL  from 'url';
-import { getRemoteFileContent  } from '../../common/utils';
+import { getRemoteFileContent  } from '../../../common/utils';
 
 
 export class RemoteInstallerContrib {

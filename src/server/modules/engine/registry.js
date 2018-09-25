@@ -43,17 +43,16 @@ export function getInitializedEngine(enginePath, opts = {}) {
  * Gets initialized ContributionInstallController instance and setup the controller's Engine and
  * RemoteInstaller instances which are used for installing a contribution
  * @param enginePath {string} name/path of the engine
- * @param remoteInstaller {object}
- * @param remoteInstaller.opts {object} to maintain the options for remote installer to install contribution in engine
+ * @param installContribution {Function}
  * @returns {*} Instance of  ContribInstallController
  */
-export function getContribInstallationController(enginePath, remoteInstaller ) {
+export function getContribInstallationController(enginePath, installContribution ) {
   return getInitializedEngine(enginePath)
     .then(engine => {
       if (!engineRegistry[CONTRIB_INSTALLER]) {
         engineRegistry[CONTRIB_INSTALLER] = new ContribInstallController();
       }
-      return engineRegistry[CONTRIB_INSTALLER].setupController(engine, remoteInstaller);
+      return engineRegistry[CONTRIB_INSTALLER].setupController(engine, installContribution);
     });
 }
 
