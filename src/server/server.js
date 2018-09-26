@@ -53,10 +53,6 @@ export default ensureDefaultDirs()
     logger.info('Won\'t start websocket service');
     return null;
   })
-  // .then(() => flowsDBService
-  //   .verifyInitialDataLoad(path.resolve('db-init/installed-flows.init'))
-  //   .then(() => installDefaults())
-  //   .then(() => installSamples()))
   .then(() => {
     console.log('flogo-web::server::ready');
     showBanner();

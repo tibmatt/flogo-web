@@ -8,31 +8,6 @@ export const EXPORT_MODE = {
   FORMAT_FLOWS: 'flows'
 };
 
-export const FLOGO_FLOW_DIAGRAM_NODE_TYPE = {
-  0: "NODE_PADDING",
-  1: "NODE_HOLDER",
-  2: "NODE_ADD",
-  3: "NODE_ROOT",
-  4: "NODE_ROOT_NEW",
-  5: "NODE",
-  6: "NODE_BRANCH",
-  7: "NODE_LINK",
-  8: "NODE_SUB_PROC",
-  9: "NODE_LOOP",
-  10: "NODE_ROOT_ERROR_NEW",
-  "NODE_PADDING": 0,   // padding node
-  "NODE_HOLDER": 1,    // placeholder node
-  "NODE_ADD": 2,       // node to add an activity
-  "NODE_ROOT": 3,      // the trigger node
-  "NODE_ROOT_NEW": 4,  // node to add a trigger
-  "NODE": 5,           // activity node
-  "NODE_BRANCH": 6,    // the branch line node
-  "NODE_LINK": 7,      // the link node
-  "NODE_SUB_PROC": 8,  // activity with sub flow
-  "NODE_LOOP": 9,       // repeatable activity
-  "NODE_ROOT_ERROR_NEW":10
-};
-
 export const FLOGO_PROFILE_TYPES = {
   0: "MICRO_SERVICE",
   1: "DEVICE",
@@ -51,11 +26,6 @@ export const FLOGO_TASK_TYPE = {
   "TASK_ITERATOR": 2,
   "TASK_BRANCH": 3,
   "TASK_SUB_PROC": 4,
-};
-
-export const FLOGO_PROCESS_TYPE = {
-  1: "DEFAULT",
-  "DEFAULT": 1
 };
 
 export const FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE = {
@@ -134,15 +104,6 @@ export const TYPE_TRIGGER = 'trigger';
 export const TYPE_ACTIVITY = 'activity';
 export const TYPE_UNKNOWN = 'unknown';
 
-export const SCHEMA_FILE_NAME_TRIGGER = 'trigger.json';
-export const SCHEMA_FILE_NAME_ACTIVITY = 'activity.json';
-
-export const DEFAULT_PATH_TRIGGER = 'packages/triggers';
-export const DEFAULT_PATH_ACTIVITY = 'packages/activities';
-
-export const DEFAULT_SCHEMA_ROOT_FOLDER_NAME = 'ui';
-
-export const DEFAULT_APP_ID = 'DEFAULT-APP';
 export const DEFAULT_APP_VERSION = '0.0.1';
 export const DEFAULT_APP_TYPE = 'flogo:app';
 

@@ -1,16 +1,7 @@
-import path from 'path';
 import fs from 'fs';
 import fse from 'fs-extra';
 
 import { isJSON } from '../utils';
-
-export function isDirectory(testedPath) {
-  if (fileExists(testedPath)) {
-    const stats = fs.statSync(testedPath);
-    return stats.isDirectory();
-  }
-  return undefined;
-}
 
 export function asyncIsDirectory(file) {
   return new Promise((resolve, reject) => {
@@ -29,36 +20,6 @@ export function asyncIsDirectory(file) {
       }
       return Promise.reject(err);
     });
-}
-
-export function readDirectoriesSync(dirPath) {
-  const dirs = fs.readdirSync(dirPath);
-  const nDirs = [];
-  dirs.forEach(dir => {
-    if (isDirectory(path.join(dirPath, dir))) {
-      nDirs.push(dir);
-    }
-  });
-  return nDirs;
-}
-
-/**
- * Read a JSON file
- * @param  {string|Path} jSONPath - the path of JSON file
- * @return {object|undefined} if it is a valid and exist json, return json, otherwise return undefined
- */
-export function readJSONFileSync(JSONPath) {
-  let data;
-  if (fileExists(JSONPath)) {
-    data = fs.readFileSync(JSONPath, {
-      encoding: 'utf8',
-    });
-    data = isJSON(data);
-  } else {
-    console.error("[error][utils.js->readJSONFileSync] path doesn't exist. path: ", JSONPath);
-  }
-
-  return data;
 }
 
 /**
@@ -81,24 +42,6 @@ export function readJSONFile(JSONPath) {
       throw new Error(`Path [${JSONPath}] doesn't exist.`);
     }
   });
-}
-
-/**
- * write a JSON file
- * @param {string|Path} JSONPath - the path of JSON file
- * @param {object} data - the JSON data you want to write
- * @return {boolean} if write successful, return true, otherwise return false
- */
-export function writeJSONFileSync(JSONPath, data) {
-  try {
-    fs.writeFileSync(JSONPath, JSON.stringify(data, null, 2), {
-      encoding: 'utf8',
-    });
-    return true;
-  } catch (err) {
-    console.error('[error][utils.js->writeJSONFileSync] err: ', err);
-    return false;
-  }
 }
 
 /**

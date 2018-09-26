@@ -7,7 +7,7 @@ import escapeRegExp from 'lodash/escapeRegExp';
 
 import shortid from 'shortid';
 
-import { DEFAULT_APP_ID, DEFAULT_APP_VERSION, FLOGO_PROFILE_TYPES, FLOGO_TASK_TYPE, EXPORT_MODE } from '../../common/constants';
+import { FLOGO_PROFILE_TYPES, FLOGO_TASK_TYPE, EXPORT_MODE } from '../../common/constants';
 import { ErrorManager, ERROR_TYPES as GENERAL_ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
@@ -43,13 +43,6 @@ const PUBLISH_FIELDS = [
   'triggers',
   'actions'
 ];
-
-const DEFAULT_APP = {
-  _id: DEFAULT_APP_ID,
-  name: 'Default app',
-  description: 'App created by default',
-  version: DEFAULT_APP_VERSION,
-};
 
 export class AppsManager {
 
