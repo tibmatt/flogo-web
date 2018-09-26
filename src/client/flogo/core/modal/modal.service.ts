@@ -1,7 +1,7 @@
 import {Injectable, InjectionToken, Injector} from '@angular/core';
 import {ComponentType, Overlay, OverlayConfig, OverlayRef} from '@angular/cdk/overlay';
 import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
-import {ModalControl} from '@flogo/core/modal/modal-control';
+import {ModalControl} from './modal-control';
 
 export const MODAL_TOKEN = new InjectionToken<any>('flogo/core/modal-token');
 

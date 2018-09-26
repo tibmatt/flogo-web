@@ -26,7 +26,7 @@ import {ConfirmationResult} from '@flogo/core/confirmation';
 import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
 
 import { NotificationsService } from '@flogo/core/notifications';
-import {ModalService} from '@flogo/core/modal/modal.service';
+import {ModalService} from '@flogo/core/modal';
 
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
