@@ -1,4 +1,4 @@
-import { AppsManager } from '../../../modules/apps/index.v2';
+import { AppsManager } from '../../../modules/apps';
 import { buildHandler } from '../shared/build-handler';
 import { getNameForAppBinary } from '../shared/name-for-app-binary';
 

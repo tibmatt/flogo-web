@@ -1,4 +1,4 @@
-import { AppsManager } from '../../modules/apps/index.v2';
+import { AppsManager } from '../../modules/apps';
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
 import { exportApp } from './apps/export';
 import { buildEnpoint } from './apps/build';
