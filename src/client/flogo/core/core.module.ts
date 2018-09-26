@@ -32,6 +32,7 @@ import {ConfirmationService} from '@flogo/core/confirmation/confirmation.service
 import {OverlayModule} from '@angular/cdk/overlay';
 import {ConfirmationModalService} from './confirmation/confirmation-modal/confirmation-modal.service';
 import { NotificationsModule } from './notifications';
+import {ModalService} from '@flogo/core/modal/modal.service';
 
 @NgModule({
   imports: [
@@ -69,7 +70,8 @@ import { NotificationsModule } from './notifications';
     SvgRefFixerService,
     FileDownloaderService,
     ConfirmationService,
-    ConfirmationModalService
+    ConfirmationModalService,
+    ModalService
   ],
   declarations: [
     FlogoNavbarComponent,

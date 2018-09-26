@@ -189,7 +189,6 @@
                                    (deleteFlow)="onFlowDelete($event)"
                                    (addFlow)="openCreateFlowFromTrigger($event)"></flogo-apps-flows-flow-group>
     </div>
-    <flogo-export-flow #exportFlowModal [flows]="application?.actions" [isLegacyExport]="application?.profileType == PROFILE_TYPES.DEVICE"></flogo-export-flow>
 <flogo-trigger-shim-build #shimTriggersModal [shimTriggersList]="shimTriggersList" [buildOptions]="buildOptions" (triggerSelected)="onShimTriggerSelection($event)"></flogo-trigger-shim-build>
   </div>
 </div>

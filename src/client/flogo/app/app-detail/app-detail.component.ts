@@ -2,7 +2,7 @@ import { sortBy, snakeCase } from 'lodash';
 import { differenceInSeconds } from 'date-fns';
 
 import {
-  Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter,
+  Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter, InjectionToken,
 } from '@angular/core';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -15,7 +15,10 @@ import {
 AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
 } from '../core';
 import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
-import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
+import {
+  ExportFlowsData,
+  FlogoExportFlowsComponent
+} from '../export-flows/export-flows.component';
 import { TriggerShimBuildComponent } from '../shim-trigger/shim-trigger.component';
 
 import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
@@ -23,6 +26,7 @@ import {ConfirmationResult} from '@flogo/core/confirmation';
 import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
 
 import { NotificationsService } from '@flogo/core/notifications';
+import {ModalService} from '@flogo/core/modal';
 
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
@@ -34,7 +38,6 @@ const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 })
 export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   @ViewChild(FlogoNewFlowComponent) addFlow: FlogoNewFlowComponent;
-  @ViewChild('exportFlowModal') exportFlow: FlogoExportFlowsComponent;
   @ViewChild('shimTriggersModal') shimTriggersBuild: TriggerShimBuildComponent;
   @Input() appDetail: ApplicationDetail;
 
@@ -86,6 +89,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
               private contributionService: RESTAPIContributionsService,
               private shimTriggersApiService: ShimTriggerBuildApiService,
               private notificationsService: NotificationsService,
+              private modalService: ModalService
   ) {
   }
 
@@ -178,7 +182,9 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   openExportFlow() {
-    this.exportFlow.openExport();
+    const flows = this.application.actions;
+    const isLegacyExport = this.application.profileType === FLOGO_PROFILE_TYPE.DEVICE;
+    return this.modalService.openModal<ExportFlowsData>(FlogoExportFlowsComponent, {flows, isLegacyExport});
   }
 
   onNameSave() {

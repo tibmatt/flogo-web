@@ -15,6 +15,10 @@ import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
 import {FlogoNewFlowComponent} from './new-flow/new-flow.component';
 import {TriggerShimBuildComponent} from './shim-trigger/shim-trigger.component';
 import { AppRoutingModule } from './app-routing.module';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {PortalModule} from '@angular/cdk/portal';
+import {ScrollDispatchModule} from '@angular/cdk/scrolling';
+import {ModalService} from '@flogo/core/modal/modal.service';
 
 @NgModule({
   imports: [
@@ -24,6 +28,9 @@ import { AppRoutingModule } from './app-routing.module';
     FlogoSharedModule,
     RouterModule,
     AppRoutingModule,
+    OverlayModule,
+    PortalModule,
+    ScrollDispatchModule
   ],
   declarations: [
     FlogoApplicationDetailComponent,
@@ -38,7 +45,11 @@ import { AppRoutingModule } from './app-routing.module';
   ],
   bootstrap: [],
   providers: [
-    AppDetailService
+    AppDetailService,
+    ModalService
+  ],
+  entryComponents: [
+    FlogoExportFlowsComponent
   ]
 })
 export class FlogoApplicationModule {

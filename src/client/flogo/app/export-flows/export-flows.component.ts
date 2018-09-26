@@ -1,52 +1,49 @@
-import { Component, Input, ViewChild } from '@angular/core';
-import { BsModalComponent } from 'ng2-bs3-modal';
-import { ERROR_CODE, FlowSummary } from '@flogo/core';
-import { AppDetailService } from '@flogo/app/core/apps.service';
-import { NotificationsService } from '@flogo/core/notifications';
+import {Component, HostBinding, Inject} from '@angular/core';
+import {Action, ERROR_CODE} from '@flogo/core';
+import {AppDetailService} from '@flogo/app/core/apps.service';
+import {NotificationsService} from '@flogo/core/notifications';
+import {MODAL_TOKEN, ModalContent, modalAnimate, ModalControl} from '@flogo/core/modal';
+
+export interface ExportFlowsData {
+  flows: Array<Action>;
+  isLegacyExport: boolean;
+}
 
 @Component({
   selector: 'flogo-export-flow',
   templateUrl: 'export-flows.component.html',
-  styleUrls: ['export-flows.component.less']
+  styleUrls: ['export-flows.component.less'],
+  animations: modalAnimate,
 })
-export class FlogoExportFlowsComponent {
-  @ViewChild('modal')
-  modal: BsModalComponent;
-  @Input()
-  flows: Array<FlowSummary> = [];
-  @Input()
-  isLegacyExport = false;
+export class FlogoExportFlowsComponent implements ModalContent {
+  @HostBinding('@modalAnimate')
   checkedFlows = [];
   checkAllFlows = [];
 
   constructor(
+    @Inject(MODAL_TOKEN) public exportFlowsData: ExportFlowsData, public control: ModalControl,
     private appDetailService: AppDetailService,
     private notificationsService: NotificationsService
   ) {
-  }
-
-  public openExport() {
     this.resetForm();
-    this.modal.open();
     this.selectAllFlows();
   }
 
-  public closeExport() {
-    this.modal.close();
-  }
 
   public selectAllFlows() {
     this.checkedFlows = [];
     this.checkAllFlows = [];
-    this.flows.forEach((flow, index) => {
+    this.exportFlowsData.flows.forEach((flow, index) => {
       this.checkAllFlows.push(index);
       this.checkedFlows.push(flow.id);
     });
   }
+
   public unselectAllFlows() {
     this.checkedFlows = [];
     this.checkAllFlows = [];
   }
+
   public flowSelect(flowId: string, isChecked: boolean, index) {
     if (isChecked) {
       this.checkedFlows.push(flowId);
@@ -61,24 +58,24 @@ export class FlogoExportFlowsComponent {
 
   public exportFlows() {
     let flowsToExport;
-    if (this.checkedFlows.length === this.flows.length) {
+    if (this.checkedFlows.length === this.exportFlowsData.flows.length) {
       flowsToExport = [];
     } else {
       flowsToExport = this.checkedFlows;
     }
-    return () => this.appDetailService.exportFlow(flowsToExport, this.isLegacyExport)
+    return () => this.appDetailService.exportFlow(flowsToExport, this.exportFlowsData.isLegacyExport)
       .then(appWithFlows => {
-        this.closeExport();
+        this.control.close('Flows Exported');
         return [{
           fileName: 'flows.json',
           data: appWithFlows
         }];
       }).catch(errRsp => {
         if (errRsp && errRsp.errors && errRsp.errors[0] && errRsp.errors[0].code === ERROR_CODE.HAS_SUBFLOW) {
-          this.notificationsService.error({ key: 'DETAILS-EXPORT:CANNOT-EXPORT' });
+          this.notificationsService.error({key: 'DETAILS-EXPORT:CANNOT-EXPORT'});
         } else {
           console.error(errRsp.errors);
-          this.notificationsService.error({ key: 'DETAILS-EXPORT:ERROR_UNKNOWN' });
+          this.notificationsService.error({key: 'DETAILS-EXPORT:ERROR_UNKNOWN'});
         }
       });
   }
