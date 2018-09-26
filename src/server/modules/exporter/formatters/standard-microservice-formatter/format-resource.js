@@ -1,5 +1,4 @@
 import isEmpty from 'lodash/isEmpty';
-import { portAndFormatMappings } from './port-and-format-mappings';
 
 export function formatResource(fromAction, taskLinkGroup) {
   const formattedMetadata = formatMetadata(fromAction.metadata);
