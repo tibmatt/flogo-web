@@ -95,7 +95,7 @@ function* installContribution(next) {
   );
 
   const result = yield installController.install(url);
-  this.body = { data: result };
+  this.body = { data: { ...result, originalUrl: url } };
 
   yield next;
 }

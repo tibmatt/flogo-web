@@ -8,7 +8,9 @@ export async function install(contribUrl: string, contribType: 'activity' | 'tri
   if (installer.hasContrib(packageUri)) {
      await installer.remove(packageUri);
   }
-  return installer.install(packageUri, {version: 'latest'});
+  return installer
+    .install(packageUri, {version: 'latest'})
+    .then(details => ({ ref: packageUri, details }));
 }
 
 function makeInstaller(engine: Engine, contribType: string) {
