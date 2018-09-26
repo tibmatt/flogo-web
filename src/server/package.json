@@ -8,16 +8,15 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon",
-    "start-server": "babel-node --extensions '.js,.ts' server.js",
-    "start-debug": "babel-node server.js",
-    "start-prod-server": "babel-node server.js",
-    "test": "mocha --require setup-tests.js --preserve-symlinks './{,!(node_modules)/**/}*.spec.{js,ts}'",
-    "test:watch": "mocha --watch ---require setup-tests.js --watch-extensions json --preserve-symlinks './{,!(node_modules)/**/}*.spec.{js,ts}'",
+    "start-server": "babel-node --extensions \".js,.ts\" server.js",
+    "start-prod-server": "babel-node --extensions \".js,.ts\" server.js",
+    "test": "mocha --require setup-tests.js --preserve-symlinks \"./{,!(node_modules)/**/}*.spec.{js,ts}\"",
+    "test:watch": "mocha --watch ---require setup-tests.js --watch-extensions json --preserve-symlinks \"./{,!(node_modules)/**/}*.spec.{js,ts}\"",
     "test:api": "mocha",
-    "serve": "babel-node --extensions '.js,.ts' server.js",
+    "serve": "babel-node --extensions \".js,.ts\" server.js",
     "build": "node scripts/build",
-    "configure-engines": "babel-node --extensions '.js,.ts' configure-engines.js",
-    "build:transpile": "babel --extensions '.js,.ts' --ignore '**/tests/**,**/node_modules/**,*.spec.{js,ts}' ."
+    "configure-engines": "babel-node --extensions \".js,.ts\" configure-engines.js",
+    "build:transpile": "babel --extensions \".js,.ts\" --ignore \"**/tests/**,**/node_modules/**,*.spec.{js,ts}\" ."
   },
   "author": "TIBCO Software Inc.",
   "devDependencies": {
