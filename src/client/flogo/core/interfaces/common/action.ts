@@ -13,7 +13,10 @@ export interface Action extends ActionBase {
   appId?: string;
   triggers?: any[];
   updatedAt: string;
-  data: {
-    flow?: flow.Flow
+  tasks: flow.Task[];
+  links: flow.Link[];
+  errorHandler?: {
+    tasks: flow.Task[];
+    links: flow.Link[];
   };
 }

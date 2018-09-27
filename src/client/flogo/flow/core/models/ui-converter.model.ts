@@ -91,22 +91,18 @@ export abstract class AbstractModelConverter {
   }
 
   processFlowObj(flowJSON, installedContribs) {
-    const flowData = flowJSON.data.flow;
     const flowInfo = this.getFlowInformation(flowJSON);
 
     // const mainFlowParts = this.getFlowParts(installedContribs, tasks, links);
 
-    const tasks = get(flowData, 'rootTask.tasks', []);
-    const links = get(flowData, 'rootTask.links', []);
+    const tasks = (flowJSON && flowJSON.tasks) ||  [];
+    const links = (flowJSON && flowJSON.links) ||  [];
     const branchIdGenerator = () => uniqueId('::branch::');
 
     const mainComponents = makeGraphAndItems(tasks, links, installedContribs, branchIdGenerator);
-    const errorHandlerComponents = makeGraphAndItems(
-      get(flowData, 'errorHandlerTask.tasks', []),
-      get(flowData, 'errorHandlerTask.links', []),
-      installedContribs,
-      branchIdGenerator,
-    );
+    const errorHandlerTasks = (flowJSON && flowJSON.errorHandler && flowJSON.errorHandler.tasks) || [];
+    const errorHandlerLinks = (flowJSON && flowJSON.errorHandler && flowJSON.errorHandler.links) || [];
+    const errorHandlerComponents = makeGraphAndItems(errorHandlerTasks, errorHandlerLinks, installedContribs, branchIdGenerator);
 
     return {
       ...this.makeFlow(flowInfo, installedContribs),

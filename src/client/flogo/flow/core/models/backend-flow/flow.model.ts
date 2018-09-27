@@ -24,8 +24,67 @@ import {
   ActivitySchema,
   ItemActivityTask,
   ItemBranch,
-  ItemTask, FlowGraph, GraphNode, NodeType,
+  ItemTask,
+  FlowGraph,
+  GraphNode,
+  NodeType, Action,
 } from '@flogo/core';
+
+/**
+ * Convert the action to server model
+ */
+export function savableFlow(inFlow: UiFlow): Action {
+  const DEBUG = false;
+  const INFO = true;
+
+  // TODO
+  //  task link should only be unique within a flow, hence
+  //  for the moment, using the linkCounter to keep increasing the
+  //  link number within a session is fine.
+  let linkIDCounter = 0;
+  const _genLinkID = () => ++linkIDCounter;
+
+  const flowJSON = <Action>{};
+  /* validate the required fields */
+
+  const flowID = inFlow.id;
+
+  if (isEmpty(flowID)) {
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.error('No id in the given flow');
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.log(inFlow);
+    return flowJSON;
+  }
+
+  const flowPath = inFlow.mainGraph;
+  const errorPath: FlowGraph = inFlow.errorGraph;
+  const flowPathRoot = flowPath.rootId;
+  const flowPathNodes = flowPath.nodes;
+  const errorPathRoot = errorPath.rootId;
+  const errorPathNodes = errorPath.nodes;
+  const isMainFlowEmpty = isEmpty(flowPath) || !flowPathRoot || isEmpty(flowPathNodes);
+  const isErrorFlowEmpty = isEmpty(errorPath) || !errorPathRoot || isEmpty(errorPathNodes);
+
+  flowJSON.id = flowID;
+  flowJSON.name = inFlow.name || '';
+  flowJSON.description = inFlow.description || '';
+  flowJSON.metadata = _parseMetadata(inFlow.metadata || {
+    input: [],
+    output: [],
+  });
+
+  if (isMainFlowEmpty && isErrorFlowEmpty) {
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.warn('Invalid path information in the given flow');
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.log(inFlow);
+    return flowJSON;
+  }
+
+  return flowJSON;
+}
+
 /**
  * Convert the flow to flow.json
  *
@@ -74,28 +133,6 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
     input: [],
     output: [],
   });
-
-  function _parseMetadata(metadata: FlowMetadata): FlowMetadata {
-    const flowMetadata: FlowMetadata = {
-      input: [],
-      output: []
-    };
-    flowMetadata.input = metadata.input.map(input => {
-      const inputMetadata: MetadataAttribute = {
-        name: input.name,
-        type: input.type || ValueType.String,
-      };
-      if (!isUndefined(input.value)) {
-        inputMetadata.value = input.value;
-      }
-      return inputMetadata;
-    });
-    flowMetadata.output = metadata.output.map(output => ({
-      name: output.name,
-      type: output.type || ValueType.String,
-    }));
-    return flowMetadata;
-  }
 
   if (isMainFlowEmpty && isErrorFlowEmpty) {
     /* tslint:disable-next-line:no-unused-expression */
@@ -429,6 +466,28 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
   }
 
   return flowJSON;
+}
+
+function _parseMetadata(metadata: FlowMetadata): FlowMetadata {
+  const flowMetadata: FlowMetadata = {
+    input: [],
+    output: []
+  };
+  flowMetadata.input = metadata.input.map(input => {
+    const inputMetadata: MetadataAttribute = {
+      name: input.name,
+      type: input.type || ValueType.String,
+    };
+    if (!isUndefined(input.value)) {
+      inputMetadata.value = input.value;
+    }
+    return inputMetadata;
+  });
+  flowMetadata.output = metadata.output.map(output => ({
+    name: output.name,
+    type: output.type || ValueType.String,
+  }));
+  return flowMetadata;
 }
 
 export function _parseFlowMappings(inMappings: any[] = []): flowToJSON_Mapping[] {

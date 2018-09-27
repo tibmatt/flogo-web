@@ -73,7 +73,8 @@ describe('Component: FlowsListComponent', () => {
         'id': 'flow_1',
         'createdAt': '2018-01-25T09:50:29.664Z',
         'updatedAt': '2018-01-25T09:55:11.088Z',
-        data: {},
+        'tasks': [],
+        'links': []
       },
       {
         'name': 'test flow',
@@ -81,7 +82,8 @@ describe('Component: FlowsListComponent', () => {
         'id': 'flow_2',
         'createdAt': '2018-01-25T09:50:29.664Z',
         'updatedAt': '2018-01-25T09:55:11.088Z',
-        data: {},
+        'tasks': [],
+        'links': []
       },
       {
         'name': 'flow something',
@@ -89,7 +91,8 @@ describe('Component: FlowsListComponent', () => {
         'id': 'flow_3',
         'createdAt': '2018-01-25T09:50:29.664Z',
         'updatedAt': '2018-01-25T09:55:11.088Z',
-        data: {},
+        'tasks': [],
+        'links': []
       }
     ];
   }

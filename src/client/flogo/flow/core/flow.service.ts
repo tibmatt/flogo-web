@@ -1,13 +1,13 @@
-import { get, uniq, fromPairs, isEqual, omit } from 'lodash';
+import { uniq, fromPairs, isEqual, omit } from 'lodash';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { of as observableOfValue } from 'rxjs';
 
-import { Action, Dictionary, LegacyFlowWrapper, UiFlow } from '@flogo/core';
+import { Action, Dictionary, UiFlow } from '@flogo/core';
 import { APIFlowsService } from '@flogo/core/services/restapi/v2/flows-api.service';
 import { FlowsService } from '@flogo/core/services/flows.service';
 import { isSubflowTask } from '@flogo/shared/utils';
-import { flogoFlowToJSON } from './models/backend-flow/flow.model';
+import {savableFlow} from './models/backend-flow/flow.model';
 
 import { UIModelConverterService } from './ui-model-converter.service';
 import { FlogoFlowDetails } from './models/flow-details.model';
@@ -31,7 +31,7 @@ function normalizeTriggersAndHandlersForAction(actionId: string, originalTrigger
 @Injectable()
 export class FlogoFlowService {
   public currentFlowDetails: FlogoFlowDetails;
-  private previousSavedFlow: LegacyFlowWrapper = null;
+  private previousSavedFlow: Action = null;
 
   constructor(private _flowAPIService: APIFlowsService,
               private _converterService: UIModelConverterService,
@@ -43,9 +43,9 @@ export class FlogoFlowService {
     this.previousSavedFlow = null;
     return this._flowAPIService.getFlow(flowId)
       .then((flow: Action): PromiseLike<[Action, Action[]]> => {
-        const subFlowTasks = get(flow, 'data.flow.rootTask.tasks', [])
-          .concat(get(flow, 'data.flow.errorHandlerTask.tasks', []))
-          .filter(t => isSubflowTask(t.type));
+        const allTasks = ((flow && flow.tasks) || [])
+          .concat(((flow && flow.errorHandler && flow.errorHandler.tasks) || []));
+        const subFlowTasks = allTasks.filter(t => isSubflowTask(t.type));
         const flowIdsToFetch = uniq<string>(subFlowTasks.map(t => (t.settings || {}).flowPath));
         if (flowIdsToFetch.length > 0) {
           return Promise.all([flow, this._flowAPIService.getSubFlows(flow.appId, flowIdsToFetch)]);
@@ -64,7 +64,7 @@ export class FlogoFlowService {
         this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
         return this._converterService.getWebFlowModel(flowDiagramDetails, linkedSubflows)
           .then(convertedFlow => {
-            this.previousSavedFlow = flogoFlowToJSON(convertedFlow);
+            this.previousSavedFlow = savableFlow(convertedFlow);
             this.store.dispatch(new Init({ ...convertedFlow, triggers, handlers, linkedSubflows } as FlowState));
             return {
               flow: convertedFlow,
@@ -75,15 +75,14 @@ export class FlogoFlowService {
   }
 
   saveFlow(flowId, uiFlow: UiFlow) {
-    const legacyFlow = flogoFlowToJSON(uiFlow);
-    return this.saveLegacyFlow(flowId, legacyFlow);
+    return this._flowAPIService.updateFlow(flowId, savableFlow(uiFlow));
   }
 
   saveFlowIfChanged(flowId, uiFlow: UiFlow) {
-    const legacyFlow = flogoFlowToJSON(uiFlow);
-    if (this.didFlowChange(legacyFlow)) {
-      this.previousSavedFlow = legacyFlow;
-      return this.saveLegacyFlow(flowId, legacyFlow);
+    const flow = savableFlow(uiFlow);
+    if (this.didFlowChange(flow)) {
+      this.previousSavedFlow = flow;
+      return this._flowAPIService.updateFlow(flowId, flow);
     } else {
      return observableOfValue(false);
     }
@@ -103,12 +102,7 @@ export class FlogoFlowService {
     return this._flowAPIService.getSubFlows(appId);
   }
 
-  private saveLegacyFlow(flowId: string, { name, description, flow, metadata }: LegacyFlowWrapper) {
-    const action = { name, description, data: { flow }, metadata };
-    return this._flowAPIService.updateFlow(flowId, action);
-  }
-
-  private didFlowChange(nextValue: LegacyFlowWrapper) {
+  private didFlowChange(nextValue: Action) {
     return !isEqual(this.previousSavedFlow, nextValue);
   }
 
