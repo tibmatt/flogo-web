@@ -30,7 +30,7 @@ export class ContribInstallController {
 
   /**
    * Install the contribution accessible in a URL (github URL) to engine and restart the engine
-   * @param url {string} URL path where the acitivy / trigger .json is located
+   * @param url {string} URL path where the activity / trigger .json is located
    * @returns results {Object} results of installation
    * @returns results.success {array} array of successfully installed contribution urls
    * @returns results.fail {array} array of installation failed contribution urls
@@ -62,18 +62,7 @@ export class ContribInstallController {
 
   installContribution(url) {
     return this.createBackup()
-      .then(() => this.installToEngine(url))
-      .then((results) => {
-        logger.log('[log] Installation results');
-        inspectObj({
-          success: results.success,
-          fail: results.fail
-        });
-        if (results.fail.length) {
-          throw new Error('Cannot install a contribution outside github domain');
-        }
-        return omit(results, ['details']);
-      });
+      .then(() => this.installToEngine(url));
   }
 
   restartEngineAfterBuild() {
@@ -193,7 +182,7 @@ export class ContribInstallController {
   installToEngine(url) {
     logger.debug(`Started installing '${url}' to the engine.`);
     this.installState = INSTALLATION_STATE.INSTALL;
-    return this.remoteInstaller.install([url], {engine: this.engine});
+    return this.remoteInstaller(url, this.engine);
   }
 
   buildEngine() {

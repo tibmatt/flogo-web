@@ -3,6 +3,7 @@ import { ContribSchema } from '@flogo/core';
 import { map } from 'rxjs/operators';
 import {FLOGO_CONTRIB_TYPE, FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
 import {RestApiService} from '../rest-api.service';
+import { Observable } from 'rxjs';
 
 interface InstallationData {
   url: string;
@@ -34,9 +35,9 @@ export class RESTAPIContributionsService {
     return this.restApi.get<T[]>(this.getApiPath(profileType) + '?filter[type]=' + type).toPromise();
   }
 
-  installContributions({profileType, installType, url}) {
+  installContributions({profileType, installType, url}): Observable<{ details: string, ref: string, originalUrl: string }> {
     const body = this.prepareBodyData(profileType, installType, url);
-    return this.restApi.post(this.getApiPath(profileType), body).toPromise();
+    return this.restApi.post(this.getApiPath(profileType), body);
   }
 
   private prepareBodyData(profileType, type, url): InstallationData {

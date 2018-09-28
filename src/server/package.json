@@ -8,24 +8,28 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon",
-    "start-server": "babel-node server.js",
-    "start-debug": "babel-node server.js",
-    "start-prod-server": "babel-node server.js",
-    "test": "mocha --require @babel/register './{,!(node_modules)/**/}*.spec.js' --preserve-symlinks",
-    "test:watch": "mocha --watch ---require @babel/register --watch-extensions json './{,!(node_modules)/**/}*.spec.js' --preserve-symlinks",
+    "start-server": "babel-node --extensions \".js,.ts\" server.js",
+    "start-prod-server": "babel-node --extensions \".js,.ts\" server.js",
+    "test": "mocha --require setup-tests.js --preserve-symlinks \"./{,!(node_modules)/**/}*.spec.{js,ts}\"",
+    "test:watch": "mocha --watch ---require setup-tests.js --watch-extensions json --preserve-symlinks \"./{,!(node_modules)/**/}*.spec.{js,ts}\"",
     "test:api": "mocha",
-    "serve": "babel-node server.js",
+    "serve": "babel-node --extensions \".js,.ts\" server.js",
     "build": "node scripts/build",
-    "configure-engines": "babel-node configure-engines.js",
-    "build:transpile": "babel --ignore '**/tests/**,**/node_modules/**,*.spec.js' ."
+    "configure-engines": "babel-node --extensions \".js,.ts\" configure-engines.js",
+    "build:transpile": "babel --extensions \".js,.ts\" --ignore \"**/tests/**,**/node_modules/**,*.spec.{js,ts}\" ."
   },
   "author": "TIBCO Software Inc.",
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
     "@babel/node": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/plugin-syntax-object-rest-spread": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
+    "@babel/preset-typescript": "^7.1.0",
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^5.0.0",
+    "@types/node": "8.9.3",
     "chai": "4.1.2",
     "chai-http": "^3.0.0",
     "concurrently": "^3.5.1",
@@ -33,7 +37,8 @@
     "mocha": "4.0.1",
     "nodemon": "^1.18.4",
     "server-destroy": "^1.0.1",
-    "sinon": "^4.4.1"
+    "sinon": "^4.4.1",
+    "typescript": "^3.0.3"
   },
   "peerDependencies": {
     "chevrotain": "^3.0.0",

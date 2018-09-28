@@ -1,4 +1,4 @@
-import path from 'path';
+import * as path from 'path';
 
 import {config} from '../../config/app-config';
 import {createFolder as ensureDir} from '../../common/utils/file';
@@ -23,9 +23,23 @@ const DEFAULT_LIBS = [
   'github.com/TIBCOSoftware/flogo-lib/app/resource',
 ];
 
-class Engine {
+interface TaskCollections {
+  activities: object[];
+  triggers: object[];
+}
+type Options = Record<string, any>;
 
-  constructor(pathToEngine, libVersion, runLogger) {
+class Engine {
+  static TYPE_TEST: string;
+  static TYPE_BUILD: string;
+
+  private readonly hostExt: string;
+  private libVersion: string;
+  private path: string;
+  private runLogger: object;
+  private tasks: { activities: object[], triggers: object[] };
+
+  constructor(pathToEngine: string, libVersion: string, runLogger: object) {
     this.path = pathToEngine;
     this.hostExt = processHost.getExtensionForExecutables();
     this.tasks = {
@@ -38,8 +52,8 @@ class Engine {
 
   load() {
     return commander.list(this.path)
-      .then(installedContribs => loader.loadMetadata(this.path, installedContribs))
-      .then(contribMetadata => {
+      .then((installedContribs: string[]) => loader.loadMetadata(this.path, installedContribs))
+      .then((contribMetadata: TaskCollections) => {
         this.tasks = contribMetadata;
         return contribMetadata;
       });
@@ -47,7 +61,7 @@ class Engine {
 
   create(flogoDescriptorPath = null, vendor = null) {
     // todo: add support for lib version
-    const options = {
+    const options: Record<string, any> = {
       libVersion: this._buildLibsOption(),
     };
     if (flogoDescriptorPath) {
@@ -62,7 +76,7 @@ class Engine {
       .then(() => Promise.all(
         [DIR_TEST_BIN, DIR_BUILD_BIN].map(dir => ensureDir(path.resolve(this.path, dir))),
       ))
-      .then(result => {
+      .then((result: any) => {
         console.timeEnd('engine:create');
         return result;
       });
@@ -84,7 +98,7 @@ class Engine {
     return this.tasks;
   }
 
-  setTasks(tasks) {
+  setTasks(tasks: TaskCollections) {
     this.tasks = tasks;
   }
 
@@ -96,11 +110,11 @@ class Engine {
     return this.tasks.triggers;
   }
 
-  hasActivity(nameOrPath) {
+  hasActivity(nameOrPath: string) {
     return this._hasItem(this.getActivities(), nameOrPath);
   }
 
-  hasTrigger(nameOrPath) {
+  hasTrigger(nameOrPath: string) {
     return this._hasItem(this.getTriggers(), nameOrPath);
   }
 
@@ -111,7 +125,7 @@ class Engine {
    * @return {Promise.<TResult>|*}
    * @deprecated
    */
-  build(options) {
+  build(options: Options) {
     options = Object.assign({}, { type: TYPE_TEST }, options);
 
     let buildTargetDir;
@@ -130,12 +144,12 @@ class Engine {
       .then(() => buildAndCopyBinary(this.path, options));
   }
 
-  buildPlugin(options) {
+  buildPlugin(options: Options) {
     return ensureDir(path.join(this.path, DIR_BUILD_BIN))
       .then(() => buildPlugin(this.path, options));
   }
 
-  buildOnly(options) {
+  buildOnly(options: Options) {
     return commander.build(this.path, options);
   }
 
@@ -167,7 +181,7 @@ class Engine {
    * @param {string} [flowName] - the name of this flow
    * @return {boolean} if successful, return true, otherwise return false
    */
-  addFlow(flowPath){
+  addFlow(flowPath: string){
       return commander.add.flow(this.path, flowPath);
   }
 
@@ -177,7 +191,7 @@ class Engine {
    * @param options
    * @param options.version {string} version
    */
-  installPalette(palettePath, options) {
+  installPalette(palettePath: string, options: Options) {
     options = Object.assign({ /* version: this.libVersion */ }, options);
     return this._installItem('palette', palettePath, options);
   }
@@ -188,7 +202,7 @@ class Engine {
    * @param options
    * @param options.version {string} trigger versions
    */
-  addTrigger(triggerPath, options) {
+  addTrigger(triggerPath: string, options: Options) {
     return this._installItem('trigger', triggerPath, options);
   }
 
@@ -198,7 +212,7 @@ class Engine {
    * @param options
    * @param options.version {string} trigger versions
    */
-  addActivity(activityPath, options) {
+  addActivity(activityPath: string, options: Options) {
     return this._installItem('activity', activityPath, options);
   }
 
@@ -207,7 +221,7 @@ class Engine {
    * @param {string} nameOrPath Trigger name or path (remote url or local://path)
    * @param options
    */
-  deleteTrigger(nameOrPath, options) {
+  deleteTrigger(nameOrPath: string, options: Options) {
     return this._deleteItem('trigger', nameOrPath, options);
   }
 
@@ -216,34 +230,31 @@ class Engine {
    * @param {string} nameOrPath Trigger name or path (remote url or local://path)
    * @param options
    */
-  deleteActivity(nameOrPath, options) {
+  deleteActivity(nameOrPath: string, options: Options) {
     return this._deleteItem('activity', nameOrPath, options);
   }
 
-  _deleteItem(itemType, nameOrPath, options) {
+  _deleteItem(itemType: string, nameOrPath: string, options: Options) {
     return commander.delete[itemType](this.path, nameOrPath);
   }
 
-  _installItem(itemType, path, options) {
+  _installItem(itemType: string, path: string, options: Options) {
     let label = `engine:install:${itemType}`;
     console.time(label);
     options = {...options};
     return commander.add[itemType](this.path, path, options)
-      .then(result => {
+      .then((result: any) => {
         console.timeEnd(label);
         return result;
       });
   }
 
-  _hasItem(where, nameOrPath) {
+  _hasItem(where: {name?: string, path?: string}[], nameOrPath: string) {
     let item = (where || []).find(item => item.name == nameOrPath || item.path === nameOrPath)
     return !!item;
   }
 
   _buildLibsOption() {
-    if (this.skipLibVersionOnCreation) {
-      return null;
-    }
     const libConstraint = this.libVersion ? `@${this.libVersion}` : '';
     return DEFAULT_LIBS
       .map(lib => `${lib}${libConstraint}`)
