@@ -30,19 +30,230 @@ import {
   NodeType, Action,
 } from '@flogo/core';
 
+const DEBUG = false;
+const INFO = true;
+
+const generateDiagramTraverser = (schemas) => {
+  const visited: string[] = [];
+  const tasksDest: flowToJSON_Task[] = [];
+  const linksDest: flowToJSON_Link[] = [];
+  let idCounter = 0;
+  const _genLinkId = () => ++idCounter;
+
+  function _traversalDiagramChildren(node: GraphNode,
+                                     nodes: Dictionary<GraphNode>,
+                                     tasks: Dictionary<Item>) {
+    // if haven't visited
+    if (!includes(visited, node.id)) {
+      visited.push(node.id);
+
+      const nodesToGo = difference(node.children, visited);
+
+      each(nodesToGo, (nid) => {
+
+        const childNode = nodes[nid];
+
+        // handle branch node differently
+        if (childNode.type === NodeType.Branch) {
+          const branch = tasks[childNode.id];
+
+          // single child is found
+          //  since branch can has only one direct child, this is the only case to follow
+          if (branch && childNode.children.length === 1) {
+            /* tslint:disable-next-line:no-unused-expression */
+            DEBUG && console.log('Found a branch with activity!');
+
+            // traversal its children
+            _traversalDiagramChildren(childNode, nodes, tasks);
+          } else {
+            /* tslint:disable-next-line:no-unused-expression */
+            DEBUG && console.warn('- Found a branch!\n- Don\'t care..');
+          }
+
+          return;
+        }
+
+        /*
+         * add task
+         */
+
+        const taskInfo = _prepareTaskInfo(<ItemActivityTask>tasks[childNode.id]);
+        if (!isEmpty(taskInfo)) {
+          tasksDest.push(taskInfo);
+        }
+
+        /*
+         * add link
+         */
+
+        if (node.type === NodeType.Task) {
+
+          linksDest.push({
+            id: _genLinkId(),
+            from: convertTaskID(node.id),
+            to: convertTaskID(childNode.id),
+            type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.DEFAULT
+          });
+
+        } else if (node.type === NodeType.Branch && node.parents.length === 1) {
+
+          const parentNode = nodes[node.parents[0]];
+          const branch = tasks[node.id] as ItemBranch;
+
+          linksDest.push({
+            id: _genLinkId(),
+            from: convertTaskID(parentNode.id),
+            to: convertTaskID(childNode.id),
+            type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH,
+            value: branch.condition
+          });
+
+        }
+
+        _traversalDiagramChildren(childNode, nodes, tasks);
+
+      });
+    }
+  }
+
+  function _prepareTaskInfo(item: ItemTask) {
+    // todo: remove schema === {} for subflow case
+    const schema = <ActivitySchema> schemas[item.ref] || <any>{};
+    const task = mergeItemWithSchema(item, schema);
+    const taskInfo = <flowToJSON_Task>{};
+    if (_isValidInternalTaskInfo(task)) {
+      taskInfo.id = convertTaskID(task.id);
+      taskInfo.name = get(task, 'name', '');
+      taskInfo.description = get(task, 'description', '');
+      taskInfo.type = task.type;
+      taskInfo.activityType = task.activityType || '';
+      if (!isSubflowTask(task.type)) {
+        taskInfo.activityRef = task.ref;
+      }
+
+      taskInfo.attributes = _parseFlowAttributes(<DiagramTaskAttribute[]>get(task, 'attributes.inputs'));
+
+      /* add inputMappings */
+
+      const inputMappings = _parseFlowMappings(<DiagramTaskAttributeMapping[]>get(task, 'inputMappings'));
+
+      if (!isEmpty(inputMappings)) {
+        taskInfo.inputMappings = inputMappings;
+      }
+
+      /* add outputMappings */
+
+      const outputMappings = _parseFlowMappings(<DiagramTaskAttributeMapping[]>get(task, 'outputMappings'));
+
+      if (!isEmpty(outputMappings)) {
+        taskInfo.ouputMappings = outputMappings;
+      }
+
+      if (!isEmpty(task.settings)) {
+        taskInfo.settings = cloneDeep(task.settings);
+      }
+
+    } else {
+      /* tslint:disable-next-line:no-unused-expression */
+      INFO && console.warn('Invalid task found.');
+      /* tslint:disable-next-line:no-unused-expression */
+      INFO && console.warn(task);
+    }
+    return taskInfo;
+  }
+
+  return (rootNode: GraphNode, nodes: Dictionary<GraphNode>, tasks: Dictionary<Item>) => {
+    const rootTaskInfo = _prepareTaskInfo(<ItemActivityTask>tasks[rootNode.id]);
+    if (!isEmpty(rootTaskInfo)) {
+      tasksDest.push(rootTaskInfo);
+    }
+    _traversalDiagramChildren(rootNode, nodes, tasks);
+    return {tasks: tasksDest, links: linksDest};
+  };
+};
+
+function _isValidInternalTaskInfo(task: {
+  id: string;
+  type: FLOGO_TASK_TYPE;
+  activityType?: string;
+  ref?: string;
+  [key: string]: any;
+}): boolean {
+
+  if (isEmpty(task)) {
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.warn('Empty task');
+    return false;
+  }
+
+  if (!task.id) {
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.warn('Empty task id');
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.log(task);
+    return false;
+  }
+
+  if (!isNumber(task.type)) {
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.warn('Invalid task type');
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.log(task);
+    return false;
+  }
+
+  if (isEmpty(task.ref)) {
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.warn('Empty task activityType');
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.log(task);
+    return false;
+  }
+
+  return true;
+}
+
+function _parseFlowAttributes(inAttrs: any[]): flowToJSON_Attribute [] {
+  const attributes = <flowToJSON_Attribute []>[];
+
+  each(inAttrs, (inAttr: any) => {
+    const attr = <flowToJSON_Attribute>{};
+
+    /* simple validation */
+    attr.name = <string>get(inAttr, 'name');
+    attr.value = <any>get(inAttr, 'value', getDefaultValue(inAttr.type));
+    attr.required = !!inAttr.required;
+
+    if (isEmpty(attr.name)) {
+      /* tslint:disable-next-line:no-unused-expression */
+      DEBUG && console.warn('Empty attribute name found');
+      /* tslint:disable-next-line:no-unused-expression */
+      DEBUG && console.log(inAttr);
+      return;
+    }
+
+    // NOTE
+    //  empty value may be fed from upstream results - mapping
+    //  hence comment out this validation
+    // if ( !_.isNumber( attr.value ) && !_.isBoolean( attr.value ) && _.isEmpty( attr.value ) ) {
+    //   DEBUG && console.warn( 'Empty attribute value found' );
+    //   DEBUG && console.log( inAttr );
+    //   return;
+    // }
+
+    // the attribute default attribute type is STRING
+    attr.type = inAttr.type || ValueType.String;
+
+    attributes.push(attr);
+  });
+
+  return attributes;
+}
+
 /**
  * Convert the action to server model
  */
 export function savableFlow(inFlow: UiFlow): Action {
-  const DEBUG = false;
-  const INFO = true;
-
-  // TODO
-  //  task link should only be unique within a flow, hence
-  //  for the moment, using the linkCounter to keep increasing the
-  //  link number within a session is fine.
-  let linkIDCounter = 0;
-  const _genLinkID = () => ++linkIDCounter;
 
   const flowJSON = <Action>{};
   /* validate the required fields */
@@ -82,6 +293,45 @@ export function savableFlow(inFlow: UiFlow): Action {
     return flowJSON;
   }
 
+  const flowItems = inFlow.mainItems;
+  const errorItems = inFlow.errorItems;
+  if (isEmpty(flowItems) && isEmpty(errorItems)) {
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.warn('Invalid items information in the given flow');
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.log(inFlow);
+    return flowJSON;
+  }
+
+  if (!isEmpty(flowItems)) {
+    const rootNode = flowPathNodes[flowPathRoot];
+    if (!isEmpty(rootNode)) {
+      const _traversalDiagram = generateDiagramTraverser(inFlow.schemas);
+      const {tasks, links} = _traversalDiagram(rootNode, flowPathNodes, flowItems);
+      flowJSON.tasks = tasks as Action['tasks'];
+      flowJSON.links = links;
+    }
+  }
+
+  if (!isEmpty(errorItems)) {
+    const rootNode = errorPathNodes[errorPathRoot];
+    if (!isEmpty(rootNode)) {
+      const _traversalDiagram = generateDiagramTraverser(inFlow.schemas);
+      const {tasks, links} = _traversalDiagram(rootNode, errorPathNodes, errorItems);
+      flowJSON.errorHandler = {
+        tasks: tasks as Action['tasks'],
+        links
+      };
+    }
+  }
+
+  if (_hasExplicitReply(flowJSON.tasks)) {
+    flowJSON.explicitReply = true;
+  }
+
+  /* tslint:disable-next-line:no-unused-expression */
+  INFO && console.log('Generated flow.json: ', flowJSON);
+
   return flowJSON;
 }
 
@@ -92,16 +342,6 @@ export function savableFlow(inFlow: UiFlow): Action {
  * @returns {LegacyFlowWrapper}
  */
 export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
-
-  const DEBUG = false;
-  const INFO = true;
-
-  // TODO
-  //  task link should only be unique within a flow, hence
-  //  for the moment, using the linkCounter to keep increasing the
-  //  link number within a session is fine.
-  let linkIDCounter = 0;
-  const _genLinkID = () => ++linkIDCounter;
 
   const flowJSON = <LegacyFlowWrapper>{};
 
@@ -188,13 +428,10 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
       if (isEmpty(rootNode)) {
         return rootTask;
       }
-
-      const taskInfo = _prepareTaskInfo(<ItemActivityTask>flowItems[rootNode.id]);
-      if (!isEmpty(taskInfo)) {
-        rootTask.tasks.push(taskInfo);
-      }
-
-      _traversalDiagram(rootNode, flowPathNodes, flowItems, rootTask.tasks, rootTask.links);
+      const _traversalDiagram = generateDiagramTraverser(inFlow.schemas);
+      const {tasks, links} = _traversalDiagram(rootNode, flowPathNodes, flowItems);
+      rootTask.tasks = tasks;
+      rootTask.links = links;
 
       return rootTask;
     }());
@@ -220,12 +457,10 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
       if (isEmpty(rootNode)) {
         return errorTask;
       }
-      const taskInfo = _prepareTaskInfo(<ItemActivityTask>errorItems[rootNode.id]);
-      if (!isEmpty(taskInfo)) {
-        errorTask.tasks.push(taskInfo);
-      }
-
-      _traversalDiagram(rootNode, errorPathNodes, errorItems, errorTask.tasks, errorTask.links);
+      const _traversalDiagram = generateDiagramTraverser(inFlow.schemas);
+      const {tasks, links} = _traversalDiagram(rootNode, errorPathNodes, errorItems);
+      errorTask.tasks = tasks;
+      errorTask.links = links;
 
       return errorTask;
     }());
@@ -240,232 +475,18 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
   /* tslint:disable-next-line:no-unused-expression */
   INFO && console.log('Generated flow.json: ', flowJSON);
 
-  function _traversalDiagram(rootNode: GraphNode,
-                             nodes: Dictionary<GraphNode>,
-                             tasks: Dictionary<Item>,
-                             tasksDest: flowToJSON_Task[ ],
-                             linksDest: flowToJSON_Link[ ]): void {
-
-    const visited = < string[ ] > [];
-
-    _traversalDiagramChildren(rootNode, visited, nodes, tasks, tasksDest, linksDest);
-  }
-
-  function _traversalDiagramChildren(node: GraphNode,
-                                     visitedNodes: string[ ],
-                                     nodes: Dictionary<GraphNode>,
-                                     tasks: Dictionary<Item>,
-                                     tasksDest: flowToJSON_Task[ ],
-                                     linksDest: flowToJSON_Link[ ]) {
-    // if haven't visited
-    if (!includes(visitedNodes, node.id)) {
-      visitedNodes.push(node.id);
-
-      const nodesToGo = difference(node.children, visitedNodes);
-
-      each(nodesToGo, (nid) => {
-
-        const childNode = nodes[nid];
-
-        // handle branch node differently
-        if (childNode.type === NodeType.Branch) {
-          const branch = tasks[childNode.id];
-
-          // single child is found
-          //  since branch can has only one direct child, this is the only case to follow
-          if (branch && childNode.children.length === 1) {
-            /* tslint:disable-next-line:no-unused-expression */
-            DEBUG && console.log('Found a branch with activity!');
-
-            // traversal its children
-            _traversalDiagramChildren(childNode, visitedNodes, nodes, tasks, tasksDest, linksDest);
-          } else {
-            /* tslint:disable-next-line:no-unused-expression */
-            DEBUG && console.warn('- Found a branch!\n- Don\'t care..');
-          }
-
-          return;
-        }
-
-        /*
-         * add task
-         */
-
-        const taskInfo = _prepareTaskInfo(<ItemActivityTask>tasks[childNode.id]);
-        if (!isEmpty(taskInfo)) {
-          tasksDest.push(taskInfo);
-        }
-
-        /*
-         * add link
-         */
-
-        if (node.type === NodeType.Task) {
-
-          linksDest.push({
-            id: _genLinkID(),
-            from: convertTaskID(node.id),
-            to: convertTaskID(childNode.id),
-            type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.DEFAULT
-          });
-
-        } else if (node.type === NodeType.Branch && node.parents.length === 1) {
-
-          const parentNode = nodes[node.parents[0]];
-          const branch = tasks[node.id] as ItemBranch;
-
-          linksDest.push({
-            id: _genLinkID(),
-            from: convertTaskID(parentNode.id),
-            to: convertTaskID(childNode.id),
-            type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH,
-            value: branch.condition
-          });
-
-        }
-
-        _traversalDiagramChildren(childNode, visitedNodes, nodes, tasks, tasksDest, linksDest);
-
-      });
-    }
-  }
-
-  function _isValidInternalTaskInfo(task: {
-    id: string;
-    type: FLOGO_TASK_TYPE;
-    activityType?: string;
-    ref?: string;
-    [key: string]: any;
-  }): boolean {
-
-    if (isEmpty(task)) {
-      /* tslint:disable-next-line:no-unused-expression */
-      DEBUG && console.warn('Empty task');
-      return false;
-    }
-
-    if (!task.id) {
-      /* tslint:disable-next-line:no-unused-expression */
-      DEBUG && console.warn('Empty task id');
-      /* tslint:disable-next-line:no-unused-expression */
-      DEBUG && console.log(task);
-      return false;
-    }
-
-    if (!isNumber(task.type)) {
-      /* tslint:disable-next-line:no-unused-expression */
-      DEBUG && console.warn('Invalid task type');
-      /* tslint:disable-next-line:no-unused-expression */
-      DEBUG && console.log(task);
-      return false;
-    }
-
-    if (isEmpty(task.ref)) {
-      /* tslint:disable-next-line:no-unused-expression */
-      DEBUG && console.warn('Empty task activityType');
-      /* tslint:disable-next-line:no-unused-expression */
-      DEBUG && console.log(task);
-      return false;
-    }
-
-    return true;
-  }
-
-  function _parseFlowAttributes(inAttrs: any[]): flowToJSON_Attribute [] {
-    const attributes = <flowToJSON_Attribute []>[];
-
-    each(inAttrs, (inAttr: any) => {
-      const attr = <flowToJSON_Attribute>{};
-
-      /* simple validation */
-      attr.name = <string>get(inAttr, 'name');
-      attr.value = <any>get(inAttr, 'value', getDefaultValue(inAttr.type));
-      attr.required = !!inAttr.required;
-
-      if (isEmpty(attr.name)) {
-        /* tslint:disable-next-line:no-unused-expression */
-        DEBUG && console.warn('Empty attribute name found');
-        /* tslint:disable-next-line:no-unused-expression */
-        DEBUG && console.log(inAttr);
-        return;
-      }
-
-      // NOTE
-      //  empty value may be fed from upstream results - mapping
-      //  hence comment out this validation
-      // if ( !_.isNumber( attr.value ) && !_.isBoolean( attr.value ) && _.isEmpty( attr.value ) ) {
-      //   DEBUG && console.warn( 'Empty attribute value found' );
-      //   DEBUG && console.log( inAttr );
-      //   return;
-      // }
-
-      // the attribute default attribute type is STRING
-      attr.type = inAttr.type || ValueType.String;
-
-      attributes.push(attr);
-    });
-
-    return attributes;
-  }
-
-  function _hasExplicitReply(tasks?: any): boolean {
-    if (!tasks) {
-      return false;
-    }
-
-    // hardcoding the activity type, for now
-    // TODO: maybe the activity should expose a property so we know it can reply?
-    return !!find(tasks, task => (<any>task).activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
-
-  }
-
-  function _prepareTaskInfo(item: ItemTask) {
-    // todo: remove schema === {} for subflow case
-    const schema = <ActivitySchema> inFlow.schemas[item.ref] || <any>{};
-    const task = mergeItemWithSchema(item, schema);
-    const taskInfo = <flowToJSON_Task>{};
-    if (_isValidInternalTaskInfo(task)) {
-      taskInfo.id = convertTaskID(task.id);
-      taskInfo.name = get(task, 'name', '');
-      taskInfo.description = get(task, 'description', '');
-      taskInfo.type = task.type;
-      taskInfo.activityType = task.activityType || '';
-      if (!isSubflowTask(task.type)) {
-        taskInfo.activityRef = task.ref;
-      }
-
-      taskInfo.attributes = _parseFlowAttributes(<DiagramTaskAttribute[]>get(task, 'attributes.inputs'));
-
-      /* add inputMappings */
-
-      const inputMappings = _parseFlowMappings(<DiagramTaskAttributeMapping[]>get(task, 'inputMappings'));
-
-      if (!isEmpty(inputMappings)) {
-        taskInfo.inputMappings = inputMappings;
-      }
-
-      /* add outputMappings */
-
-      const outputMappings = _parseFlowMappings(<DiagramTaskAttributeMapping[]>get(task, 'outputMappings'));
-
-      if (!isEmpty(outputMappings)) {
-        taskInfo.ouputMappings = outputMappings;
-      }
-
-      if (!isEmpty(task.settings)) {
-        taskInfo.settings = cloneDeep(task.settings);
-      }
-
-    } else {
-      /* tslint:disable-next-line:no-unused-expression */
-      INFO && console.warn('Invalid task found.');
-      /* tslint:disable-next-line:no-unused-expression */
-      INFO && console.warn(task);
-    }
-    return taskInfo;
-  }
-
   return flowJSON;
+}
+
+function _hasExplicitReply(tasks?: any): boolean {
+  if (!tasks) {
+    return false;
+  }
+
+  // hardcoding the activity type, for now
+  // TODO: maybe the activity should expose a property so we know it can reply?
+  return !!find(tasks, task => (<any>task).activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
+
 }
 
 function _parseMetadata(metadata: FlowMetadata): FlowMetadata {

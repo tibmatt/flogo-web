@@ -19,4 +19,5 @@ export interface Action extends ActionBase {
     tasks: flow.Task[];
     links: flow.Link[];
   };
+  explicitReply?: boolean;
 }

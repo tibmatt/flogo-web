@@ -25,7 +25,9 @@ const EDITABLE_FIELDS_UPDATE = [
   'name',
   'description',
   'metadata',
-  'data',
+  'tasks',
+  'links',
+  'errorHandler',
 ];
 
 const RECENT_ACTIONS_ID = 'actions:recent';
