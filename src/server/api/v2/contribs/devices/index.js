@@ -55,7 +55,10 @@ function* installContribs( next ) {
   }
 
   this.body =  {
-    data: results
+    data: {
+      ref: results.success[0],
+      originalUrl: url
+    }
   };
 
   yield next;
