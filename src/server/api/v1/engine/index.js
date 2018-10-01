@@ -1,41 +1,17 @@
-import {config} from '../../../config/app-config';
+import { config } from '../../../config/app-config';
 import { getInitializedEngine } from '../../../modules/engine/index';
 
 export function engine(router){
   router.get('/engine/restart', restartEngine);
 }
 
-/**
- * @swagger
- *  /engine/restart:
- *    get:
- *      tags:
- *        - Engine
- *      responses:
- *        200:
- *          description: Engine restarted sucessfully.
- *          schema:
- *            type: object
- *            properties:
- *              status:
- *                type: number
- *                default: 200
- *        500:
- *          description: Error restarting the engine.
- *          schema:
- *            type: object
- *            properties:
- *              status:
- *                type: number
- *                default: 500
- */
 async function restartEngine(ctx, next) {
   console.log('Restart Engine');
   let data = {
     status: 200
   };
 
-  try{
+  try {
     let engine = await getInitializedEngine(config.defaultEngine.path);
 
     let stopTestEngineResult = await engine.stop();
@@ -54,11 +30,10 @@ async function restartEngine(ctx, next) {
     }
 
     this.body = data;
-    return next();
-  } catch(err) {
+  } catch (err) {
     console.log("[error][restartEngine]: ", err);
     data.status = 500;
     this.body = data;
-    return next();
   }
+  next();
 }

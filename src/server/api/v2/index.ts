@@ -8,6 +8,8 @@ import { actions } from './actions';
 import { contribs as deviceContribs } from './contribs/devices';
 import { contribs as microserviceContribs } from './contribs/microservices';
 import { handlers } from './handlers';
+import { mountServices } from './services';
+import { mountEngine } from './engine';
 import { v2ErrorMiddleware } from '../error';
 
 export function createRouter(): Router {
@@ -21,5 +23,7 @@ export function createRouter(): Router {
   deviceContribs(router);
   microserviceContribs(router);
   handlers(router);
+  mountServices(router);
+  mountEngine(router);
   return router;
 }
