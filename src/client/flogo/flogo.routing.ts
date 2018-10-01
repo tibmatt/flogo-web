@@ -20,6 +20,10 @@ export const appRoutes: Routes = [
     loadChildren: './flow/flow.module#FlowModule'
   },
   {
+    path: '_config',
+    loadChildren: './config/config.module#ConfigModule'
+  },
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full'

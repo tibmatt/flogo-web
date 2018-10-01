@@ -1,10 +1,13 @@
-import { reduce, startCase, each, cloneDeep } from 'lodash';
+import { startCase } from 'lodash';
 
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfigurationService } from '../core/services/configuration.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-const SEVER_NAMES = ['engine', 'stateServer', 'flowServer'];
+import { environment } from 'environments/environment';
+const SERVER_NAMES = ['engine', 'stateServer', 'flowServer'];
 
 @Component({
   selector: 'flogo-config',
@@ -12,57 +15,35 @@ const SEVER_NAMES = ['engine', 'stateServer', 'flowServer'];
   styleUrls: ['config.component.less']
 })
 export class FlogoConfigComponent {
-  _config: any;
-  _servers: any[];
-  location = location; // expose window.location
+  public servers$: Observable<any[]>;
+  public location = location;
+  public logs: Array<{ label: string, url: string }>;
 
   constructor(private _router: Router, private _configurationService: ConfigurationService) {
     this.init();
+    this.logs = [
+      { label: 'View Test Engine Log', url: `${environment.hostname}/_logs/engine.log` },
+      { label: 'View Flogo Web App Log', url: `${environment.hostname}/_logs/app.log` },
+    ];
   }
 
   init() {
-    this._config = this._configurationService.configuration;
-
-    this._servers = reduce(this._config, (result: any[], value: any, key: string) => {
-      if (SEVER_NAMES.indexOf(key) !== -1) {
-        let _display = false;
-
-        // for now we just has the restart feature for 8080(default engine)
-        if (value && (value.port === '8080' || value.port === 8080)) {
-          _display = true;
-        }
-        value.name = key;
-        result.push({
-          _label: startCase(key),
-          _key: key,
-          _display: _display,
-          config: value
-        });
-      }
-
-      return result;
-    }, []);
-
-  }
-
-  onSave() {
-    const config = <any>{};
-
-    each(this._servers, (server: any) => {
-      if (SEVER_NAMES.indexOf(server._key) !== -1) {
-        config[server._key] = cloneDeep(server.config);
-      }
-    });
-
-    console.groupCollapsed('Save configuration');
-    console.log(cloneDeep(config));
-    console.groupEnd();
-    // this._configurationService.save();
-
-  }
-
-  onCancel() {
-    this._router.navigate(['/']);
+    this.servers$ = this._configurationService.getConfig()
+      .pipe(
+        map(configs => {
+          return Object.entries(configs)
+            .filter(([name]) => SERVER_NAMES.indexOf(name) !== -1)
+            .map(([name, config]) => {
+              config.name = name;
+              return {
+                _label: startCase(name),
+                _key: name,
+                _display: config && (config.port === '8080' || config.port === 8080),
+                config: config
+              };
+            });
+        })
+      );
   }
 
   onRestart(server: any) {
@@ -79,22 +60,4 @@ export class FlogoConfigComponent {
     }
   }
 
-  onRestartBuild() {
-    this._configurationService.restartBuild()
-      .toPromise()
-      .then((res) => {
-        console.log('Restart build engine successful. res: ', res);
-      })
-      .catch((err) => {
-        console.log('Restart build engine errror. err: ', err);
-      });
-  }
-
-  onResetDefault() {
-    // this._configurationService.resetConfiguration()
-    //   .then((config) => {
-    //     this.init();
-    //     console.log('Configuration restored');
-    //   });
-  }
 }

@@ -6,7 +6,7 @@ import { createApp as createServerApp } from './modules/init/app';
 
 export default ensureDefaultDirs()
   .then(() => initEngine(config.defaultEngine.path))
-  .then(() => createServerApp({ port: config.app.port, staticPath: config.publicPath }))
+  .then(() => createServerApp({ port: config.app.port, staticPath: config.publicPath, logsRoot: config.localPath }))
   .then((newServer) => initWebSocketApi(newServer))
   .then(() => {
     console.log('flogo-web::server::ready');

@@ -7,6 +7,7 @@ const cors = require('@koa/cors');
 const serveStatic = require('koa-static');
 const bodyParser = require('koa-body');
 const compress = require('koa-compress');
+const send = require('koa-send');
 
 import { logger } from '../../common/logging';
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
@@ -15,9 +16,10 @@ import { mountRestApi } from '../../api';
 export interface ServerConfig {
   port: string;
   staticPath: string;
+  logsRoot: string;
 }
 
-export async function createApp({ port, staticPath }: ServerConfig) {
+export async function createApp({ port, staticPath, logsRoot }: ServerConfig) {
   const app: Koa = new KoaApp();
   app.on('error', errorLogger);
   app.use(cors({ expose: ['Content-Disposition'] }));
@@ -26,11 +28,11 @@ export async function createApp({ port, staticPath }: ServerConfig) {
   app.use(stripTrailingSlash());
   app.use(compressor());
 
-  app.use(serveStatic(staticPath, { defer: true }));
-
-  const router = initRouter();
+  const router = initRouter(logsRoot);
   app.use(router.routes())
     .use(router.allowedMethods());
+
+  app.use(serveStatic(staticPath, { defer: true }));
 
   const server = createServer(app.callback());
   await listenAndWaitReady(server, port);
@@ -49,17 +51,13 @@ function listenAndWaitReady(server: Server, port: string) {
 
 function errorLogger(): Koa.Middleware {
   return function (err) {
-    if (401 == err.status) {
-      return;
+    if (401 != err.status && 404 != err.status) {
+      logger.error(err);
     }
-    if (404 == err.status) {
-      return;
-    }
-    logger.error(err);
   };
 }
 
-function initRouter() {
+function initRouter(logsRoot: string) {
   const router = new Router();
   router.use(bodyParser({
     multipart: true,
@@ -68,6 +66,9 @@ function initRouter() {
     },
   }));
   mountRestApi(router);
+  const sendLog = logName => (ctx) => send(ctx, logName, { root: logsRoot });
+  router.get('/_logs/app.log', sendLog('app.log'));
+  router.get('/_logs/engine.log', sendLog('engine.log'));
   return router;
 }
 
