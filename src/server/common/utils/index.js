@@ -1,4 +1,3 @@
-import performanceNow from 'performance-now';
 import _ from 'lodash';
 import {inspect} from 'util';
 
@@ -6,19 +5,6 @@ import {FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE} from '../constants';
 import {runShellCMD} from "./process";
 
 export * from './file';
-export * from './request';
-
-export function btoa( str ) {
-  var buffer;
-
-  if ( str instanceof Buffer ) {
-    buffer = str;
-  } else {
-    buffer = new Buffer( str.toString(), 'binary' );
-  }
-
-  return buffer.toString( 'base64' );
-}
 
 export function atob( str ) {
   return new Buffer( str, 'base64' ).toString( 'binary' );
@@ -39,110 +25,6 @@ export function isJSON( str ) {
 
 export let parseJSON = isJSON;
 
-export function flogoIDEncode( id ) {
-  return btoa( id )
-    .replace( /\+/g, '-' )
-    .replace( /\//g, '_' )
-    .replace( /=+$/, '' );
-}
-
-// URL safe base64 decoding
-// reference: https://gist.github.com/jhurliman/1250118
-export function flogoIDDecode( encodedId ) {
-
-  encodedId = encodedId.replace( /-/g, '+' )
-    .replace( /_/g, '/' );
-
-  while ( encodedId.length % 4 ) {
-    encodedId += '=';
-  }
-
-  return atob( encodedId );
-}
-
-export function flogoGenTaskID( items ) {
-  let taskID;
-
-  // TODO
-  //  generate a more meaningful task ID in string format
-  if ( items ) {
-    let ids = _.keys( items );
-    let startPoint = 2; // taskID 1 is reserved for the rootTask
-
-    let taskIDs = _.map( _.filter( ids, id => {
-      return items[ id ].type === FLOGO_TASK_TYPE.TASK;
-    } ), id => {
-      return _.toNumber( flogoIDDecode( id ) );
-    } );
-
-    let currentMax = _.max( taskIDs );
-
-    if ( currentMax && _.isFinite( currentMax ) ) { // isFinite: _.max coerces values to number in lodash versions < 4
-      taskID = '' + ( currentMax + 1);
-    } else {
-      taskID = '' + startPoint;
-    }
-
-  } else {
-    // shift the timestamp for avoiding overflow 32 bit system
-    taskID = '' + (Date.now() >>> 1);
-  }
-
-  return flogoIDEncode( taskID );
-
-}
-
-export function flogoGenTriggerID() {
-  return flogoIDEncode( `Flogo::Trigger::${Date.now()}` );
-}
-
-export function flogoGenBranchID() {
-  return flogoIDEncode( `Flogo::Branch::${Date.now()}` );
-}
-
-export function genNodeID( items ) {
-
-
-  let id = '';
-
-  if ( performanceNow && _.isFunction( performanceNow ) ) {
-    id = `FlogoFlowDiagramNode::${Date.now()}::${performanceNow()}`;
-  } else {
-    id = `FlogoFlowDiagramNode::${Date.now()}}`;
-  }
-
-  return flogoIDEncode( id );
-};
-
-/**
- * Convert task ID to integer, which is the currently supported type in engine
- * TODO
- *  taskID should be string in the future, perhaps..
- *
- * @param taskID
- * @returns {number}
- * @private
- */
-export function convertTaskID( taskID ) {
-  let id = '';
-
-  try {
-    id = flogoIDDecode( taskID );
-
-    // get the timestamp
-    let parsedID = id.split( '::' );
-
-    if ( parsedID.length >= 2 ) {
-      id = parsedID[ 1 ];
-    }
-  } catch ( e ) {
-    console.warn( e );
-    id = taskID;
-  }
-
-  return parseInt( id );
-}
-
 /** *******
  * GitHub related utility functions
  */
@@ -153,12 +35,6 @@ export function convertTaskID( taskID ) {
 //    https://github.com/:username/:projectname
 const GITHUB_URL_PATTERN = /^(?:https\:\/\/)?github\.com\/(?:([\w\-]+)\/)(?:([\w\-]+)(?:\.git)?)$/.source;
 const GITHUB_URL_SUBFOLDER_PATTERN = /^(?:https\:\/\/)?github\.com\/(?:([\w\-]+)\/)(?:([\w\-]+))\/(?:([\w\-/]+))$/.source;
-
-export function isGitHubURL( url ) {
-  let simplePattern = new RegExp( GITHUB_URL_PATTERN );
-  let subfolderPattern = new RegExp( GITHUB_URL_SUBFOLDER_PATTERN );
-  return simplePattern.test( url ) || subfolderPattern.test( url );
-}
 
 export function parseGitHubURL( url ) {
   let simplePattern = new RegExp( GITHUB_URL_PATTERN );
@@ -189,48 +65,6 @@ export function parseGitHubURL( url ) {
   return result;
 }
 
-/**
- * Verify if the given url is within the given GitHub repo.
- *
- * @param repoURL
- * @param url
- */
-export function isInGitHubRepo( repoURL, url ) {
-  if ( isGitHubURL( repoURL ) && isGitHubURL( url ) ) {
-    const parsedRepoURL = parseGitHubURL( repoURL );
-    const parsedURL = parseGitHubURL( url );
-
-    return parsedRepoURL.username === parsedURL.username && parsedRepoURL.repoName === parsedURL.repoName;
-  } else {
-    console.warn( `[warn] invalid GitHub URL: ${repoURL}` );
-    return false;
-  }
-}
-
-/**
- * Construct GitHub file URI using the download URL format.
- *
- * https://raw.githubusercontent.com/:username/:repoName/[:branchName | :commitHash]/:filename
- *
- * @param githubInfo {Object} `username`, `repoName`, `branchName`, `commitHash`
- * @param fileName {String} Name of the file.
- * @returns {string} The file URI to retrieve the raw data of the file.
- */
-export function constructGitHubFileURI( githubInfo, fileName ) {
-  let commitish = githubInfo.commitHash || githubInfo.branchName || 'master';
-  let extraPath = githubInfo.extraPath ? `/${ githubInfo.extraPath }` : '';
-
-  return `https://raw.githubusercontent.com/${ githubInfo.username }/${ githubInfo.repoName }/${ commitish }${ extraPath }/${ fileName }`;
-}
-
-export function constructGitHubPath( githubInfo ) {
-  let extraPath = githubInfo.extraPath ? `/${ githubInfo.extraPath }` : '';
-  return `github.com/${ githubInfo.username }/${ githubInfo.repoName }${ extraPath }`;
-}
-
-export function constructGitHubRepoURL( githubInfo ) {
-  return `https://github.com/${githubInfo.username}/${githubInfo.repoName}.git`;
-}
 
 /** *******
  * CMD related utility functions

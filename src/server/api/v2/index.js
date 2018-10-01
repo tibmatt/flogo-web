@@ -5,7 +5,6 @@ import { actions } from './actions';
 import { contribs as deviceContribs } from './contribs/devices';
 import { contribs as microserviceContribs } from './contribs/microservices';
 import { handlers } from './handlers';
-import { profiles } from './profiles';
 
 export function registerRoutes(router) {
   const basePathV2 = config.app.basePathV2;
@@ -15,5 +14,4 @@ export function registerRoutes(router) {
   deviceContribs(router, basePathV2);
   microserviceContribs(router, basePathV2);
   handlers(router, basePathV2);
-  profiles(router, basePathV2);
 }

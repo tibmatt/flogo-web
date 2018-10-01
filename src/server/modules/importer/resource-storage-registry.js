@@ -1,5 +1,5 @@
 /** @module importer */
-import { AppsManager } from '../apps/index.v2';
+import { AppsManager } from '../apps';
 import { ActivitiesManager as ContribActivitiesManager } from '../activities';
 import { TriggerManager as ContribTriggersManager } from '../triggers';
 import { ContribsManager as DeviceContribsManager } from '../contribs';

@@ -1,5 +1,3 @@
-import _ from 'lodash';
-import fs from 'fs';
 import path from 'path';
 
 import './load-env';
@@ -167,48 +165,9 @@ const config = {
   },
 };
 
-const originalConfig = _.cloneDeep(config);
-
 export {
   config,
 };
-
-export {
-  originalConfig,
-};
-
-export const flowExport = {
-  filename: 'flogo.export.json',
-};
-
-export function setConfiguration(newSettings) {
-  const settings = _.cloneDeep(newSettings);
-
-  config = _.assign({}, config, {
-    engine: settings.engine,
-    stateServer: settings.stateServer,
-    processServer: settings.flowServer,
-    flogoWeb: settings.db,
-    flogoWebActivities: settings.activities,
-    flogoWebTriggers: settings.triggers,
-  });
-}
-
-export function resetConfiguration() {
-  config = _.cloneDeep(originalConfig);
-}
-
-export function loadSamplesConfig() {
-  let samples = [];
-  try {
-    // TODO: replace for async version
-    samples = JSON.parse(fs.readFileSync(path.join(__dirname, 'samples.json'), 'utf8'));
-  } catch (e) {
-    // nothing to do
-  }
-  return samples;
-}
-
 
 function __extractDomain(url) {
   let domain;

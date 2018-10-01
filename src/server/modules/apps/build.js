@@ -5,7 +5,7 @@ import { config } from './../../config/app-config';
 import { getInitializedEngine } from './../../modules/init';
 import { determinePathToVendor } from '../engine/determine-path-to-vendor';
 
-import { AppsManager } from './index.v2';
+import { AppsManager } from './index';
 import { writeJSONFile } from '../../common/utils';
 
 const defaultBuildOptions = options => ({ optimize: true, embedConfig: true, ...options });

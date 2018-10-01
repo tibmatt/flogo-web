@@ -1,6 +1,5 @@
-import {copyFile, fileExists, inspectObj, rmFolder} from '../../../common/utils';
+import {copyFile, fileExists, rmFolder} from '../../../common/utils';
 import path from 'path';
-import omit from 'lodash/omit';
 import {logger} from '../../../common/logging';
 import {ERROR_TYPES, ErrorManager} from '../../../common/errors';
 import {syncTasks} from '../../init';

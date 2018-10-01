@@ -4,10 +4,6 @@ import { syncTasks, installDefaults, getInitializedEngine, ensureDefaultDirs } f
 
 ensureDefaultDirs()
   .then(() => getInitializedEngine(config.defaultEngine.path, { forceCreate: true }))
-  // .then(engine => {
-  //   return initAllDbs()
-  //     .then(() => syncTasks(engine, true));
-  // })
   .then(engine => syncTasks(engine, true))
   .then(() => {
     console.log('[log] init test engine done');
