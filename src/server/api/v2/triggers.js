@@ -2,35 +2,35 @@ import { AppsTriggersManager } from '../../modules/apps/triggers';
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
 import { buildTrigger } from './triggers/build';
 
-export function triggers(router, basePath) {
-  router.get(`${basePath}/apps/:appId/triggers`, listTriggers);
-  router.post(`${basePath}/apps/:appId/triggers`, createTrigger);
+export function triggers(router) {
+  router.get(`/apps/:appId/triggers`, listTriggers);
+  router.post(`/apps/:appId/triggers`, createTrigger);
   // !!IMPORTANT :shim endpoint should be declared before the other /triggers/{triggerId} urls
-  router.get(`${basePath}/triggers/:triggerId\\:shim`, shimTrigger);
-  router.get(`${basePath}/triggers/:triggerId`, getTrigger);
-  router.patch(`${basePath}/triggers/:triggerId`, updateTrigger);
-  router.del(`${basePath}/triggers/:triggerId`, deleteTrigger);
+  router.get(`/triggers/:triggerId\\:shim`, buildTrigger);
+  router.get(`/triggers/:triggerId`, getTrigger);
+  router.patch(`/triggers/:triggerId`, updateTrigger);
+  router.del(`/triggers/:triggerId`, deleteTrigger);
 }
 
-function* listTriggers() {
-  const appId = this.params.appId;
+async function listTriggers(ctx, next) {
+  const appId = ctx.params.appId;
   const searchTerms = {};
-  const filterName = this.request.query['filter[name]'];
+  const filterName = ctx.request.query['filter[name]'];
   if (filterName) {
     searchTerms.name = filterName;
   }
-  const triggerList = yield AppsTriggersManager.list(appId, searchTerms);
-  this.body = {
+  const triggerList = await AppsTriggersManager.list(appId, searchTerms);
+  ctx.body = {
     data: triggerList || [],
   };
 }
 
-function* createTrigger() {
-  const appId = this.params.appId;
-  const body = this.request.body;
+async function createTrigger(ctx, next) {
+  const appId = ctx.params.appId;
+  const body = ctx.request.body;
   try {
-    const trigger = yield AppsTriggersManager.create(appId, body);
-    this.body = {
+    const trigger = await AppsTriggersManager.create(appId, body);
+    ctx.body = {
       data: trigger,
     };
   } catch (error) {
@@ -51,10 +51,10 @@ function* createTrigger() {
   }
 }
 
-function* getTrigger() {
-  const triggerId = this.params.triggerId;
+async function getTrigger(ctx, next) {
+  const triggerId = ctx.params.triggerId;
 
-  const trigger = yield AppsTriggersManager.findOne(triggerId);
+  const trigger = await AppsTriggersManager.findOne(triggerId);
 
   if (!trigger) {
     throw ErrorManager.createRestNotFoundError('Trigger not found', {
@@ -64,18 +64,18 @@ function* getTrigger() {
     });
   }
 
-  this.body = {
+  ctx.body = {
     data: trigger,
   };
 }
 
-function* updateTrigger() {
-  const triggerId = this.params.triggerId;
-  const data = this.request.body || {};
+async function updateTrigger(ctx, next) {
+  const triggerId = ctx.params.triggerId;
+  const data = ctx.request.body || {};
   try {
-    const app = yield AppsTriggersManager.update(triggerId, data);
+    const app = await AppsTriggersManager.update(triggerId, data);
 
-    this.body = {
+    ctx.body = {
       data: app,
     };
   } catch (error) {
@@ -100,9 +100,9 @@ function* updateTrigger() {
 }
 
 
-function* deleteTrigger() {
-  const triggerId = this.params.triggerId;
-  const removed = yield AppsTriggersManager.remove(triggerId);
+async function deleteTrigger(ctx, next) {
+  const triggerId = ctx.params.triggerId;
+  const removed = await AppsTriggersManager.remove(triggerId);
 
   if (!removed) {
     throw ErrorManager.createRestNotFoundError('Trigger not found', {
@@ -112,9 +112,5 @@ function* deleteTrigger() {
     });
   }
 
-  this.status = 204;
-}
-
-function* shimTrigger() {
-  yield buildTrigger(this);
+  ctx.status = 204;
 }

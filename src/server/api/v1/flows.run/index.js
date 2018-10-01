@@ -1,7 +1,7 @@
 import request  from 'co-request';
 
-import { config } from '../../config/app-config';
-import { logger } from '../../common/logging';
+import { config } from '../../../config/app-config';
+import { logger } from '../../../common/logging/index';
 
 let basePath = config.app.basePath;
 
@@ -20,7 +20,7 @@ const logRequestResponse = (request, response) => {
 
 export function flowsRun(app, router) {
   if(!app) {
-    console.error("[Error][api/flows.run/index.js]You must pass app");
+    console.error("[Error][api/flows.run/index.ts]You must pass app");
   }
 
   router.post(basePath+'/flows/run/flows', flows);

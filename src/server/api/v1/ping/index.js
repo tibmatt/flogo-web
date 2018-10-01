@@ -1,10 +1,8 @@
 import request from 'co-request';
 import url from 'url';
 
-import { config } from '../../config/app-config';
-import { isJSON } from '../../common/utils';
-
-let basePath = config.app.basePath;
+import { config } from '../../../config/app-config';
+import { isJSON } from '../../../common/utils/index';
 
 let services = [];
 services['engine']      = config.engine;
@@ -14,14 +12,8 @@ services['flogo-web']  = config.flogoWeb;
 services['flogo-web-activities']  = config.flogoWebActivities;
 services['flogo-web-triggers']  = config.flogoWebTriggers;
 
-export function ping(app, router){
-  if(!app){
-    console.error("[Error][api/ping/index.js]You must pass app");
-  }
-
-  router.post(basePath+"/ping/service", pingService);
-
-  //router.get(basePath+"/ping/configuration", pingConfiguration);
+export function ping(router){
+  router.post('/ping/service', pingService);
 }
 
 /*
@@ -67,7 +59,7 @@ function* pingConfiguration(next) {
  *        '500':
  *          description: Error on configuration
  */
-function* pingService(next){
+async function pingService(ctx, next){
 
   try{
     let data = this.request.body.config ||{};
@@ -91,7 +83,7 @@ function* pingService(next){
       pathname: data.testPath || service.testPath,
     });
 
-    const result = yield request(serviceUrl);
+    const result = await request(serviceUrl);
     if (result.statusCode && result.statusCode != 200) {
       throw new Error('Error');
     }
@@ -100,7 +92,7 @@ function* pingService(next){
     this.throw(err.message, 500);
   }
 
-  yield next;
+  return next();
 }
 /**
  * @swagger

@@ -14,12 +14,19 @@
     "isolatedModules": true,
     // Import non-ES modules as default imports.
     "esModuleInterop": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
     "typeRoots": [
-      "node_modules/@types"
+      "./node_modules"
+    ],
+    "types": [
+      "@types/koa",
+      "@types/koa-router",
+      "koa-body"
     ]
   },
   "include": [
-    "**/*.ts"
+    "./**/*.ts"
   ],
   "exclude": [
     "**/node_modules/**/*",

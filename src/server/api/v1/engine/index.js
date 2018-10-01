@@ -1,15 +1,8 @@
-import {config} from '../../config/app-config';
-import { getInitializedEngine } from '../../modules/engine';
+import {config} from '../../../config/app-config';
+import { getInitializedEngine } from '../../../modules/engine/index';
 
-let basePath = config.app.basePath;
-
-export function engine(app, router){
-  if(!app){
-    console.error("[Error][api/engine/index.js]You must pass app");
-  }
-  router.get(basePath+"/engine/restart", restartEngine);
-
-
+export function engine(router){
+  router.get('/engine/restart', restartEngine);
 }
 
 /**
@@ -36,20 +29,20 @@ export function engine(app, router){
  *                type: number
  *                default: 500
  */
-function* restartEngine(next) {
+async function restartEngine(ctx, next) {
   console.log('Restart Engine');
   let data = {
     status: 200
   };
 
   try{
-    let engine = yield getInitializedEngine(config.defaultEngine.path);
+    let engine = await getInitializedEngine(config.defaultEngine.path);
 
-    let stopTestEngineResult = yield engine.stop();
+    let stopTestEngineResult = await engine.stop();
     let startTestEngineResult = false;
 
     if (stopTestEngineResult) {
-      startTestEngineResult = yield engine.start();
+      startTestEngineResult = await engine.start();
     } else {
       data.status = 500;
       console.log("[error] didn't stop successful");
@@ -61,11 +54,11 @@ function* restartEngine(next) {
     }
 
     this.body = data;
-    yield next;
+    return next();
   } catch(err) {
     console.log("[error][restartEngine]: ", err);
     data.status = 500;
     this.body = data;
-    yield next;
+    return next();
   }
 }
