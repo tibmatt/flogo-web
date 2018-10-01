@@ -87,8 +87,9 @@
                   translate}}</a></li>
               </ul>
               </div>
+              <button class="flogo-button--flat js-open-modal app-detail-add-flow" (click)="openCreateFlow()">
+                <i class="flogo-icon-add"></i>{{ 'DETAILS:NEW-FLOW' | translate }}</button>
             </div>
-            <flogo-new-flow [appId]="application?.id" (newFlow)="onFlowAdd($event)"></flogo-new-flow>
             <flogo-apps-settings *ngIf="application?.profileType === PROFILE_TYPES.DEVICE"
                                  (save)="onSaveDeviceSettings($event)"
                                  [settings]="application?.device?.settings"></flogo-apps-settings>
@@ -189,6 +190,5 @@
                                    (deleteFlow)="onFlowDelete($event)"
                                    (addFlow)="openCreateFlowFromTrigger($event)"></flogo-apps-flows-flow-group>
     </div>
-<flogo-trigger-shim-build #shimTriggersModal [shimTriggersList]="shimTriggersList" [buildOptions]="buildOptions" (triggerSelected)="onShimTriggerSelection($event)"></flogo-trigger-shim-build>
   </div>
 </div>

@@ -2,7 +2,7 @@ import {Component, HostBinding, Inject} from '@angular/core';
 import {Action, ERROR_CODE} from '@flogo/core';
 import {AppDetailService} from '@flogo/app/core/apps.service';
 import {NotificationsService} from '@flogo/core/notifications';
-import {MODAL_TOKEN, ModalContent, modalAnimate, ModalControl} from '@flogo/core/modal';
+import {MODAL_TOKEN, modalAnimate, ModalControl} from '@flogo/core/modal';
 
 export interface ExportFlowsData {
   flows: Array<Action>;
@@ -15,7 +15,7 @@ export interface ExportFlowsData {
   styleUrls: ['export-flows.component.less'],
   animations: modalAnimate,
 })
-export class FlogoExportFlowsComponent implements ModalContent {
+export class FlogoExportFlowsComponent {
   @HostBinding('@modalAnimate')
   checkedFlows = [];
   checkAllFlows = [];
