@@ -1,7 +1,7 @@
-import request  from 'co-request';
+import * as request from 'got';
 
 import { config } from '../../../config/app-config';
-import { logger } from '../../../common/logging/index';
+import { logger } from '../../../common/logging';
 
 let basePath = config.app.basePath;
 
@@ -18,19 +18,15 @@ const logRequestResponse = (request, response) => {
 
 };
 
-export function flowsRun(app, router) {
-  if(!app) {
-    console.error("[Error][api/flows.run/index.ts]You must pass app");
-  }
-
-  router.post(basePath+'/flows/run/flows', flows);
-  router.post(basePath+'/flows/run/flow/start', flowStart);
-  router.get(basePath+'/flows/run/instances/:id/status', statusInstance);
-  router.get(basePath+'/flows/run/instances/:id/steps', stepsInstance);
-  router.get(basePath+'/flows/run/instances/:id', instanceById);
-  router.get(basePath+'/flows/run/instances/:idInstance/snapshot/:idSnapshot', getSnapshot);
-  router.post(basePath+'/flows/run/restart', restart);
-  router.get(basePath+'/flows/run/flows/:id', getProcessFlow);
+export function flowsRun(router) {
+  router.post('/flows/run/flows', flows);
+  router.post('/flows/run/flow/start', flowStart);
+  router.get('/flows/run/instances/:id/status', statusInstance);
+  router.get('/flows/run/instances/:id/steps', stepsInstance);
+  router.get('/flows/run/instances/:id', instanceById);
+  router.get('/flows/run/instances/:idInstance/snapshot/:idSnapshot', getSnapshot);
+  router.post('/flows/run/restart', restart);
+  router.get('/flows/run/flows/:id', getProcessFlow);
 }
 
 /**
@@ -103,26 +99,21 @@ export function flowsRun(app, router) {
  *              type:
  *                type: integer
  */
-function* getProcessFlow(next) {
+async function getProcessFlow(ctx, next) {
   let process = config.processServer;
-  let id = this.params.id;
+  let id = ctx.params.id;
   let uri =  getUrl(process) + '/flows/' + id;
-  this.body = id;
-
-  const payloadRequest = {
-    uri: uri,
-    method: 'GET'
-  };
+  ctx.body = id;
 
   try {
-    let result = yield request(payloadRequest);
-    this.body = result.body;
-    logRequestResponse(payloadRequest, this.body);
+    let result = await request.get(uri);
+    ctx.body = result.body;
+    logRequestResponse({ uri, method: 'GET' }, ctx.body);
   }catch(err) {
-    this.throw(err.message, 500);
+    ctx.throw(err.message, 500);
   }
 
-  yield next;
+  next();
 }
 
 /**
@@ -227,29 +218,26 @@ function* getProcessFlow(next) {
  *                type: string
  *                description: Execution ID
  */
-function* restart(next) {
+async function restart(ctx, next) {
   let engine = config.engine;
-  let data = this.request.body;
+  let data = ctx.request.body;
 
-  let uri = getUrl(engine) + '/flow/restart';
-
-
-  const payloadRequest = {
-    uri: uri,
-    method: 'POST',
-    body: data,
-    json: true
-  };
+  let url = getUrl(engine) + '/flow/restart';
 
   try {
-    let result = yield request(payloadRequest);
-    this.body = result.body;
-    logRequestResponse(payloadRequest, this.body);
+    let result = await request.post(url, { body: data, json: true });
+    ctx.body = result.body;
+    logRequestResponse({
+      url,
+      method: 'POST',
+      body: data,
+      json: true
+    }, ctx.body);
   }catch(err) {
-    this.throw(err.message, 500);
+    ctx.throw(err.message, 500);
   }
 
-  yield next;
+  next();
 }
 
 /**
@@ -328,27 +316,25 @@ function* restart(next) {
  *                    items:
  *                      type: object
  */
-function* getSnapshot(next) {
+async function getSnapshot(ctx, next) {
   let state = config.stateServer;
-  let idInstance = this.params.idInstance;
-  let idSnapshot = this.params.idSnapshot;
+  let idInstance = ctx.params.idInstance;
+  let idSnapshot = ctx.params.idSnapshot;
 
   let uri = getUrl(state) + '/instances/' + idInstance + '/snapshot/' + idSnapshot;
 
-  const payloadRequest = {
-    uri: uri,
-    method: 'GET'
-  };
-
   try {
-    let result = yield request(payloadRequest);
-    this.body = result.body;
-    logRequestResponse(payloadRequest, this.body);
+    let result = await request.get(uri);
+    ctx.body = result.body;
+    logRequestResponse({
+      uri: uri,
+      method: 'GET'
+    }, ctx.body);
   }catch(err) {
-    this.throw(err.message, 500);
+    ctx.throw(err.message, 500);
   }
 
-  yield next;
+  next();
 }
 
 /**
@@ -367,25 +353,23 @@ function* getSnapshot(next) {
  *        200:
  *          description: tbd
  */
-function* instanceById(next) {
+async function instanceById(ctx, next) {
   let state = config.stateServer;
-  let id = this.params.id;
+  let id = ctx.params.id;
   let uri = getUrl(state) + '/instances/' + id;
 
-  const payloadRequest = {
-    uri: uri,
-      method: 'GET'
-  };
-
   try {
-    let result = yield request(payloadRequest);
-    this.body = result.body;
-    logRequestResponse(payloadRequest, this.body);
+    let result = await request.get(uri);
+    ctx.body = result.body;
+    logRequestResponse({
+      uri,
+      method: 'GET'
+    }, ctx.body);
   }catch(err) {
-    this.throw(err.message, 500);
+    ctx.throw(err.message, 500);
   }
 
-  yield next;
+  next();
 }
 
 /**
@@ -406,26 +390,24 @@ function* instanceById(next) {
  *          schema:
  *            $ref: '#/definitions/Step'
  */
-function* stepsInstance(next) {
+async function stepsInstance(ctx, next) {
   let state = config.stateServer;
-  let id = this.params.id;
+  let id = ctx.params.id;
   let uri = getUrl(state) + '/instances/' + id + '/steps';
-  this.body = id;
-
-  const payloadRequest = {
-    uri: uri,
-    method: 'GET'
-  };
+  ctx.body = id;
 
   try {
-    let result = yield request(payloadRequest);
-    this.body = result.body;
-    logRequestResponse(payloadRequest, this.body);
+    let result = await request.get(uri);
+    ctx.body = result.body;
+    logRequestResponse({
+      uri,
+      method: 'GET'
+    }, ctx.body);
   }catch(err) {
-    this.throw(err.message, 500);
+    ctx.throw(err.message, 500);
   }
 
-  yield next;
+  next();
 }
 /**
  * @swagger
@@ -499,26 +481,24 @@ function* stepsInstance(next) {
  *              status:
  *                type: integer
  */
-function* statusInstance(next) {
+async function statusInstance(ctx, next) {
   let state = config.stateServer;
-  let id = this.params.id;
+  let id = ctx.params.id;
   let uri =  getUrl(state) + '/instances/' + id + '/status';
-  this.body = id;
-
-  const payloadRequest = {
-    uri: uri,
-    method: 'GET'
-  };
+  ctx.body = id;
 
   try {
-    let result = yield request(payloadRequest);
-    this.body = result.body;
-    logRequestResponse(payloadRequest, this.body);
+    let result = await request.get(uri);
+    ctx.body = result.body;
+    logRequestResponse({
+      uri,
+      method: 'GET'
+    }, ctx.body);
   }catch(err) {
-    this.throw(err.message, 500);
+    ctx.throw(err.message, 500);
   }
 
-  yield next;
+  next();
 }
 
 function getUrl(service) {
@@ -527,9 +507,9 @@ function getUrl(service) {
   if(service.port) {
     url += ':' + service.port
   }
-if(service.basePath){
-  url += service.basePath;
-}
+  if(service.basePath){
+    url += service.basePath;
+  }
   return url;
 }
 
@@ -563,8 +543,8 @@ if(service.basePath){
  *                type: string
  *                description: flow id
  */
-function* flowStart(next) {
-  let data = this.request.body;
+async function flowStart(ctx, next) {
+  let data = ctx.request.body;
   let engine = config.engine;
   let process = config.processServer;
 
@@ -573,22 +553,20 @@ function* flowStart(next) {
   data.flowUri = data.actionUri;
   delete data.flowId;
 
-  const payloadRequest = {
-    uri: uri,
-    method: 'POST',
-    body: data,
-    json: true
-  };
-
   try {
-      let result = yield request(payloadRequest);
-      this.body = result.body;
-      logRequestResponse(payloadRequest, this.body);
+      let result = await request.post(uri, { body: data, json: true });
+      ctx.body = result.body;
+      logRequestResponse( {
+        uri,
+        method: 'POST',
+        body: data,
+        json: true
+      }, ctx.body);
   }catch (err) {
-    this.throw(err.message, 500);
+    ctx.throw(err.message, 500);
   }
 
-  yield next;
+  next();
 
 }
 
@@ -681,27 +659,25 @@ function* flowStart(next) {
  *                type: string
  *                format: dateTime
  */
-function* flows(next) {
-  let data = this.request.body;
+async function flows(ctx, next) {
+  let data = ctx.request.body;
   let process = config.processServer;
   let uri = getUrl(process) + '/flows';
 
-  const payloadRequest = {
-    uri: uri,
-    method: 'POST',
-    body: data,
-    json: true
-  };
-
   try {
-    let result = yield request(payloadRequest);
-    this.body = result.body;
-    logRequestResponse(payloadRequest, this.body);
+    let result = await request.post(uri, { body: data, json: true });
+    ctx.body = result.body;
+    logRequestResponse({
+      uri,
+      method: 'POST',
+      body: data,
+      json: true
+    }, ctx.body);
   } catch(err) {
-    this.throw(err.message, 500);
+    ctx.throw(err.message, 500);
   }
 
-  yield next;
+  next();
 }
 /**
  * @swagger
