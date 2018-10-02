@@ -22,7 +22,10 @@ export interface ServerConfig {
 export async function createApp({ port, staticPath, logsRoot }: ServerConfig) {
   const app: Koa = new KoaApp();
   app.on('error', errorLogger);
-  app.use(cors({ expose: ['Content-Disposition'] }));
+  app.use(cors({
+    origin: '*',
+    exposeHeaders: ['Content-Disposition'],
+  }));
   // uncomment to log all requests
   // app.use(requestLogger());
   app.use(stripTrailingSlash());

@@ -11,8 +11,8 @@ export function buildHandler(performBuild: BuilderFn): Koa.Middleware {
     context.req.setTimeout(0, <any>undefined);
     const options = getCompileOptions(context);
     const { fileName, content } = await performBuild(context, options);
-    context.body = content;
     context.attachment(fileName);
+    context.body = content;
   }
 }
 
