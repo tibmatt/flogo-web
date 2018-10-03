@@ -12,13 +12,15 @@ import { HandlersManager } from '../apps/handlers';
 import { TriggerManager as ContribTriggersManager } from '../triggers';
 
 import { findGreatestNameIndex } from '../../common/utils/collection';
-import { portTaskTypesForLegacyIteratorTasks } from './create/port-task-types-for-legacy-iterator-tasks';
 
 const EDITABLE_FIELDS_CREATION = [
   'name',
   'description',
   'metadata',
-  'data',
+  'tasks',
+  'links',
+  'errorHandler',
+  'explicitReply'
 ];
 
 const EDITABLE_FIELDS_UPDATE = [
@@ -50,16 +52,6 @@ export class ActionsManager {
         if (errors) {
           throw ErrorManager.createValidationError('Validation error', errors);
         }
-
-        if (actionData.data && actionData.data.flow && actionData.data.flow.name) {
-          actionData.name = actionData.data.flow.name;
-          delete actionData.data.flow.name;
-        } else if (!actionData.name) {
-          actionData.name = actionData.id;
-        }
-
-        // TODO: should be done during import in importer.LegacyImporter
-        portTaskTypesForLegacyIteratorTasks(actionData);
 
         actionData.name = ensureUniqueName(app.actions, actionData.name);
         return actionData;

@@ -1,4 +1,6 @@
-import { AbstractActionsImporter } from '../common';
+import { AbstractActionsImporter, portTaskTypeForIterators } from '../common';
+import omit from 'lodash/omit';
+import get from "lodash/get";
 
 export class ActionsImporter extends AbstractActionsImporter {
 
@@ -8,24 +10,11 @@ export class ActionsImporter extends AbstractActionsImporter {
   }
 
   formatAction(action) {
-    if (!action.name) {
-      action.name = action.id;
-    }
-    action.data = action.data ? action.data : {};
-    const { flow } = action.data;
-    if (flow) {
-      const { tasks = [], links = [] } = flow;
-      delete flow.tasks;
-      delete flow.links;
-      flow.attributes = [];
-      flow.rootTask = {
-        id: 1,
-        type: 1,
-        links,
-        tasks: tasks.map(task => this.mapTask(task)),
-      };
-    }
-    return action;
+    const formattedAction = omit(action, ['data']);
+    formattedAction.name = get(action, 'data.flow.name', action.name || action.id);
+    formattedAction.tasks = get(action, 'data.flow.tasks', []).map(task => this.mapTask(task));
+    formattedAction.links = get(action, 'data.flow.links', []);
+    return formattedAction;
   }
 
   mapTask(task) {
@@ -36,6 +25,7 @@ export class ActionsImporter extends AbstractActionsImporter {
         ...attribute,
         value: task.attributes[attribute.name] || '',
       }));
+    portTaskTypeForIterators(task);
     return { ...task, attributes };
   }
 

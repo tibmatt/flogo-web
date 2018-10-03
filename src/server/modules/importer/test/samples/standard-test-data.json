@@ -24,108 +24,97 @@
             }
           ]
         },
-        "data": {
-          "flow": {
+        "tasks": [
+          {
+            "id": "log_2",
+            "name": "log_2",
+            "description": "",
             "type": 1,
-            "rootTask": {
-              "id": "root",
-              "type": 1,
-              "tasks": [
-                {
-                  "id": "log_2",
-                  "name": "log_2",
-                  "description": "",
-                  "type": 1,
-                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
-                  "settings": {},
-                  "attributes": [
-                    {
-                      "name": "message",
-                      "type": "string",
-                      "value": ""
-                    },
-                    {
-                      "name": "flowInfo",
-                      "type": "boolean",
-                      "value": false
-                    },
-                    {
-                      "name": "addToFlow",
-                      "type": "boolean",
-                      "value": false
-                    }
-                  ],
-                  "inputMappings": [
-                    {
-                      "mapTo": "message",
-                      "type": 2,
-                      "value": ""
-                    },
-                    {
-                      "mapTo": "flowInfo",
-                      "type": 2,
-                      "value": false
-                    },
-                    {
-                      "mapTo": "addToFlow",
-                      "type": 2,
-                      "value": false
-                    }
-                  ]
-                }
-              ],
-              "links": []
-            },
-            "errorHandlerTask": {
-              "id": "errorHandler",
-              "type": 1,
-              "tasks": [
-                {
-                  "id": "log_6",
-                  "name": "log_6",
-                  "description": "",
-                  "type": 1,
-                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
-                  "settings": {},
-                  "attributes": [
-                    {
-                      "name": "message",
-                      "type": "string",
-                      "value": "log in error handler"
-                    },
-                    {
-                      "name": "flowInfo",
-                      "type": "boolean",
-                      "value": false
-                    },
-                    {
-                      "name": "addToFlow",
-                      "type": "boolean",
-                      "value": false
-                    }
-                  ],
-                  "inputMappings": [
-                    {
-                      "mapTo": "message",
-                      "type": 2,
-                      "value": "log in error handler"
-                    },
-                    {
-                      "mapTo": "flowInfo",
-                      "type": 2,
-                      "value": false
-                    },
-                    {
-                      "mapTo": "addToFlow",
-                      "type": 2,
-                      "value": false
-                    }
-                  ]
-                }
-              ],
-              "links": []
-            }
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+            "settings": {},
+            "attributes": [
+              {
+                "name": "message",
+                "type": "string",
+                "value": ""
+              },
+              {
+                "name": "flowInfo",
+                "type": "boolean",
+                "value": false
+              },
+              {
+                "name": "addToFlow",
+                "type": "boolean",
+                "value": false
+              }
+            ],
+            "inputMappings": [
+              {
+                "mapTo": "message",
+                "type": 2,
+                "value": ""
+              },
+              {
+                "mapTo": "flowInfo",
+                "type": 2,
+                "value": false
+              },
+              {
+                "mapTo": "addToFlow",
+                "type": 2,
+                "value": false
+              }
+            ]
           }
+        ],
+        "links": [],
+        "errorHandler": {
+          "tasks": [
+            {
+              "id": "log_6",
+              "name": "log_6",
+              "description": "",
+              "type": 1,
+              "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+              "settings": {},
+              "attributes": [
+                {
+                  "name": "message",
+                  "type": "string",
+                  "value": "log in error handler"
+                },
+                {
+                  "name": "flowInfo",
+                  "type": "boolean",
+                  "value": false
+                },
+                {
+                  "name": "addToFlow",
+                  "type": "boolean",
+                  "value": false
+                }
+              ],
+              "inputMappings": [
+                {
+                  "mapTo": "message",
+                  "type": 2,
+                  "value": "log in error handler"
+                },
+                {
+                  "mapTo": "flowInfo",
+                  "type": 2,
+                  "value": false
+                },
+                {
+                  "mapTo": "addToFlow",
+                  "type": 2,
+                  "value": false
+                }
+              ]
+            }
+          ],
+          "links": []
         }
       }
     ],

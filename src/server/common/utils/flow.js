@@ -1,5 +1,6 @@
 import get from 'lodash/get';
 import isObject from 'lodash/isObject';
+import {TASK_HANDLER_NAME_ROOT} from "../constants";
 
 /**
  * Finds out if an activity schema represents a mapper activity.
@@ -34,5 +35,12 @@ export function isOutputMapperField(inputDefinition) {
 }
 
 export function safeGetTasksInHandler(action, handler) {
-  return get(action, `data.flow.${handler}.tasks`, []);
+  return get(action, getInternalTasksPath(handler), []);
+}
+
+export function getInternalTasksPath(handler) {
+  if (handler === TASK_HANDLER_NAME_ROOT) {
+    return 'tasks';
+  }
+  return `${handler}.tasks`;
 }

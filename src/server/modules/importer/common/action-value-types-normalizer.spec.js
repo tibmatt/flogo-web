@@ -17,41 +17,35 @@ describe('importer.common.actionValueTypesNormalizer', function () {
         { name: 'out2', type: 'long' },
       ],
     },
-    data: {
-      flow: {
-        rootTask: {
-          tasks: [
-            {
-              id: 'task1',
-              attributes: [
-                { name: 'attr1', type: 'double' },
-                { name: 'attr2', type: 'complex_object' },
-              ],
-            },
-            {
-              id: 'task2',
-              attributes: [
-                { name: 'attr1', type: 'number' },
-                { name: 'attr2', type: 'complexObject' },
-                { name: 'attr3', type: 'uknowntype' },
-              ],
-            },
-          ],
-        },
-        errorHandlerTask: {
-          tasks: [
-            {
-              id: 'task_error',
-              attributes: [
-                { name: 'attr1', type: 'array' },
-                { name: 'attr2', type: 'params' },
-                { name: 'attr3', type: 'int' },
-              ],
-            },
-          ],
-        },
+    tasks: [
+      {
+        id: 'task1',
+        attributes: [
+          { name: 'attr1', type: 'double' },
+          { name: 'attr2', type: 'complex_object' },
+        ],
       },
-    },
+      {
+        id: 'task2',
+        attributes: [
+          { name: 'attr1', type: 'number' },
+          { name: 'attr2', type: 'complexObject' },
+          { name: 'attr3', type: 'uknowntype' },
+        ],
+      },
+    ],
+    errorHandler: {
+      tasks: [
+        {
+          id: 'task_error',
+          attributes: [
+            { name: 'attr1', type: 'array' },
+            { name: 'attr2', type: 'params' },
+            { name: 'attr3', type: 'int' },
+          ],
+        },
+      ],
+    }
   };
   const extractValues = arr => arr.map(({ name, type }) => ({ [name]: type }));
   let normalizedAction;
@@ -89,7 +83,7 @@ describe('importer.common.actionValueTypesNormalizer', function () {
   });
 
   it('should correctly normalize task value types for error task', function () {
-    const taskAttributeTypes = extractTaskHandlerAttributeTypes('errorHandlerTask');
+    const taskAttributeTypes = extractTaskHandlerAttributeTypes('errorHandler');
     const [taskTypes] = taskAttributeTypes;
     expect(taskTypes).to.have.deep.members([
       { attr1: 'array' },
@@ -99,8 +93,12 @@ describe('importer.common.actionValueTypesNormalizer', function () {
   });
 
   function extractTaskHandlerAttributeTypes(handlerName) {
-    const flow = normalizedAction.data.flow;
-    const handler = flow[handlerName];
+    let handler;
+    if (handlerName === 'rootTask') {
+      handler = normalizedAction;
+    } else {
+      handler = normalizedAction[handlerName];
+    }
     return handler.tasks.map(task => extractValues(task.attributes));
   }
 

@@ -39,7 +39,6 @@ describe('importer.device.ActionsImporter', () => {
       }).to.not.throw();
       expect(formattedAction)
         .to.deep.include({ id: 'a', name: 'my action' })
-        .and.to.have.key('data');
     });
 
     it('should set the id as name if name is not provided', () => {
@@ -64,15 +63,11 @@ describe('importer.device.ActionsImporter', () => {
       const formattedAction = deviceActionsImporter.formatAction(actionToTest);
       expect(formattedAction)
         .to.deep.include({ id: 'a', name: 'my action' })
-        .and.to.not.have.keys('tasks', 'links');
-      expect(formattedAction)
-        .to.have.a.nested.property('data.flow.rootTask')
-        .that.deep.includes({ id: 1, type: 1 });
+        .and.to.have.keys('tasks', 'links');
 
-      const rootTask = formattedAction.data.flow.rootTask;
-      expect(rootTask.links).to.be.an('array').and.to.deep.include(mockLink);
-      expect(rootTask.tasks).to.be.an('array').of.length(2);
-      const taskIds = rootTask.tasks.map(task => task.id);
+      expect(formattedAction.links).to.be.an('array').and.to.deep.include(mockLink);
+      expect(formattedAction.tasks).to.be.an('array').of.length(2);
+      const taskIds = formattedAction.tasks.map(task => task.id);
       expect(taskIds).to.have.members([2, 3]);
     });
   });

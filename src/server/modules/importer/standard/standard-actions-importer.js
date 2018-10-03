@@ -1,5 +1,4 @@
 import isEmpty from 'lodash/isEmpty';
-import { FLOGO_TASK_TYPE, LEGACY_FLOW_TYPE } from '../../../common/constants';
 import { LINK_TYPE } from '../../transfer/common/type-mapper';
 import { AbstractActionsImporter } from '../common';
 import { fromStandardTypeMapper } from './utils';
@@ -34,28 +33,15 @@ export class StandardActionsImporter extends AbstractActionsImporter {
 
   resourceToAction(resource = {}) {
     const resourceData = resource.data || {};
+    const errorHandler = this.getErrorHandler(resourceData);
     return {
       id: this.actionIdFromResourceId(resource.id),
       name: resourceData.name,
       description: resourceData.description,
       metadata: this.extractMetadata(resourceData),
-      data: {
-        flow: this.makeFlow(resourceData),
-      },
-    };
-  }
-
-  makeFlow(resourceData) {
-    const errorHandlerTask = this.getErrorHandler(resourceData);
-    return {
-      type: LEGACY_FLOW_TYPE,
-      rootTask: {
-        id: 'root',
-        type: FLOGO_TASK_TYPE.TASK,
-        tasks: this.mapTasks(resourceData.tasks),
-        links: this.mapLinks(resourceData.links),
-      },
-      errorHandlerTask,
+      tasks: this.mapTasks(resourceData.tasks),
+      links: this.mapLinks(resourceData.links),
+      errorHandler
     };
   }
 
@@ -65,10 +51,8 @@ export class StandardActionsImporter extends AbstractActionsImporter {
       return undefined;
     }
     return {
-      id: 'errorHandler',
-      type: FLOGO_TASK_TYPE.TASK,
       tasks: this.mapTasks(errorHandler.tasks),
-      links: this.mapLinks(errorHandler.links),
+      links: this.mapLinks(errorHandler.links)
     };
   }
 

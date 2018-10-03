@@ -1,5 +1,3 @@
-import {portTaskTypesForLegacyIteratorTasks} from "../../../actions/create/port-task-types-for-legacy-iterator-tasks";
-
 const commonApp = require('../samples/common-app-details');
 
 export class ActionsManagerMock {
@@ -25,9 +23,6 @@ export class ActionsManagerMock {
     } else if (!action.name) {
       action.name = action.id;
     }
-
-    // TODO: should be done during import in importer.LegacyImporter
-    portTaskTypesForLegacyIteratorTasks(actionData);
 
     return Promise.resolve(action);
   }
