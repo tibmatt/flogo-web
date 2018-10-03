@@ -1,8 +1,9 @@
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
 import { isIterableTask } from '../../../common/utils';
 import { appHasSubflowTasks } from '../../../common/utils/subflow';
-import { FLOGO_TASK_TYPE } from '../../../common/constants';
+import {FLOGO_TASK_TYPE, LEGACY_FLOW_TYPE} from '../../../common/constants';
 import { mappingsToAttributes } from "../mappings-to-attributes";
 
 const MICROSERVICE_ACTION_REF = 'github.com/TIBCOSoftware/flogo-contrib/action/flow';
@@ -28,12 +29,10 @@ export class LegacyMicroServiceFormatter {
   formatAction(action) {
     action.ref = MICROSERVICE_ACTION_REF;
 
-    const flow = action.data.flow;
-    if (!flow) {
-      return action;
-    }
+    action.data = {
+      flow: this.makeFlow(action)
+    };
 
-    flow.name = action.name;
     delete action.name;
 
     let allTasks = [];
@@ -57,6 +56,35 @@ export class LegacyMicroServiceFormatter {
       task = mappingsToAttributes(task, activitySchema);
     });
     return action;
+  }
+
+  makeFlow(action) {
+    const errorHandlerTask = this.getErrorHandler(action.errorHandler);
+    return {
+      name: action.name,
+      type: LEGACY_FLOW_TYPE,
+      attributes: [],
+      rootTask: {
+        id: 'root',
+        type: FLOGO_TASK_TYPE.TASK,
+        links: action.links,
+        tasks: action.tasks
+      },
+      errorHandlerTask
+    };
+  }
+
+  getErrorHandler(errorHandler) {
+    if (isEmpty(errorHandler) || isEmpty(errorHandler.tasks)) {
+      return undefined;
+    }
+    const {tasks, links} = errorHandler;
+    return {
+      id: '__error_root',
+      type: FLOGO_TASK_TYPE.TASK,
+      tasks,
+      links
+    }
   }
 
 }
