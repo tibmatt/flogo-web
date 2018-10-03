@@ -1,44 +1,43 @@
+const Router = require('koa-router');
 import { AppsManager } from '../../modules/apps';
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
 import { exportApp } from './apps/export';
-import { buildEnpoint } from './apps/build';
+import { buildApp } from './apps/build';
 
-export function apps(router, basePath) {
-  router.get(`${basePath}/apps`, listApps);
-  router.post(`${basePath}/apps`, createApp);
-  router.post(`${basePath}/apps\\:import`, importApp);
-
-  // ex. /apps/zA45E:export
-  // needs to be registered before .get('/apps/:appId')
-  router.get(`${basePath}/apps/:appId\\:export`, exportApp);
-  router.get(`${basePath}/apps/:appId/build`, buildEnpoint);
-
-  router.get(`${basePath}/apps/:appId`, getApp);
-  router.patch(`${basePath}/apps/:appId`, updateApp);
-  router.del(`${basePath}/apps/:appId`, deleteApp);
-
-  // /apps:validate
-  router.post(`${basePath}/apps\\:validate`, validateApp);
+export function apps(router) {
+  const apps = new Router();
+  apps.get('/', listApps)
+      .post('/', createApp)
+      .post('\\:import', importApp)
+      // ex. /apps/zA45E:export
+      // needs to be registered before .get('/:appId')
+      .get('/:appId\\:export', exportApp)
+      .get('/:appId', getApp)
+      .get('/:appId/build', buildApp)
+      .patch('/:appId', updateApp)
+      .del('/:appId', deleteApp)
+      .post('\\:validate', validateApp);
+  router.use('/apps', apps.routes(), apps.allowedMethods());
 }
 
-function* listApps() {
+async function listApps(ctx, next) {
   const searchTerms = {};
-  const filterName = this.request.query['filter[name]'];
+  const filterName = ctx.request.query['filter[name]'];
   if (filterName) {
     searchTerms.name = filterName;
   }
 
-  const foundApps = yield AppsManager.find(searchTerms);
-  this.body = {
+  const foundApps = await AppsManager.find(searchTerms);
+  ctx.body = {
     data: foundApps || [],
   };
 }
 
-function* createApp() {
-  const body = this.request.body;
+async function createApp(ctx) {
+  const body = ctx.request.body;
   try {
-    const app = yield AppsManager.create(body);
-    this.body = {
+    const app = await AppsManager.create(body);
+    ctx.body = {
       data: app,
     };
   } catch (error) {
@@ -54,10 +53,10 @@ function* createApp() {
   }
 }
 
-function* getApp() {
-  const appId = this.params.appId;
+async function getApp(ctx, next) {
+  const appId = ctx.params.appId;
 
-  const app = yield AppsManager.findOne(appId, { withFlows: 'short' });
+  const app = await AppsManager.findOne(appId, { withFlows: 'short' });
 
   if (!app) {
     throw ErrorManager.createRestNotFoundError('Application not found', {
@@ -66,19 +65,19 @@ function* getApp() {
     });
   }
 
-  this.body = {
+  ctx.body = {
     data: app,
   };
 }
 
-function* updateApp() {
+async function updateApp(ctx, next) {
   try {
-    const appId = this.params.appId;
-    const data = this.request.body || {};
+    const appId = ctx.params.appId;
+    const data = ctx.request.body || {};
 
-    const app = yield AppsManager.update(appId, data);
+    const app = await AppsManager.update(appId, data);
 
-    this.body = {
+    ctx.body = {
       data: app,
     };
   } catch (error) {
@@ -102,9 +101,9 @@ function* updateApp() {
 }
 
 
-function* deleteApp() {
-  const appId = this.params.appId;
-  const removed = yield AppsManager.remove(appId);
+async function deleteApp(ctx, next) {
+  const appId = ctx.params.appId;
+  const removed = await AppsManager.remove(appId);
 
   if (!removed) {
     throw ErrorManager.createRestNotFoundError('Application not found', {
@@ -113,12 +112,12 @@ function* deleteApp() {
     });
   }
 
-  this.status = 204;
+  ctx.status = 204;
 }
 
-function* importApp() {
+async function importApp(ctx, next) {
   try {
-    this.body = yield AppsManager.import(this.request.body);
+    ctx.body = await AppsManager.import(ctx.request.body);
   } catch (error) {
     if (error.isOperational && error.type === ERROR_TYPES.COMMON.VALIDATION) {
       throw ErrorManager.createRestError('Validation error in /apps getApp', {
@@ -132,17 +131,17 @@ function* importApp() {
   }
 }
 
-function* validateApp() {
-  const data = this.request.body || {};
-  const errors = yield AppsManager.validate(data, { clean: true });
-  this.status = 200;
+async function validateApp(ctx, next) {
+  const data = ctx.request.body || {};
+  const errors = await AppsManager.validate(data, { clean: true });
+  ctx.status = 200;
   if (errors && errors.length > 0) {
-    this.status = 400;
-    this.body = {
+    ctx.status = 400;
+    ctx.body = {
       errors,
     };
   } else {
-    this.status = 200;
-    this.body = data;
+    ctx.status = 200;
+    ctx.body = data;
   }
 }

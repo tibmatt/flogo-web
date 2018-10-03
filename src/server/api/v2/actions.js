@@ -1,25 +1,29 @@
+const Router = require('koa-router');
 import { ActionsManager } from '../../modules/actions';
 import { ActionCompiler } from '../../modules/engine';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 
-export function actions(router, basePath) {
-  router.get(`${basePath}/apps/:appId/actions`, listActions);
-  router.post(`${basePath}/apps/:appId/actions`, createAction);
-  router.get(`${basePath}/actions/:actionId`, getAction);
-  router.get(`${basePath}/actions/recent`, listRecentActions);
-  router.patch(`${basePath}/actions/:actionId`, updateAction);
-  router.del(`${basePath}/actions/:actionId`, deleteAction);
+export function actions(router) {
+  router.get(`/apps/:appId/actions`, listActions);
+  router.post(`/apps/:appId/actions`, createAction);
 
-  router.get(`${basePath}/actions/:actionId/build`, makeBuild);
+  const actions = new Router();
+  actions
+    .get(`/recent`, listRecentActions)
+    .get(`/:actionId`, getAction)
+    .patch(`/:actionId`, updateAction)
+    .del(`/:actionId`, deleteAction)
+    .get(`/:actionId/build`, makeBuild);
+  router.use('/actions', actions.routes(), actions.allowedMethods());
 }
 
-function* listActions() {
-  const appId = this.params.appId;
+async function listActions(ctx, next) {
+  const appId = ctx.params.appId;
 
   const options = {};
-  const filterName = this.request.query['filter[name]'];
-  const filterId = this.request.query['filter[id]'];
-  const getFields = this.request.query['fields'];
+  const filterName = ctx.request.query['filter[name]'];
+  const filterId = ctx.request.query['filter[id]'];
+  const getFields = ctx.request.query['fields'];
   if (filterName || filterId) {
     const filter = options.filter = {};
     if (filterName) {
@@ -35,28 +39,28 @@ function* listActions() {
     options.project = getFields.split(',');
   }
 
-  const actionList = yield ActionsManager.list(appId, options);
-  this.body = {
+  const actionList = await ActionsManager.list(appId, options);
+  ctx.body = {
     data: actionList || [],
   };
 }
 
-function* listRecentActions() {
-  const appId = this.params.appId;
-  this.body = { appId };
+async function listRecentActions(ctx, next) {
+  const appId = ctx.params.appId;
+  ctx.body = { appId };
 
-  const actionList = yield ActionsManager.listRecent();
-  this.body = {
+  const actionList = await ActionsManager.listRecent();
+  ctx.body = {
     data: actionList || [],
   };
 }
 
-function* createAction() {
-  const appId = this.params.appId;
-  const body = this.request.body;
+async function createAction(ctx, next) {
+  const appId = ctx.params.appId;
+  const body = ctx.request.body;
   try {
-    const action = yield ActionsManager.create(appId, body);
-    this.body = {
+    const action = await ActionsManager.create(appId, body);
+    ctx.body = {
       data: action,
     };
   } catch (error) {
@@ -77,10 +81,10 @@ function* createAction() {
   }
 }
 
-function* getAction() {
-  const actionId = this.params.actionId;
+async function getAction(ctx, next) {
+  const actionId = ctx.params.actionId;
 
-  const action = yield ActionsManager.findOne(actionId);
+  const action = await ActionsManager.findOne(actionId);
 
   if (!action) {
     throw ErrorManager.createRestNotFoundError('Action not found', {
@@ -90,18 +94,18 @@ function* getAction() {
     });
   }
 
-  this.body = {
+  ctx.body = {
     data: action,
   };
 }
 
-function* updateAction() {
-  const actionId = this.params.actionId;
-  const data = this.request.body || {};
+async function updateAction(ctx, next) {
+  const actionId = ctx.params.actionId;
+  const data = ctx.request.body || {};
   try {
-    const app = yield ActionsManager.update(actionId, data);
+    const app = await ActionsManager.update(actionId, data);
 
-    this.body = {
+    ctx.body = {
       data: app,
     };
   } catch (error) {
@@ -126,9 +130,9 @@ function* updateAction() {
 }
 
 
-function* deleteAction() {
-  const actionId = this.params.actionId;
-  const removed = yield ActionsManager.remove(actionId);
+async function deleteAction(ctx, next) {
+  const actionId = ctx.params.actionId;
+  const removed = await ActionsManager.remove(actionId);
 
   if (!removed) {
     throw ErrorManager.createRestNotFoundError('Action not found', {
@@ -138,20 +142,20 @@ function* deleteAction() {
     });
   }
 
-  this.status = 204;
+  ctx.status = 204;
 }
 
-function* makeBuild(next) {
-  const actionId = this.params.actionId;
+async function makeBuild(ctx, next) {
+  const actionId = ctx.params.actionId;
 
   let compileOptions;
   // TODO: make sure os and arch are valid
-  if (this.query.os || this.query.arch) {
-    const { os, arch } = this.query;
+  if (ctx.query.os || ctx.query.arch) {
+    const { os, arch } = ctx.query;
     compileOptions = { os, arch };
   }
 
-  const exportedAction = yield ActionsManager.exportToFlow(actionId);
+  const exportedAction = await ActionsManager.exportToFlow(actionId);
 
   if (!exportedAction) {
     throw ErrorManager.createRestNotFoundError('Action not found', {
@@ -162,10 +166,10 @@ function* makeBuild(next) {
   }
 
   const { trigger, flow } = exportedAction;
-  this.body = yield ActionCompiler.compileFlow(trigger, flow, compileOptions);
-  this.type = 'application/octet-stream';
-  this.attachment();
+  ctx.body = await ActionCompiler.compileFlow(trigger, flow, compileOptions);
+  ctx.type = 'application/octet-stream';
+  ctx.attachment();
 
-  yield next;
+  next();
 }
 

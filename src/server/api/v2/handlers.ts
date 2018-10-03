@@ -1,28 +1,35 @@
+import { Context } from 'koa';
+import * as Router from 'koa-router';
+const RouterClass = require('koa-router');
+
 import { HandlersManager } from '../../modules/apps/handlers';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 
-export function handlers(router, basePath) {
-  router.get(`${basePath}/triggers/:triggerId/handlers`, listHandlers);
-  router.get(`${basePath}/triggers/:triggerId/handlers/:actionId`, getHandler);
-  router.put(`${basePath}/triggers/:triggerId/handlers/:actionId`, saveHandler);
-  router.del(`${basePath}/triggers/:triggerId/handlers/:actionId`, deleteHandler);
+export function handlers(router: Router) {
+  const handlers: Router = new RouterClass({ prefix: '/triggers/:triggerId/handlers' });
+  handlers
+    .get(`/`, listHandlers)
+    .get(`/:actionId`, getHandler)
+    .put(`/:actionId`, saveHandler)
+    .del(`/:actionId`, deleteHandler);
+  router.use(handlers.routes(), handlers.allowedMethods());
 }
 
-function* listHandlers() {
-  const triggerId = this.params.triggerId;
-  const handlerList = yield HandlersManager.list(triggerId);
-  this.body = {
+async function listHandlers(ctx: Context) {
+  const triggerId = ctx.params.triggerId;
+  const handlerList = await HandlersManager.list(triggerId);
+  ctx.body = {
     data: handlerList || [],
   };
 }
 
-function* saveHandler() {
-  const triggerId = this.params.triggerId;
-  const actionId = this.params.actionId;
-  const body = this.request.body;
+async function saveHandler(ctx: Context) {
+  const triggerId = ctx.params.triggerId;
+  const actionId = ctx.params.actionId;
+  const body = ctx.request.body;
   try {
-    const handler = yield HandlersManager.save(triggerId, actionId, body);
-    this.body = {
+    const handler = await HandlersManager.save(triggerId, actionId, body);
+    ctx.body = {
       data: handler,
     };
   } catch (error) {
@@ -43,11 +50,11 @@ function* saveHandler() {
   }
 }
 
-function* getHandler() {
-  const triggerId = this.params.triggerId;
-  const actionId = this.params.actionId;
+async function getHandler(ctx: Context) {
+  const triggerId = ctx.params.triggerId;
+  const actionId = ctx.params.actionId;
 
-  const handler = yield HandlersManager.findOne(triggerId, actionId);
+  const handler = await HandlersManager.findOne(triggerId, actionId);
 
   if (!handler) {
     throw ErrorManager.createRestNotFoundError('Handler not found', {
@@ -60,15 +67,15 @@ function* getHandler() {
     });
   }
 
-  this.body = {
+  ctx.body = {
     data: handler,
   };
 }
 
-function* deleteHandler() {
-  const triggerId = this.params.triggerId;
-  const actionId = this.params.actionId;
-  const removed = yield HandlersManager.remove(triggerId, actionId);
+async function deleteHandler(ctx: Context) {
+  const triggerId = ctx.params.triggerId;
+  const actionId = ctx.params.actionId;
+  const removed = await HandlersManager.remove(triggerId, actionId);
 
   if (!removed) {
     throw ErrorManager.createRestNotFoundError('Handler not found', {
@@ -81,6 +88,6 @@ function* deleteHandler() {
     });
   }
 
-  this.status = 204;
+  ctx.status = 204;
 }
 

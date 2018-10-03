@@ -1,44 +1,20 @@
 <section class="container">
 
   <header class="page-header">
-    <h3>Flogo Configuration</h3>
-    <p>Configurations of Server Information</p>
+    <h3>Services Configuration</h3>
   </header>
 
-  <div class="form-horizontal" (ngSubmit)="onSave()">
-    <!--<div class="form-group">-->
-      <!--<div class="col-xs-11 col-xs-offset-1">-->
-        <!--<button type="submit" class="btn btn-primary">Save</button>-->
-        <!--<button type="button" class="btn btn-default" (click)="onCancel()">Cancel</button>-->
-        <!--<button type="button" class="btn btn-default" (click)="onResetDefault()">Reset to default</button>-->
-      <!--</div>-->
-    <!--</div>-->
+  <div class="form-horizontal">
 
-    <!-- log link -->
-    <div class="form-group">
-      <div class="col-xs-11 col-xs-offset-1">
-        <a href="/test-engine.log" target="_blank">View Test Engine Log</a>
-      </div>
-      <div class="col-xs-11 col-xs-offset-1">
-        <a href="/build-engine.log" target="_blank">View Build Engine Log</a>
-      </div>
-      <div class="col-xs-11 col-xs-offset-1">
-        <a href="/web.log" target="_blank">View Flogo Web Server Log</a>
-      </div>
-      <div class="col-xs-11 col-xs-offset-1">
-        <button class="col-lg-2 col-md-2 col-sm-3" type="button" class="btn btn-default" (click)="onRestartBuild()">Restart Build engine</button>
-      </div>
+    <div>
+      <ul>
+        <li *ngFor="let log of logs">
+          <a [href]="log.url" target="_blank">{{ log.label }}</a>
+        </li>
+      </ul>
     </div>
 
-
-    <!-- server configuration -->
-
-    <div class="form-group" *ngIf="_servers">
-      <label class="col-md-2 col-sm-3">Servers</label>
-    </div>
-
-
-    <div class="form-group" *ngFor="let server of _servers">
+    <div class="form-group" *ngFor="let server of servers$ | async">
       <!-- TODO: replace [innerHTML] with [textContent] https://github.com/angular/angular/issues/8413 -->
       <label class="col-lg-2 col-md-2 col-sm-3" [innerHTML]="server._label"></label>
       <div class="col-lg-8 col-md-8 col-sm-12">

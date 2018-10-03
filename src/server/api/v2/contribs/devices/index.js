@@ -1,46 +1,46 @@
 import { ContribsManager  } from '../../../../modules/contribs'
 import { ErrorManager } from '../../../../common/errors';
 
-export function contribs(router, basePath){
-  router.post(`${basePath}/contributions/devices`, installContribs);
-  router.get(`${basePath}/contributions/devices`, listContribs);
-  router.get(`${basePath}/contributions/devices/:name`, getContribution);
+export function contribs(router){
+  router.post(`/contributions/devices`, installContribs);
+  router.get(`/contributions/devices`, listContribs);
+  router.get(`/contributions/devices/:name`, getContribution);
 }
 
-function *listContribs() {
+async function listContribs(ctx) {
   const types = {
     'trigger': 'flogo:device:trigger',
     'activity': 'flogo:device:activity',
   };
 
   const search = {};
-  const type = this.request.query['filter[type]'];
-  const ref = this.request.query['filter[ref]'];
+  const type = ctx.request.query['filter[type]'];
+  const ref = ctx.request.query['filter[ref]'];
   if(type) {
     search.type = (types[type]? types[type] : type);
   } else if(ref){
     search.ref = ref;
   }
 
-  const foundContribs = yield ContribsManager.find(search);
-  this.body = {
+  const foundContribs = await ContribsManager.find(search);
+  ctx.body = {
     data: foundContribs || [],
   };
 }
 
-function *getContribution()  {
-  const name = this.params.name;
+async function getContribution(ctx)  {
+  const name = ctx.params.name;
 
-  const contribution = yield ContribsManager.findOne(name);
-  this.body = { data: contribution };
+  const contribution = await ContribsManager.findOne(name);
+  ctx.body = { data: contribution };
 }
 
-function* installContribs( next ) {
-  const url = preProcessURLs(this.request.body.url);
+async function installContribs(ctx, next) {
+  const url = ctx.request.body.url;
 
   let results = {};
     try {
-      results = yield ContribsManager.install( [url] );
+      results = await ContribsManager.install( [url] );
     } catch ( err ) {
       throw new Error( '[error] Encounter error to add contributions to test engine.' );
     }
@@ -54,18 +54,13 @@ function* installContribs( next ) {
     });
   }
 
-  this.body =  {
+  ctx.body =  {
     data: {
       ref: results.success[0],
       originalUrl: url
     }
   };
 
-  yield next;
+  next();
 }
 
-
-function preProcessURLs( urls ) {
-  'use strict';
-  return urls;
-}

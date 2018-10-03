@@ -6,7 +6,7 @@ import { FlogoConfigComponent } from './config.component';
 @NgModule({
   imports: [
     RouterModule.forChild([{
-      path: '_config',
+      path: '',
       component: FlogoConfigComponent
     }]),
   ],

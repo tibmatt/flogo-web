@@ -6,7 +6,7 @@ import { getURL } from '../shared/utils';
 import { ConfigurationService } from '@flogo/core/services/configuration.service';
 import { ServiceUrlConfig } from '@flogo/core/services/service-url-config.model';
 
-const PING_INTERVAL_MS = 2500;
+const PING_INTERVAL_MS = 5000;
 
 @Component({
   selector: 'flogo-config-service-status-indicator',
@@ -44,11 +44,10 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
           switchMap(([config]: [ServiceUrlConfig]) => this.configService.pingService(config)),
           catchError((error: any) => {
             this.statusCode = error.status;
-            // status 200 means no response from server
-            if (error.status !== 500) {
-              this.status = 'online-warning';
-            } else {
+            if (error.status === 500 || error.status === 502) {
               this.status = 'offline';
+            } else {
+              this.status = 'online-warning';
             }
             // TODO: report if error 500?
             // TODO: when there are cors issues we get also 200 code

@@ -1,11 +1,11 @@
 import { AppsManager } from '../../../modules/apps';
 import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
 
-export function* exportApp() {
-  const appId = this.params.appId;
-  const options = extractOptions(this.request.query);
+export async function exportApp(ctx) {
+  const appId = ctx.params.appId;
+  const options = extractOptions(ctx.request.query);
   try {
-    this.body = yield AppsManager.export(appId, options);
+    ctx.body = await AppsManager.export(appId, options);
   } catch (error) {
     handleErrorAndRethrow(error);
   }

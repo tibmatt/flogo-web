@@ -2,5 +2,6 @@
   "execMap": {
     "js": "npm run serve"
   },
+  "ext": "js,json,ts",
   "ignore": ["*.spec.js", "tests/*", "scripts/*", "*.log"]
 }

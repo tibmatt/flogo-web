@@ -23,9 +23,9 @@ const contributionTypes = {
   }
 };
 
-export function contribs(router, basePath) {
-  router.get(`${basePath}/contributions/microservices`, listContributions);
-  router.post(`${basePath}/contributions/microservices`, installContribution);
+export function contribs(router) {
+  router.get(`/contributions/microservices`, listContributions);
+  router.post(`/contributions/microservices`, installContribution);
 }
 
 /**
@@ -36,12 +36,12 @@ export function contribs(router, basePath) {
  *                       If nothing provided, all the contributions for a microservices will be returned
  *
  */
-function* listContributions() {
+async function listContributions(ctx) {
   const searchTerms = {};
-  const filterName = this.request.query['filter[name]'];
-  const filterRef = this.request.query['filter[ref]'];
-  const filterShim = this.request.query['filter[shim]'];
-  let contributionType = contributionTypes[this.request.query['filter[type]']];
+  const filterName = ctx.request.query['filter[name]'];
+  const filterRef = ctx.request.query['filter[ref]'];
+  const filterShim = ctx.request.query['filter[shim]'];
+  let contributionType = contributionTypes[ctx.request.query['filter[type]']];
   let foundContributions;
 
   if (filterName) {
@@ -54,15 +54,15 @@ function* listContributions() {
     searchTerms.shim = filterShim;
   }
   if (contributionType) {
-    foundContributions = yield contributionType.manager.find(searchTerms);
+    foundContributions = await contributionType.manager.find(searchTerms);
   } else {
     const contributionsFetcher = Object.keys(contributionTypes)
       .reduce((getContribsArray, type) =>  getContribsArray.concat(contributionTypes[type].manager.find(searchTerms)), []);
-    const results = yield Promise.all(contributionsFetcher);
+    const results = await Promise.all(contributionsFetcher);
     foundContributions = flatten(results);
   }
 
-  this.body = {
+  ctx.body = {
     data: foundContributions || [],
   };
 }
@@ -73,10 +73,10 @@ function* listContributions() {
  * type {string} Type of contribution to be installed. Should contain either 'activity' / 'trigger'
  *
  */
-function* installContribution(next) {
-  this.req.setTimeout(0);
-  const url = this.request.body.url;
-  const contribType = contributionTypes[this.request.body.type];
+async function installContribution(ctx, next) {
+  ctx.req.setTimeout(0);
+  const url = ctx.request.body.url;
+  const contribType = contributionTypes[ctx.request.body.type];
 
   if (!contribType) {
     throw ErrorManager.createRestError('Unknown type of contribution', {
@@ -89,13 +89,13 @@ function* installContribution(next) {
   }
 
   logger.info(`[log] Install ${contribType.installerOpts.type}: '${url}'`);
-  const installController = yield getInstallationController(
+  const installController = await getInstallationController(
     config.defaultEngine.path,
     (url, engine) => installContributionToEngine(url, contribType.installerOpts.type, engine),
   );
 
-  const result = yield installController.install(url);
-  this.body = { data: { ...result, originalUrl: url } };
+  const result = await installController.install(url);
+  ctx.body = { data: { ...result, originalUrl: url } };
 
-  yield next;
+  next();
 }
