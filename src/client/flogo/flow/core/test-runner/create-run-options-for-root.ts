@@ -8,7 +8,7 @@ export function createRunOptionsForRoot(flowState: FlowState) {
   const runOptions: RunOptions = { attrsData: initData };
   const shouldUpdateFlow = flowState.configChangedSinceLastExecution || !flowState.lastFullExecution.processId;
   if (shouldUpdateFlow) {
-    runOptions.useFlow = flowState;
+    runOptions.useFlow = flowState.id;
   } else {
     runOptions.useProcessId = flowState.lastFullExecution.processId;
   }

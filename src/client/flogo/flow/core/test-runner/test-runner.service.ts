@@ -111,7 +111,7 @@ export class TestRunnerService implements OnDestroy {
           this.runState.steps = null;
 
           return this.orchestrator.rerun({
-            useFlow: flowState,
+            useFlow: flowState.id,
             interceptor: dataOfInterceptor,
             step: stepNumber,
             instanceId: flowState.lastFullExecution.instanceId,

@@ -5,9 +5,9 @@ import {
 import { Injectable } from '@angular/core';
 import { Observable, combineLatest, merge, timer, of, throwError as _throw } from 'rxjs';
 
-import { isEqual, isEmpty, defaults } from 'lodash';
+import { isEqual, defaults } from 'lodash';
 
-import { Interceptor, Step, UiFlow } from '@flogo/core';
+import { Interceptor, Step } from '@flogo/core';
 import {
   RunStateCode,
   RunStatusCode,
@@ -15,7 +15,6 @@ import {
   StatusResponse,
   ErrorService
 } from '@flogo/core/services';
-import { flogoFlowToJSON } from '../models/backend-flow/flow.model';
 
 export const ERRORS = {
   MAX_TRIALS_REACHED: 'MaxTrialsReached',
@@ -35,7 +34,7 @@ interface BaseRunOptions {
   maxTrials?: number;
   queryInterval?: number;
   useProcessId?: string;
-  useFlow?: UiFlow;
+  useFlow?: string;
 }
 
 export interface RunOptions extends BaseRunOptions {
@@ -308,22 +307,11 @@ export class RunOrchestratorService {
       );
   }
 
-  registerFlowIfNeeded(opts: { useFlow?: UiFlow, useProcessId?: string }): Observable<string> {
+  registerFlowIfNeeded(opts: { useFlow?: string, useProcessId?: string }): Observable<string> {
     let registered;
     if (opts.useFlow) {
-      // generate process based on the current flow
-      const process = flogoFlowToJSON(opts.useFlow);
-      const errorHandler = process.flow && process.flow.errorHandlerTask;
-      if (errorHandler && isEmpty(errorHandler.tasks)) {
-        delete process.flow.errorHandlerTask;
-      }
-
-      //  delete the id of the flow,
-      //  since the same process ID returns 204 No Content response and cannot be updated,
-      //  while the flow information without ID will be assigned an ID automatically.
-      delete process.id;
       registered = this.runService
-        .storeProcess(process)
+        .storeProcess(opts.useFlow)
         .pipe(
           map(storedProcess => storedProcess.id)
         );

@@ -3,10 +3,8 @@ import { of, from, throwError as _throw, concat } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import Spy = jasmine.Spy;
 
-import { UiFlow } from '@flogo/core';
 import { RunApiService, StatusResponse, ErrorService } from '@flogo/core/services';
 import { ERRORS, RunStatusCode, RunOrchestratorService } from './run-orchestrator.service';
-import * as flowUtils from '../models/backend-flow/flow.model';
 
 describe('Service: RunOrchestratorService', function (this: {
   DEFAULT_PROCESS_ID: string,
@@ -171,50 +169,16 @@ describe('Service: RunOrchestratorService', function (this: {
     });
 
     it('When useFlow option is provided it should register the flow and return its id', done => {
-      spyOn(flowUtils, 'flogoFlowToJSON').and.returnValue({ id: 'transformed-flow' });
       const storeProcessMock = <jasmine.Spy> this.runServiceMock.storeProcess;
       storeProcessMock.and.returnValue(of({ id: '456' }));
 
-      const testFlow = <any> { name: 'test-flow' };
-      this.service.registerFlowIfNeeded({ useFlow: <UiFlow>testFlow })
+      this.service.registerFlowIfNeeded({ useFlow: 'abcd' })
         .subscribe(result => {
-          expect(flowUtils.flogoFlowToJSON).toHaveBeenCalledTimes(1);
           expect(storeProcessMock).toHaveBeenCalledTimes(1);
           expect(result).toEqual('456');
           done();
         });
 
-    });
-
-    it('Should not send error handler if empty', () => {
-      spyOn(flowUtils, 'flogoFlowToJSON').and.returnValue({ id: 'transformed-flow', flow: { errorHandlerTask: { tasks: {} } } });
-      const storeProcessMock = <jasmine.Spy> this.runServiceMock.storeProcess;
-      storeProcessMock.and.returnValue(of({ id: '456' }));
-
-      const testFlow = <any> { name: 'test-flow' };
-      return this.service.registerFlowIfNeeded({ useFlow: <UiFlow>testFlow })
-        .toPromise()
-        .then(() => {
-          expect(storeProcessMock.calls.mostRecent().args[0].flow.errorHandlerTask)
-            .toBeUndefined('Was not expecting error handler to be present');
-        });
-    });
-
-    it('Should send error flow if not empty', () => {
-      spyOn(flowUtils, 'flogoFlowToJSON').and.returnValue({
-        id: 'transformed-flow',
-        flow: { errorHandlerTask: { tasks: { 'hi': { id: 'hi' } } } } }
-      );
-      const storeProcessMock = <jasmine.Spy> this.runServiceMock.storeProcess;
-      storeProcessMock.and.returnValue(of({ id: '456' }));
-
-      const testFlow = <any> { name: 'test-flow' };
-      return this.service.registerFlowIfNeeded({ useFlow: <UiFlow>testFlow })
-        .toPromise()
-        .then(() => {
-          expect(storeProcessMock.calls.mostRecent().args[0].flow.errorHandlerTask)
-            .toBeDefined('Was expecting error handler to be present but it was not present');
-        });
     });
 
   });
