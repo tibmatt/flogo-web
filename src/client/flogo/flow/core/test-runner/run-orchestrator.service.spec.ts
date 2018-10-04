@@ -168,11 +168,11 @@ describe('Service: RunOrchestratorService', function (this: {
         });
     });
 
-    it('When useFlow option is provided it should register the flow and return its id', done => {
+    it('When useFlowId option is provided it should register the flow and return the process id', done => {
       const storeProcessMock = <jasmine.Spy> this.runServiceMock.storeProcess;
       storeProcessMock.and.returnValue(of({ id: '456' }));
 
-      this.service.registerFlowIfNeeded({ useFlow: 'abcd' })
+      this.service.registerFlowIfNeeded({ useFlowId: 'abcd' })
         .subscribe(result => {
           expect(storeProcessMock).toHaveBeenCalledTimes(1);
           expect(result).toEqual('456');

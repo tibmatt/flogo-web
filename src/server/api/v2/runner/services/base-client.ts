@@ -1,5 +1,5 @@
 import * as got from 'got';
-import { logger } from '../../../../common/logging/index';
+import { logger } from '../../../../common/logging';
 
 export function createBaseClient() {
   return got.create({

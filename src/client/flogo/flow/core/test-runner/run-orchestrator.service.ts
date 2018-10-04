@@ -34,7 +34,7 @@ interface BaseRunOptions {
   maxTrials?: number;
   queryInterval?: number;
   useProcessId?: string;
-  useFlow?: string;
+  useFlowId?: string;
 }
 
 export interface RunOptions extends BaseRunOptions {
@@ -99,7 +99,7 @@ export class RunOrchestratorService {
    *
    * @example
    * const runner = runnerService.runFromRoot({
-   *   useFlow: { _id: "flows:flogoweb-admin:2017-02-24T18:21:29.014Z", items: { ... }, paths: {...}  },
+   *   useFlowId: 'flowid',
    *   attrsData: [{"name":"params", "type":"params", "value":{ "id":3 }}]
    * });
    *
@@ -117,8 +117,8 @@ export class RunOrchestratorService {
    *
    * @param {object} opts - Options
    * @param {object} opts.attrsData - Input data to be used to run the flow
-   * @param {string} [opts.useProcessId] - If provided will use an existing registered flow. Incompatible with useFlow option.
-   * @param {object} [opts.useFlow] - Flow to run (this is the internal flogo web flow model, not the engine flow)
+   * @param {string} [opts.useProcessId] - If provided will use an existing registered flow. Incompatible with useFlowId option.
+   * @param {object} [opts.useFlowId] - Id of the flow to run
    * @param {number} [opts.maxTrials=20] - Max number of trials to get a status that indicates completion of the process
    * @param {number} [opts.queryInterval=500] - Polling interval to query for status (In milliseconds)
    * @return {RunProgressStore}
@@ -136,7 +136,7 @@ export class RunOrchestratorService {
    * const runner = runnerService.runFromRoot({
    *   instanceId: "3aa6b7384aa876bda541662bbcc43cfa"}
    *   step: 2,
-   *   useFlow: { _id: "flows:flogoweb-admin:2017-02-24T18:21:29.014Z", items: { ... }, paths: {...}  },
+   *   useFlowId: 'someflowid',
    *   interceptor: {
    *      "tasks":[
    *         { "id":2, "inputs": [{ "name":"counterName","type":"string","required":true,"value":"number"}, ...] }
@@ -158,7 +158,7 @@ export class RunOrchestratorService {
    * @param {string} opts.instanceId - id of the instance that will be re-run
    * @param {number} opts.step - step to start from
    * @param {object} opts.interceptor - interceptor data
-   * @param {object} opts.useFlow - Flow to run (this is the internal flogo web flow model, not the engine flow)
+   * @param {object} opts.useFlowId - id of the flow to run
    * @param {number} [opts.maxTrials=20] - Max number of trials to get a status that indicates completion of the process
    * @param {number} [opts.queryInterval=500] - Polling interval to query for status (In milliseconds)
    * @return {RunProgressStore}
@@ -307,11 +307,11 @@ export class RunOrchestratorService {
       );
   }
 
-  registerFlowIfNeeded(opts: { useFlow?: string, useProcessId?: string }): Observable<string> {
+  registerFlowIfNeeded(opts: { useFlowId?: string, useProcessId?: string }): Observable<string> {
     let registered;
-    if (opts.useFlow) {
+    if (opts.useFlowId) {
       registered = this.runService
-        .storeProcess(opts.useFlow)
+        .storeProcess(opts.useFlowId)
         .pipe(
           map(storedProcess => storedProcess.id)
         );
