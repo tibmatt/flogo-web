@@ -39,6 +39,8 @@ export class LegacyMicroServiceFormatter {
     allTasks = allTasks.concat(get(action, 'data.flow.rootTask.tasks', []));
     allTasks = allTasks.concat(get(action, 'data.flow.errorHandlerTask.tasks', []));
 
+    /* The reply activity is deprecated in the flogo-contribs project.
+     * But we are maintaining this for legacy applications */
     const hasExplicitReply = allTasks.find(t => t.activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
     if (hasExplicitReply) {
       flow.explicitReply = true;

@@ -1,4 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep';
+import isEmpty from 'lodash/isEmpty';
 import { appHasSubflowTasks } from '../../../common/utils/subflow';
 import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
 import {mappingsToAttributes} from "../mappings-to-attributes";
@@ -49,20 +50,16 @@ export class DeviceFormatter {
 
   formatAction(action) {
     action.ref = DEVICE_ACTION_REF;
-    const flow = action.data.flow;
-    if (flow) {
-      flow.name = action.name;
-      delete action.name;
-      flow.links = cloneDeep(flow.rootTask.links);
-      flow.tasks = cloneDeep(flow.rootTask.tasks);
-      flow.tasks = this.formatTasks(flow);
-    }
+    action.data = {
+      flow: this.makeFlow(action)
+    };
+    delete action.name;
     return action;
   }
 
-  formatTasks(flow) {
+  formatTasks(tasks) {
     // preparing task attribute from inputMappings while formatting the tasks
-    return flow.tasks.map(task => {
+    return tasks.map(task => {
       return {
         ...task,
         ...mappingsToAttributes(task, this.activitySchemas.find(schema => schema.ref === task.activityRef)),
@@ -81,6 +78,19 @@ export class DeviceFormatter {
 
   appHasSubflowTask(app) {
     return appHasSubflowTasks(app);
+  }
+
+  makeFlow(action) {
+    const flowData = {
+      name: action.name,
+    };
+    const {tasks, links} = action;
+    if (isEmpty(tasks)) {
+      return flowData;
+    }
+    flowData.links = cloneDeep(links);
+    flowData.tasks = this.formatTasks(cloneDeep(tasks));
+    return flowData;
   }
 
 }
