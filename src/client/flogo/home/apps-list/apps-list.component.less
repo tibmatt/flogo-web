@@ -1,111 +1,105 @@
 @import '../../../assets/_variables';
-@margin-top: 15px;
+@margin-top: 1rem;
+@card-padding: 1rem;
 
 :host {
+  color: @color-ink;
+  display: block;
+  width: 100%;
 }
 
-.flogo-app-list {
+.header {
+  font-weight: 600;
+  display: flex;
+  flex-direction: row;
+  padding: @margin-top 0;
 
-  .flogo-app-list__header {
-    display: flex;
-    justify-content: space-between;
-    padding: @margin-top 0;
-
-    .title {
-      font-size: 1.5em;
-      margin: 0;
-    }
-    .search {
-      width: 80%;
-    }
-    .flogo-app-list-button {
-      position: relative;
-      left: 19px;
-
-    }
-
-    .app-list__app-import-input {
-      display: none;
-    }
-  }
-
-  .flogo-app-list__content {
+  .title {
+    font-size: 1.5rem;
     margin: 0;
-    margin-bottom: 30px;
-
-    .apps-list {
-
-      .apps-list__element {
-        margin: 0;
-        margin-bottom: 1em;
-        border-radius: 4px;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.33);
-        border: solid 1px @gainsboro;
-        padding-left: 56px;
-        // background-size: 56px 100%;
-        // background-position: 0;
-        // background-color: red;
-
-        .apps-list__element-container {
-          padding: @margin-top;
-          background: @color-bg;
-          border-radius: 2px;
-          border-bottom-left-radius: 0;
-          border-top-left-radius: 0;
-        }
-
-        p {
-          margin: 0;
-          margin-bottom: 6px;
-          &.app-list__app-name {
-            font-weight: 700;
-          }
-        }
-
-        .app-list__created-at {
-          font-size: 10px;
-          letter-spacing: 0.6px;
-          margin-right: 10px;
-        }
-
-        &:hover {
-          cursor: pointer;
-          border-radius: 4px;
-          box-shadow: 0 0 5px 0 @color-secondary;
-
-          .apps-list__delete-btn {
-            visibility: visible;
-          }
-        }
-      }
-
-      .apps-list__delete-btn {
-        position: absolute;
-        visibility: hidden;
-        cursor: pointer;
-      }
-    }
-
-    .app-list__empty {
-      margin-top: 2.5em;
-    }
-
-    .app-list__empty-state {
-      width: 100%;
-      height: 150px;
-      background-size: cover;
-      background: url("/assets/svg/placeholder-apps.svg") center no-repeat;
-    }
-      .app-list__empty-state__legend {
-        font-size: 24px;
-        line-height: 0.75;
-        letter-spacing: 0.4px;
-        text-align: center;
-        color: @color-disabled;
-        margin-top: 19px;
-      }
-
+    flex: 1;
   }
 
+  .app-list__app-import-input {
+    display: none;
+  }
+}
+
+.content {
+  margin: 0;
+  margin-bottom: 30px;
+}
+
+.app {
+  cursor: pointer;
+  margin: 0;
+  margin-bottom: 1em;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.33);
+  padding-left: 56px;
+
+  &:hover {
+    box-shadow: 0 0 5px 0 @color-secondary;
+  }
+
+}
+
+.app__content {
+  position: relative;
+  border: solid 1px @gainsboro;
+  padding: @card-padding;
+  background: @color-bg;
+  border-radius: 4px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.app__name {
+  font-size: 1rem;
+  margin-top: 0;
+  margin-bottom: 0.3rem;
+}
+
+.app__description,
+.app__created-at {
+  font-size: 0.87em;
+  color: @color-dark-gray;
+}
+
+.app__created-at {
+  margin-top: 0.4rem;
+  text-align: right;
+}
+
+.app__delete {
+  position: absolute;
+  visibility: hidden;
+  cursor: pointer;
+  top: @card-padding;
+  right: @card-padding;
+}
+
+.app:hover .app__delete {
+  visibility: visible;
+}
+
+.app-list-empty {
+  margin-top: 2.5em;
+}
+
+.app-list-empty__image {
+  width: 100%;
+  height: 150px;
+  background-size: cover;
+  background: url("/assets/svg/placeholder-apps.svg") center no-repeat;
+}
+
+.app-list-empty__legend {
+  font-size: 24px;
+  line-height: 0.75;
+  letter-spacing: 0.4px;
+  text-align: center;
+  color: @color-disabled;
+  margin-top: 19px;
 }
 
