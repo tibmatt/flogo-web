@@ -32,12 +32,12 @@ export class LegacyMicroServiceFormatter {
     action.data = {
       flow: this.makeFlow(action)
     };
-
+    const flow = action.data.flow;
     delete action.name;
 
     let allTasks = [];
-    allTasks = allTasks.concat(get(action, 'data.flow.rootTask.tasks', []));
-    allTasks = allTasks.concat(get(action, 'data.flow.errorHandlerTask.tasks', []));
+    allTasks = allTasks.concat(get(flow, 'rootTask.tasks', []));
+    allTasks = allTasks.concat(get(flow, 'errorHandlerTask.tasks', []));
 
     /* The reply activity is deprecated in the flogo-contribs project.
      * But we are maintaining this for legacy applications */

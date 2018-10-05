@@ -68,7 +68,7 @@ describe('Service: UI Model Converter', function (this: {
     spyTriggerService.and.returnValue(mockTriggerDetails);
     const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     spyActivityService.and.returnValue(Promise.resolve(mockActivitiesDetails));
-    thisTestData.data.flow.errorHandlerTask = mockErrorHandler.errorHandlerTask;
+    thisTestData.errorHandler = mockErrorHandler;
     this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry)
       .then((flow: any) => {
         expect(flow).toEqual(mockResultantUIFlowWithError);
@@ -82,8 +82,8 @@ describe('Service: UI Model Converter', function (this: {
     spyTriggerService.and.returnValue(mockTriggerDetails);
     const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     spyActivityService.and.returnValue(Promise.resolve(mockActivitiesDetails));
-    thisTestData.data.flow.rootTask.tasks[0].attributes = mockTransformationData.attributes;
-    thisTestData.data.flow.rootTask.tasks[0].inputMappings = mockTransformationData.inputMappings;
+    thisTestData.tasks[0].attributes = mockTransformationData.attributes;
+    thisTestData.tasks[0].inputMappings = mockTransformationData.inputMappings;
     this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry)
       .then((flow: any) => {
         expect(flow).toEqual(mockResultantUIFlowWithTransformations);

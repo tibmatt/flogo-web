@@ -309,12 +309,3 @@ function ensureUniqueName(forName) {
       return greatestIndex < 0 ? forName : `${forName} (${greatestIndex + 1})`;
     });
 }
-
-function hasSubflowTask(actions) {
-  return !!actions.find(action => {
-    let allTasks = [];
-    allTasks = allTasks.concat(get(action, 'data.flow.rootTask.tasks', []));
-    allTasks = allTasks.concat(get(action, 'data.flow.errorHandlerTask.tasks', []));
-    return allTasks.find(t => t.type === FLOGO_TASK_TYPE.TASK_SUB_PROC);
-  });
-}

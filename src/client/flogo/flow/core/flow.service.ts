@@ -1,4 +1,4 @@
-import { uniq, fromPairs, isEqual, omit } from 'lodash';
+import { get, uniq, fromPairs, isEqual, omit } from 'lodash';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { of as observableOfValue } from 'rxjs';
@@ -44,7 +44,7 @@ export class FlogoFlowService {
     return this._flowAPIService.getFlow(flowId)
       .then((flow: Action): PromiseLike<[Action, Action[]]> => {
         const allTasks = ((flow && flow.tasks) || [])
-          .concat(((flow && flow.errorHandler && flow.errorHandler.tasks) || []));
+          .concat(get(flow, 'errorHandler.tasks', []));
         const subFlowTasks = allTasks.filter(t => isSubflowTask(t.type));
         const flowIdsToFetch = uniq<string>(subFlowTasks.map(t => (t.settings || {}).flowPath));
         if (flowIdsToFetch.length > 0) {

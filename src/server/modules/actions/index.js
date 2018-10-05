@@ -157,6 +157,7 @@ export class ActionsManager {
     });
   }
 
+  /* @deprecated - Using old model of action JSON and not being used in the application*/
   static exportToFlow(actionId) {
     return ActionsManager.findOne(actionId)
       .then(action => {

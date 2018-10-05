@@ -68,9 +68,9 @@ export abstract class AbstractModelConverter {
   }
 
   hasProperTasks(flow: any) {
-    let tasks = get(flow, 'data.flow.rootTask.tasks', []);
+    let tasks = (flow && flow.tasks) || [];
     // add tiles from error diagram
-    tasks = tasks.concat(get(flow, 'data.flow.errorHandlerTask.tasks', []));
+    tasks = tasks.concat((flow && flow.errorHandler && flow.errorHandler.tasks) || []);
     // filter only tasks of type activity and ignore subflows
     tasks = tasks.filter(t => !isSubflowTask(t.type));
 
