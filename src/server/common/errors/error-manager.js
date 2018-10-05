@@ -85,7 +85,7 @@ export class ErrorManager {
   /**
    * Create a sanitized error marked as ready to propagate from the API to the user
    * @param message {string} message
-   * @param details {any} Error details
+   * @param [details] {any} Error details
    * @param details.title {string} (optional) A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem
    * @param details.detail {string} (optional) A human-readable explanation specific to this occurrence of the problem.
    * @param details.meta {object} (optional) A meta object containing non-standard meta-information about the error. Ex. for validation the property details

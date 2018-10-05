@@ -17,9 +17,9 @@ export class ActivitiesManager {
    *    - full {string} -  get full version of  activities
    *    - raw {string} (deprecated) -  get raw version from db
    *
-   * @param terms
-   * @params terms.name {string} name of the app
-   * @params terms.ref {string} url ref property
+   * @param [terms]
+   * @params [terms.name] {string} name of the app
+   * @params [terms.ref] {string} url ref property
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
    */

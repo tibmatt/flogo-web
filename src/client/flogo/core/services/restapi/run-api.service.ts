@@ -1,14 +1,11 @@
 import { get, filter as _filter } from 'lodash';
-import { Inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
 import { Observable ,  throwError as _throw } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
-import { flowToJSON_Link, Interceptor, InterceptorTask, Snapshot, Step, LegacyFlowWrapper } from '@flogo/core/interfaces';
-
-import { HttpUtilsService } from './http-utils.service';
-import { DEFAULT_REST_HEADERS } from './rest-api-http-headers';
+import { flowToJSON_Link, Interceptor, InterceptorTask, Snapshot, Step } from '@flogo/core/interfaces';
+import { RestApiService } from './rest-api.service';
 
 /**
  * Possible run status
@@ -54,46 +51,34 @@ export interface RestartResponse {
 
 @Injectable()
 export class RunApiService {
-  constructor(
-    private http: HttpClient,
-    private httpUtils: HttpUtilsService,
-    @Inject(DEFAULT_REST_HEADERS) private defaultHeaders: HttpHeaders) {
+  constructor(private restApi: RestApiService) {
   }
 
-  getStatusByInstanceId(id: string): Observable<StatusResponse | null> {
-    return this.fetch(`flows/run/instances/${id}/status`);
+  getStatusByInstanceId(instanceId: string): Observable<StatusResponse | null> {
+    return this.restApi.get(`runner/instances/${instanceId}/status`);
   }
 
-  getStepsByInstanceId(id: string): Observable<StepsResponse> {
-    return this.fetch(`flows/run/instances/${id}/steps`);
+  getStepsByInstanceId(instanceId: string): Observable<StepsResponse> {
+    return this.restApi.get(`runner/instances/${instanceId}/steps`);
   }
 
   // todo: response interface
   getInstance(instanceId: string) {
-    return this.fetch(`flows/run/instances/${instanceId}`);
+    return this.restApi.get(`runner/instances/${instanceId}`);
   }
 
   getSnapshot(instanceId: string, snapshotId: number): Observable<Snapshot> {
-    return this.fetch(`flows/run/instances/${instanceId}/snapshot/${snapshotId}`);
+    return this.restApi.get(`runner/instances/${instanceId}/snapshot/${snapshotId}`);
   }
 
   // todo: data interface
   // todo: response interface
   startProcess(flowId: string, data: any): Observable<any> {
-    return this.post('flows/run/flow/start', { flowId, attrs: data });
+    return this.restApi.post<any>(`runner/processes/${flowId}/start`, { attrs: data });
   }
 
-  storeProcess(flowInfo: LegacyFlowWrapper): Observable<StoredProcessResponse> {
-    //  upload current flow to process service server
-    return this.post<StoredProcessResponse>('flows/run/flows', flowInfo).pipe(
-      map(storedProcess => {
-        // TODO
-        //  need to handle the empty response
-        //  maybe later on the /flows API should be changed to reply the exist process
-        //  instead of an empty response, however, in that case this block won't be run
-        return storedProcess;
-      })
-    );
+  storeProcess(flowId: string): Observable<StoredProcessResponse> {
+    return this.restApi.post<StoredProcessResponse>('runner/processes', { actionId: flowId });
   }
 
   // TODO: original name was restartWithIcptFrom, what is "icpt?
@@ -113,7 +98,7 @@ export class RunApiService {
         map(snapshot => updateProcessId ? updateSnapshotActionUri(snapshot, updateProcessId) : snapshot),
         switchMap((snapshot) => {
           // TODO: flowinfo interface
-          return this.fetch(`flows/run/flows/${updateProcessId}`)
+          return this.restApi.get(`runner/processes/${updateProcessId}`)
             .pipe(
               map(flowInfo => {
                 const links = get(flowInfo, 'rootTask.links', []);
@@ -131,7 +116,7 @@ export class RunApiService {
 
           // then restart from that state with data
           // TODO: document response data
-          return this.post('flows/run/restart', {
+          return this.restApi.post('runner/processes/restart', {
             initialState: filteredSnapshot,
             interceptor,
           });
@@ -147,18 +132,6 @@ export class RunApiService {
       return snapshot;
     }
 
-  }
-
-  private fetch<T>(path: string): Observable<T> {
-    return this.http.get<T>(this.httpUtils.apiPrefix(path, 'v1'), { headers: this.defaultHeaders });
-  }
-
-  private post<T>(path: string, body: any): Observable<T> {
-    return this.http.post<T>(
-      this.httpUtils.apiPrefix(path, 'v1'),
-      body,
-      { headers: this.defaultHeaders },
-    );
   }
 
   /**
