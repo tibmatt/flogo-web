@@ -50,10 +50,6 @@ describe('FlogoAppList component', () => {
   let de: DebugElement;
   let el: HTMLElement;
 
-  function compileComponent() {
-    return TestBed.compileComponents();
-  }
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -78,150 +74,85 @@ describe('FlogoAppList component', () => {
         { provide: NotificationsService, useValue: new NotificationsServiceMock() },
       ]
     });
+    return TestBed.compileComponents();
   });
 
-  it('Should render 3 applications', (done) => {
-    compileComponent()
-      .then(() => {
-        fixture = TestBed.createComponent(FlogoAppsListComponent);
-        comp = fixture.componentInstance;
-        comp.applications = applications;
-
-        fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.apps-list__element'));
-        expect(res.length).toEqual(3);
-        done();
-      });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(FlogoAppsListComponent);
+    comp = fixture.componentInstance;
   });
 
-  it('Should show the application name', (done) => {
-    compileComponent()
-      .then(() => {
-        fixture = TestBed.createComponent(FlogoAppsListComponent);
-        comp = fixture.componentInstance;
-        comp.applications = [
-          {
-            id: '123',
-            name: 'Sample Application',
-            version: '0.0.1',
-            description: 'My App',
-            createdAt: '2016-12-16T00:24:26+00:00',
-            updatedAt: '2016-12-16T00:24:26+00:00'
-          }
-        ];
-
-        fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.app-list__app-name'));
-        el = res[0].nativeElement;
-        expect(el.innerText.trim()).toEqual('Sample Application');
-        done();
-      });
+  it('Should render 3 applications', () => {
+    comp.applications = applications;
+    fixture.detectChanges();
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.qa-app'));
+    expect(res.length).toEqual(3);
   });
 
-  // xit('On add application, should emit the added application to the host', (done) => {
-  //   compileComponent()
-  //     .then(() => {
-  //       fixture = TestBed.createComponent(FlogoAppsListComponent);
-  //       comp = fixture.componentInstance;
-  //       comp.applications = null;
-  //       comp.apiApplications.add = () => {
-  //         return Promise.resolve({'name': 'Untitled App'});
-  //       };
-  //       comp.onAddedApp.subscribe((app) => {
-  //         expect(app.name).toEqual('Untitled App');
-  //         done();
-  //       });
-  //       comp.onAdd(null);
-  //     });
-  // });
+  it('Should show the application name', () => {
+    comp.applications = [
+      {
+        id: '123',
+        name: 'Sample Application',
+        version: '0.0.1',
+        description: 'My App',
+        createdAt: '2016-12-16T00:24:26+00:00',
+        updatedAt: '2016-12-16T00:24:26+00:00'
+      }
+    ];
+    fixture.detectChanges();
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.qa-app-name'));
+    el = res[0].nativeElement;
+    expect(el.innerText.trim()).toEqual('Sample Application');
+  });
 
   it('On selected application, should emit the selected application to the host', done => {
-    compileComponent()
-      .then(() => {
-        fixture = TestBed.createComponent(FlogoAppsListComponent);
-        comp = fixture.componentInstance;
-        comp.applications = [
-          {
-            id: '123',
-            name: 'Sample Application',
-            version: '0.0.1',
-            description: 'My App',
-            createdAt: '2016-12-16T00:24:26+00:00',
-            updatedAt: '2016-12-16T00:24:26+00:00'
-          }
-        ];
+    comp.applications = [
+      {
+        id: '123',
+        name: 'Sample Application',
+        version: '0.0.1',
+        description: 'My App',
+        createdAt: '2016-12-16T00:24:26+00:00',
+        updatedAt: '2016-12-16T00:24:26+00:00'
+      }
+    ];
 
-        fixture.detectChanges();
-        de = fixture.debugElement.query(By.css('.app-list__app-name'));
-        comp.appSelected.subscribe((app) => {
-          expect(app.name).toEqual('Sample Application');
-          done();
-        });
+    fixture.detectChanges();
+    de = fixture.debugElement.query(By.css('.qa-app-name'));
+    comp.appSelected.subscribe((app) => {
+      expect(app.name).toEqual('Sample Application');
+      done();
+    });
 
-        de.nativeElement.click();
-        fixture.detectChanges();
-      });
+    de.nativeElement.click();
+    fixture.detectChanges();
   });
 
   it('On mouse over must show delete icon', done => {
-    compileComponent()
-      .then(() => {
-        fixture = TestBed.createComponent(FlogoAppsListComponent);
-        comp = fixture.componentInstance;
-        comp.applications = [
-          {
-            id: '123',
-            name: 'Sample Application',
-            version: '0.0.1',
-            description: 'My App',
-            createdAt: '2016-12-16T00:24:26+00:00',
-            updatedAt: '2016-12-16T00:24:26+00:00'
-          }
-        ];
+    comp.applications = [
+      {
+        id: '123',
+        name: 'Sample Application',
+        version: '0.0.1',
+        description: 'My App',
+        createdAt: '2016-12-16T00:24:26+00:00',
+        updatedAt: '2016-12-16T00:24:26+00:00'
+      }
+    ];
 
-        fixture.detectChanges();
-        de = fixture.debugElement.query(By.css('.apps-list__element'));
+    fixture.detectChanges();
+    de = fixture.debugElement.query(By.css('.qa-app'));
 
-        el = de.nativeElement;
-        el.addEventListener('mouseover', () => {
-          // fixture.detectChanges();
-          const deleteIcon = fixture.debugElement.query(By.css('.apps-list__delete-btn .flogo-icon-delete'));
-          expect(deleteIcon).not.toBeNull();
-          done();
-        });
+    el = de.nativeElement;
+    el.addEventListener('mouseover', () => {
+      // fixture.detectChanges();
+      const deleteIcon = fixture.debugElement.query(By.css('.qa-app-delete'));
+      expect(deleteIcon).not.toBeNull();
+      done();
+    });
 
-        const event = new Event('mouseover');
-        el.dispatchEvent(event);
-      });
+    const event = new Event('mouseover');
+    el.dispatchEvent(event);
   });
-
-  /*xit('On delete application, should deleted the application from the list', done => {
-   compileComponent()
-   .then(() => {
-   fixture = TestBed.createComponent(FlogoAppsListComponent);
-   comp = fixture.componentInstance;
-   comp.applications = applications;
-
-   fixture.detectChanges();
-   let res = fixture.debugElement.queryAll(By.css('.apps-list__element'));
-
-   el = res[2].nativeElement;
-
-   el.addEventListener('mouseover', () => {
-   //fixture.detectChanges();
-   let deleteIcon = fixture.debugElement.query(By.css('.flogo-icon-delete'));
-   let element = deleteIcon.nativeElement;
-   element.click();
-   fixture.detectChanges();
-   let confirmDelete = fixture.debugElement.query(By.css('.popup-btn-primary'));
-   element = confirmDelete.nativeElement;
-   element.click();
-   fixture.detectChanges();
-   expect(comp.applications.length).toEqual(0);
-   });
-
-   let event = new Event('mouseover');
-   el.dispatchEvent(event);
-   });
-   });*/
 });

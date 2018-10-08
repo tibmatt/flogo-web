@@ -1,10 +1,13 @@
-import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+
+const POPOVER_WIDTH = 344;
 
 @Component({
   selector: 'flogo-delete-popover',
   template: `
     <span class="flogo-icon-delete" (click)="showPopup($event)"></span>
-    <div *ngIf="isPopupOpen" class="popup-container">
+    <div *ngIf="isPopupOpen" class="popup-container" [class.popup-container--left]="showLeft" [style.width]="width+'px'">
       <p class="popup-content">
         <span *ngIf="deleteContentType=='application'">{{ 'APP-LIST-POPUP:CONFIRM-MESSAGE-DELETE' | translate }}</span>
         <span *ngIf="deleteContentType=='flow'">{{ 'APP-DETAIL-POPUP:CONFIRM-MESSAGE-DELETE' | translate }}</span>
@@ -27,7 +30,6 @@ import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, 
     }
 
     .popup-container {
-      min-width: 340px;
       position: absolute;
       z-index: 2;
       top: 0;
@@ -37,6 +39,12 @@ import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, 
       background: #fff;
       box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.33);
     }
+
+    .popup-container--left {
+      left: unset;
+      right: 30px;
+    }
+
     .popup-container .popup-content {
       color: #d0021b;
       font-weight: 600;
@@ -50,18 +58,16 @@ import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, 
   `]
 })
 export class FlogoDeletePopupComponent {
-  @HostBinding('class.always-visible')
-  isPopupOpen = false;
-  @Input()
-  deleteContent: any;
-  @Input()
-  deleteContentType: string;
-  @Output()
-  confirmDel: EventEmitter<any> = new EventEmitter();
-  nativeElement: any;
+  readonly width = POPOVER_WIDTH;
+  @HostBinding('class.always-visible') isPopupOpen = false;
+  @Input() deleteContent: any;
+  @Input() deleteContentType: string;
+  @Output() confirmDel: EventEmitter<any> = new EventEmitter();
+  showLeft: boolean;
+  private nativeElement: any;
 
-  constructor(private _eref: ElementRef) {
-    this.nativeElement = this._eref.nativeElement;
+  constructor(elementRef: ElementRef, @Inject(DOCUMENT) private document) {
+    this.nativeElement = elementRef.nativeElement;
   }
 
   @HostListener('document:click', ['$event'])
@@ -73,6 +79,7 @@ export class FlogoDeletePopupComponent {
 
   showPopup(event) {
     event.preventDefault();
+    this.showLeft = !this.willItFitInViewport();
     this.isPopupOpen = true;
   }
 
@@ -85,5 +92,11 @@ export class FlogoDeletePopupComponent {
     event.stopPropagation();
     this.isPopupOpen = false;
   }
+
+  private willItFitInViewport() {
+    const minWidth = this.nativeElement.getBoundingClientRect().right + POPOVER_WIDTH;
+    return minWidth < this.document.body.clientWidth;
+  }
+
 
 }
