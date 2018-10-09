@@ -1,56 +1,48 @@
-import { Component, Input, SimpleChanges, OnChanges, ViewChild, EventEmitter, Output } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
-import { BsModalComponent } from 'ng2-bs3-modal';
+import {Component, HostBinding, Inject} from '@angular/core';
+import {FormGroup, FormBuilder, Validators, AbstractControl} from '@angular/forms';
 
-import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
-import { UniqueNameValidator } from './unique-name.validator';
+import {APIFlowsService} from '../../core/services/restapi/v2/flows-api.service';
+import {UniqueNameValidator} from './unique-name.validator';
+import {MODAL_TOKEN, modalAnimate, ModalControl} from '@flogo/core/modal';
 
+export interface NewFlowData {
+  appId: string;
+  triggerId?: string;
+}
 
 @Component({
-    selector: 'flogo-new-flow',
-    templateUrl: 'new-flow.component.html',
-    styleUrls: ['new-flow.component.less']
+  selector: 'flogo-new-flow',
+  templateUrl: 'new-flow.component.html',
+  styleUrls: ['new-flow.component.less'],
+  animations: modalAnimate
 })
-export class FlogoNewFlowComponent implements OnChanges {
-  @ViewChild('modal') public modal: BsModalComponent;
-  @Input()  public appId: string;
-  @Output() public newFlow = new EventEmitter();
+export class FlogoNewFlowComponent {
+  @HostBinding('@modalAnimate')
   public flow: FormGroup;
   private triggerId: string;
 
   constructor(
     private flowsService: APIFlowsService,
     private formBuilder: FormBuilder,
+    @Inject(MODAL_TOKEN) public newFlowData: NewFlowData, public control: ModalControl
   ) {
     this.resetForm();
   }
 
-  public ngOnChanges(changes: SimpleChanges) {
-    const appIdChange = changes['appId'];
-    if (appIdChange && appIdChange.currentValue !== appIdChange.previousValue) {
-      this.resetForm();
-    }
-  }
 
-  public open(triggerId?) {
-    this.triggerId = triggerId;
-    this.resetForm();
-    this.modal.open();
-  }
-
-  public createFlow({ value, valid }: { value: { name: string, description?: string }, valid: boolean }) {
-    this.newFlow.emit({
-      triggerId: this.triggerId,
+  public createFlow({value}: { value: { name: string, description?: string } }) {
+    this.control.close({
+      triggerId: this.newFlowData.triggerId,
       name: value.name,
       description: value.description,
     });
-    this.closeAddFlowModal();
+    this.resetForm();
   }
 
   public closeAddFlowModal() {
     this.resetForm();
-    this.triggerId = null;
-    this.modal.close();
+    this.newFlowData.triggerId = null;
+    this.control.close();
   }
 
   private resetForm() {
@@ -59,7 +51,7 @@ export class FlogoNewFlowComponent implements OnChanges {
         Validators.composeAsync([
           // we need to wrap into a compose async validator, otherwise async validators overwrite sync validators
           (control: AbstractControl) => Promise.resolve(Validators.required(control)),
-          UniqueNameValidator.make(this.flowsService, this.appId)
+          UniqueNameValidator.make(this.flowsService, this.newFlowData.appId)
         ])
       ],
       description: ['']

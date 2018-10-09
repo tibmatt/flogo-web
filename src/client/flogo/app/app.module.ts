@@ -49,7 +49,9 @@ import {ModalService} from '@flogo/core/modal/modal.service';
     ModalService
   ],
   entryComponents: [
-    FlogoExportFlowsComponent
+    FlogoExportFlowsComponent,
+    TriggerShimBuildComponent,
+    FlogoNewFlowComponent
   ]
 })
 export class FlogoApplicationModule {

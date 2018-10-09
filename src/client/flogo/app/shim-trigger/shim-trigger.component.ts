@@ -1,59 +1,49 @@
 import { flatMap, map, defaults } from 'lodash';
-import {Component, ViewChild, Input, SimpleChanges, OnChanges, EventEmitter, Output} from '@angular/core';
-import {BsModalComponent} from 'ng2-bs3-modal';
+import {Component, HostBinding, Inject} from '@angular/core';
 import {CONTRIB_REF_PLACEHOLDER, LanguageService} from '@flogo/core';
+import {MODAL_TOKEN, modalAnimate, ModalControl} from '@flogo/core/modal';
+
+export interface ShimTriggerData {
+  shimTriggersList: any[];
+  buildOptions: any[];
+}
 
 @Component({
   selector: 'flogo-trigger-shim-build',
   templateUrl: 'shim-trigger.component.html',
-  styleUrls: ['shim-trigger.component.less']
+  styleUrls: ['shim-trigger.component.less'],
+  animations: modalAnimate
 })
 
-export class TriggerShimBuildComponent implements OnChanges {
-  @ViewChild('shimTriggersModal') shimTriggersModal: BsModalComponent;
-  @Input() shimTriggersList;
-  @Input() buildOptions;
-  @Output() triggerSelected: EventEmitter<{ triggerId?: string, env?: {os: string, arch: string}}> = new EventEmitter();
+export class TriggerShimBuildComponent {
+  @HostBinding('@modalAnimate')
   displayOptions: any;
   isLambdaTrigger: boolean;
   isTriggerSelected: boolean;
 
-  constructor(public translate: LanguageService) {}
-
-
-  ngOnChanges(changes: SimpleChanges) {
-    const change = changes['shimTriggersList'];
-    if (change.currentValue) {
-      this.shimTriggersList = flatMap(this.shimTriggersList, shimTriggerList =>
-        map(shimTriggerList.flows, flow => defaults({configuredTrigger: shimTriggerList.trigger}, {configuredFlow: flow}))
-      );
-      if (this.shimTriggersList.length === 1) {
-        this.displayOptions = {
-          triggerName: this.shimTriggersList[0].configuredTrigger.name,
-          triggerId: this.shimTriggersList[0].configuredTrigger.id,
-          flowName: this.shimTriggersList[0].configuredFlow.name
-        };
-        this.isTriggerSelected = true;
-      } else {
-        this.displayOptions = {};
-        this.isTriggerSelected = false;
-      }
-      this.isLambdaTrigger = false;
+  constructor(@Inject(MODAL_TOKEN) public shimTriggerData: ShimTriggerData, public control: ModalControl,
+              public translate: LanguageService) {
+    this.shimTriggerData.shimTriggersList = flatMap(this.shimTriggerData.shimTriggersList, shimTriggerList =>
+      map(shimTriggerList.flows, flow => defaults({configuredTrigger: shimTriggerList.trigger}, {configuredFlow: flow}))
+    );
+    if (this.shimTriggerData.shimTriggersList.length === 1) {
+      this.displayOptions = {
+        triggerName: this.shimTriggerData.shimTriggersList[0].configuredTrigger.name,
+        triggerId: this.shimTriggerData.shimTriggersList[0].configuredTrigger.id,
+        flowName: this.shimTriggerData.shimTriggersList[0].configuredFlow.name
+      };
+      this.isTriggerSelected = true;
+    } else {
+      this.displayOptions = {};
+      this.isTriggerSelected = false;
     }
-  }
-
-  openModal() {
-    this.shimTriggersModal.open();
-  }
-
-  closeModal() {
-    this.shimTriggersModal.close();
+    this.isLambdaTrigger = false;
   }
 
   onTriggerSelectionFinish(trigger) {
     if (trigger.configuredTrigger.ref === CONTRIB_REF_PLACEHOLDER.REF_LAMBDA) {
       this.isLambdaTrigger = true;
-      this.triggerSelected.emit({triggerId: trigger.configuredTrigger.id});
+      this.control.close({triggerId: trigger.configuredTrigger.id});
     } else {
       this.displayOptions = {
         triggerName: trigger.configuredTrigger.name,
@@ -66,7 +56,7 @@ export class TriggerShimBuildComponent implements OnChanges {
   }
 
   onBuildEnvSelection(env, triggerId) {
-    this.triggerSelected.emit({triggerId: triggerId, env: {os: env.os, arch: env.arch}});
+    this.control.close({triggerId: triggerId, env: {os: env.os, arch: env.arch}});
   }
 
 }

@@ -2,7 +2,7 @@ import { sortBy, snakeCase } from 'lodash';
 import { differenceInSeconds } from 'date-fns';
 
 import {
-  Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter, InjectionToken,
+  Component, Input, Output, SimpleChanges, OnChanges, OnInit, EventEmitter
 } from '@angular/core';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -14,12 +14,12 @@ import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contr
 import {
 AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
 } from '../core';
-import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
+import {FlogoNewFlowComponent, NewFlowData} from '../new-flow/new-flow.component';
 import {
   ExportFlowsData,
   FlogoExportFlowsComponent
 } from '../export-flows/export-flows.component';
-import { TriggerShimBuildComponent } from '../shim-trigger/shim-trigger.component';
+import {ShimTriggerData, TriggerShimBuildComponent} from '../shim-trigger/shim-trigger.component';
 
 import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
 import {ConfirmationResult} from '@flogo/core/confirmation';
@@ -37,8 +37,6 @@ const MAX_SECONDS_TO_ASK_APP_NAME = 5;
   styleUrls: ['app-detail.component.less']
 })
 export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
-  @ViewChild(FlogoNewFlowComponent) addFlow: FlogoNewFlowComponent;
-  @ViewChild('shimTriggersModal') shimTriggersBuild: TriggerShimBuildComponent;
   @Input() appDetail: ApplicationDetail;
 
   @Output() flowSelected: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
@@ -156,7 +154,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   openCreateFlow() {
-    this.addFlow.open();
+    this.openNewFlowModal();
   }
 
   buildApp({ os, arch }) {
@@ -164,17 +162,25 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     this.handleBuildDownload(this.appDetailService.build(this.application.id, { os, arch }));
   }
 
-  onShimTriggerSelection(selectedTrigger) {
-    this.buildShimTrigger(selectedTrigger);
-  }
-
   buildShimTrigger(selectedTriggerDetails) {
-    this.shimTriggersBuild.closeModal();
     this.handleBuildDownload(this.shimTriggersApiService.buildShimTrigger(selectedTriggerDetails));
   }
 
   openCreateFlowFromTrigger(trigger: Trigger) {
-    this.addFlow.open(trigger.id);
+    this.openNewFlowModal(trigger.id);
+  }
+
+  private openNewFlowModal(triggerId?) {
+    const newFlowData: NewFlowData = {appId: this.application.id};
+    if (triggerId) {
+      newFlowData.triggerId = triggerId;
+    }
+    return this.modalService.openModal<NewFlowData>(FlogoNewFlowComponent, newFlowData).result
+      .subscribe(flowAdded => {
+        if (flowAdded) {
+          this.flowAdded.emit(flowAdded);
+        }
+      });
   }
 
   onClickAddDescription(event) {
@@ -275,7 +281,15 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     if (ref === CONTRIB_REF_PLACEHOLDER.REF_LAMBDA && this.shimTriggersList.length === 1) {
       this.buildShimTrigger({triggerId: this.shimTriggersList[0].trigger.id});
     } else {
-      this.shimTriggersBuild.openModal();
+      this.modalService.openModal<ShimTriggerData>(TriggerShimBuildComponent, {
+        shimTriggersList: this.shimTriggersList,
+        buildOptions: this.buildOptions
+      }).result
+        .subscribe(buildParams => {
+          if (buildParams) {
+            this.buildShimTrigger(buildParams);
+          }
+        });
     }
     this.closeBuildBox();
   }
