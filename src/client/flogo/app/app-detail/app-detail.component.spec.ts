@@ -107,7 +107,7 @@ describe('FlogoApplicationDetailComponent component', () => {
     comp.appDetail = nextApp;
     fixture.detectChanges();
 
-    const inputName = fixture.debugElement.query(By.css('.flogo-app-header__name'));
+    const inputName = fixture.debugElement.query(By.css('.qa-app-name'));
     expect(inputName.nativeElement.innerText).toEqual('Sample Application 2');
   });
 
@@ -169,7 +169,7 @@ describe('FlogoApplicationDetailComponent component', () => {
 
   it('When done editing name input, name should be visible as a label', fakeAsync(() => {
     const newName = 'A cool application';
-    const labelApp = fixture.debugElement.query(By.css('.flogo-app-header__name'));
+    const labelApp = fixture.debugElement.query(By.css('.qa-app-name'));
     labelApp.nativeElement.click();
     fixture.detectChanges();
 
@@ -183,7 +183,7 @@ describe('FlogoApplicationDetailComponent component', () => {
     tick();
     fixture.detectChanges();
 
-    const labelName = fixture.debugElement.query(By.css('.flogo-app-header__name'));
+    const labelName = fixture.debugElement.query(By.css('.qa-app-name'));
     expect(labelName.nativeElement.innerText).toEqual(newName);
 
   }));
@@ -224,7 +224,7 @@ describe('FlogoApplicationDetailComponent component', () => {
     comp.appDetail = nextApp;
     fixture.detectChanges();
 
-    const labelName = fixture.debugElement.query(By.css('.flogo-app-header__name'));
+    const labelName = fixture.debugElement.query(By.css('.qa-app-name'));
     const labelElement = labelName.nativeElement;
     expect(labelElement.innerText).toEqual('Untitled Application');
   });

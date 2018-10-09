@@ -1,5 +1,9 @@
 @import '../../../assets/_variables';
 
+:host {
+  display: flex;
+}
+
 .flogo-trigger__container {
   width: 40px;
 }
@@ -7,16 +11,17 @@
 .trigger {
   position: relative;
   z-index: 1;
-  box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.2);
 }
 
 .trigger--empty {
   box-shadow: none;
+  transform: translateY(1px);
 }
 
-.flogo-trigger_count{
+.flogo-trigger__count {
   position: relative;
-  margin-top: -3px;
+  margin-top: -10px;
+  margin-left: 3px;
   z-index: 0;
   font-weight: bold;
   letter-spacing: 0.5px;

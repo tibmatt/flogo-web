@@ -1,17 +1,16 @@
-<div class="row flogo-group">
-  <div class="col-md-offset-1 col-md-10">
-    <div class="flogo-group__trigger">
-      <div class="flogo-trigger__container">
-        <div class="trigger" [ngClass]="{'trigger--empty': !triggers}">
-          <i class="flogo-icon-trigger"></i>
-        </div>
-        <div class="flogo-trigger_count" *ngIf="triggerCountDisplay"><span>{{triggerCountDisplay}}</span></div>
-      </div>
-    </div>
-    <div class="flogo-group__flows">
-      <div class="flogo-app-content__flows">
-        <flogo-apps-flows [flows]="flows" (flowSelected)="onSelect($event)" (deleteFlow)="onDeleteFlow($event)"></flogo-apps-flows>
-      </div>
-    </div>
+<div class="flogo-group__trigger">
+  <div class="flogo-trigger__container">
+    <svg class="trigger" viewBox="0 0 50 52" xmlns="http://www.w3.org/2000/svg">
+      <ng-container *ngIf="triggers">
+        <use xlink:href="/assets/svg/trigger-icon.svg#defaultTrigger" class="trigger__shape"></use>
+      </ng-container>
+      <ng-container *ngIf="!triggers">
+        <use xlink:href="/assets/svg/trigger-icon.svg#addTrigger" class="trigger__shape trigger__shape--empty"></use>
+      </ng-container>
+    </svg>
+    <div class="flogo-trigger__count" *ngIf="triggerCountDisplay"><span>{{triggerCountDisplay}}</span></div>
   </div>
+  <i class="flogo-icon-trigger" [class.flogo-icon-trigger--empty]="!triggers"></i>
 </div>
+<flogo-apps-flows class="flogo-group__flows"
+                  [flows]="flows" (flowSelected)="onSelect($event)" (deleteFlow)="onDeleteFlow($event)"></flogo-apps-flows>

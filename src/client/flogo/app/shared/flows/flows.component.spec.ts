@@ -88,66 +88,45 @@ describe('Application flows', () => {
   let de: DebugElement;
   let el: HTMLElement;
 
-  function compileComponent() {
-    return TestBed.compileComponents();
-  }
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [NoDependenciesFakeLanguageModule],
       // declare the test component
       declarations: [FlogoApplicationFlowsComponent, BsModalComponent, ContainerComponent, TimeFromNowPipe, FlogoDeletePopupComponent],
     });
+    return TestBed.compileComponents();
   });
 
-  it('Should order the flows in alphabetical order', done => {
-    compileComponent()
-      .then(() => {
-        fixture = TestBed.createComponent(ContainerComponent);
-        const comp = fixture.componentInstance;
-        comp.flows = comp.flowsDisorder;
-        fixture.detectChanges();
-        const res = fixture.debugElement.queryAll(By.css('.flogo-flow-title'));
-        const nameList = res.map(element => element.nativeElement.innerHTML.trim());
-        expect(nameList).toEqual(['Log temperature', 'Manually adjust temperature',
-          'Raise temperature &amp; notifiy operator', 'Try to find pet']);
-        done();
-      });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ContainerComponent);
+    fixture.detectChanges();
   });
 
-  it('Should render 4 flows', done => {
-    compileComponent()
-      .then(() => {
-        fixture = TestBed.createComponent(ContainerComponent);
-        fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-flow'));
-        expect(res.length).toEqual(4);
-        done();
-      });
+  it('Should order the flows in alphabetical order', () => {
+    const comp = fixture.componentInstance;
+    comp.flows = comp.flowsDisorder;
+    fixture.detectChanges();
+    const res = fixture.debugElement.queryAll(By.css('.qa-flow-title'));
+    const nameList = res.map(element => element.nativeElement.innerHTML.trim());
+    expect(nameList).toEqual(['Log temperature', 'Manually adjust temperature',
+      'Raise temperature &amp; notifiy operator', 'Try to find pet']);
   });
 
-  it('Should display the flow title', done => {
-    compileComponent()
-      .then(() => {
-        fixture = TestBed.createComponent(ContainerComponent);
-        fixture.detectChanges();
-        de = fixture.debugElement.query(By.css('.flogo-flow-title:nth-of-type(1)'));
-        el = de.nativeElement;
-        expect(el.innerText).toEqual('Log Temperature');
-        done();
-      });
+  it('Should render 4 flows', () => {
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.qa-flow'));
+    expect(res.length).toEqual(4);
   });
 
-  it('Should display the flow description', done => {
-    compileComponent()
-      .then(() => {
-        fixture = TestBed.createComponent(ContainerComponent);
-        fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-flow-description'));
-        el = res[3].nativeElement;
-        expect(el.innerText).toEqual('A basic flow for apietusam');
-        done();
-      });
+  it('Should display the flow title', () => {
+    de = fixture.debugElement.query(By.css('.qa-flow-title:nth-of-type(1)'));
+    el = de.nativeElement;
+    expect(el.innerText).toEqual('Log Temperature');
+  });
+
+  it('Should display the flow description', () => {
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.qa-flow-description'));
+    el = res[3].nativeElement;
+    expect(el.innerText).toEqual('A basic flow for apietusam');
   });
 
 });
