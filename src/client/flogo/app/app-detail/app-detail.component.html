@@ -138,7 +138,7 @@
   <div class="menu-dropdown views-dropdown" (fgClickOutside)="closeViewsDropdown()">
     <button class="flogo-button--secondary views-dropdown-button" (click)="toggleViewsDropdown()"
             id="viewsMenuButton" aria-haspopup="true" [attr.aria-expanded]="isViewsDropdownShown">
-      <span class="views-dropdown-button__label"  [ngClass]="{'active' : viewsMenuButton}">{{selectedViewTranslateKey | translate}}</span>
+      <span class="views-dropdown-button__label"  [class.active]="isViewsDropdownShown">{{selectedViewTranslateKey | translate}}</span>
       <span class="flogo-icon-back flogo-button-dropdown-caret views-dropdown-button__caret" [ngClass]="{'active' : isViewsDropdownShown}"></span>
     </button>
     <div class="menu-dropdown__content views-dropdown__content" aria-labelledby="viewsMenuButton" [ngClass]="{'active' : isViewsDropdownShown}">
