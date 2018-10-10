@@ -16,3 +16,5 @@ export const Dist = {
   server: path.join(distRoot, 'server'),
   packages: path.join(distRoot, 'packages'),
 };
+
+export const ABSOLUTE_DIST_SERVER_PATH= '/tmp/flogo-web/build/server';
