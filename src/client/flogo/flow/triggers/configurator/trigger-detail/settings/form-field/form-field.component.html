@@ -8,8 +8,9 @@
   </label>
   <ng-container [ngSwitch]="settingInformation.type">
     <monaco-editor *ngSwitchCase="VALUE_TYPES.Any"
+                   class="settings-field settings-field--code-editor"
                    #field
-                   [formValueChangeTransformerFn]="editorOut(settingInformation.type)"
+                   [formValueChangeTransformerFn]="editorOut"
                    [formValueWriteTransformerFn]="editorIn"
                    [formControl]="settingControl">
     </monaco-editor>

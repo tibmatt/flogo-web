@@ -136,6 +136,8 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
 
   ngOnInit() {
     this.isEditorLoading = true;
+    this.ready.pipe(take(1))
+      .subscribe(() => this.updateDimensions());
   }
 
   insert(text: string, range?: OffsetRange | LineRange) {
