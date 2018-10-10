@@ -48,7 +48,7 @@ export interface TriggerConfigureField {
   isDirty: boolean;
   isValid: boolean;
   isEnabled: boolean;
-  value: string;
+  value: any;
   errors?: any;
   parsedMetadata?: {
     type: string;
