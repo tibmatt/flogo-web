@@ -10,7 +10,7 @@
     "start": "npm-run-all release --",
     "postinstall": "yarn run submodules:link",
     "dev": "npm-run-all --parallel -l dev:*",
-    "dev:server": "yarn --cwd src/server run start",
+    "dev:server": "yarn --cwd src/server run dev",
     "dev:client": "yarn --cwd src/client run start",
     "watch:parser": "yarn --cwd src/parser run build:watch",
     "test": "yarn test:parser && yarn test:server && yarn test:client",
