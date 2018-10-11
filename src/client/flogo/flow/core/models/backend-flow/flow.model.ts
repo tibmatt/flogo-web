@@ -325,10 +325,6 @@ export function savableFlow(inFlow: UiFlow): Action {
     }
   }
 
-  if (_hasExplicitReply(flowJSON.tasks)) {
-    flowJSON.explicitReply = true;
-  }
-
   /* tslint:disable-next-line:no-unused-expression */
   INFO && console.log('Generated flow.json: ', flowJSON);
 

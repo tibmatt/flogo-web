@@ -19,8 +19,7 @@ const EDITABLE_FIELDS_CREATION = [
   'metadata',
   'tasks',
   'links',
-  'errorHandler',
-  'explicitReply'
+  'errorHandler'
 ];
 
 const EDITABLE_FIELDS_UPDATE = [
@@ -255,10 +254,33 @@ function atomicUpdate(actionFields, actionId, appId) {
       }
 
       const actionIndex = app.actions.findIndex(t => t.id === actionId);
+      const oldAction = app.actions[actionIndex];
+      const removeMainHandler = oldAction.tasks && !actionFields.tasks;
+      const removeErrorHandler = oldAction.errorHandler && !actionFields.errorHandler;
       const modifierPrefix = `actions.${actionIndex}`;
       actionFields.updatedAt = dbUtils.ISONow();
       // makes { $set: { 'actions.1.name': 'my action' } };
       updateQuery.$set = mapKeys(actionFields, (v, fieldName) => `${modifierPrefix}.${fieldName}`);
+      /***
+       * Apart from updating all the fields coming from the new action data, In case when empty items in main handler
+       * and error handler, then we need to unset the 'tasks', 'links' and 'errorHandler' from action
+       *
+       * if removeMainHandler is flagged true
+       *    { $unset: {'actions.1.tasks': true, 'actions.1.links': true}}
+       *
+       * if removeErrorHandler is flagged true
+       *    { $unset: {'actions.1.errorHandler': true}}
+       */
+      if (removeMainHandler || removeErrorHandler) {
+        updateQuery.$unset = {};
+        if (removeMainHandler) {
+          updateQuery.$unset[`${modifierPrefix}.tasks`] = true;
+          updateQuery.$unset[`${modifierPrefix}.links`] = true;
+        }
+        if (removeErrorHandler) {
+          updateQuery.$unset[`${modifierPrefix}.errorHandler`] = true;
+        }
+      }
       return null;
     };
 
