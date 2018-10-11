@@ -1,7 +1,6 @@
 import pick from 'lodash/pick';
 import omit from 'lodash/omit';
 import get from 'lodash/get';
-import mapKeys from 'lodash/mapKeys';
 
 import { apps as appsDb, dbUtils, indexer as indexerDb } from '../../common/db';
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
@@ -12,6 +11,7 @@ import { HandlersManager } from '../apps/handlers';
 import { TriggerManager as ContribTriggersManager } from '../triggers';
 
 import { findGreatestNameIndex } from '../../common/utils/collection';
+import {prepareUpdateQuery} from "./prepare-update-query";
 
 const EDITABLE_FIELDS_CREATION = [
   'name',
@@ -254,33 +254,8 @@ function atomicUpdate(actionFields, actionId, appId) {
       }
 
       const actionIndex = app.actions.findIndex(t => t.id === actionId);
-      const oldAction = app.actions[actionIndex];
-      const removeMainHandler = oldAction.tasks && !actionFields.tasks;
-      const removeErrorHandler = oldAction.errorHandler && !actionFields.errorHandler;
-      const modifierPrefix = `actions.${actionIndex}`;
       actionFields.updatedAt = dbUtils.ISONow();
-      // makes { $set: { 'actions.1.name': 'my action' } };
-      updateQuery.$set = mapKeys(actionFields, (v, fieldName) => `${modifierPrefix}.${fieldName}`);
-      /***
-       * Apart from updating all the fields coming from the new action data, In case when empty items in main handler
-       * and error handler, then we need to unset the 'tasks', 'links' and 'errorHandler' from action
-       *
-       * if removeMainHandler is flagged true
-       *    { $unset: {'actions.1.tasks': true, 'actions.1.links': true}}
-       *
-       * if removeErrorHandler is flagged true
-       *    { $unset: {'actions.1.errorHandler': true}}
-       */
-      if (removeMainHandler || removeErrorHandler) {
-        updateQuery.$unset = {};
-        if (removeMainHandler) {
-          updateQuery.$unset[`${modifierPrefix}.tasks`] = true;
-          updateQuery.$unset[`${modifierPrefix}.links`] = true;
-        }
-        if (removeErrorHandler) {
-          updateQuery.$unset[`${modifierPrefix}.errorHandler`] = true;
-        }
-      }
+      Object.assign(updateQuery, prepareUpdateQuery(actionFields, app.actions[actionIndex], actionIndex));
       return null;
     };
 
