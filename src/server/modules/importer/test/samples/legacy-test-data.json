@@ -4,65 +4,6 @@
     "extractActions": [
       {
         "description": "ddadfads",
-        "data": {
-          "flow": {
-            "type": 1,
-            "attributes": [],
-            "rootTask": {
-              "id": "root",
-              "type": 1,
-              "tasks": [
-                {
-                  "id": "log_2",
-                  "name": "Log Message",
-                  "description": "Simple Log Activity",
-                  "type": 1,
-                  "activityType": "tibco-log",
-                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
-                  "attributes": [
-                    {
-                      "name": "message",
-                      "value": "Hello world",
-                      "required": false,
-                      "type": "string"
-                    },
-                    {
-                      "name": "flowInfo",
-                      "value": "true",
-                      "required": false,
-                      "type": "boolean"
-                    },
-                    {
-                      "name": "addToFlow",
-                      "value": "true",
-                      "required": false,
-                      "type": "boolean"
-                    }
-                  ],
-                  "inputMappings": [
-                    {
-                      "mapTo": "message",
-                      "type": 2,
-                      "value": "Hello world"
-                    },
-                    {
-                      "mapTo": "flowInfo",
-                      "type": 2,
-                      "value": "true"
-                    },
-                    {
-                      "mapTo": "addToFlow",
-                      "type": 2,
-                      "value": "true"
-                    }
-                  ]
-                }
-              ],
-              "links": [],
-              "attributes": []
-            }
-          }
-        },
         "id": "test_flow",
         "metadata": {
           "input": [
@@ -78,7 +19,55 @@
             }
           ]
         },
-        "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow"
+        "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+        "tasks": [
+          {
+            "id": "log_2",
+            "name": "Log Message",
+            "description": "Simple Log Activity",
+            "type": 1,
+            "activityType": "tibco-log",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+            "attributes": [
+              {
+                "name": "message",
+                "value": "Hello world",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "name": "flowInfo",
+                "value": "true",
+                "required": false,
+                "type": "boolean"
+              },
+              {
+                "name": "addToFlow",
+                "value": "true",
+                "required": false,
+                "type": "boolean"
+              }
+            ],
+            "inputMappings": [
+              {
+                "mapTo": "message",
+                "type": 2,
+                "value": "Hello world"
+              },
+              {
+                "mapTo": "flowInfo",
+                "type": 2,
+                "value": "true"
+              },
+              {
+                "mapTo": "addToFlow",
+                "type": 2,
+                "value": "true"
+              }
+            ]
+          }
+        ],
+        "links": []
       }
     ],
     "extractTriggers": [

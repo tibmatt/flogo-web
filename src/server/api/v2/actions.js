@@ -145,6 +145,7 @@ async function deleteAction(ctx, next) {
   ctx.status = 204;
 }
 
+/*@deprecated - not used in the application */
 async function makeBuild(ctx, next) {
   const actionId = ctx.params.actionId;
 

@@ -1,5 +1,4 @@
 import cloneDeep from 'lodash/cloneDeep';
-import get from 'lodash/get';
 import {assert} from 'chai';
 import {REF_SUBFLOW} from "../../../common/constants";
 import {attributesToMappings, taskAttributesToMappingsUnifier} from "./task-attributes-to-mappings-unifier";
@@ -7,60 +6,54 @@ import {attributesToMappings, taskAttributesToMappingsUnifier} from "./task-attr
 describe('importer.common.task-attributes-to-mappings-unifier', function() {
   const dataUnderTest = {
     action: {
-      data: {
-        flow: {
-          rootTask: {
-            tasks: [
-              {
-                id: 'task1',
-                activityRef: 'activityschema1',
-                attributes: [
-                  { name: 'attr1', type: 'double' },
-                  { name: 'attr2', type: 'complex_object' },
-                ],
-                inputMappings: [{
-                  mapTo: 'attr1',
-                  type: 1,
-                  value: "$.flow.in1"
-                }]
-              },
-              {
-                id: 'task2',
-                activityRef: 'activityschema2',
-                attributes: [
-                  { name: 'attr1', type: 'number' },
-                  { name: 'attr2', type: 'complexObject' }
-                ],
-                inputMappings: [{
-                  mapTo: 'attr3',
-                  type: 2,
-                  value: true
-                }]
-              },
-              {
-                id: 'task3',
-                activityRef: REF_SUBFLOW,
-                attributes: [{ name: 'attr1', type: 'number' }],
-                inputMappings: [{
-                  mapTo: 'attr1',
-                  type: 1,
-                  value: "$.flow.in1"
-                }]
-              },
-              {
-                id: 'task4',
-                activityRef: 'activityschema3',
-                attributes: [{ name: 'attr1', type: 'number' }],
-                inputMappings: [{
-                  mapTo: 'attr3',
-                  type: 1,
-                  value: "$.flow.in2"
-                }]
-              }
-            ],
-          }
+      tasks: [
+        {
+          id: 'task1',
+          activityRef: 'activityschema1',
+          attributes: [
+            { name: 'attr1', type: 'double' },
+            { name: 'attr2', type: 'complex_object' },
+          ],
+          inputMappings: [{
+            mapTo: 'attr1',
+            type: 1,
+            value: "$.flow.in1"
+          }]
         },
-      }
+        {
+          id: 'task2',
+          activityRef: 'activityschema2',
+          attributes: [
+            { name: 'attr1', type: 'number' },
+            { name: 'attr2', type: 'complexObject' }
+          ],
+          inputMappings: [{
+            mapTo: 'attr3',
+            type: 2,
+            value: true
+          }]
+        },
+        {
+          id: 'task3',
+          activityRef: REF_SUBFLOW,
+          attributes: [{ name: 'attr1', type: 'number' }],
+          inputMappings: [{
+            mapTo: 'attr1',
+            type: 1,
+            value: "$.flow.in1"
+          }]
+        },
+        {
+          id: 'task4',
+          activityRef: 'activityschema3',
+          attributes: [{ name: 'attr1', type: 'number' }],
+          inputMappings: [{
+            mapTo: 'attr3',
+            type: 1,
+            value: "$.flow.in2"
+          }]
+        }
+      ]
     },
     schemas: [{
       ref: REF_SUBFLOW,
@@ -112,7 +105,7 @@ describe('importer.common.task-attributes-to-mappings-unifier', function() {
   };
 
   let resultAction;
-  const extractMappings = (src, taskId) => get(src, 'data.flow.rootTask.tasks', []).find(task => task.id === taskId).inputMappings;
+  const extractMappings = (src, taskId) => src.tasks.find(task => task.id === taskId).inputMappings;
   beforeEach(() => {
     resultAction = taskAttributesToMappingsUnifier(cloneDeep(dataUnderTest.action), dataUnderTest.schemas);
   });

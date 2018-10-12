@@ -44,7 +44,7 @@ export class StandardMicroServiceFormatter {
 
   formatResources(actions) {
     return actions.map(action => {
-      const taskLinkGroup = formatTaskLinkGroups(this.activitySchemas, action.data.flow || {});
+      const taskLinkGroup = formatTaskLinkGroups(this.activitySchemas, action || {});
       return formatResource(action, taskLinkGroup);
     });
   }

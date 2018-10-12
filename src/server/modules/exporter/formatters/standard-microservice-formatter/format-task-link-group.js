@@ -3,9 +3,14 @@ import { formatLinks } from './format-links';
 import { formatTasks } from './format-tasks';
 
 export function formatTaskLinkGroups(activitySchemas, flow) {
+  const rootTask = {
+    tasks: flow.tasks,
+    links: flow.links
+  };
+  const errorHandler = flow.errorHandler || {};
   return {
-    root: formatGroup(activitySchemas, flow.rootTask || {}),
-    error: formatGroup(activitySchemas, flow.errorHandlerTask || {}),
+    root: formatGroup(activitySchemas, rootTask),
+    error: formatGroup(activitySchemas, errorHandler),
   };
 }
 

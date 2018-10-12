@@ -1,6 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
-import set from 'lodash/get';
-import { safeGetTasksInHandler } from '../../../common/utils/flow';
+import set from 'lodash/set';
+import {getInternalTasksPath, safeGetTasksInHandler} from '../../../common/utils/flow';
 import { TASK_HANDLER_NAME_ROOT, TASK_HANDLER_NAME_ERROR } from '../../../common/constants';
 import { normalizeValueType } from '../../../common/utils/value-type';
 
@@ -40,10 +40,6 @@ function normalizeValueTypesInTask(task) {
 function normalizeValueTypesForTasksInHandler(action, handlerName) {
   const tasks = safeGetTasksInHandler(action, handlerName);
   if (!isEmpty(tasks)) {
-    setTasksInHandler(action, TASK_HANDLER_NAME_ROOT, tasks.map(normalizeValueTypesInTask));
+    set(action, getInternalTasksPath(handlerName), tasks.map(normalizeValueTypesInTask));
   }
-}
-
-function setTasksInHandler(action, handlerName, tasks) {
-  return set(action, `data.flow.${handlerName}.tasks`, tasks);
 }

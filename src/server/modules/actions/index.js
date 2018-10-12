@@ -1,7 +1,6 @@
 import pick from 'lodash/pick';
 import omit from 'lodash/omit';
 import get from 'lodash/get';
-import mapKeys from 'lodash/mapKeys';
 
 import { apps as appsDb, dbUtils, indexer as indexerDb } from '../../common/db';
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
@@ -12,20 +11,24 @@ import { HandlersManager } from '../apps/handlers';
 import { TriggerManager as ContribTriggersManager } from '../triggers';
 
 import { findGreatestNameIndex } from '../../common/utils/collection';
-import { portTaskTypesForLegacyIteratorTasks } from './create/port-task-types-for-legacy-iterator-tasks';
+import {prepareUpdateQuery} from "./prepare-update-query";
 
 const EDITABLE_FIELDS_CREATION = [
   'name',
   'description',
   'metadata',
-  'data',
+  'tasks',
+  'links',
+  'errorHandler'
 ];
 
 const EDITABLE_FIELDS_UPDATE = [
   'name',
   'description',
   'metadata',
-  'data',
+  'tasks',
+  'links',
+  'errorHandler',
 ];
 
 const RECENT_ACTIONS_ID = 'actions:recent';
@@ -48,16 +51,6 @@ export class ActionsManager {
         if (errors) {
           throw ErrorManager.createValidationError('Validation error', errors);
         }
-
-        if (actionData.data && actionData.data.flow && actionData.data.flow.name) {
-          actionData.name = actionData.data.flow.name;
-          delete actionData.data.flow.name;
-        } else if (!actionData.name) {
-          actionData.name = actionData.id;
-        }
-
-        // TODO: should be done during import in importer.LegacyImporter
-        portTaskTypesForLegacyIteratorTasks(actionData);
 
         actionData.name = ensureUniqueName(app.actions, actionData.name);
         return actionData;
@@ -163,6 +156,7 @@ export class ActionsManager {
     });
   }
 
+  /* @deprecated - Using old model of action JSON and not being used in the application*/
   static exportToFlow(actionId) {
     return ActionsManager.findOne(actionId)
       .then(action => {
@@ -260,10 +254,8 @@ function atomicUpdate(actionFields, actionId, appId) {
       }
 
       const actionIndex = app.actions.findIndex(t => t.id === actionId);
-      const modifierPrefix = `actions.${actionIndex}`;
       actionFields.updatedAt = dbUtils.ISONow();
-      // makes { $set: { 'actions.1.name': 'my action' } };
-      updateQuery.$set = mapKeys(actionFields, (v, fieldName) => `${modifierPrefix}.${fieldName}`);
+      Object.assign(updateQuery, prepareUpdateQuery(actionFields, app.actions[actionIndex], actionIndex));
       return null;
     };
 
