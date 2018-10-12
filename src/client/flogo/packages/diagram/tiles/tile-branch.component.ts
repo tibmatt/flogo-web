@@ -1,14 +1,10 @@
-import { ChangeDetectorRef, Component, HostBinding, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { SvgRefFixerService } from '@flogo/core';
-import { AbstractTileTaskComponent } from './abstract-tile-task.component';
+import {ChangeDetectorRef, Component, HostBinding, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {SvgRefFixerService} from '@flogo/core';
+import {AbstractTileTaskComponent} from './abstract-tile-task.component';
 
-const ROW_HEIGHT = 140;
-const BOTTOM_DISTANCE = 35;
-
-const ACTIVE_STATE = {
-  VERTICAL_SHADOW_OFFSET: 35,
-  HORIZONTAL_SHADOW_OFFSET: 20,
-};
+const ROW_HEIGHT = 122;
+const BOTTOM_DISTANCE = 30;
+const TILE_HEIGHT = 60;
 
 @Component({
   selector: 'flogo-diagram-tile-branch',
@@ -24,13 +20,9 @@ export class TileBranchComponent extends AbstractTileTaskComponent implements On
     super(svgFixer);
   }
 
-  setHovered(isHovered: boolean) {
-    this.isHovered = isHovered;
-  }
-
   ngOnChanges(changes: SimpleChanges) {
     super.ngOnChanges(changes);
-    const { spanRows: spanRowsChange } = changes;
+    const {spanRows: spanRowsChange} = changes;
     if (!spanRowsChange) {
       return;
     }
@@ -45,49 +37,20 @@ export class TileBranchComponent extends AbstractTileTaskComponent implements On
     }
   }
 
-  get path() {
-    const height = this.getBranchHeight() - 1; // give some space for the shadow
-    return `M 90 37 L 90 26 C 90 12 78 0 64 0 L 7 0 L 0 14 L 7 28 L 52 28 C 57 28 62 32 62 37
-      L 62 ${height}
-      L 90 ${height}
-      L 90 37 L 90 37 Z`;
-  }
-
-  get viewBox() {
-    const viewBoxHeight = this.containerHeight;
-    return `0 0 128 ${viewBoxHeight}`;
-  }
-
   get containerHeight() {
     return ROW_HEIGHT * this.currentSpanRows;
   }
 
-  get transform() {
-    const translateX = 100 + ACTIVE_STATE.HORIZONTAL_SHADOW_OFFSET;
-    const translateY = this.getBranchHeight();
-    return `translate(${translateX}, ${translateY}) rotate(180)`;
+  get branchHeight() {
+    return this.containerHeight + (TILE_HEIGHT / 2) - BOTTOM_DISTANCE;
   }
 
-  get bgFill() {
-    if (this.hasRun) {
-      return this.fixSvgRef('url(#flogo-diagram-tile__bg--has-run)');
-    } else if (this.isSelected) {
-      return '#8a90ae';
-    } else {
-      return this.fixSvgRef('url(#flogo-diagram-branch__bg)');
-    }
+  get branchPosition() {
+    return BOTTOM_DISTANCE - this.containerHeight;
   }
 
-  get shadow() {
-    if (this.isSelected) {
-      return this.fixSvgRef('url(#flogo-diagram-branch__shadow--active)');
-    } else {
-      return this.fixSvgRef('url(#flogo-diagram-branch__shadow)');
-    }
-  }
-
-  private getBranchHeight() {
-    return this.containerHeight - BOTTOM_DISTANCE;
+  get tilesConnectorPosition() {
+    return BOTTOM_DISTANCE - (TILE_HEIGHT / 2) - this.containerHeight;
   }
 
   private applySpanRowsUpdate() {

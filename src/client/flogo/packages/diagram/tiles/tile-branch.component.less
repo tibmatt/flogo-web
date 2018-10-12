@@ -1,4 +1,5 @@
 @import "../_styles";
+@import "../../../../assets/_variables";
 
 :host {
   .tile-container();
@@ -8,26 +9,18 @@
   &::before {
     z-index: 2;
     display: block;
-    content: "==";
+    content: "";
     width: 30px;
     height: 25px;
     right: -12px;
     bottom: 38px;
+    top: 15px;
     color: @tile-color-bg;
     position: absolute;
     font-size: 20px;
     pointer-events: none;
   }
 
-}
-
-.branch {
-  z-index: 1;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  transform: translateX(25px);
-  pointer-events: none;
 }
 
 .branch__path {
@@ -57,7 +50,7 @@
   height: 28px;
   width: 68px;
   line-height: 27px;
-  bottom: 35px;
+  bottom: 17px;
   right: -12px;
   text-align: right;
 }
@@ -120,4 +113,70 @@
     cursor: inherit;
   }
 
+}
+
+.branch-connector-3 {
+  border-top: solid 4px #afbbda;
+  width: 22px;
+  height: 2px;
+  position: absolute;
+  top: 29px;
+  left: 121px;
+}
+
+.branch-connector-2 {
+  border-right: solid 4px #afbbda;
+  width: 2px;
+  height: 119px;
+  position: absolute;
+  left: 121px;
+  top: -90px;
+}
+.branch-connector-1 {
+  border-top: solid 4px #afbbda;
+  width: 19px;
+  height: 2px;
+  position: relative;
+  top: -121px;
+  right: -69px;
+}
+.branch-connector-1::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  right: 16px;
+  border-radius: 50%;
+  z-index: 5;
+  width: 8px;
+  height: 8px;
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
+  background-color: #afbbda;
+  border: solid 2px #afbbda;
+
+}
+.branch-connector-1::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  border-radius: 50%;
+  z-index: 5;
+  width: 12px;
+  height: 12px;
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
+  background-color: #afbbda;
+  border: solid 2px #afbbda;
+}
+.branch-connector-3::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  border-radius: 50%;
+  z-index: 5;
+  width: 12px;
+  height: 12px;
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  border: solid 3px #afbbda;
 }

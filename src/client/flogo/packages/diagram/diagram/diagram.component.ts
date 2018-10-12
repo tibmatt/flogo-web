@@ -49,7 +49,7 @@ export class DiagramComponent implements OnChanges, OnDestroy {
   }
 
   private updateMatrix() {
-    const tileMatrix = makeRenderableMatrix(this.flow, 7, this.isReadOnly);
+    const tileMatrix = makeRenderableMatrix(this.flow, 10, this.isReadOnly);
     this.rowIndexService.updateRowIndexes(tileMatrix);
     if (tileMatrix.length > 0) {
       // matrix is reversed to make sure html stack order always goes from bottom to top

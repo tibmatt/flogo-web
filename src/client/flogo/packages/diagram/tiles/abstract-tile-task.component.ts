@@ -13,12 +13,22 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
   @Output() remove = new EventEmitter<DiagramActionSelf>();
   @Output() configure = new EventEmitter<DiagramActionSelf>();
   @HostBinding('class.is-selected') isSelected = false;
+  @HostBinding('class.tile-has-branch') hasBranch = false;
+  displayMenuOptions: boolean;
 
-  constructor(private svgFixer: SvgRefFixerService) {}
+  constructor(private svgFixer: SvgRefFixerService) {
+    this.displayMenuOptions = false;
+    this.hasBranch = false;
+  }
 
-  ngOnChanges({ currentSelection: currentSelectionChange }: SimpleChanges) {
+  ngOnChanges({currentSelection: currentSelectionChange}: SimpleChanges) {
     if (currentSelectionChange) {
       this.checkIsSelected();
+      if (!!this.tile.task.children.find(t => /^::branch::/.test(t))) {
+        this.hasBranch = true;
+      } else {
+        this.hasBranch = false;
+      }
     }
   }
 
@@ -46,15 +56,28 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
     }
   }
 
-  onRemove() {
+  OnMenuOptions(event) {
+    event.stopPropagation();
+    this.displayMenuOptions = true;
+  }
+
+  closeMenuOptions() {
+    this.displayMenuOptions = false;
+  }
+
+  onRemove(event) {
+    event.stopPropagation();
     this.remove.emit(actionEventFactory.remove(this.tile.task.id));
   }
 
-  onBranch() {
+  onBranch(event) {
+    event.stopPropagation();
     this.branch.emit(actionEventFactory.branch(this.tile.task.id));
+    this.hasBranch = true;
   }
 
-  onConfigure() {
+  onConfigure(event) {
+    event.stopPropagation();
     this.remove.emit(actionEventFactory.configure(this.tile.task.id));
   }
 

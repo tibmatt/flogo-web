@@ -1,5 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AbstractTileTaskComponent } from './abstract-tile-task.component';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {AbstractTileTaskComponent} from './abstract-tile-task.component';
+
+const TILE_WIDTH_DEFAULT = 128;
+const TILE_WIDTH_BRANCH = 118;
 
 @Component({
   selector: 'flogo-diagram-tile-task',
@@ -27,13 +30,21 @@ export class TileTaskComponent extends AbstractTileTaskComponent {
     }
   }
 
+  get tileWidth() {
+    if (this.hasBranch) {
+      return TILE_WIDTH_BRANCH;
+    } else {
+      return TILE_WIDTH_DEFAULT;
+    }
+  }
+
   get isTerminal() {
     if (this.tile.isTerminalInRow) {
       return true;
     }
-    const { task } = this.tile;
+    const {task} = this.tile;
     if (task) {
-      const { final: isFinal, canHaveChildren } = task.features;
+      const {final: isFinal, canHaveChildren} = task.features;
       return isFinal || !canHaveChildren;
     }
     return false;
