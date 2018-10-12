@@ -1,4 +1,3 @@
-import {isObject} from 'lodash';
 import {Trigger, TriggerHandler} from '../../../interfaces/index';
 import {Dictionary, TriggerSchema, SchemaAttribute} from '@flogo/core/index';
 import {ConfigureTriggerDetails} from '../../../../triggers/configurator/interfaces';
@@ -48,6 +47,6 @@ function createField(value) {
     isDirty: false,
     isValid: true,
     isEnabled: true,
-    value: isObject(value) ? JSON.stringify(value) : value
+    value,
   };
 }

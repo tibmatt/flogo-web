@@ -30,4 +30,22 @@
       background-color: transparent;
     }
   }
+
+  &.is-disabled ::ng-deep {
+
+    .monaco-editor,
+    .monaco-editor-background,
+    .monaco-editor .margin,
+    .inputarea.ime-input {
+      background-color: #eee;
+    }
+
+    .monaco-editor,
+    .margin,
+    .editor-scrollable {
+      border-radius: 4px;
+    }
+
+  }
+
 }
