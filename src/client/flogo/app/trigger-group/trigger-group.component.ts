@@ -1,30 +1,21 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, HostBinding } from '@angular/core';
 import { Trigger, FlowSummary } from '@flogo/core';
+import { DeleteEvent } from '../shared/delete-event';
 
 @Component({
   selector: 'flogo-apps-flows-trigger-group',
-  // moduleId: module.id,
   templateUrl: 'trigger-group.component.html',
   styleUrls: ['../shared/group.component.less', 'trigger-group.component.less']
 })
 export class FlowTriggerGroupComponent implements OnChanges {
-  @Input()
-  public flow: FlowSummary;
-  @Input()
-  public triggers: Trigger[] | null;
-  @Output()
-  public flowSelected: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
-  @Output() public deleteFlow: EventEmitter<{
-    triggerId: string, flow: FlowSummary
-  }> = new EventEmitter<{
-    triggerId: string, flow: FlowSummary
-  }>();
+  @Input() public flow: FlowSummary;
+  @Input() public triggers: Trigger[] | null;
+  @Output() public flowSelected: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
+  @Output() public deleteFlow: EventEmitter<DeleteEvent> = new EventEmitter<DeleteEvent>();
+  @HostBinding('class.flogo-group') hostClass = true;
 
   flows: FlowSummary[] = [];
   triggerCountDisplay = null;
-
-  constructor() {
-  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['flow'] && changes['flow'].currentValue) {

@@ -1,7 +1,6 @@
 @import '../../../assets/_variables';
 
 @action-fore-color: #449ed8;
-@apps__trigger-row-height: 40px;
 @apps__trigger-border-width--empty: 3px;
 
 
@@ -14,22 +13,22 @@ README!!
 // 2: new flow button/delete popover
 **/
 
+:host(.flogo-group),
 .flogo-group {
-  margin-top: 12px;
-  margin-bottom: @apps__trigger-row-height;
+  margin: 1.25rem 0;
+  display: flex;
 }
 
 .flogo-group__trigger {
   position: relative;
   width: 56px;
-  float: left;
-
   z-index: 2;
+  margin-top: -1px;
 }
 
 .flogo-group__flows {
-  width: 94%;
-  float: left;
+  min-width: 0;
+  flex: 1;
   margin-left: -16px;
 }
 
@@ -38,49 +37,36 @@ README!!
 }
 
 .trigger {
-  width: 40px;
-  height: 40px;
-  padding: 10px 4px 10px 14px;
-  background: @color-trigger-bg-color;
-  border-radius: 5px 0 0 5px;
+  width: 50px;
+  height: 50px;
+}
 
-  &:after {
-    display: block;
-    content: "";
-    position: relative;
-    transform: rotate(45deg) skew(20deg, 20deg);
-    background: @color-trigger-bg-color;
-    height: 20px;
-    width: 21px;
-    top: -22px;
-    right: -16px;
-  }
+.trigger__shape {
+  fill:  @color-trigger-bg-color;
+}
+
+.trigger__shape--empty {
+  fill: #fff;
+  stroke: @gainsboro-six;
+  stroke-width: 2.4;
+  stroke-linejoin: round;
+  stroke-dasharray: 4;
+  stroke-dashoffset: 5;
+  transform: translate(-1px, 1px);
 }
 
 .flogo-icon-trigger {
+  z-index: 1;
   color: @trigger-blue;
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 1.5rem;
+  margin-top: 0.8rem;
+  margin-left: 0.7rem;
 }
 
-.trigger--empty {
-  background: @color-app-detail-bg;
-  border: @apps__trigger-border-width--empty dashed @gainsboro;
+.flogo-icon-trigger--empty {
   color: @gainsboro-six;
-  border-right: none;
-  // needs to account for the thicker border
-  padding: 8px 2px 8px 12px;
-
-  .flogo-icon-trigger {
-    color: @gainsboro-six;
-  }
-
-  &:after {
-    transform: rotate(45deg) skew(20deg, 20deg);
-    background: @color-app-detail-bg;
-    border: 0 dashed @gainsboro;
-    border-top-width: 3px;
-    border-right-width: 3px;
-    height: 20px;
-    width: 20px;
-    top: -23px;
-  }
 }
+

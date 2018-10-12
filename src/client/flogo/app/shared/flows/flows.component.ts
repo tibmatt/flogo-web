@@ -4,7 +4,6 @@ import { FlowSummary } from '@flogo/core';
 
 @Component({
   selector: 'flogo-apps-flows',
-  // moduleId: module.id,
   templateUrl: 'flows.component.html',
   styleUrls: ['flows.component.less']
 })
