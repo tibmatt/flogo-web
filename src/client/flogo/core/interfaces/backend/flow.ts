@@ -6,13 +6,21 @@ export namespace flow {
     value: any;
   }
 
+  export interface TestConfig {
+    name: string;
+    type: string;
+    value: any;
+  }
+
   export interface Task {
     id: string;
     type: number;
     activityRef: string;
     name?: string;
     description?: string;
+    // TODO: Remove - attributes and have testConfigurations
     attributes?: Attribute[];
+    testConfigurations?: TestConfig[];
     inputMappings?: Mapping[];
     settings?: any;
     outputMappings?: Mapping[];

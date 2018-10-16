@@ -27,7 +27,9 @@ import {
   ItemTask,
   FlowGraph,
   GraphNode,
-  NodeType, Action,
+  NodeType,
+  Action,
+  flow as backendFlow
 } from '@flogo/core';
 
 const DEBUG = false;
@@ -35,7 +37,7 @@ const INFO = true;
 
 const generateDiagramTraverser = (schemas) => {
   const visited: string[] = [];
-  const tasksDest: flowToJSON_Task[] = [];
+  const tasksDest: backendFlow.Task [] = [];
   const linksDest: flowToJSON_Link[] = [];
   let idCounter = 0;
   const _genLinkId = () => ++idCounter;
@@ -120,18 +122,17 @@ const generateDiagramTraverser = (schemas) => {
     // todo: remove schema === {} for subflow case
     const schema = <ActivitySchema> schemas[item.ref] || <any>{};
     const task = mergeItemWithSchema(item, schema);
-    const taskInfo = <flowToJSON_Task>{};
+    const taskInfo = <backendFlow.Task>{};
     if (_isValidInternalTaskInfo(task)) {
       taskInfo.id = convertTaskID(task.id);
       taskInfo.name = get(task, 'name', '');
       taskInfo.description = get(task, 'description', '');
       taskInfo.type = task.type;
-      taskInfo.activityType = task.activityType || '';
       if (!isSubflowTask(task.type)) {
         taskInfo.activityRef = task.ref;
       }
 
-      taskInfo.attributes = _parseFlowAttributes(<DiagramTaskAttribute[]>get(task, 'attributes.inputs'));
+      taskInfo.testConfigurations = _parseFlowAttributes(<DiagramTaskAttribute[]>get(task, 'attributes.inputs'));
 
       /* add inputMappings */
 
@@ -139,14 +140,6 @@ const generateDiagramTraverser = (schemas) => {
 
       if (!isEmpty(inputMappings)) {
         taskInfo.inputMappings = inputMappings;
-      }
-
-      /* add outputMappings */
-
-      const outputMappings = _parseFlowMappings(<DiagramTaskAttributeMapping[]>get(task, 'outputMappings'));
-
-      if (!isEmpty(outputMappings)) {
-        taskInfo.ouputMappings = outputMappings;
       }
 
       if (!isEmpty(task.settings)) {
@@ -412,7 +405,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
         activityType: '',
         ref: '',
         name: 'root',
-        tasks: <flowToJSON_Task[]>[],
+        tasks: [],
         links: <flowToJSON_Link[]>[]
       };
 
@@ -426,7 +419,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
       }
       const _traversalDiagram = generateDiagramTraverser(inFlow.schemas);
       const {tasks, links} = _traversalDiagram(rootNode, flowPathNodes, flowItems);
-      rootTask.tasks = tasks;
+      rootTask.tasks = <flowToJSON_Task[]>tasks;
       rootTask.links = links;
 
       return rootTask;
@@ -442,7 +435,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
         activityType: '',
         ref: '',
         name: 'error_root',
-        tasks: <flowToJSON_Task[]>[],
+        tasks: [],
         links: <flowToJSON_Link[]>[]
       };
       /*
@@ -455,7 +448,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
       }
       const _traversalDiagram = generateDiagramTraverser(inFlow.schemas);
       const {tasks, links} = _traversalDiagram(rootNode, errorPathNodes, errorItems);
-      errorTask.tasks = tasks;
+      errorTask.tasks = <flowToJSON_Task[]>tasks;
       errorTask.links = links;
 
       return errorTask;
