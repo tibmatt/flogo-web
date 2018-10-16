@@ -7,7 +7,7 @@ import {activitySchemaToTask, createSubFlowTask, getProfileType, isSubflowTask} 
 import {CONTRIB_REF_PLACEHOLDER, ItemActivityTask, ItemSubflow, NodeType, Task} from '@flogo/core';
 import {assign} from 'lodash';
 import {uniqueTaskName} from '@flogo/flow/core/models/unique-task-name';
-import {extractItemInputsFromTask, taskIdGenerator} from '@flogo/core/models';
+import {taskIdGenerator} from '@flogo/core/models';
 import {makeNode} from '@flogo/flow/core/models/graph-and-items/graph-creator';
 import {HandlerType, InsertTaskSelection} from '@flogo/flow/core/models';
 
@@ -87,7 +87,7 @@ function createItem(task, isSubflow) {
     name: task.name,
     description: task.description,
     inputMappings: task.inputMappings,
-    input: extractItemInputsFromTask(task),
+    input: {},
     settings: task.settings,
   };
   if (isSubflow) {

@@ -3,11 +3,9 @@ import { convertTaskID, getDefaultValue, isSubflowTask } from '@flogo/shared/uti
 
 import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '@flogo/core/constants';
 import { FlowMetadata, MetadataAttribute } from '@flogo/core/interfaces/flow/index';
-import { mergeItemWithSchema } from '@flogo/core/models';
 
 import {
   AttributeMapping as DiagramTaskAttributeMapping,
-  TaskAttribute as DiagramTaskAttribute,
   flowToJSON_Attribute,
   UiFlow,
   flowToJSON_Link,
@@ -31,6 +29,7 @@ import {
   Action,
   flow as backendFlow
 } from '@flogo/core';
+import {mergeConfigurationsWithSchema} from '@flogo/core/models';
 
 const DEBUG = false;
 const INFO = true;
@@ -121,36 +120,35 @@ const generateDiagramTraverser = (schemas) => {
   function _prepareTaskInfo(item: ItemTask) {
     // todo: remove schema === {} for subflow case
     const schema = <ActivitySchema> schemas[item.ref] || <any>{};
-    const task = mergeItemWithSchema(item, schema);
     const taskInfo = <backendFlow.Task>{};
-    if (_isValidInternalTaskInfo(task)) {
-      taskInfo.id = convertTaskID(task.id);
-      taskInfo.name = get(task, 'name', '');
-      taskInfo.description = get(task, 'description', '');
-      taskInfo.type = task.type;
-      if (!isSubflowTask(task.type)) {
-        taskInfo.activityRef = task.ref;
+    if (_isValidInternalTaskInfo(item)) {
+      taskInfo.id = convertTaskID(item.id);
+      taskInfo.name = get(item, 'name', '');
+      taskInfo.description = get(item, 'description', '');
+      taskInfo.type = item.type;
+      if (!isSubflowTask(item.type)) {
+        taskInfo.activityRef = item.ref;
       }
 
-      taskInfo.testConfigurations = _parseFlowAttributes(<DiagramTaskAttribute[]>get(task, 'attributes.inputs'));
+      taskInfo.testConfigurations = mergeConfigurationsWithSchema(item.input, schema.inputs);
 
       /* add inputMappings */
 
-      const inputMappings = _parseFlowMappings(<DiagramTaskAttributeMapping[]>get(task, 'inputMappings'));
+      const inputMappings = _parseFlowMappings(<DiagramTaskAttributeMapping[]>item.inputMappings);
 
       if (!isEmpty(inputMappings)) {
         taskInfo.inputMappings = inputMappings;
       }
 
-      if (!isEmpty(task.settings)) {
-        taskInfo.settings = cloneDeep(task.settings);
+      if (!isEmpty(item.settings)) {
+        taskInfo.settings = cloneDeep(item.settings);
       }
 
     } else {
       /* tslint:disable-next-line:no-unused-expression */
       INFO && console.warn('Invalid task found.');
       /* tslint:disable-next-line:no-unused-expression */
-      INFO && console.warn(task);
+      INFO && console.warn(item);
     }
     return taskInfo;
   }
