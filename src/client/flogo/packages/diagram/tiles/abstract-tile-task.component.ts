@@ -56,9 +56,9 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
     }
   }
 
-  OnMenuOptions(event) {
+  onMenuOptions(event) {
     event.stopPropagation();
-    this.displayMenuOptions = true;
+    this.displayMenuOptions = !this.displayMenuOptions;
   }
 
   closeMenuOptions() {

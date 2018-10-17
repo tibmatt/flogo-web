@@ -13,8 +13,8 @@ const TILE_HEIGHT = 60;
 })
 export class TileBranchComponent extends AbstractTileTaskComponent implements OnChanges {
   @Input() spanRows: number;
-  @HostBinding('class.is-hovered') isHovered = false;
   currentSpanRows: number;
+  displayBranchOptions = false;
 
   constructor(svgFixer: SvgRefFixerService, private changeDetector: ChangeDetectorRef) {
     super(svgFixer);
@@ -51,6 +51,15 @@ export class TileBranchComponent extends AbstractTileTaskComponent implements On
 
   get tilesConnectorPosition() {
     return BOTTOM_DISTANCE - (TILE_HEIGHT / 2) - this.containerHeight;
+  }
+
+  onBranchOptions(event) {
+    event.stopPropagation();
+    this.displayBranchOptions = !this.displayBranchOptions;
+  }
+
+  closeBranchOptions() {
+    this.displayBranchOptions = false;
   }
 
   private applySpanRowsUpdate() {
