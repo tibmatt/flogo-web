@@ -41,12 +41,12 @@
               {
                 "name": "flowInfo",
                 "type": "boolean",
-                "value": false
+                "value": "false"
               },
               {
                 "name": "addToFlow",
                 "type": "boolean",
-                "value": false
+                "value": "false"
               }
             ],
             "inputMappings": [
@@ -58,12 +58,12 @@
               {
                 "mapTo": "flowInfo",
                 "type": 2,
-                "value": false
+                "value": "false"
               },
               {
                 "mapTo": "addToFlow",
                 "type": 2,
-                "value": false
+                "value": "false"
               }
             ]
           }
@@ -87,12 +87,12 @@
                 {
                   "name": "flowInfo",
                   "type": "boolean",
-                  "value": false
+                  "value": "false"
                 },
                 {
                   "name": "addToFlow",
                   "type": "boolean",
-                  "value": false
+                  "value": "false"
                 }
               ],
               "inputMappings": [
@@ -104,12 +104,12 @@
                 {
                   "mapTo": "flowInfo",
                   "type": 2,
-                  "value": false
+                  "value": "false"
                 },
                 {
                   "mapTo": "addToFlow",
                   "type": 2,
-                  "value": false
+                  "value": "false"
                 }
               ]
             }

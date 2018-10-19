@@ -1,7 +1,6 @@
 import isUndefined from 'lodash/isUndefined';
 import isArray from 'lodash/isArray';
 import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '../../../common/constants';
-import { getDefaultValueByType } from '../../../common/utils';
 import { isOutputMapperField } from '../../../common/utils/flow';
 import { TASK_TYPE } from '../../transfer/common/type-mapper';
 import { parseResourceIdFromResourceUri, portMappingType } from './utils';
@@ -25,7 +24,6 @@ export class StandardTaskConverter {
     if (!activitySchema) {
       throw new TypeError('Missing parameter: activitySchema');
     }
-    this.resourceTask = resourceTask;
     this.resourceTask = resourceTask;
     this.activitySchema = activitySchema;
   }
@@ -76,15 +74,19 @@ export class StandardTaskConverter {
   convertAttributes() {
     const schemaInputs = this.activitySchema.inputs || [];
     const activityInput = this.resourceTask.activity.input || {};
-    return schemaInputs.map(schemaInput => {
+    return schemaInputs.reduce((attributes, schemaInput) => {
       let value = activityInput[schemaInput.name];
-      if (isUndefined(value)) {
-        value = getDefaultValueByType(schemaInput.type);
-      } else if (isOutputMapperField(schemaInput) && isArray(value)) {
-        value = value.map(outputMapping => portMappingType(outputMapping));
+      if (isUndefined(value) && isUndefined(schemaInput.value)) {
+        return attributes;
       }
-      return { ...schemaInput, value };
-    });
+      if (isOutputMapperField(schemaInput) && isArray(value)) {
+        value = value.map(outputMapping => portMappingType(outputMapping));
+      } else if (isUndefined(value)) {
+        value = schemaInput.value;
+      }
+      attributes.push({ ...schemaInput, value });
+      return attributes;
+    }, []);
   }
 
   convertInputMappings() {
