@@ -243,6 +243,7 @@
         "attribute": {
           "title": "attribute",
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
               "type": "string"
