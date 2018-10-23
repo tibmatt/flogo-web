@@ -1,6 +1,6 @@
 @import '../../../assets/_variables';
 
-@actions-max-width: 320px;
+@actions-max-width: 200px;
 @edit-icon-background: @color-bg url('/assets/svg/flogo.flows.detail.edit.icon.svg') center right no-repeat;
 
 .modal-wrapper {
@@ -101,10 +101,22 @@
   padding: 15px;
 }
 
-.task-id {
+.task-id-homepage-wrapper {
   font-size: 16px;
   color: @color-dark-gray;
   margin-left: 5px;
+  white-space: nowrap;
+
+  .task-schema-homepage {
+    text-decoration: none;
+    color: @color-dark-gray;
+    vertical-align: middle;
+    margin: 0 6px;
+
+    &:hover {
+      color: @primary-blue;
+    }
+  }
 }
 
 .task-description {
@@ -121,6 +133,10 @@
 .task-details {
   display: flex;
   align-items: center;
+}
+
+.configurator-actions {
+  min-width: @actions-max-width;
 }
 
 .task-name {
