@@ -6,14 +6,26 @@ All notable changes to this project's dependencies will be documented in this fi
 ### Production Dependencies
 
 - ** New **
+  - [@koa/cors@2](https://github.com/koajs/cors) [MIT]
+  - [date-fns@2.0.0](https://github.com/date-fns/date-fns) [MIT]
   - [dotenv@^6.0.0](https://github.com/motdotla/dotenv) [BSD-2-Clause]
   - [find-up@^3.0.0](https://github.com/sindresorhus/find-up) [MIT]
+  - [got@^9.2.2](https://github.com/sindresorhus/got) [MIT]
+  - [koa-send@^5.0.0](https://github.com/koajs/send) [MIT]
   - [npm-run-all@^4.1.3](https://github.com/mysticatea/npm-run-all) [MIT]
-  - [date-fns@2.0.0](https://github.com/date-fns/date-fns) [MIT]
+- ** Upgraded **
+  - [koa@2.5.3](https://github.com/koajs/koa) [MIT] (Was 1.4.1)
+  - [koa-body@4.0.4](https://github.com/dlau/koa-body) [MIT] (Was 1.6.0)
+  - [koa-compress@^3.0.0](https://github.com/koajs/compress) [MIT] (Was ^1.0.9)
+  - [koa-router@^7.4.0](https://github.com/alexmingoia/koa-router) [MIT] (Was ^5.4.0)
+  - [koa-static@^5.0.0](https://github.com/koajs/static) [MIT] (Was ^2.0.0)
 - **Removed**
+  - atob
+  - koa-bodyparser
+  - koa-cors
+  - koa-json
   - moment
   - postal
-
 
 ### Development Dependencies
   
@@ -23,6 +35,13 @@ All notable changes to this project's dependencies will be documented in this fi
     - [@babel/node@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-node) [MIT]
     - [@babel/plugin-syntax-object-rest-spread@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-object-rest-spread) [MIT]
     - [@babel/preset-env@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-preset-env) [MIT]
+    - [@babel/preset-typescript@^7.1.0](https://github.com/babel/babel/tree/master/packages/babel-preset-typescript) [MIT]
+    - [@babel/plugin-proposal-class-properties@^7.1.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-class-properties) [MIT]
+    - [@types/chai@^4.1.2](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
+    - [@types/koa@^2.0.46](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
+    - [@types/koa-router@^7.0.32](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
+    - [@types/mocha@^5.0.0](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
+    - [@types/node@8.9.3](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
     - [cpy@^7.0.1](https://github.com/sindresorhus/cpy) [MIT]
     - [del-cli@^1.1.0](https://github.com/sindresorhus/del-cli) [MIT]
     - [esm@^3.0.84](https://github.com/standard-things/esm) [MIT]
