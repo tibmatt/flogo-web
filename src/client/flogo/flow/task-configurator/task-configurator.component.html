@@ -6,7 +6,8 @@
         <div class="task-details">
           <input class="task-name" [ngClass]='{"task-name--error": !isValidTaskName}' [(ngModel)]="title"
                  (keyup)="changeTaskDetail($event.target.value,'name')" [size]="title.length + 1">
-          <div class="task-id-homepage-wrapper">{{ 'TASK-CONFIGURATOR:ID' | translate:{value: currentTile.id} }}
+          <div class="task-id-homepage-wrapper">
+            <span>{{ 'TASK-CONFIGURATOR:ID' | translate:{value: currentTile.id} }}</span>
             <a class="task-schema-homepage" *ngIf="activitySchemaUrl" [href]="activitySchemaUrl" target="_blank">
               <i class="flogo-icon-info"></i>
             </a>

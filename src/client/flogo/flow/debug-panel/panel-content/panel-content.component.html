@@ -1,7 +1,12 @@
 <div class="content" [ngSwitch]="viewState">
   <div *ngSwitchCase="'activity'" class="activity">
     <div class="activity__info-group">
-      <div class="activity__name">{{ activity.name }}</div>
+      <div class="activity__name">
+        <span>{{ activity.name }}</span>
+        <a class="schema-homepage" *ngIf="activity.schemaHomepage" [href]="activity.schemaHomepage" target="_blank">
+          <i class="flogo-icon-info"></i>
+        </a>
+      </div>
       <div class="activity__id">ID: {{ activity.id }}</div>
       <div class="activity__description">{{ activity.description }}</div>
       <button *ngIf="canRestart" class="flogo-button--secondary btn-run"

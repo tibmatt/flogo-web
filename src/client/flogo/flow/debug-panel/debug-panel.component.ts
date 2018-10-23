@@ -16,6 +16,7 @@ import { FormBuilderService } from '@flogo/flow/shared/dynamic-form';
 import { debugPanelAnimations } from './debug-panel.animations';
 import { mergeFormWithOutputs } from './utils';
 import { FieldsInfo } from './fields-info';
+import { DebugActivityTask } from './debug-activity-task';
 import { isMapperActivity } from '@flogo/shared/utils';
 
 const SELECTOR_FOR_CURRENT_ELEMENT = 'flogo-diagram-tile-task.is-selected';
@@ -45,7 +46,7 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
 
   @ViewChild('content') content: ElementRef;
   panelStatus: 'open' | 'closed' = STATUS_CLOSED;
-  activity$: Observable<ItemActivityTask>;
+  activity$: Observable<DebugActivityTask>;
   fields$: Observable<FieldsInfo>;
   isRunDisabled$: Observable<boolean>;
   flowHasRun$: Observable<boolean>;
@@ -65,23 +66,23 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const selectAndShare = (selector) => this.store.pipe(select(selector), shareReplay(1));
-    this.activity$ = selectAndShare(FlowSelectors.getSelectedActivity);
     this.isRunDisabled$ = selectAndShare(FlowSelectors.getIsRunDisabledForSelectedActivity);
     this.executionErrrors$ = selectAndShare(FlowSelectors.getCurrentActivityExecutionErrors);
     this.isRestartableTask$ =  selectAndShare(FlowSelectors.getIsRestartableTask);
 
     const schema$ = selectAndShare(FlowSelectors.getSelectedActivitySchema);
-
+    const selectedActivity$ = selectAndShare(FlowSelectors.getSelectedActivity);
+    this.activity$ = combineLatest(schema$, selectedActivity$).pipe(this.prepareDebugActivity(), shareReplay(1));
     this.flowHasRun$ = selectAndShare(FlowSelectors.getFlowHasRun);
     this.isEndOfFlow$ = schema$.pipe(map(isMapperActivity));
     const form$: Observable<null | FieldsInfo> = schema$.pipe(this.mapStateToForm(), shareReplay(1));
     const executionResult$ = selectAndShare(FlowSelectors.getSelectedActivityExecutionResult);
     this.activityHasRun$ = executionResult$.pipe(map(Boolean));
-    this.fields$ = combineLatest(form$, this.activity$, executionResult$)
+    this.fields$ = combineLatest(form$, selectedActivity$, executionResult$)
       .pipe(this.mergeToFormFields(), shareReplay(1));
 
     form$.pipe(
-        mapFormInputChangesToSaveAction(this.store, this.activity$),
+        mapFormInputChangesToSaveAction(this.store, selectedActivity$),
         takeUntil(this.destroy$),
       )
       .subscribe(action => this.store.dispatch(action));
@@ -127,6 +128,13 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
 
   get isOpen(): boolean {
     return this.panelStatus === STATUS_OPEN;
+  }
+
+  private prepareDebugActivity() {
+    return (source: Observable<[ActivitySchema, ItemActivityTask]>) => source.pipe(
+      filter(([schema]) => !!schema),
+      map(([schema, activity]) => ({...activity, schemaHomepage: schema.homepage}))
+    );
   }
 
   private changePanelState(isOpen: boolean) {
