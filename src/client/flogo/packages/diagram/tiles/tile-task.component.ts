@@ -1,8 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {AbstractTileTaskComponent} from './abstract-tile-task.component';
 
-const TILE_WIDTH_DEFAULT = 128;
-const TILE_WIDTH_BRANCH = 118;
 
 @Component({
   selector: 'flogo-diagram-tile-task',
@@ -27,14 +25,6 @@ export class TileTaskComponent extends AbstractTileTaskComponent {
       return this.fixSvgRef('url(#flogo-diagram-tile__shadow--active)');
     } else {
       return this.fixSvgRef('url(#flogo-diagram-tile__shadow)');
-    }
-  }
-
-  get tileWidth() {
-    if (this.hasBranch) {
-      return TILE_WIDTH_BRANCH;
-    } else {
-      return TILE_WIDTH_DEFAULT;
     }
   }
 

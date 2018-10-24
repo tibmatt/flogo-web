@@ -55,17 +55,21 @@ export function itemUpdate(state: FlowState, payload: { handlerType: HandlerType
 
 export function graphUpdate(state: FlowState, payload: { handlerType: HandlerType, item?: { id: string } & Partial<BaseItemTask> }) {
   const {handlerType, item} = payload;
+  if (!item) {
+    return state;
+  }
   const graphName = getGraphName(handlerType);
   const graph = state[graphName];
   const currentNode = graph.nodes[item.id];
-  if (item.name === currentNode.title && item.description === currentNode.description) {
-    return state;
-  }
   const newNodeState: GraphNode = {
     ...currentNode,
     ...item,
     title: item.name,
     description: item.description,
+    status: {
+      iterable: !!item.settings.iterate,
+      configured: !!item.inputMappings
+    }
   };
   return {
     ...state,

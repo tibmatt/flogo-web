@@ -44,6 +44,12 @@
   border-radius: 4px;
 }
 
+.content__icon-return {
+  width: 26px;
+  height:24px;
+  background-color: #36bfbb;
+  border-radius: 4px;
+}
 .content__icon-subflow {
   height: 24px;
   width: 24px;
@@ -67,11 +73,12 @@
   margin-top: -11px;
 }
 
-.kebabmenu-content {
+.menu-content {
   height: 16px;
   position: absolute;
   right: 0;
   bottom: 2px;
+  display: flex;
 }
 
 .menu__icon {
@@ -165,12 +172,17 @@
   background-color: #36bfbb;
 }
 
+.badge--configure {
+  background-color: @tangerine;
+}
+
 .badge--error {
   font-size: 18px;
   background-color: #fff;
   color: #fe566a;
   pointer-events: all;
   cursor: default;
+  transform: rotate(180deg);
 
   &::before {
     margin-left: -7px;
@@ -179,9 +191,12 @@
 }
 
 :host(.tile-has-branch) {
-  transform: scale(0.92, 1);
+  transform: translateX(3px) scale(0.92, 1);
+  margin-left: -7px;
+  margin-right: 6px;
   &:hover {
     transform: scale(1.08);
+
   }
 }
 
@@ -191,7 +206,7 @@
   .tile__bg {
     fill: #4e7ead;
   }
-  .content__text, .kebabmenu-content {
+  .content__text, .menu-content {
     color: @color-bg;
   }
   .menu__icon, .kebabmenu {

@@ -10,6 +10,7 @@ export interface NodeFeatures {
   deletable?: boolean;
   subflow?: boolean;
   final?: boolean;
+  hasBranch?: boolean;
 }
 
 export interface NodeStatus {
@@ -17,6 +18,7 @@ export interface NodeStatus {
   executed?: boolean;
   executionErrored?: Array<string> | null;
   iterable?: boolean;
+  configured?: boolean;
 }
 
 export interface GraphNode {

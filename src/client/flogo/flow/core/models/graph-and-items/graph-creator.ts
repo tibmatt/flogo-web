@@ -50,6 +50,7 @@ function makeTask(task: backendFlow.Task, item: Item): GraphNode {
     },
     status: {
       iterable: isIterableTask(item),
+      configured: !!task.inputMappings
     },
   });
 }

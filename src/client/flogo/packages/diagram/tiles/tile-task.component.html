@@ -1,6 +1,7 @@
 <div class="badges">
   <i *ngIf="tile.task?.status?.executionErrored" class="badge badge--error flogo-icon-info" [title]="errorMsg"></i>
   <i *ngIf="tile.task?.status?.iterable" class="badge badge--iterator flogo-icon-iterator"></i>
+  <i *ngIf="tile.task?.status?.configured" class="badge badge--configure flogo-icon-settings"></i>
 </div>
 <div class="content" (fgClickOutside)="closeMenuOptions()" (click)="onSelect()" [attr.data-diagram-task-id]="tile.task.id">
   <div class="content__items">
@@ -11,21 +12,23 @@
     <div class="content__text" [ngClass] = "tile.task?.features?.subflow ? 'content__text--subflow' : 'content__text--title'">
       {{ tile.task.title }}
     </div>
-    <div class="content__text--id" *ngIf="!tile.task?.features?.subflow">
+    <div class="content__text content__text--id" *ngIf="!tile.task?.features?.subflow">
       {{ tile.task.id }}
     </div>
   </div>
-  <div class="kebabmenu-content" *ngIf="!isReadOnly">
+  <div class="menu-content" *ngIf="!isReadOnly">
+    <div>
     <i *ngIf="tile.task?.features?.deletable && displayMenuOptions" class="flogo-icon-delete menu__icon"
        (click)="onRemove($event)"></i>
     <i *ngIf="!isTerminal && tile.task?.features?.canBranch && displayMenuOptions"
        class="flogo-icon-addbranch menu__icon" (click)="onBranch($event)"></i>
     <i class="flogo-icon-settings menu__icon" (click)="onConfigure($event)" *ngIf="displayMenuOptions"></i>
+    </div>
     <i class="flogo-icon-kebabmenu kebabmenu" (click)="onMenuOptions($event)"></i></div>
 </div>
 <!-- wrapper div required to avoid issue in chrome where shadows cuts off when z-index changes -->
-<div class="shape-container" [ngClass]="{'tile-has-branch': hasBranch}">
-  <svg [ngClass]="{'tile-has-branch': hasBranch}" xmlns="http://www.w3.org/2000/svg"
+<div class="shape-container">
+  <svg xmlns="http://www.w3.org/2000/svg"
        xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="60" viewBox="0 0 128 62">
     <ng-template [ngIf]="!isTerminal" [ngIfElse]="terminalShape">
       <g class="tile" fill="none" fill-rule="evenodd" transform="translate(2 1)">
@@ -35,9 +38,10 @@
       </g>
     </ng-template>
     <ng-template #terminalShape>
-      <g class="tile__terminal">
-        <path class="tile__shadow" [attr.filter]="shadow" d="M117.27 60H0l11.264-29.92L0 0h117.371L128"/>
-        <path class="tile__bg" [attr.fill]="bgFill" d="M117.27 60H0l11.264-29.92L0 0h117.371L128" />
+      <g class="tile__terminal" fill="none" fill-rule="evenodd" transform="translate(2 1)">
+        <path class="tile__shadow" [attr.filter]="shadow" d="M117.27 60H0l11.264-29.92L0 0h117.371z"/>
+        <path class="tile__bg" [attr.fill]="bgFill" d="M117.27 60H0l11.264-29.92L0 0h117.371z" />
+        <path class="tile__stroke" stroke="#F4F4F4" stroke-width=".8" d="M117.27 60H0l11.264-29.92L0 0h117.371z"/>
       </g>
     </ng-template>
   </svg>

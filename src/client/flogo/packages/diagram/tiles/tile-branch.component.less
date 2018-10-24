@@ -4,36 +4,35 @@
 :host {
   .tile-container();
   position: relative;
-
-
 }
 
 :host(.has-run) {
 
-  &::before {
-    color: @color-secondary;
-  }
-  .branch-option-container{
+  .branch-option-container {
     background-color: #79b8dc;
     border: none;
   }
   .menu-icon-close {
     color: @color-bg;
   }
-  .branch-connector-3 {
+  .branch-connector-2 {
     border-top: solid 4px #79b8dc;
     &:hover {
-      .branch-option-container{
+      border-top: solid 4px #899bcf;
+      .branch-option-container {
         border: solid 3px transparent;
+        background-color: #899bcf;
       }
     }
   }
-  .branch-connector-2{
+  .branch-connector-3 {
     border-right: solid 4px #79b8dc;
+    &::before {
+      background-color: @color-secondary;
+    }
   }
 
 }
-
 
 .menu-icon {
   color: @color-dark-gray;
@@ -43,14 +42,14 @@
   }
 }
 
-.branch-connector-3 {
+.branch-connector-2 {
   border-top: solid 4px #afbbda;
   width: 22px;
   height: 2px;
   position: absolute;
   top: 29px;
-  left: 121px;
-
+  left: 115px;
+  cursor: pointer;
   &:hover {
     box-shadow: -1px 3px 6px 0 rgba(0, 0, 0, 0.3);
     border-top: solid 4px #899bcf;
@@ -64,39 +63,47 @@
     .menu-icon-close {
       display: inline-block;
     }
+    & + .branch-connector-3 {
+      box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
+      border-right: solid 4px #899bcf;
+      &::before {
+        background-color: #899bcf;
+      }
+    }
   }
 }
 
-.branch-connector-2 {
+.branch-connector-3 {
   border-right: solid 4px #afbbda;
   width: 2px;
   height: 119px;
   position: absolute;
-  left: 121px;
+  left: 115px;
   top: -90px;
 }
+
 .branch-connector-1 {
   border-top: solid 4px #afbbda;
   width: 19px;
   height: 2px;
   position: relative;
   top: -121px;
-  right: -69px;
+  right: -63px;
 }
-.branch-connector-1::before {
+
+.branch-connector-3::before {
   content: '';
   position: absolute;
-  top: -5px;
-  right: 16px;
+  top: -2px;
+  right: -6px;
   border-radius: 50%;
   z-index: 5;
   width: 8px;
   height: 8px;
   box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
   background-color: #afbbda;
-  border: solid 2px #afbbda;
-
 }
+
 .branch-connector-1::after {
   content: '';
   position: absolute;
@@ -110,6 +117,7 @@
   background-color: #afbbda;
   border: solid 2px #afbbda;
 }
+
 .branch-option-container {
   content: "";
   position: absolute;

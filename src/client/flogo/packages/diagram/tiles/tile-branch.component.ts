@@ -2,8 +2,8 @@ import {ChangeDetectorRef, Component, HostBinding, Input, OnChanges, SimpleChang
 import {SvgRefFixerService} from '@flogo/core';
 import {AbstractTileTaskComponent} from './abstract-tile-task.component';
 
-const ROW_HEIGHT = 122;
-const BOTTOM_DISTANCE = 30;
+const ROW_HEIGHT = 78;
+const BOTTOM_DISTANCE = 8;
 const TILE_HEIGHT = 60;
 
 @Component({
@@ -42,15 +42,15 @@ export class TileBranchComponent extends AbstractTileTaskComponent implements On
   }
 
   get branchHeight() {
-    return this.containerHeight + (TILE_HEIGHT / 2) - BOTTOM_DISTANCE;
+    return this.containerHeight + (BOTTOM_DISTANCE / 4);
   }
 
   get branchPosition() {
-    return BOTTOM_DISTANCE - this.containerHeight;
+    return (TILE_HEIGHT / 2) - this.containerHeight;
   }
 
   get tilesConnectorPosition() {
-    return BOTTOM_DISTANCE - (TILE_HEIGHT / 2) - this.containerHeight;
+    return (BOTTOM_DISTANCE / 4) - this.containerHeight;
   }
 
   onBranchOptions(event) {
