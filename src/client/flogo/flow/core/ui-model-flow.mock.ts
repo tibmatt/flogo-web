@@ -403,7 +403,8 @@ export const mockResultantUIFlow = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          configured: false
         },
         children: [
           'counter_1'
@@ -427,7 +428,8 @@ export const mockResultantUIFlow = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          configured: false
         },
         children: [
           '::branch::1'
@@ -453,7 +455,8 @@ export const mockResultantUIFlow = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          configured: false
         },
         children: [
           '::branch::2'
@@ -479,7 +482,8 @@ export const mockResultantUIFlow = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          configured: false
         },
         children: [],
         parents: [
@@ -731,7 +735,8 @@ export const mockResultantUIFlowWithError = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          configured: false
         },
         children: [
           'counter_1'
@@ -755,7 +760,8 @@ export const mockResultantUIFlowWithError = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          configured: false
         },
         children: [
           '::branch::3'
@@ -781,7 +787,8 @@ export const mockResultantUIFlowWithError = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          configured: false
         },
         children: [
           '::branch::4'
@@ -807,7 +814,8 @@ export const mockResultantUIFlowWithError = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          configured: false
         },
         children: [],
         parents: [
@@ -884,7 +892,8 @@ export const mockResultantUIFlowWithError = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          configured: false
         },
         children: [],
         parents: []
@@ -1072,7 +1081,8 @@ export let mockResultantUIFlowWithTransformations = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          configured: true
         },
         children: [
           'counter_1'
@@ -1096,7 +1106,8 @@ export let mockResultantUIFlowWithTransformations = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          configured: false
         },
         children: [
           '::branch::5'
@@ -1122,7 +1133,8 @@ export let mockResultantUIFlowWithTransformations = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          configured: false
         },
         children: [
           '::branch::6'
@@ -1148,7 +1160,8 @@ export let mockResultantUIFlowWithTransformations = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          configured: false
         },
         children: [],
         parents: [
