@@ -76,13 +76,11 @@ export class StandardTaskConverter {
     const activityInput = this.resourceTask.activity.input || {};
     return schemaInputs.reduce((attributes, schemaInput) => {
       let value = activityInput[schemaInput.name];
-      if (isUndefined(value) && isUndefined(schemaInput.value)) {
+      if (isUndefined(value)) {
         return attributes;
       }
       if (isOutputMapperField(schemaInput) && isArray(value)) {
         value = value.map(outputMapping => portMappingType(outputMapping));
-      } else if (isUndefined(value)) {
-        value = schemaInput.value;
       }
       attributes.push({ ...schemaInput, value });
       return attributes;
