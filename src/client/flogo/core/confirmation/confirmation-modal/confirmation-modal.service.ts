@@ -1,10 +1,6 @@
 import {Injectable} from '@angular/core';
-import {
-  CONFIRMATION_MODAL_TOKEN,
-  ConfirmationModalComponent,
-  ConfirmationService,
-  ConfirmationModal
-} from 'flogo/core/confirmation/index';
+import { ConfirmationService } from '../confirmation.service';
+import { CONFIRMATION_MODAL_TOKEN, ConfirmationModal, ConfirmationModalComponent } from './confirmation-modal.component';
 
 @Injectable()
 export class ConfirmationModalService {
