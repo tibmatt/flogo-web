@@ -421,8 +421,7 @@ describe('flow.core.models.graph-and-items', function () {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false,
-          configured: false
+          iterable: false
         },
         children: ['awsiot_1'],
         parents: []
@@ -444,8 +443,7 @@ describe('flow.core.models.graph-and-items', function () {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false,
-          configured: false
+          iterable: false
         },
         children: ['reply_1', 'dummy_branch_3', 'dummy_branch_4'],
         parents: ['log_1']
@@ -467,8 +465,7 @@ describe('flow.core.models.graph-and-items', function () {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false,
-          configured: false
+          iterable: false
         },
         parents: ['awsiot_1'],
         children: ['dummy_branch_1'],
@@ -492,8 +489,7 @@ describe('flow.core.models.graph-and-items', function () {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false,
-          configured: false
+          iterable: false
         },
       },
       log_7: {
@@ -515,8 +511,7 @@ describe('flow.core.models.graph-and-items', function () {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false,
-          configured: false
+          iterable: false
         },
       },
       log_4: {
@@ -538,8 +533,7 @@ describe('flow.core.models.graph-and-items', function () {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false,
-          configured: false
+          iterable: false
         },
       },
       log_5: {
@@ -561,8 +555,7 @@ describe('flow.core.models.graph-and-items', function () {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false,
-          configured: false
+          iterable: false
         },
       },
       dummy_branch_1: {

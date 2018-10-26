@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {AbstractTileTaskComponent} from './abstract-tile-task.component';
+import {animate, style, transition, trigger} from '@angular/animations';
 
 
 @Component({
@@ -7,6 +8,15 @@ import {AbstractTileTaskComponent} from './abstract-tile-task.component';
   templateUrl: './tile-task.component.html',
   styleUrls: ['./tile-task.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [  trigger('menuOptions', [
+    transition('void => *', [
+      style({opacity: 0}),
+      animate('250ms ease-in')
+    ]),
+    transition('* => void', [
+      animate('250ms ease-in', style({ opacity: 0}))
+    ]),
+  ])]
 })
 export class TileTaskComponent extends AbstractTileTaskComponent {
 

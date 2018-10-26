@@ -12,7 +12,7 @@
   font-size: 12px;
 
   &:hover {
-    transform: scale(1.08);
+    transform: scale(1.08) translate(6%, 0%);
   }
 }
 
@@ -34,7 +34,12 @@
   width: 76%;
   height: 100%;
   position: relative;
-  left: 2px;
+  left: 5px;
+}
+
+.content__icon {
+  margin-right: 8px;
+  float: left;
 }
 
 .content__icon-activity {
@@ -46,37 +51,33 @@
 
 .content__icon-return {
   width: 26px;
-  height:24px;
+  height: 24px;
   background-color: #36bfbb;
   border-radius: 4px;
 }
+
 .content__icon-subflow {
   height: 24px;
   width: 24px;
-  margin-top: 5px;
+  margin-top: 4px;
 }
 
 .content__text--subflow {
-  margin-left: 5px;
-  margin-top: 5px;
+  margin-top: 10px;
 }
-.content__text{
-  width: 60%;
+
+.content__text {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  line-height: 1.08;
+  line-height: 1.2;
   color: @color-ink;
-}
-.content__text--title {
-  margin-left: -3px;
-  margin-top: -11px;
 }
 
 .menu-content {
   height: 16px;
   position: absolute;
-  right: 0;
+  right: 4px;
   bottom: 2px;
   display: flex;
 }
@@ -87,7 +88,7 @@
   margin-right: 5px;
 
   &:hover {
-    color: #0081cb;
+    color: @primary-blue;
     background-color: rgba(0, 129, 203, 0.1);
     font-weight: 600;
     border-radius: 3px;
@@ -98,22 +99,23 @@
   .kebabmenu();
   height: 18px;
   width: 13px;
-  padding-left: 1px;
   padding-top: 3px;
   &:hover {
-    color: #0081cb;
+    color: @primary-blue;
     background-color: rgba(0, 129, 203, 0.1);
     border-radius: 3px;
     font-weight: 600;
   }
 }
 
+.kebabmenu-selected {
+  color: @primary-blue;
+}
+
 .content__items {
-  display: flex;
   text-overflow: ellipsis;
   overflow: hidden;
   align-items: center;
-  height: 24px;
   margin-top: 15px;
 }
 
@@ -136,15 +138,13 @@
   flex-direction: row;
   position: absolute;
   top: -9px;
-  right: 20px;
+  right: 13px;
   pointer-events: none;
 }
 
 .content__text--id {
   font-size: 10px;
   color: @color-dark-gray;
-  margin-top: 13px;
-  margin-left: -57px;
   line-height: 1.3;
 }
 
@@ -173,7 +173,7 @@
 }
 
 .badge--configure {
-  background-color: @tangerine;
+  background-color: @color-stroke;
 }
 
 .badge--error {
@@ -195,7 +195,8 @@
   margin-left: -7px;
   margin-right: 6px;
   &:hover {
-    transform: scale(1.08);
+    //transform: scale(1.08);
+    transform: scale(1.08) translate(-7%, 0);
 
   }
 }
@@ -204,9 +205,9 @@
   transform: scale(1.08);
 
   .tile__bg {
-    fill: #4e7ead;
+    fill: @color-link-hover;
   }
-  .content__text, .menu-content {
+  .content__text, .menu-content ,.kebabmenu{
     color: @color-bg;
   }
   .menu__icon, .kebabmenu {
@@ -222,14 +223,14 @@
 }
 :host(.has-run) {
   .tile__stroke {
-    stroke: #79B8DC;
-    stroke-width: 1px;
+    stroke: @color-secondary;
+    stroke-width: 2px;
   }
 }
 
 :host(.is-invalid) {
   .tile__stroke {
-    stroke: #f5a623;
+    stroke: @color-stroke;
     stroke-width: 2px;
   }
 }

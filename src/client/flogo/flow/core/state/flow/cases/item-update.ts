@@ -67,8 +67,7 @@ export function graphUpdate(state: FlowState, payload: { handlerType: HandlerTyp
     title: item.name,
     description: item.description,
     status: {
-      iterable: !!item.settings.iterate,
-      configured: !!item.inputMappings
+      iterable: !!item.settings.iterate
     }
   };
   return {

@@ -36,6 +36,10 @@
 
 .menu-icon {
   color: @color-dark-gray;
+  margin-left: 3px;
+  margin-right: 3px;
+  position: relative;
+  top: -1px;
   &:hover {
     color: @primary-blue;
     font-weight: 600;
@@ -59,6 +63,7 @@
       top: -11px;
       box-shadow: -1px 3px 6px 0 rgba(0, 0, 0, 0.3);
       border: solid 3px #899bcf;
+      transition: all 100ms ease-in;
     }
     .menu-icon-close {
       display: inline-block;
@@ -138,6 +143,7 @@
   height: 18px;
   border: solid 3px transparent;
   border-radius: 8px;
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
   font-size: 12px;
   position: relative;
   top: -12px;
@@ -162,6 +168,5 @@
   .kebabmenu();
   position: absolute;
   top: 2px;
-  right: 3px;
   font-size: 10px;
 }
