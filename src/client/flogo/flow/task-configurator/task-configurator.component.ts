@@ -5,8 +5,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-import { Task } from '@flogo/core/interfaces';
-import { mergeItemWithSchema, PartialActivitySchema, SingleEmissionSubject } from '@flogo/core/models';
+import {ActivitySchema, Task} from '@flogo/core/interfaces';
+import { mergeItemWithSchema, SingleEmissionSubject } from '@flogo/core/models';
 import { NotificationsService } from '@flogo/core/notifications';
 
 import { MapperTranslator, MapperControllerFactory, MapperController } from '../shared/mapper';
@@ -66,6 +66,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   appId: string;
   actionId: string;
   currentTile: Task;
+  activitySchemaUrl: string;
   iteratorModeOn = false;
   iterableValue: string;
   isSubflowType: boolean;
@@ -231,7 +232,8 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     this.contextChange$ = SingleEmissionSubject.create();
 
     const selectedItem = <ItemTask>cloneDeep(state.mainItems[itemId] || state.errorItems[itemId]);
-    const activitySchema: PartialActivitySchema = state.schemas[selectedItem.ref] || {};
+    const activitySchema: ActivitySchema = (state.schemas[selectedItem.ref] || {}) as ActivitySchema;
+    this.activitySchemaUrl = activitySchema.homepage;
     this.currentTile = mergeItemWithSchema(selectedItem, activitySchema);
 
     this.inputScope = getInputContext(itemId, state);

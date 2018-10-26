@@ -6,8 +6,11 @@
         <div class="task-details">
           <input class="task-name" [ngClass]='{"task-name--error": !isValidTaskName}' [(ngModel)]="title"
                  (keyup)="changeTaskDetail($event.target.value,'name')" [size]="title.length + 1">
-          <div class="task-id">{{ 'TASK-CONFIGURATOR:ID' |
-            translate:{value: currentTile.id} }}
+          <div class="task-id-homepage-wrapper">
+            <span>{{ 'TASK-CONFIGURATOR:ID' | translate:{value: currentTile.id} }}</span>
+            <a class="task-schema-homepage" *ngIf="activitySchemaUrl" [href]="activitySchemaUrl" target="_blank">
+              <i class="flogo-icon-info"></i>
+            </a>
           </div>
         </div>
         <div class="unique-name-error-message" *ngIf="!isValidTaskName && title.length > 0">{{'TASK-CONFIGURATOR:NAME-EXISTS' |
@@ -19,7 +22,7 @@
              [allowNewLines]="true"
              placeholder="{{ 'TASK-CONFIGURATOR:ADD-DESCRIPTION' | translate }}"></div>
       </div>
-      <div class="header__actions actions">
+      <div class="header__actions configurator-actions">
         <button class="flogo-button--secondary" (click)="cancel()">
           Cancel
         </button>

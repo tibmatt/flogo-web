@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy, OnChanges, SimpleChanges } from '@angular/core';
-import { ItemActivityTask } from '@flogo/core';
 import { FieldsInfo } from '../fields-info';
+import {DebugActivityTask} from '../debug-activity-task';
 
 @Component({
   selector: 'flogo-flow-debug-panel-content',
@@ -10,7 +10,7 @@ import { FieldsInfo } from '../fields-info';
 })
 export class PanelContentComponent implements OnChanges {
 
-  @Input() activity: ItemActivityTask;
+  @Input() activity: DebugActivityTask;
   @Input() fields: FieldsInfo;
   @Input() executionErrors?: Array<string>;
   @Input() canRestart: boolean;
@@ -18,7 +18,7 @@ export class PanelContentComponent implements OnChanges {
   @Input() isEndOfFlow: boolean;
   @Input() activityHasRun: boolean;
   @Input() flowHasRun: boolean;
-  @Output() runFromHere = new EventEmitter<ItemActivityTask>();
+  @Output() runFromHere = new EventEmitter<DebugActivityTask>();
 
   viewState = 'empty';
 
