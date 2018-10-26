@@ -3,12 +3,13 @@
   <p class="message" [innerHTML]="i18nMessage | translate"></p>
 </div>
 
-<button class="modal-close">
+<button class="modal-close" (click)="cancel()">
   <span aria-hidden="true" class="sr-only">{{ 'MODAL:CLOSE' | translate }}</span>
 </button>
 
 <div class="footer">
-  <input id="dontShowAgain" type="checkbox" [checked]="dontShowAgain"> <label for="dontShowAgain">{{ 'APP.MISSING_TRIGGER.DONT_SHOW_AGAIN' | translate }}</label>
+  <!--todo: enable-->
+  <!--<input id="dontShowAgain" type="checkbox" [checked]="dontShowAgain"> <label for="dontShowAgain">{{ 'APP.MISSING_TRIGGER.DONT_SHOW_AGAIN' | translate }}</label>-->
   <button class="flogo-button--secondary" (click)="cancel()">{{ 'APP.MISSING_TRIGGER.CANCEL' | translate  }}
   </button>
   <button class="flogo-button--primary" (click)="confirm()">{{ i18nConfirmBtn | translate }}

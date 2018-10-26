@@ -4,8 +4,8 @@ import { differenceInSeconds } from 'date-fns';
 import {
   Component, Input, Output, SimpleChanges, OnChanges, OnInit, EventEmitter
 } from '@angular/core';
-import { Observable } from 'rxjs';
-import { switchMap, filter, take, tap } from 'rxjs/operators';
+import { Observable, of as observableOf } from 'rxjs';
+import { switchMap, map, take, tap, filter } from 'rxjs/operators';
 
 import {LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER} from '@flogo/core';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
@@ -138,8 +138,8 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   appExporter(isLegacyExport: boolean = false) {
     return () => this.confirmActionWhenMissingTriggers('export')
       .toPromise()
-      .then((result) => {
-        if (!result || !result.confirm) {
+      .then((proceed) => {
+        if (!proceed) {
           return null;
         }
         return this.performExportApp(isLegacyExport);
@@ -173,6 +173,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   buildApp({ os, arch }) {
     this.closeBuildBox();
     this.confirmActionWhenMissingTriggers('build')
+      .pipe(filter(Boolean))
       .subscribe(() => this.handleBuildDownload(this.appDetailService.build(this.application.id, { os, arch })));
   }
 
@@ -337,16 +338,20 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     this.isDetailsMenuOpen = false;
   }
 
-  private confirmActionWhenMissingTriggers(exportType: 'export' | 'build') {
+  private confirmActionWhenMissingTriggers(exportType: 'export' | 'build'): Observable<boolean> {
+    const { app } = this.appDetail;
+    const hasTriggers = app && app.flowGroups && app.flowGroups.length > 0 && app.flowGroups.some(g => !!g.trigger);
+    if (hasTriggers) {
+      return observableOf(true);
+    }
     return this.modalService.openModal<ConfirmationParams>(MissingTriggerConfirmationComponent, { type: exportType })
       .result
       .pipe(
         take(1),
-        filter((result: MissingTriggerConfirmationResult) => result && result.confirm),
         tap((result: MissingTriggerConfirmationResult)  => {
           // todo: persist dont show again selection
-          console.log(result);
         }),
+        map((result) => result && result.confirm),
       );
   }
 
