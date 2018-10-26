@@ -85,9 +85,34 @@
           "type": "string"
         },
         "type": {
-          "type": "string"
+          "enum": [
+            "string",
+            "integer",
+            "int",
+            "long",
+            "number",
+            "double",
+            "boolean",
+            "bool",
+            "object",
+            "array",
+            "params",
+            "any",
+            "complexObject",
+            "complex_object"
+          ]
         },
-        "value": {}
+        "value": {
+          "type": [
+            "string",
+            "integer",
+            "number",
+            "boolean",
+            "object",
+            "array",
+            "null"
+          ]
+        }
       }
     },
     "mapping": {
