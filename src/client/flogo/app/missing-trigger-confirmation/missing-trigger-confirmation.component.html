@@ -8,8 +8,10 @@
 </button>
 
 <div class="footer">
-  <!--todo: enable-->
-  <!--<input id="dontShowAgain" type="checkbox" [checked]="dontShowAgain"> <label for="dontShowAgain">{{ 'APP.MISSING_TRIGGER.DONT_SHOW_AGAIN' | translate }}</label>-->
+  <div class="uxpl-checkbox dont-show-again">
+    <input id="dontShowAgain" [checked]="dontShowAgain" (change)="dontShowAgain = $event.target.checked" class="uxpl-checkbox__input" type="checkbox">
+    <label for="dontShowAgain" class="uxpl-checkbox__label">{{ 'APP.MISSING_TRIGGER.DONT_SHOW_AGAIN' | translate }}</label>
+  </div>
   <button class="flogo-button--secondary" (click)="cancel()">{{ 'APP.MISSING_TRIGGER.CANCEL' | translate  }}
   </button>
   <button class="flogo-button--primary" (click)="confirm()">{{ i18nConfirmBtn | translate }}
