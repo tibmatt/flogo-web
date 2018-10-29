@@ -4,12 +4,16 @@ import { differenceInSeconds } from 'date-fns';
 import {
   Component, Input, Output, SimpleChanges, OnChanges, OnInit, EventEmitter
 } from '@angular/core';
-import { Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, of as observableOf } from 'rxjs';
+import { switchMap, map, take, tap, filter } from 'rxjs/operators';
 
 import {LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER} from '@flogo/core';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { SanitizeService } from '@flogo/core/services/sanitize.service';
+import { ShimTriggerBuildApiService } from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
+import { ModalService } from '@flogo/core/modal';
+import { ConfirmationResult, ConfirmationModalService } from '@flogo/core/confirmation';
+import { NotificationsService } from '@flogo/core/notifications';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
 import {
 AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
@@ -21,13 +25,11 @@ import {
 } from '../export-flows/export-flows.component';
 import {ShimTriggerData, TriggerShimBuildComponent} from '../shim-trigger/shim-trigger.component';
 
-import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
-import {ConfirmationResult} from '@flogo/core/confirmation';
-import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
-
-import { NotificationsService } from '@flogo/core/notifications';
-import {ModalService} from '@flogo/core/modal';
-
+import {
+  MissingTriggerConfirmationComponent,
+  ConfirmationResult as MissingTriggerConfirmationResult,
+  ConfirmationParams
+} from '../missing-trigger-confirmation';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
@@ -134,7 +136,18 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   appExporter(isLegacyExport: boolean = false) {
-    return () => this.appDetailService.toEngineSpec(isLegacyExport)
+    return () => this.confirmActionWhenMissingTriggers('export')
+      .toPromise()
+      .then((proceed) => {
+        if (!proceed) {
+          return null;
+        }
+        return this.performExportApp(isLegacyExport);
+      });
+  }
+
+  private performExportApp(isLegacyExport: boolean) {
+    return this.appDetailService.toEngineSpec(isLegacyExport)
       .then(engineApp => {
         const appName = snakeCase(engineApp.name);
         const fileNameSuffix = isLegacyExport ? '_legacy' : '';
@@ -159,7 +172,9 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
 
   buildApp({ os, arch }) {
     this.closeBuildBox();
-    this.handleBuildDownload(this.appDetailService.build(this.application.id, { os, arch }));
+    this.confirmActionWhenMissingTriggers('build')
+      .pipe(filter(Boolean))
+      .subscribe(() => this.handleBuildDownload(this.appDetailService.build(this.application.id, { os, arch })));
   }
 
   buildShimTrigger(selectedTriggerDetails) {
@@ -321,6 +336,23 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
 
   closeDetailsMenu() {
     this.isDetailsMenuOpen = false;
+  }
+
+  private confirmActionWhenMissingTriggers(exportType: 'export' | 'build'): Observable<boolean> {
+    const { app } = this.appDetail;
+    const hasTriggers = app && app.flowGroups && app.flowGroups.length > 0 && app.flowGroups.some(g => !!g.trigger);
+    if (hasTriggers) {
+      return observableOf(true);
+    }
+    return this.modalService.openModal<ConfirmationParams>(MissingTriggerConfirmationComponent, { type: exportType })
+      .result
+      .pipe(
+        take(1),
+        tap((result: MissingTriggerConfirmationResult)  => {
+          // todo: persist dont show again selection
+        }),
+        map((result) => result && result.confirm),
+      );
   }
 
   private handleBuildDownload(download: Observable<any>) {

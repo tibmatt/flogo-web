@@ -21,6 +21,18 @@
   "APP-LIST:BROKEN_RULE_UNKNOWN": "Unknown error",
   "APP-LIST:BROKEN_RULE_NOT_INSTALLED_ACTIVITY": "Activity is not installed",
   "APP-LIST:BROKEN_RULE_NOT_INSTALLED_TRIGGER": "Trigger is not installed",
+  "APP": {
+    "MISSING_TRIGGER": {
+      "TITLE": "Some flows don’t have triggers yet.",
+      "MESSAGE-EXPORT": "You might not be able to run this app because there are no triggers to start the flows.<br>Are you sure you want to export it anyway?",
+      "MESSAGE-BUILD": "You might not be able to run this app because there are no triggers to start the flows.<br>Are you sure you want to build it anyway?",
+      "CONFIRM": "Yes",
+      "CANCEL": "Cancel",
+      "CONFIRM-BUILD": "Yes, build",
+      "CONFIRM-EXPORT": "Yes, export",
+      "DONT_SHOW_AGAIN": "Don't show this message again"
+    }
+  },
   "IMPORT-ERROR:IMPORT_FAILED": "Import failed",
   "IMPORT-ERROR:ERRORS_FOUND": "{{value}} errors found",
   "IMPORT-ERROR:DATA_MISMATCH": "Data mismatch",
