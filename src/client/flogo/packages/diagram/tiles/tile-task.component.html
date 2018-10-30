@@ -1,7 +1,7 @@
 <div class="badges">
   <i *ngIf="tile.task?.status?.executionErrored" class="badge badge--error flogo-icon-info" [title]="errorMsg"></i>
   <i *ngIf="tile.task?.status?.iterable" class="badge badge--iterator flogo-icon-iterator"></i>
-  <i *ngIf="tile.task?.status?.configured" class="badge badge--configure flogo-icon-settings"></i>
+  <!--<i *ngIf="tile.task?.status?.configured" class="badge badge&#45;&#45;configure flogo-icon-settings"></i>-->
 </div>
 <div class="content" (click)="onSelect($event)" (fgClickOutside)="closeMenuOptions()" [attr.data-diagram-task-id]="tile.task.id">
   <div class="content__items"   >

@@ -2,13 +2,13 @@ import objectContaining = jasmine.objectContaining;
 import ObjectContaining = jasmine.ObjectContaining;
 
 import { createTileMatrix } from './create-tile-matrix';
-import { GraphNode, NodeType } from '@flogo/core';
+import {GraphNode, GraphNodeDictionary, NodeType} from '@flogo/core';
 import { InsertTile, TaskTile, Tile, TileType } from '../interfaces';
 import { NodeMatrix } from '../renderable-model/matrix';
 
 describe('diagram.createTileMatrix', function () {
   it('should create a renderable matrix from a node matrix', function () {
-    const result = createTileMatrix(getTestData(), 5);
+    const result = createTileMatrix(getTestData(), getNodesTestData(), 5);
     const expected: ObjectContaining<Tile>[][] = getExpectedMatrix();
     expect(expected.length).toEqual(result.length, `Actual matrix has different row count than expected.
                Actual: ${result.length}, expected: ${expected.length}`);
@@ -131,4 +131,52 @@ describe('diagram.createTileMatrix', function () {
     ];
   }
 
-});
+  function getNodesTestData() {
+    return {
+      root: {
+        id: 'root',
+        type: NodeType.Task,
+        parents: [],
+        children: ['child1', 'branch1'],
+        features: {
+          canHaveChildren: true,
+          canBranch: true,
+        },
+        status: {},
+      },
+      child1: {
+        id: 'child1',
+        type: NodeType.Task,
+        parents: ['root'],
+        children: [],
+        features: {
+          canHaveChildren: false,
+          canBranch: true,
+        },
+        status: {},
+      },
+      branch1: {
+        id: 'branch1',
+        type: NodeType.Branch,
+        parents: [],
+        children: ['child2'],
+        features: {
+          canHaveChildren: true,
+          canBranch: true,
+        },
+        status: {},
+      },
+      child2: {
+        id: 'child2',
+        type: NodeType.Task,
+        parents: [],
+        children: [],
+        features: {
+          canHaveChildren: true,
+          canBranch: true,
+        },
+        status: {},
+      }
+    };
+  }
+  });
