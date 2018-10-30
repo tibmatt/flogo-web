@@ -18,6 +18,8 @@ import { mergeFormWithOutputs } from './utils';
 import { FieldsInfo } from './fields-info';
 import { DebugActivityTask } from './debug-activity-task';
 import { isMapperActivity } from '@flogo/shared/utils';
+import { TogglerRefService } from '@flogo/flow/debug-panel/toggler-ref.service';
+import { DEFAULT_MINIMIZED_HEIGHT } from './variables';
 
 const SELECTOR_FOR_CURRENT_ELEMENT = 'flogo-diagram-tile-task.is-selected';
 const STATUS_OPEN = 'open';
@@ -54,6 +56,7 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
   executionErrrors$: Observable<Array<string>>;
   isEndOfFlow$: Observable<boolean>;
   isRestartableTask$: Observable<boolean>;
+  toggleButtonAnimationParams = { minimizedHeight: DEFAULT_MINIMIZED_HEIGHT };
 
   private destroy$ = SingleEmissionSubject.create();
 
@@ -62,6 +65,7 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private attributeFormBuilder: FormBuilderService,
     private testRunner: TestRunnerService,
+    private togglerRef: TogglerRefService,
   ) {}
 
   ngOnInit() {
@@ -92,7 +96,15 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
         select(FlowSelectors.selectDebugPanelOpen),
         takeUntil(this.destroy$),
       )
-      .subscribe(isOpen => this.panelStatus = isOpen ? STATUS_OPEN : STATUS_CLOSED);
+      .subscribe(isOpen => {
+        this.panelStatus = isOpen ? STATUS_OPEN : STATUS_CLOSED;
+        this.adjustPositionForAnimation();
+      });
+  }
+
+  private adjustPositionForAnimation() {
+    const minimizedHeight = this.togglerRef.getBottomDistance();
+    this.toggleButtonAnimationParams = { minimizedHeight };
   }
 
   ngOnDestroy() {
@@ -105,9 +117,8 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
     }
   }
 
-  closePanel(event) {
+  closePanel() {
     if (this.isOpen) {
-      event.stopPropagation();
       this.changePanelState(false);
     }
   }

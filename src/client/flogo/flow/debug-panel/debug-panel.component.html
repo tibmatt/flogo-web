@@ -5,16 +5,11 @@
 </div>
 <div class="debug-panel-container" [class.is-open]="isOpen" [@debugPanelContainerState]="panelStatus">
   <div class="debug-panel-container__content"
+       *ngIf="isOpen"
        [class.is-open]="isOpen"
-       [@debugPanelState]="panelStatus">
-    <div class="header" (click)="openPanel()" [attr.role]="!isOpen ? 'button' : null">
-      <span>{{ 'DEBUGGER:TITLE-ACTIVITY' | translate }}</span>
-      <flogo-debug-panel-toggle-button class="header__toggler"
-                                       role="button"
-                                       [isMinimized]="!isOpen"
-                                       (click)="closePanel($event)">
-      </flogo-debug-panel-toggle-button>
-    </div>
+       [@debugPanelState]="{ value: panelStatus, params: toggleButtonAnimationParams }">
+    <flogo-flow-debug-panel-header-toggler [isOpen]="isOpen" (open)="openPanel()" (close)="closePanel()">
+    </flogo-flow-debug-panel-header-toggler>
     <flogo-flow-debug-panel-content
       *ngIf="isOpen"
       class="js-debug-panel-content debug-panel__content"

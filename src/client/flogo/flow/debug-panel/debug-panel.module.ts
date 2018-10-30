@@ -2,11 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule as NgCommonModule } from '@angular/common';
 import { SharedModule } from '@flogo/shared';
 import { FormBuilderModule as DynamicFormModule } from '@flogo/flow/shared/dynamic-form';
-import { DebugPanelComponent } from './debug-panel.component';
+
 import { PanelContentComponent } from './panel-content/panel-content.component';
 import { FieldsComponent } from './fields/fields.component';
 import { ErrorComponent } from './error/error.component';
+import { ToggleIconComponent } from './header-toggler/toggle-icon.component';
+import { HeaderTogglerComponent } from './header-toggler/header-toggler.component';
+
+import { DebugPanelComponent } from './debug-panel.component';
 import { ToggleButtonComponent } from './toggle-button/toggle-button.component';
+import { TogglerRefService } from './toggler-ref.service';
 
 @NgModule({
   imports: [
@@ -15,14 +20,21 @@ import { ToggleButtonComponent } from './toggle-button/toggle-button.component';
     DynamicFormModule
   ],
   declarations: [
-    DebugPanelComponent,
     PanelContentComponent,
     FieldsComponent,
     ErrorComponent,
+    ToggleIconComponent,
+    HeaderTogglerComponent,
+
     ToggleButtonComponent,
+    DebugPanelComponent,
+  ],
+  providers: [
+    TogglerRefService,
   ],
   exports: [
-    DebugPanelComponent
+    DebugPanelComponent,
+    ToggleButtonComponent,
   ],
 })
 export class DebugPanelModule { }

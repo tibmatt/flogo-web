@@ -10,12 +10,14 @@ import {
   animateChild,
   keyframes,
 } from '@angular/animations';
-
-const MINIMIZED_LEFT_DISTANCE = '182px';
-const MINIMIZED_HEIGHT = '47px';
-const OPENED_HEIGHT = '40vh';
-const OPEN_DELAY = '200ms';
-const MINIMIZED_TRANSFORM = `translate3d(0, -${MINIMIZED_HEIGHT}, 0)`;
+import {
+  MINIMIZED_TRANSFORM,
+  OPEN_DELAY,
+  OPENED_HEIGHT,
+  MINIMIZED_WIDTH,
+  MINIMIZED_LEFT_DISTANCE,
+  CLOSE_WRAPPER_ANIMATION_DURATION,
+} from './variables';
 
 export const debugPanelAnimations: {
   readonly panelContainer: AnimationTriggerMetadata;
@@ -25,15 +27,17 @@ export const debugPanelAnimations: {
   wrappedContent: trigger('wrappedContentState', [
     state('open', style({ 'margin-bottom': '40vh' })),
     state('closed', style({ 'margin-bottom': 0 })),
-    transition('open => closed', animate(`100ms cubic-bezier(0.25, 0.8, 0.25, 1)`)),
+    transition('open => closed', animate(`${CLOSE_WRAPPER_ANIMATION_DURATION}ms cubic-bezier(0.25, 0.8, 0.25, 1)`)),
     transition('closed => open', animate(`300ms 100ms cubic-bezier(0.25, 0.8, 0.25, 1)`)),
   ]),
   panelContainer: trigger('debugPanelContainerState', [
     state('open', style({
       transform: 'translate3d(0, 0, 0)',
+      zIndex: 3
     })),
     state('closed', style({
       transform: `translate3d(${MINIMIZED_LEFT_DISTANCE}, 0, 0)`,
+      zIndex: 3
     })),
     transition('closed => open', [
       group([
@@ -57,13 +61,8 @@ export const debugPanelAnimations: {
       transform: 'translate3d(0, -100%, 0)',
       height: OPENED_HEIGHT,
     })),
-    state('closed', style({
-      transform: MINIMIZED_TRANSFORM,
-      // todo: auto width animation is not working
-      width: '272px',
-    })),
-    transition('closed => open', [
-      style({ overflow: 'hidden', 'height': OPENED_HEIGHT, width: '*' }),
+    transition('* => open', [
+      style({ overflow: 'hidden', 'height': OPENED_HEIGHT, width: '*'}),
       query('.js-debug-panel-content', style({ opacity: 0 })),
       animate(`${OPEN_DELAY} cubic-bezier(0.25, 0.8, 0.25, 1)`, keyframes([
         style({ width: '*',  transform: MINIMIZED_TRANSFORM }),
@@ -72,10 +71,16 @@ export const debugPanelAnimations: {
       ])),
       query('.js-debug-panel-content', animate('100ms', style({ opacity: 1 }))),
     ]),
-    transition('open => closed', [
-      style({ overflow: 'hidden', 'height': OPENED_HEIGHT }),
+    transition('open => *', [
+      style({ overflow: 'hidden', 'height': OPENED_HEIGHT, width: '*', transform: '*', opacity: 1 }),
       query('.js-debug-panel-content', animate('100ms', style({ opacity: 0 }))),
-      animate('350ms cubic-bezier(0.25, 0.8, 0.25, 1)'),
+      group([
+        animate('350ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({
+          width: MINIMIZED_WIDTH,
+          transform: MINIMIZED_TRANSFORM,
+        })),
+        animate('100ms 250ms ease-in', style({ opacity: 0 }))
+      ]),
     ]),
   ])
 };
