@@ -85,13 +85,15 @@
               "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
               "input": {
               },
-              "inputMappings": [
-                {
-                  "type": "assign",
-                  "value": "$flow.id",
-                  "mapTo": "message"
-                }
-              ]
+              "mappings": {
+                "input": [
+                  {
+                    "type": "assign",
+                    "value": "$flow.id",
+                    "mapTo": "message"
+                  }
+                ]
+              }
             }
           }
         ],

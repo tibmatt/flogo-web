@@ -17,6 +17,7 @@
   "APP-LIST-POPUP:DELETE-CONFIRM": "Yes, Delete",
   "APP-LIST:SUCCESSFULLY-IMPORTED": "Application imported successfully",
   "APP-LIST:BROKEN_RULE_WRONG_INPUT_JSON_FILE": "Wrong input JSON file",
+  "APP-LIST:VALIDATION_ERROR": "Encountered validation errors",
   "APP-LIST:INTERNAL_ERROR": "Internal error",
   "APP-LIST:BROKEN_RULE_UNKNOWN": "Unknown error",
   "APP-LIST:BROKEN_RULE_NOT_INSTALLED_ACTIVITY": "Activity is not installed",

@@ -32,38 +32,12 @@
             "type": 1,
             "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
             "settings": {},
-            "attributes": [
-              {
-                "name": "message",
-                "type": "string",
-                "value": ""
-              },
-              {
-                "name": "flowInfo",
-                "type": "boolean",
-                "value": false
-              },
-              {
-                "name": "addToFlow",
-                "type": "boolean",
-                "value": false
-              }
-            ],
+            "attributes": [],
             "inputMappings": [
               {
                 "mapTo": "message",
-                "type": 2,
-                "value": ""
-              },
-              {
-                "mapTo": "flowInfo",
-                "type": 2,
-                "value": false
-              },
-              {
-                "mapTo": "addToFlow",
-                "type": 2,
-                "value": false
+                "type": 1,
+                "value": "$flow.id"
               }
             ]
           }
@@ -83,16 +57,6 @@
                   "name": "message",
                   "type": "string",
                   "value": "log in error handler"
-                },
-                {
-                  "name": "flowInfo",
-                  "type": "boolean",
-                  "value": false
-                },
-                {
-                  "name": "addToFlow",
-                  "type": "boolean",
-                  "value": false
                 }
               ],
               "inputMappings": [
@@ -100,16 +64,6 @@
                   "mapTo": "message",
                   "type": 2,
                   "value": "log in error handler"
-                },
-                {
-                  "mapTo": "flowInfo",
-                  "type": 2,
-                  "value": false
-                },
-                {
-                  "mapTo": "addToFlow",
-                  "type": 2,
-                  "value": false
                 }
               ]
             }

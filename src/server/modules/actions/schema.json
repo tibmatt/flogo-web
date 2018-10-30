@@ -113,12 +113,7 @@
             "null"
           ]
         }
-      },
-      "required": [
-        "name",
-        "type",
-        "value"
-      ]
+      }
     },
     "mapping": {
       "title": "mapping",
