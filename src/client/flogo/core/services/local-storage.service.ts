@@ -14,19 +14,19 @@ export class LocalStorageService {
   }
 
   clear(): void {
-    return localStorage.clear();
+    return this.storage.clear();
   }
 
   getItem(key: string): string | null {
-    return localStorage.getItem(key);
+    return this.storage.getItem(key);
   }
 
   removeItem(key: string): void {
-    return localStorage.removeItem(key);
+    return this.storage.removeItem(key);
   }
 
   setItem(key: string, value: string) {
-    localStorage.setItem(key, value);
+    this.storage.setItem(key, value);
   }
 
 }
