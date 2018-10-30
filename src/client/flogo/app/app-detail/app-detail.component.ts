@@ -9,14 +9,14 @@ import { switchMap, map, take, tap, filter } from 'rxjs/operators';
 
 import {LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER} from '@flogo/core';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
-import { SanitizeService } from '@flogo/core/services/sanitize.service';
+import { LocalStorageService, SanitizeService } from '@flogo/core/services';
 import { ShimTriggerBuildApiService } from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
 import { ModalService } from '@flogo/core/modal';
 import { ConfirmationResult, ConfirmationModalService } from '@flogo/core/confirmation';
 import { NotificationsService } from '@flogo/core/notifications';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
 import {
-AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
+AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup, SETTING_DONT_WARN_MISSING_TRIGGERS
 } from '../core';
 import {FlogoNewFlowComponent, NewFlowData} from '../new-flow/new-flow.component';
 import {
@@ -89,7 +89,8 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
               private contributionService: RESTAPIContributionsService,
               private shimTriggersApiService: ShimTriggerBuildApiService,
               private notificationsService: NotificationsService,
-              private modalService: ModalService
+              private modalService: ModalService,
+              private localStorage: LocalStorageService
   ) {
   }
 
@@ -136,14 +137,17 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   appExporter(isLegacyExport: boolean = false) {
-    return () => this.confirmActionWhenMissingTriggers('export')
-      .toPromise()
-      .then((proceed) => {
-        if (!proceed) {
-          return null;
-        }
-        return this.performExportApp(isLegacyExport);
-      });
+    return () => {
+      this.closeExportBox();
+      return this.confirmActionWhenMissingTriggers('export')
+        .toPromise()
+        .then((proceed) => {
+          if (!proceed) {
+            return null;
+          }
+          return this.performExportApp(isLegacyExport);
+        });
+    };
   }
 
   private performExportApp(isLegacyExport: boolean) {
@@ -156,7 +160,6 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
           data: engineApp
         }];
       }).catch(errRsp => {
-        this.closeExportBox();
         if (errRsp && errRsp.errors && errRsp.errors[0] && errRsp.errors[0].code === ERROR_CODE.HAS_SUBFLOW) {
           this.notificationsService.error({ key: 'DETAILS-EXPORT:CANNOT-EXPORT' });
         } else {
@@ -339,9 +342,8 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   private confirmActionWhenMissingTriggers(exportType: 'export' | 'build'): Observable<boolean> {
-    const { app } = this.appDetail;
-    const hasTriggers = app && app.flowGroups && app.flowGroups.length > 0 && app.flowGroups.some(g => !!g.trigger);
-    if (hasTriggers) {
+    const appHasTriggers = app => app && app.flowGroups && app.flowGroups.length > 0 && app.flowGroups.some(g => !!g.trigger);
+    if (this.localStorage.getItem(SETTING_DONT_WARN_MISSING_TRIGGERS) || appHasTriggers(this.appDetail.app)) {
       return observableOf(true);
     }
     return this.modalService.openModal<ConfirmationParams>(MissingTriggerConfirmationComponent, { type: exportType })
@@ -349,7 +351,9 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
       .pipe(
         take(1),
         tap((result: MissingTriggerConfirmationResult)  => {
-          // todo: persist dont show again selection
+          if (result && result.dontShowAgain) {
+            this.localStorage.setItem(SETTING_DONT_WARN_MISSING_TRIGGERS, 'true');
+          }
         }),
         map((result) => result && result.confirm),
       );
