@@ -15,17 +15,21 @@
   .menu-icon-close {
     color: @color-bg;
   }
-  .branch-connector-2 {
+  .branch-child-line {
     border-top: solid 4px #79b8dc;
+  }
+  .branch-child-link {
     &:hover {
-      border-top: solid 4px #899bcf;
+      .branch-child-line {
+        border-top: solid 4px #899bcf;
+      }
       .branch-option-container {
         border: solid 3px transparent;
         background-color: #899bcf;
       }
     }
   }
-  .branch-connector-3 {
+  .main-child-link {
     border-right: solid 4px #79b8dc;
     &::before {
       background-color: @color-secondary;
@@ -46,21 +50,24 @@
   }
 }
 
-.branch-connector-2 {
-  border-top: solid 4px #afbbda;
-  width: 22px;
-  height: 2px;
+.branch-child-link {
+  display: flex;
   position: absolute;
-  top: 29px;
+  top: 19px;
   left: 115px;
   cursor: pointer;
+  padding: 9px 0;
   &:hover {
-    box-shadow: -1px 3px 6px 0 rgba(0, 0, 0, 0.3);
-    border-top: solid 4px #899bcf;
+
+    .branch-child-line {
+      box-shadow: -1px 3px 6px 0 rgba(0, 0, 0, 0.3);
+      border-top: solid 4px #899bcf;
+    }
+
     .branch-option-container {
       width: 18px;
       height: 18px;
-      top: -11px;
+      top: 2px;
       box-shadow: -1px 3px 6px 0 rgba(0, 0, 0, 0.3);
       border: solid 3px #899bcf;
       transition: all 100ms ease-in;
@@ -68,7 +75,7 @@
     .menu-icon-close {
       display: inline-block;
     }
-    & + .branch-connector-3 {
+    & + .main-child-link {
       box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
       border-right: solid 4px #899bcf;
       &::before {
@@ -78,7 +85,13 @@
   }
 }
 
-.branch-connector-3 {
+.branch-child-line {
+  border-top: solid 4px #afbbda;
+  width: 22px;
+  height: 2px;
+}
+
+.main-child-link {
   border-right: solid 4px #afbbda;
   width: 2px;
   height: 119px;
@@ -87,7 +100,7 @@
   top: -90px;
 }
 
-.branch-connector-1 {
+.main-branch-link {
   border-top: solid 4px #afbbda;
   width: 19px;
   height: 2px;
@@ -96,7 +109,7 @@
   right: -63px;
 }
 
-.branch-connector-3::before {
+.main-child-link::before {
   content: '';
   position: absolute;
   top: -2px;
@@ -109,7 +122,7 @@
   background-color: #afbbda;
 }
 
-.branch-connector-1::after {
+.main-branch-link::after {
   content: '';
   position: absolute;
   top: -8px;
@@ -126,7 +139,7 @@
 .branch-option-container {
   content: "";
   position: absolute;
-  top: -8px;
+  top: 5px;
   right: -10px;
   border-radius: 50%;
   z-index: 5;
@@ -145,9 +158,9 @@
   border-radius: 8px;
   box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
   font-size: 12px;
-  position: relative;
-  top: -12px;
-  left: -27px;
+  position: absolute;
+  top: 1px;
+  left: -26px;
   background: white;
   z-index: 6;
   cursor: pointer;

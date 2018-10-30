@@ -13,6 +13,7 @@
 
   &:hover {
     transform: scale(1.08) translate(6%, 0%);
+    z-index: 2;
   }
 }
 
@@ -50,7 +51,7 @@
 }
 
 .content__icon-return {
-  width: 26px;
+  width: 24px;
   height: 24px;
   background-color: #36bfbb;
   border-radius: 4px;
@@ -195,19 +196,17 @@
   margin-left: -7px;
   margin-right: 6px;
   &:hover {
-    //transform: scale(1.08);
+    z-index: 2;
     transform: scale(1.08) translate(-7%, 0);
-
   }
 }
 
 :host(.is-selected) {
-  transform: scale(1.08);
-
+  transform: scale(1.08) translate(6%, 0%);
   .tile__bg {
     fill: @color-link-hover;
   }
-  .content__text, .menu-content ,.kebabmenu{
+  .content__text, .menu-content, .kebabmenu {
     color: @color-bg;
   }
   .menu__icon, .kebabmenu {

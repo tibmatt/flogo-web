@@ -23,4 +23,5 @@ export interface TaskTile extends BaseTile {
   type: TileType.Task;
   task: GraphNode;
   isTerminalInRow?: boolean;
+  hasBranch?: boolean;
 }

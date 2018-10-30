@@ -9,10 +9,6 @@ interface TranslateContext {
 
 export function nodesToNodeMatrix(rootNode: GraphNode, nodes: GraphNodeDictionary): NodeMatrix {
   const matrix: NodeMatrix = [[rootNode]];
-  Object.keys(nodes).forEach(nodeKey => {
-    const hasBranch = nodes[nodeKey] && nodes[nodeKey].children.find(child => nodes[child].type === NodeType.Branch);
-    nodes[nodeKey].features.hasBranch = !!hasBranch;
-  });
   translateChildren({parentNode: rootNode, nodes}, matrix);
   return matrix;
 }

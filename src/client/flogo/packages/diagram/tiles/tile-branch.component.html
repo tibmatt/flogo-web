@@ -1,6 +1,7 @@
 <div class="branch">
-  <div class="branch-connector-1" [style.top.px]="tilesConnectorPosition"></div>
-  <div class="branch-connector-2">
+  <div class="main-branch-link" [style.top.px]="tilesConnectorPosition"></div>
+  <div class="branch-child-link">
+    <div class="branch-child-line"></div>
     <div class="branch-option-container" (fgClickOutside)="closeBranchOptions()">
       <i class="flogo-icon-kebabmenu menu-icon-close" *ngIf="!displayBranchOptions"
          (click)="onBranchOptions($event)"></i>
@@ -11,5 +12,5 @@
       <i class="flogo-icon-kebabmenu  menu-icon menu-icon-open" (click)="onBranchOptions($event)"></i>
     </div>
   </div>
-  <div class="branch-connector-3" [style.height.px]="branchHeight" [style.top.px]="branchPosition"></div>
+  <div class="main-child-link" [style.height.px]="branchHeight" [style.top.px]="branchPosition"></div>
 </div>

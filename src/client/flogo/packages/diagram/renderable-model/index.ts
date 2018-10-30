@@ -9,7 +9,7 @@ function makeRenderableMatrix(flow: FlowGraph, rowLength: number, isReadOnly = f
     return [];
   }
   const nodeMatrix = nodesToNodeMatrix(rootNode, flow.nodes);
-  return createTileMatrix(nodeMatrix, rowLength, isReadOnly);
+  return createTileMatrix(nodeMatrix, flow.nodes, rowLength, isReadOnly,);
 }
 
 export {

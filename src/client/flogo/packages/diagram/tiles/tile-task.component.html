@@ -3,12 +3,15 @@
   <i *ngIf="tile.task?.status?.iterable" class="badge badge--iterator flogo-icon-iterator"></i>
   <i *ngIf="tile.task?.status?.configured" class="badge badge--configure flogo-icon-settings"></i>
 </div>
-<div class="content" (fgClickOutside)="closeMenuOptions()" (click)="onSelect()" [attr.data-diagram-task-id]="tile.task.id">
-  <div class="content__items">
+<div class="content" (click)="onSelect($event)" (fgClickOutside)="closeMenuOptions()" [attr.data-diagram-task-id]="tile.task.id">
+  <div class="content__items"   >
     <img class=" content__icon content__icon-subflow" *ngIf="tile.task?.features?.subflow; else defaultActivityIcon" src="/assets/svg/subflow.svg" alt="Subflow">
      <ng-template #defaultActivityIcon>
-       <i class="content__icon content__icon-activity flogo-icon-activity-gear"></i>
+       <i  *ngIf="!isTerminal; else returnActivityIcon" class="content__icon content__icon-activity flogo-icon-activity-gear"></i>
      </ng-template>
+    <ng-template #returnActivityIcon>
+      <img class=" content__icon content__icon-return" src="/assets/svg/flogo-return-activity.svg" alt="Return">
+    </ng-template>
     <div class="content__text" [ngClass] = "tile.task?.features?.subflow ? 'content__text--subflow' : 'content__text--title'">
       {{ tile.task.title }}
     </div>
@@ -18,13 +21,13 @@
   </div>
   <div class="menu-content" *ngIf="!isReadOnly">
     <div *ngIf="displayMenuOptions" class="menu-options" [@menuOptions]>
-      <i *ngIf="tile.task?.features?.deletable" class="flogo-icon-delete menu__icon"
-         (click)="onRemove($event)"></i>
+      <i *ngIf="tile.task?.features?.deletable" class="flogo-icon-delete menu__icon js-menu-option"
+         (click)="onRemove()"></i>
       <i *ngIf="!isTerminal && tile.task?.features?.canBranch"
-         class="flogo-icon-addbranch menu__icon" (click)="onBranch($event)"></i>
-      <i class="flogo-icon-settings menu__icon" (click)="onConfigure($event)"></i>
+         class="flogo-icon-addbranch menu__icon js-menu-option" (click)="onBranch()"></i>
+      <i class="flogo-icon-settings menu__icon js-menu-option" (click)="onConfigure()"></i>
     </div>
-    <i class="flogo-icon-kebabmenu kebabmenu" [ngClass]="{'kebabmenu-selected': displayMenuOptions}" (click)="onMenuOptions($event)"></i></div>
+    <i class="flogo-icon-kebabmenu kebabmenu js-menu-option" [ngClass]="{'kebabmenu-selected': displayMenuOptions}" (click)="onMenuOptions()"></i></div>
 </div>
 <!-- wrapper div required to avoid issue in chrome where shadows cuts off when z-index changes -->
 <div class="shape-container">

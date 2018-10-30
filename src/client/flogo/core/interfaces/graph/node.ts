@@ -10,7 +10,6 @@ export interface NodeFeatures {
   deletable?: boolean;
   subflow?: boolean;
   final?: boolean;
-  hasBranch?: boolean;
 }
 
 export interface NodeStatus {
