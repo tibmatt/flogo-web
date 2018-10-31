@@ -78,7 +78,7 @@
                                        (click)="openInputSchemaModal()"></flogo-flow-params-schema-button>
       <div class="diagram-container">
         <flogo-flow-diagram class="diagram" (deleteTask)="onDeleteTask($event)"></flogo-flow-diagram>
-        <flogo-debug-panel-toggle-button class="debug-panel-toggler"></flogo-debug-panel-toggle-button>
+        <flogo-debug-panel-toggle-button *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE" class="debug-panel-toggler"></flogo-debug-panel-toggle-button>
       </div>
     </ng-template>
 
