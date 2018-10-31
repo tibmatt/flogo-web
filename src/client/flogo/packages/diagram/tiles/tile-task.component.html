@@ -1,50 +1,51 @@
 <div class="badges">
   <i *ngIf="tile.task?.status?.executionErrored" class="badge badge--error flogo-icon-info" [title]="errorMsg"></i>
   <i *ngIf="tile.task?.status?.iterable" class="badge badge--iterator flogo-icon-iterator"></i>
+  <!--<i *ngIf="tile.task?.status?.configured" class="badge badge&#45;&#45;configure flogo-icon-settings"></i>-->
 </div>
-<div class="content" (click)="onSelect()" [attr.data-diagram-task-id]="tile.task.id">
-  <img class="content__icon-subflow" *ngIf="tile.task?.features?.subflow; else defaultActivityIcon" src="/assets/svg/subflow.svg" alt="Subflow">
-  <ng-template #defaultActivityIcon>
-    <img class="content__icon-activity" src="/assets/svg/flogo.flows.detail.diagram.activity.icon.svg" alt="Activity">
-  </ng-template>
-  <div class="content__text content__text--title">
-    {{ tile.task.title || tile.task.id }}
+<div class="content" (click)="onSelect($event)" (fgClickOutside)="closeMenuOptions()" [attr.data-diagram-task-id]="tile.task.id">
+  <div class="content__items"   >
+    <img class=" content__icon content__icon-subflow" *ngIf="tile.task?.features?.subflow; else defaultActivityIcon" src="/assets/svg/subflow.svg" alt="Subflow">
+     <ng-template #defaultActivityIcon>
+       <i  *ngIf="!isTerminal; else returnActivityIcon" class="content__icon content__icon-activity flogo-icon-activity-gear"></i>
+     </ng-template>
+    <ng-template #returnActivityIcon>
+      <img class=" content__icon content__icon-return" src="/assets/svg/flogo-return-activity.svg" alt="Return">
+    </ng-template>
+    <div class="content__text" [ngClass] = "tile.task?.features?.subflow ? 'content__text--subflow' : 'content__text--title'">
+      {{ tile.task.title }}
+    </div>
+    <div class="content__text content__text--id" *ngIf="!tile.task?.features?.subflow">
+      {{ tile.task.id }}
+    </div>
   </div>
-  <div *ngIf="!tile.task?.features?.subflow" class="content__text content__text--description">
-    {{ tile.task.description }}
-  </div>
-</div>
-<div class="menu" *ngIf="!isReadOnly">
-  <ul class="menu__options">
-    <li class="menu__option" (click)="onConfigure()">
-      <i class="flogo-icon-settings menu__icon"></i> {{  'DIAGRAM:CONFIGURE' | translate }}
-    </li>
-    <li *ngIf="!isTerminal && tile.task?.features?.canBranch" class="menu__option" (click)="onBranch()">
-      <i class="flogo-icon-addbranch menu__icon"></i> {{  'DIAGRAM:ADD-BRANCH' | translate }}
-    </li>
-    <li *ngIf="tile.task?.features?.deletable" class="menu__option" (click)="onRemove()">
-      <i class="flogo-icon-delete menu__icon"></i> {{  'DIAGRAM:DELETE' | translate }}
-    </li>
-  </ul>
+  <div class="menu-content" *ngIf="!isReadOnly">
+    <div *ngIf="displayMenuOptions" class="menu-options" [@menuOptions]>
+      <i *ngIf="tile.task?.features?.deletable" class="flogo-icon-delete menu__icon js-menu-option"
+         (click)="onRemove()"></i>
+      <i *ngIf="!isTerminal && tile.task?.features?.canBranch"
+         class="flogo-icon-addbranch menu__icon js-menu-option" (click)="onBranch()"></i>
+      <i class="flogo-icon-settings menu__icon js-menu-option" (click)="onConfigure()"></i>
+    </div>
+    <i class="flogo-icon-kebabmenu kebabmenu js-menu-option" [ngClass]="{'kebabmenu-selected': displayMenuOptions}" (click)="onMenuOptions()"></i></div>
 </div>
 <!-- wrapper div required to avoid issue in chrome where shadows cuts off when z-index changes -->
 <div class="shape-container">
-  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="150" height="138" viewBox="0 0 150 138">
-    <g class="tile" fill="none" fill-rule="evenodd" transform="translate(11 9)">
-      <ng-template [ngIf]="!isTerminal" [ngIfElse]="terminalShape">
-        <g class="tile__default">
-          <path class="tile__shadow" [attr.filter]="shadow" d="M110.11 25.536V8a8 8 0 0 0-8-8h-94a8 8 0 0 0-8 8v94a8 8 0 0 0 8 8h94a8 8 0 0 0 8-8V84.758l13.333-29.61-13.333-29.612z"/>
-          <path class="tile__bg" [attr.fill]="bgFill" d="M110.11 25.536V8a8 8 0 0 0-8-8h-94a8 8 0 0 0-8 8v94a8 8 0 0 0 8 8h94a8 8 0 0 0 8-8V84.758l13.333-29.61-13.333-29.612z"/>
-          <path class="tile__stroke" stroke="#F4F4F4" stroke-width=".8" d="M123.005 55.147l-13.26-29.446-.035-.165V8a7.6 7.6 0 0 0-7.6-7.6h-94A7.6 7.6 0 0 0 .51 8v94a7.6 7.6 0 0 0 7.6 7.6h94a7.6 7.6 0 0 0 7.6-7.6V84.758l.035-.164 13.26-29.447z"/>
-        </g>
-      </ng-template>
-      <ng-template #terminalShape >
-        <g class="tile__terminal">
-          <rect class="tile__shadow" [attr.filter]="shadow" width="110" height="110" x=".11" rx="8"/>
-          <rect class="tile__bg" [attr.fill]="bgFill" width="110" height="110" x=".11" rx="8"/>
-          <rect class="tile__stroke" width="109.2" height="109.2" x=".51" y=".4" stroke="#F4F4F4" stroke-width=".8" rx="8"/>
-        </g>
-      </ng-template>
-    </g>
+  <svg xmlns="http://www.w3.org/2000/svg"
+       xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="60" viewBox="0 0 128 62">
+    <ng-template [ngIf]="!isTerminal" [ngIfElse]="terminalShape">
+      <g class="tile" fill="none" fill-rule="evenodd" transform="translate(2 1)">
+        <path class="tile__shadow" [attr.filter]="shadow" d="M117.27 60H0l11.264-29.92L0 0h117.371L128 30.376z"/>
+        <path class="tile__bg" [attr.fill]="bgFill" d="M117.27 60H0l11.264-29.92L0 0h117.371L128 30.376z"/>
+        <path class="tile__stroke" stroke="#F4F4F4" stroke-width=".8" d="M117.27 60H0l11.264-29.92L0 0h117.371L128 30.376z"/>
+      </g>
+    </ng-template>
+    <ng-template #terminalShape>
+      <g class="tile__terminal" fill="none" fill-rule="evenodd" transform="translate(2 1)">
+        <path class="tile__shadow" [attr.filter]="shadow" d="M117.27 60H0l11.264-29.92L0 0h117.371z"/>
+        <path class="tile__bg" [attr.fill]="bgFill" d="M117.27 60H0l11.264-29.92L0 0h117.371z" />
+        <path class="tile__stroke" stroke="#F4F4F4" stroke-width=".8" d="M117.27 60H0l11.264-29.92L0 0h117.371z"/>
+      </g>
+    </ng-template>
   </svg>
 </div>

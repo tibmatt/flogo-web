@@ -118,7 +118,8 @@ export const getSelectedActivity = createSelector(
   selectCurrentSelection,
   getCurrentItems,
   (currentSelection, currentItems) => {
-    if (isTaskSelection(currentSelection) && currentItems[currentSelection.taskId].type !== FLOGO_TASK_TYPE.TASK_BRANCH) {
+    if (isTaskSelection(currentSelection) && currentItems[currentSelection.taskId]
+      && currentItems[currentSelection.taskId].type !== FLOGO_TASK_TYPE.TASK_BRANCH) {
       return currentItems[currentSelection.taskId] as ItemActivityTask;
     }
     return null;

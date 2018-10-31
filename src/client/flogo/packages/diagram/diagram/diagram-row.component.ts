@@ -38,7 +38,7 @@ export class DiagramRowComponent implements OnChanges {
 
   ngOnChanges({ row: rowChange }: SimpleChanges) {
     if (rowChange) {
-      this.tiles = [...this.row].reverse();
+      this.tiles = this.row;
     }
   }
 

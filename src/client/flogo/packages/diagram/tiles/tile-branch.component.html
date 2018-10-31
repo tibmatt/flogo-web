@@ -1,12 +1,16 @@
-<svg class="branch" [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin" [style.height.px]="containerHeight">
-  <path class="branch__shadow" [attr.filter]="shadow" [attr.d]="path" [attr.transform]="transform"></path>
-  <path class="branch__path"
-        [attr.fill]="bgFill" [attr.d]="path" [attr.transform]="transform"
-        (mouseover)="setHovered(true)" (mouseleave)="setHovered(false)"  (click)="onConfigure()"></path>
-</svg>
-<div *ngIf="!isReadOnly" class="menu" (mouseover)="setHovered(true)" (mouseleave)="setHovered(false)">
-  <span class="menu__option" (click)="onRemove()">
-    <i class="fa flogo-icon-delete menu__icon"></i> Delete
-  </span>
-  <span class="menu__gear"></span>
+<div class="branch">
+  <div class="main-branch-link" [style.top.px]="tilesConnectorPosition"></div>
+  <div class="branch-child-link">
+    <div class="branch-child-line"></div>
+    <div class="branch-option-container" (fgClickOutside)="closeBranchOptions()">
+      <i class="flogo-icon-kebabmenu menu-icon-close" *ngIf="!displayBranchOptions"
+         (click)="onBranchOptions($event)"></i>
+    </div>
+    <div *ngIf="displayBranchOptions" class="branch-options-display">
+      <i class="flogo-icon-delete menu-icon" (click)="onRemove($event)"></i>
+      <i class="flogo-icon-settings menu-icon" (click)="onConfigure($event)"></i>
+      <i class="flogo-icon-kebabmenu  menu-icon menu-icon-open" (click)="onBranchOptions($event)"></i>
+    </div>
+  </div>
+  <div class="main-child-link" [style.height.px]="branchHeight" [style.top.px]="branchPosition"></div>
 </div>

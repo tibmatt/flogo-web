@@ -1,7 +1,7 @@
-@tile-container-dimension: 110px;
-@tile-width: 124px;
-@tile-height: 110px;
-@tile-placeholder-dimension: 70px;
+@tile-container-dimension: 60px;
+@tile-width: 128px;
+@tile-height: 60px;
+@tile-placeholder-dimension: 40px;
 @tile-radius: 8px;
 @tile-color-bg: #fff;
 @tile-color-bg--selected: #4e7ead;
@@ -13,7 +13,7 @@
 }
 
 .tile-placeholder() {
-  border-radius: 8px;
+  border-radius: 3px;
   height: @tile-placeholder-dimension;
   width: @tile-placeholder-dimension;
 }
@@ -21,9 +21,8 @@
 .tile-container {
   .flex-center;
   flex-shrink: 0;
-  height: @tile-container-dimension;
-  width: @tile-container-dimension;
-  margin-right: 10px;
+  height: @tile-height;
+  width: @tile-width;
 }
 
 .menu-option() {
@@ -41,12 +40,15 @@
 }
 
 .row() {
-  height: 140px;
-  padding: 16px 30px 14px;
+  height: 78px;
+  padding: 8px 10px;
   display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
   background-color: transparent;
   transition: background-color 0.15s ease;
   flex-shrink: 0;
+}
+
+.kebabmenu() {
+  display: inline-block;
+  transform: rotate(90deg);
 }
