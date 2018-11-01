@@ -16,7 +16,7 @@ import { FormBuilderService } from '@flogo/flow/shared/dynamic-form';
 import { debugPanelAnimations } from './debug-panel.animations';
 import { mergeFormWithOutputs } from './utils';
 import { FieldsInfo } from './fields-info';
-import { DebugActivityTask } from './debug-activity-task';
+import { DebugActivityTask, combineToDebugActivity } from './debug-activity-task';
 import { isMapperActivity } from '@flogo/shared/utils';
 
 const SELECTOR_FOR_CURRENT_ELEMENT = 'flogo-diagram-tile-task.is-selected';
@@ -72,7 +72,8 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
 
     const schema$ = selectAndShare(FlowSelectors.getSelectedActivitySchema);
     const selectedActivity$ = selectAndShare(FlowSelectors.getSelectedActivity);
-    this.activity$ = combineLatest(schema$, selectedActivity$).pipe(this.prepareDebugActivity(), shareReplay(1));
+    this.activity$ = combineLatest(schema$, selectedActivity$)
+      .pipe(combineToDebugActivity(), shareReplay(1));
     this.flowHasRun$ = selectAndShare(FlowSelectors.getFlowHasRun);
     this.isEndOfFlow$ = schema$.pipe(map(isMapperActivity));
     const form$: Observable<null | FieldsInfo> = schema$.pipe(this.mapStateToForm(), shareReplay(1));
@@ -128,13 +129,6 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
 
   get isOpen(): boolean {
     return this.panelStatus === STATUS_OPEN;
-  }
-
-  private prepareDebugActivity() {
-    return (source: Observable<[ActivitySchema, ItemActivityTask]>) => source.pipe(
-      filter(([schema]) => !!schema),
-      map(([schema, activity]) => ({...activity, schemaHomepage: schema.homepage}))
-    );
   }
 
   private changePanelState(isOpen: boolean) {
