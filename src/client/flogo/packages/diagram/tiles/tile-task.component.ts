@@ -11,10 +11,10 @@ import {animate, style, transition, trigger} from '@angular/animations';
   animations: [  trigger('menuOptions', [
     transition('void => *', [
       style({opacity: 0}),
-      animate('250ms ease-in')
+      animate('100ms ease-in')
     ]),
     transition('* => void', [
-      animate('250ms ease-in', style({ opacity: 0}))
+      animate('100ms ease-in', style({ opacity: 0}))
     ]),
   ])]
 })
