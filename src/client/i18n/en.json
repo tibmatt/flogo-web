@@ -20,8 +20,6 @@
   "APP-LIST:VALIDATION_ERROR": "Encountered validation errors",
   "APP-LIST:INTERNAL_ERROR": "Internal error",
   "APP-LIST:BROKEN_RULE_UNKNOWN": "Unknown error",
-  "APP-LIST:BROKEN_RULE_NOT_INSTALLED_ACTIVITY": "Activity is not installed",
-  "APP-LIST:BROKEN_RULE_NOT_INSTALLED_TRIGGER": "Trigger is not installed",
   "APP": {
     "MISSING_TRIGGER": {
       "TITLE": "Some flows don’t have triggers yet.",
