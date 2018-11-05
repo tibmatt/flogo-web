@@ -1,7 +1,12 @@
 import { FlowGraph, GraphNode, NodeType } from '@flogo/core';
 import { insertNode } from './insert-node';
 
-export function addNewBranch(flowGraph: FlowGraph, parentId: string, branchId: string): FlowGraph {
+export function addNewBranch(
+  flowGraph: FlowGraph,
+  parentId: string,
+  branchId: string,
+  { isMainBranch, children }: { isMainBranch?: boolean, children?: string[] } = {}
+  ): FlowGraph {
   const parentNode = flowGraph.nodes[parentId];
   if (!parentNode || parentNode.type === NodeType.Branch) {
     return flowGraph;
@@ -10,13 +15,15 @@ export function addNewBranch(flowGraph: FlowGraph, parentId: string, branchId: s
     id: branchId,
     type: NodeType.Branch,
     parents: [parentNode.id],
-    children: [],
+    children: children || [],
     features: {
       canBranch: false,
       canHaveChildren: true,
       deletable: true,
+      isMainBranch: !!isMainBranch,
     },
-    status: {},
+    status: {
+    },
   };
   return insertNode(flowGraph, branchNode, parentId);
 }

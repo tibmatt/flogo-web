@@ -54,7 +54,7 @@ export class ClearSelection implements BaseFlowAction {
 
 export class CreateBranch implements BaseFlowAction {
   readonly type = ActionType.CreateBranch;
-  constructor(public payload: { handlerType: HandlerType, parentId: string, newBranchId: string }) {}
+  constructor(public payload: { handlerType: HandlerType, parentId: string, nextBranchIds: [string, string] }) {}
 }
 
 export class TaskItemCreated implements BaseFlowAction {

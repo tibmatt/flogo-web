@@ -60,7 +60,7 @@ export class FlogoFlowDiagramComponent {
         return this.store.dispatch(new FlowActions.CreateBranch({
           handlerType: this.currentDiagramId,
           parentId: (<DiagramActionChild>diagramAction).parentId,
-          newBranchId: newBranchId(),
+          nextBranchIds: [newBranchId(), newBranchId()],
         }));
       }
       case DiagramActionType.Remove: {

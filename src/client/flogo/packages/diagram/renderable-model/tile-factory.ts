@@ -1,5 +1,6 @@
 import { GraphNode } from '@flogo/core';
 import { TileType, InsertTile, TaskTile } from '../interfaces/tile';
+import { NodeWithBranch, isNodeWithBranch } from './matrix';
 
 const PaddingTile = {
   type: TileType.Padding,
@@ -16,11 +17,20 @@ export function makeInsertTile(parentId: string): InsertTile {
   };
 }
 
-export function makeTaskTile(task: GraphNode, isTerminalInRow = false): TaskTile {
+export function makeTaskTile(fromNode: GraphNode | NodeWithBranch, isTerminalInRow = false): TaskTile {
+  let task;
+  let branch = null;
+  if (isNodeWithBranch(fromNode)) {
+    task = fromNode.node;
+    branch = fromNode.branch;
+  } else {
+    task = fromNode;
+  }
   return {
     type: TileType.Task,
     isTerminalInRow,
     task,
+    branch,
   };
 }
 

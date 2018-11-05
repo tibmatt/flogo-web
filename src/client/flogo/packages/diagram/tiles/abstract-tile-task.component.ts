@@ -13,15 +13,11 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
   @Output() remove = new EventEmitter<DiagramActionSelf>();
   @Output() configure = new EventEmitter<DiagramActionSelf>();
   @HostBinding('class.is-selected') isSelected = false;
-  @HostBinding('class.tile-has-branch') hasBranch = false;
-  displayMenuOptions: boolean;
 
   constructor(private svgFixer: SvgRefFixerService) {
-    this.displayMenuOptions = false;
   }
 
   ngOnChanges({currentSelection: currentSelectionChange}: SimpleChanges) {
-    this.hasBranch = this.tile.hasBranch;
     if (currentSelectionChange) {
       this.checkIsSelected();
     }
@@ -51,14 +47,6 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
     } else if (!this.isReadOnly) {
       this.select.emit(this.tile);
     }
-  }
-
-  onMenuOptions() {
-    this.displayMenuOptions = !this.displayMenuOptions;
-  }
-
-  closeMenuOptions() {
-    this.displayMenuOptions = false;
   }
 
   onRemove() {

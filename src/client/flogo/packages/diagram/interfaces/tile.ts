@@ -22,6 +22,7 @@ export interface InsertTile extends BaseTile {
 export interface TaskTile extends BaseTile {
   type: TileType.Task;
   task: GraphNode;
+  branch?: GraphNode;
   isTerminalInRow?: boolean;
   hasBranch?: boolean;
 }

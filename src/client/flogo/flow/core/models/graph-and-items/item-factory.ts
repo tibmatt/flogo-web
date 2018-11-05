@@ -81,9 +81,12 @@ export class ItemFactory {
     return item;
   }
 
-  static makeBranch(branch): ItemBranch {
+  static makeBranch(branch: { taskID: string, condition: string, isMainBranch?: boolean }): ItemBranch {
     return {
-      id: branch.taskID, type: FLOGO_TASK_TYPE.TASK_BRANCH, condition: branch.condition,
+      id: branch.taskID,
+      type: FLOGO_TASK_TYPE.TASK_BRANCH,
+      condition: branch.condition,
+      isMainBranch: branch.isMainBranch,
     };
   }
 }

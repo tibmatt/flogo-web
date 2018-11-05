@@ -1,7 +1,7 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {AbstractTileTaskComponent} from './abstract-tile-task.component';
-import {animate, style, transition, trigger} from '@angular/animations';
-
+import { ChangeDetectionStrategy, Component, HostBinding, OnChanges } from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { AbstractTileTaskComponent } from './abstract-tile-task.component';
+import { SvgRefFixerService } from '@flogo/core';
 
 @Component({
   selector: 'flogo-diagram-tile-task',
@@ -18,7 +18,26 @@ import {animate, style, transition, trigger} from '@angular/animations';
     ]),
   ])]
 })
-export class TileTaskComponent extends AbstractTileTaskComponent {
+export class TileTaskComponent extends AbstractTileTaskComponent implements OnChanges {
+  @HostBinding('class.tile-has-branch') hasBranch = false;
+  displayMenuOptions = false;
+
+  constructor(svgFixer: SvgRefFixerService) {
+    super(svgFixer);
+  }
+
+  onMenuOptions() {
+    this.displayMenuOptions = !this.displayMenuOptions;
+  }
+
+  closeMenuOptions() {
+    this.displayMenuOptions = false;
+  }
+
+  ngOnChanges(changes) {
+    super.ngOnChanges(changes);
+    this.hasBranch = this.tile && !!this.tile.branch;
+  }
 
   get bgFill() {
     if (this.hasRun) {
