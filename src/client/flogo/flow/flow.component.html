@@ -65,7 +65,7 @@
     </flogo-flow-debug-panel>
 
     <ng-template #deviceDiagram>
-      <div class="diagram-container">
+      <div class="diagram-container--device">
         <ng-container *ngTemplateOutlet="flowContent"></ng-container>
       </div>
     </ng-template>
@@ -76,7 +76,10 @@
                                        *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
                                        [flowMetadata]="flowState?.metadata"
                                        (click)="openInputSchemaModal()"></flogo-flow-params-schema-button>
-      <flogo-flow-diagram class="diagram" (deleteTask)="onDeleteTask($event)"></flogo-flow-diagram>
+      <div class="diagram-container">
+        <flogo-flow-diagram class="diagram" (deleteTask)="onDeleteTask($event)"></flogo-flow-diagram>
+        <flogo-debug-panel-toggle-button *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE" class="debug-panel-toggler"></flogo-debug-panel-toggle-button>
+      </div>
     </ng-template>
 
   <flogo-flow-task-configurator></flogo-flow-task-configurator>

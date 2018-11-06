@@ -17,9 +17,19 @@
   flex-direction: column;
   width: 100%;
   max-width: 100%;
+  overflow: hidden;
 }
 
 .diagram-container {
+  flex: 1;
+  background-color: @gainsboro-nine;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  padding-top: 21px;
+}
+
+.diagram-container--device {
   display: flex;
   flex-direction: row;
   flex: 1;
@@ -29,8 +39,14 @@
 .diagram {
   flex: 1;
   background-color: @gainsboro-nine;
-  overflow: auto;
-  padding-top: 21px;
+}
+
+.debug-panel-toggler {
+  position: sticky;
+  bottom: 0;
+  left: 24px;
+  flex: none;
+  flex-shrink: 0;
 }
 
 .debug-panel-container {
