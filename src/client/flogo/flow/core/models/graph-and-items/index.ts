@@ -51,11 +51,12 @@ function createAndAppendBranches(
     if (!parentNode || !childNode) {
       return;
     }
+    const isMainBranch = link.type === FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.MAIN_BRANCH;
     const hasCondition = link.type === FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH;
-    if (hasCondition) {
+    if (isMainBranch || hasCondition) {
       const branchId = getNewBranchId();
       items[branchId] = makeBranchItem(branchId, link);
-      nodes[branchId] = makeBranchNode(branchId, link);
+      nodes[branchId] = makeBranchNode(branchId, link, isMainBranch);
       childNode.parents.push(branchId);
       parentNode.children.push(branchId);
     } else {

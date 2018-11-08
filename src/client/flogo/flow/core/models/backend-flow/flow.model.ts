@@ -104,7 +104,7 @@ const generateDiagramTraverser = (schemas) => {
             id: _genLinkId(),
             from: convertTaskID(parentNode.id),
             to: convertTaskID(childNode.id),
-            type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH,
+            type: node.features.isMainBranch ?  FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.MAIN_BRANCH : FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH,
             value: branch.condition
           });
 

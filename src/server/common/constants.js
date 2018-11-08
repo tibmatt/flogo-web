@@ -32,9 +32,11 @@ export const FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE = {
   0: "DEFAULT",
   1: "BRANCH",
   2: "LABELED",
+  3: "MAIN_BRANCH",
   "DEFAULT": 0,
   "BRANCH": 1,
-  "LABELED": 2
+  "LABELED": 2,
+  "MAIN_BRANCH": 3,
 };
 
 
