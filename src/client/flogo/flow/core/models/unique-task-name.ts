@@ -1,5 +1,6 @@
-import { reduce, toInteger } from 'lodash';
-import { normalizeTaskName } from '@flogo/shared/utils';
+import {reduce, toInteger} from 'lodash';
+import {normalizeTaskName} from '@flogo/shared/utils';
+import {FLOGO_TASK_TYPE} from '@flogo/core';
 
 export function uniqueTaskName(taskName: string, ...taskDictionaries) {
   // TODO for performance pre-normalize and store task names?
@@ -27,8 +28,9 @@ export function uniqueTaskName(taskName: string, ...taskDictionaries) {
   return greatestIndex > 0 ? `${taskName} (${greatestIndex + 1})` : taskName;
 }
 
-export function uniqueTaskNameValidator(taskName, ...taskDictionaries) {
+export function hasTaskWithSameName(taskName, ...taskDictionaries): Boolean {
   const allTasks = Object.assign({}, ...taskDictionaries);
-  const itemIds = Object.keys(allTasks);
-  return itemIds.find(itemId => (allTasks[itemId].name).toLowerCase() === taskName.toLowerCase());
+  // The branch type of items are exempted while finding the unique name
+  return !!Object.keys(allTasks).find(taskID => allTasks[taskID].type !== FLOGO_TASK_TYPE.TASK_BRANCH
+    && (allTasks[taskID].name).toLowerCase() === taskName.toLowerCase());
 }

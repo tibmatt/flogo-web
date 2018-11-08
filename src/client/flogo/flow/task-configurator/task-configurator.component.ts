@@ -21,7 +21,7 @@ import { FlowState, FlowActions } from '@flogo/flow/core/state';
 import { getFlowMetadata, getInputContext } from '@flogo/flow/core/models/task-configure/get-input-context';
 import { getStateWhenConfigureChanges } from '../shared/configurator/configurator.selector';
 import {createSaveAction} from '@flogo/flow/task-configurator/models/save-action-creator';
-import {uniqueTaskNameValidator} from '@flogo/flow/core/models/unique-task-name';
+import {hasTaskWithSameName} from '@flogo/flow/core/models/unique-task-name';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',
@@ -188,8 +188,8 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   changeTaskDetail(content, property) {
     this.isTaskDetailEdited = true;
     if (property === 'name') {
-      const uniqueName = uniqueTaskNameValidator(content, this.flowState.mainItems, this.flowState.errorItems);
-      if ((uniqueName && content !== this.currentTile.name) || content === '') {
+      const repeatedName = hasTaskWithSameName(content, this.flowState.mainItems, this.flowState.errorItems);
+      if ((repeatedName && content !== this.currentTile.name) || content === '') {
         this.isValidTaskName = false;
       } else {
         this.isValidTaskName = true;
