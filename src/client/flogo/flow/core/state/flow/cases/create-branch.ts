@@ -47,10 +47,9 @@ function addMainBranch(
     nodes = linkChildToBranch(nodes, childId, newBranchId);
   }
   nodes[parent.id] = { ...parent, children: [] };
-  graph = {...graph, nodes};
-
+  const children = childId ? [childId] : undefined;
+  graph = addNewBranch({...graph, nodes}, parent.id, newBranchId, { isMainBranch: true, children });
   const mainBranch = ItemFactory.makeBranch({ taskID: newBranchId, condition: 'true', isMainBranch: true });
-  graph = addNewBranch(graph, parent.id, newBranchId, { isMainBranch: true, children: [childId] });
   return {
     ...state,
     [itemsDictionaryName]: {
