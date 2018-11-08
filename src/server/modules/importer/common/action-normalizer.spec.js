@@ -1,9 +1,9 @@
 import cloneDeep from 'lodash/cloneDeep';
 import { expect } from 'chai';
 
-import { actionValueTypesNormalizer } from './action-value-type-normalizer';
+import { actionNormalizer } from './action-normalizer';
 
-describe('importer.common.actionValueTypesNormalizer', function () {
+describe('importer.common.actionNormalizer', function () {
 
   const actionUnderTest = {
     metadata: {
@@ -34,24 +34,47 @@ describe('importer.common.actionValueTypesNormalizer', function () {
         ],
       },
     ],
+    links: [
+      {
+        from: 'task_1',
+        to: 'task_2'
+      }, {
+        from: 'task_1',
+        to: 'task_3',
+        type: 'expression',
+        value: '$flow.in'
+      }, {
+        from: 'task_2',
+        to: 'task_4'
+      },
+    ],
     errorHandler: {
       tasks: [
         {
           id: 'task_error',
           attributes: [
-            { name: 'attr1', type: 'array' },
-            { name: 'attr2', type: 'params' },
-            { name: 'attr3', type: 'int' },
+            {name: 'attr1', type: 'array'},
+            {name: 'attr2', type: 'params'},
+            {name: 'attr3', type: 'int'},
           ],
         },
       ],
+      links: [
+        {
+          from: 'task_1',
+          to: 'task_2'
+        }, {
+          from: 'task_1',
+          to: 'task_3'
+        },
+      ]
     }
   };
   const extractValues = arr => arr.map(({ name, type }) => ({ [name]: type }));
   let normalizedAction;
 
   before(function () {
-    normalizedAction = actionValueTypesNormalizer(cloneDeep(actionUnderTest));
+    normalizedAction = actionNormalizer(cloneDeep(actionUnderTest));
   });
 
   it('should correctly normalize metadata inputs and outputs', function () {
@@ -92,6 +115,40 @@ describe('importer.common.actionValueTypesNormalizer', function () {
     ]);
   });
 
+  it('should create main branch link properly for main task', () => {
+    const rootLinks = extractLinksForHandler('rootTask');
+    expect(rootLinks).to.have.deep.members([
+      {
+        from: 'task_1',
+        to: 'task_2',
+        type: 3
+      }, {
+        from: 'task_1',
+        to: 'task_3',
+        type: 1,
+        value: '$flow.in'
+      }, {
+        from: 'task_2',
+        to: 'task_4'
+      }
+    ]);
+  });
+
+  it('should create main branch link properly for error task', () => {
+    const errorHandlerLinks = extractLinksForHandler('errorHandler');
+    expect(errorHandlerLinks).to.have.deep.members([
+      {
+        from: 'task_1',
+        to: 'task_2',
+        type: 3
+      }, {
+        from: 'task_1',
+        to: 'task_3',
+        type: 1
+      }
+    ]);
+  });
+
   function extractTaskHandlerAttributeTypes(handlerName) {
     let handler;
     if (handlerName === 'rootTask') {
@@ -100,6 +157,16 @@ describe('importer.common.actionValueTypesNormalizer', function () {
       handler = normalizedAction[handlerName];
     }
     return handler.tasks.map(task => extractValues(task.attributes));
+  }
+
+  function extractLinksForHandler(handlerName) {
+    let handler;
+    if (handlerName === 'rootTask') {
+      handler = normalizedAction;
+    } else {
+      handler = normalizedAction[handlerName];
+    }
+    return handler.links;
   }
 
 });

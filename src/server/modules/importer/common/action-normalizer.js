@@ -3,10 +3,11 @@ import set from 'lodash/set';
 import {getInternalTasksPath, safeGetTasksInHandler} from '../../../common/utils/flow';
 import { TASK_HANDLER_NAME_ROOT, TASK_HANDLER_NAME_ERROR } from '../../../common/constants';
 import { normalizeValueType } from '../../../common/utils/value-type';
+import {normalizeLinksWithMainBranch} from "./normalize-links-with-main-branch";
 
 const normalizeAttrType = attr => ({ ...attr, type: normalizeValueType(attr.type) });
 
-export function actionValueTypesNormalizer(action) {
+export function actionNormalizer(action) {
   if (!action) {
     return action;
   }
@@ -16,6 +17,9 @@ export function actionValueTypesNormalizer(action) {
 
   normalizeValueTypesForTasksInHandler(action, TASK_HANDLER_NAME_ROOT);
   normalizeValueTypesForTasksInHandler(action, TASK_HANDLER_NAME_ERROR);
+
+  normalizeLinksWithMainBranch(action, TASK_HANDLER_NAME_ROOT);
+  normalizeLinksWithMainBranch(action, TASK_HANDLER_NAME_ERROR);
 
   return action;
 }

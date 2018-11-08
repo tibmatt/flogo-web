@@ -44,3 +44,14 @@ export function getInternalTasksPath(handler) {
   }
   return `${handler}.tasks`;
 }
+
+export function safeGetLinksInHandler(action, handler) {
+  return get(action, getInternalLinksPath(handler), []);
+}
+
+function getInternalLinksPath(handler) {
+  if (handler === TASK_HANDLER_NAME_ROOT) {
+    return 'links';
+  }
+  return `${handler}.links`;
+}
