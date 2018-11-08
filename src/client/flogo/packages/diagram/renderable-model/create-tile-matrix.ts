@@ -12,12 +12,12 @@ const fillWithPlaceholders = (fromCount: number, max: number) => times(max - fro
 
 type NodeCell = GraphNode | NodeWithBranch;
 function isInsertAllowed(node: NodeCell) {
-  return isNodeWithBranch(node) ? isInsertAllowed(node.node) : node.features && node.features.isMainBranch;
+  const taskNode: GraphNode = isNodeWithBranch(node) ? node.node : node;
+  return taskNode.features && taskNode.features.canHaveChildren;
 }
 
-function getLastNode(rowOfNodes: Array<NodeCell>): GraphNode {
-  const lastCell = rowOfNodes[rowOfNodes.length - 1];
-  return isNodeWithBranch(lastCell) ? lastCell.branch : lastCell;
+function getLastNode(rowOfNodes: Array<NodeCell>): NodeCell {
+  return rowOfNodes[rowOfNodes.length - 1];
 }
 
 // assumes that the rows won't overflow
@@ -31,8 +31,9 @@ export function createTileMatrix(nodeMatrix: NodeMatrix, nodes: GraphNodeDiction
     }
     const rowOfTiles: Tile[] = rowOfNodes.map(nodeToTile);
     const lastNode = getLastNode(rowOfNodes);
-    if (!isReadOnly && isInsertAllowed && rowOfTiles.length < maxRowLength) {
-      return makeRowExtensible(rowOfTiles, lastNode.id, maxRowLength);
+    if (!isReadOnly && isInsertAllowed(lastNode) && rowOfTiles.length < maxRowLength) {
+      const lastNodeId = isNodeWithBranch(lastNode) ? lastNode.branch.id : lastNode.id;
+      return makeRowExtensible(rowOfTiles, lastNodeId, maxRowLength);
     }
     return rowOfTiles;
   });
