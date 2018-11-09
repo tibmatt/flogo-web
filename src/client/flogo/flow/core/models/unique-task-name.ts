@@ -1,5 +1,8 @@
-import { reduce, toInteger } from 'lodash';
-import { normalizeTaskName } from '@flogo/shared/utils';
+import {reduce, toInteger} from 'lodash';
+import {normalizeTaskName} from '@flogo/shared/utils';
+import {FLOGO_TASK_TYPE, ItemTask} from '@flogo/core';
+
+const isBranchTask = (task) => task.type === FLOGO_TASK_TYPE.TASK_BRANCH;
 
 export function uniqueTaskName(taskName: string, ...taskDictionaries) {
   // TODO for performance pre-normalize and store task names?
@@ -27,8 +30,7 @@ export function uniqueTaskName(taskName: string, ...taskDictionaries) {
   return greatestIndex > 0 ? `${taskName} (${greatestIndex + 1})` : taskName;
 }
 
-export function uniqueTaskNameValidator(taskName, ...taskDictionaries) {
+export function hasTaskWithSameName(taskName, ...taskDictionaries): boolean {
   const allTasks = Object.assign({}, ...taskDictionaries);
-  const itemIds = Object.keys(allTasks);
-  return itemIds.find(itemId => (allTasks[itemId].name).toLowerCase() === taskName.toLowerCase());
+  return !!Object.values(allTasks).find(task => !isBranchTask(task) && (task as ItemTask).name.toLowerCase() === taskName.toLowerCase());
 }
