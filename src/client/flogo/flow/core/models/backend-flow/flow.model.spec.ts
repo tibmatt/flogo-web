@@ -30,6 +30,16 @@ describe('flow.model', function() {
       }]).length).toEqual(0);
     });
 
+    it('Does not ignore non-empty strings', function() {
+      ['\n', '\n\r', '\t'].forEach((value) => {
+        expect(_parseFlowMappings([{
+          value,
+          type: 2,
+          mapTo: 'myThing'
+        }]).length).toEqual(1, `Expected ${JSON.stringify(value)} to be treated as non-empty string`);
+      });
+    });
+
     describe('For different value types', function() {
       const parsedMappings = _parseFlowMappings([
         { value: '$myMapping.value', type: 1, mapTo: 'a' },

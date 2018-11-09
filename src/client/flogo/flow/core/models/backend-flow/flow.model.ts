@@ -509,37 +509,34 @@ function _parseMetadata(metadata: FlowMetadata): FlowMetadata {
 
 export function _parseFlowMappings(inMappings: any[] = []): flowToJSON_Mapping[] {
   return inMappings.reduce((parsedMappings: flowToJSON_Mapping[], inMapping: any) => {
-    if (isValidMapping(inMapping)) {
-      const parsedMapping: flowToJSON_Mapping = {
-        type: inMapping.type, value: inMapping.value, mapTo: inMapping.mapTo
-      };
-      if (!isNumber(parsedMapping.type)) {
-        console.warn('Force invalid mapping type to 1 since it is not a number.');
-        console.log(parsedMapping);
-        parsedMapping.type = 1;
-      }
-      parsedMappings.push(parsedMapping);
+    if (!isValidMapping(inMapping)) {
+      return parsedMappings;
     }
+    const parsedMapping: flowToJSON_Mapping = {
+      type: inMapping.type, value: inMapping.value, mapTo: inMapping.mapTo
+    };
+    if (!isNumber(parsedMapping.type)) {
+      console.warn('Force invalid mapping type to 1 since it is not a number.');
+      console.log(parsedMapping);
+      parsedMapping.type = 1;
+    }
+    parsedMappings.push(parsedMapping);
     return parsedMappings;
   }, []);
 
   /* simple validation */
   function isValidMapping(mapping) {
     if (isUndefined(mapping.type)) {
-      // DEBUG && console.warn('Empty mapping type found');
-      // DEBUG && console.log(inMapping);
       return false;
     }
 
     if (isUndefined(mapping.value)) {
       return false;
-    } else if (isString(mapping.value) && !trim(mapping.value)) {
+    } else if (isString(mapping.value) && mapping.value.length === 0) {
       return false;
     }
 
     if (isEmpty(mapping.mapTo)) {
-      // DEBUG && console.warn('Empty mapping mapTo found');
-      // DEBUG && console.log(inMapping);
       return false;
     }
     return true;
