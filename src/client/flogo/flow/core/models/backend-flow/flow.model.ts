@@ -135,7 +135,7 @@ const generateDiagramTraverser = (schemas) => {
 
       /* add inputMappings */
 
-      const inputMappings = _parseFlowMappings(<DiagramTaskAttributeMapping[]>get(task, 'inputMappings'));
+      const inputMappings = parseFlowMappings(<DiagramTaskAttributeMapping[]>get(task, 'inputMappings'));
 
       if (!isEmpty(inputMappings)) {
         taskInfo.inputMappings = inputMappings;
@@ -143,7 +143,7 @@ const generateDiagramTraverser = (schemas) => {
 
       /* add outputMappings */
 
-      const outputMappings = _parseFlowMappings(<DiagramTaskAttributeMapping[]>get(task, 'outputMappings'));
+      const outputMappings = parseFlowMappings(<DiagramTaskAttributeMapping[]>get(task, 'outputMappings'));
 
       if (!isEmpty(outputMappings)) {
         taskInfo.ouputMappings = outputMappings;
@@ -507,7 +507,7 @@ function _parseMetadata(metadata: FlowMetadata): FlowMetadata {
   return flowMetadata;
 }
 
-export function _parseFlowMappings(inMappings: any[] = []): flowToJSON_Mapping[] {
+export function parseFlowMappings(inMappings: any[] = []): flowToJSON_Mapping[] {
   return inMappings.reduce((parsedMappings: flowToJSON_Mapping[], inMapping: any) => {
     if (!isValidMapping(inMapping)) {
       return parsedMappings;
