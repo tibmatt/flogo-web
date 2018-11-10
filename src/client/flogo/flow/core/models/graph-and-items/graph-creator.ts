@@ -55,6 +55,7 @@ function makeTask(task: backendFlow.Task, item: Item): GraphNode {
 }
 
 export function makeBranchNode(id: string, link: backendFlow.Link, isMainBranch = false): GraphNode {
+  isMainBranch = !!isMainBranch;
   return makeNode({
     id,
     type: NodeType.Branch,

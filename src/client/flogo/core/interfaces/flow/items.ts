@@ -42,5 +42,4 @@ export interface ItemBranch extends BaseItem {
   id: string;
   type: FLOGO_TASK_TYPE.TASK_BRANCH;
   condition?: string;
-  isMainBranch?: boolean;
 }

@@ -1,6 +1,6 @@
 import { get, cloneDeep, fromPairs, isArray, pick } from 'lodash';
-import { ItemActivityTask, ItemBranch, ItemTask } from '../../../../core/index';
-import { FLOGO_TASK_TYPE, ValueType } from '../../../../core/constants';
+import { ItemActivityTask, ItemBranch, ItemTask } from '@flogo/core';
+import { FLOGO_TASK_TYPE, ValueType } from '@flogo/core/constants';
 
 export class ItemFactory {
 
@@ -81,12 +81,11 @@ export class ItemFactory {
     return item;
   }
 
-  static makeBranch(branch: { taskID: string, condition: string, isMainBranch?: boolean }): ItemBranch {
+  static makeBranch(branch: { taskID: string, condition: string }): ItemBranch {
     return {
       id: branch.taskID,
       type: FLOGO_TASK_TYPE.TASK_BRANCH,
       condition: branch.condition,
-      isMainBranch: branch.isMainBranch,
     };
   }
 }

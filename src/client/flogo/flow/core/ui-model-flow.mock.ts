@@ -121,7 +121,7 @@ export let mockFlow = {
       'id': 2,
       'from': 'counter_1',
       'to': 'log_2',
-      'type': 1,
+      'type': 3,
       'value': 'true'
     },
     {
@@ -501,7 +501,8 @@ export const mockResultantUIFlow = {
           canBranch: true,
           deletable: true,
           subflow: false,
-          'final': false
+          'final': false,
+          isMainBranch: true,
         },
         status: {
           invalid: false,
@@ -525,7 +526,8 @@ export const mockResultantUIFlow = {
           canBranch: true,
           deletable: true,
           subflow: false,
-          'final': false
+          'final': false,
+          isMainBranch: false,
         },
         status: {
           invalid: false,
@@ -829,7 +831,8 @@ export const mockResultantUIFlowWithError = {
           canBranch: true,
           deletable: true,
           subflow: false,
-          'final': false
+          'final': false,
+          isMainBranch: true,
         },
         status: {
           invalid: false,
@@ -853,7 +856,8 @@ export const mockResultantUIFlowWithError = {
           canBranch: true,
           deletable: true,
           subflow: false,
-          'final': false
+          'final': false,
+          isMainBranch: false,
         },
         status: {
           invalid: false,
@@ -1170,7 +1174,8 @@ export let mockResultantUIFlowWithTransformations = {
           canBranch: true,
           deletable: true,
           subflow: false,
-          'final': false
+          'final': false,
+          isMainBranch: true,
         },
         status: {
           invalid: false,
@@ -1194,7 +1199,8 @@ export let mockResultantUIFlowWithTransformations = {
           canBranch: true,
           deletable: true,
           subflow: false,
-          'final': false
+          'final': false,
+          isMainBranch: false,
         },
         status: {
           invalid: false,

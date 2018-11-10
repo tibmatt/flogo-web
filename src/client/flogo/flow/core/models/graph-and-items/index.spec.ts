@@ -236,7 +236,7 @@ describe('flow.core.models.graph-and-items', function () {
       'id': 5,
       'from': 'awsiot_1',
       'to': 'log_4',
-      'type': 1,
+      'type': 3,
       'value': 'true'
     },
     {
@@ -569,7 +569,8 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
+          isMainBranch: false,
         },
         status: {
           invalid: false,
@@ -589,7 +590,8 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
+          isMainBranch: false,
         },
         status: {
           invalid: false,
@@ -609,13 +611,14 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
+          isMainBranch: true,
         },
         status: {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
         }
       },
       dummy_branch_4: {
@@ -629,13 +632,14 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
+          isMainBranch: false,
         },
         status: {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
         }
       }
     });

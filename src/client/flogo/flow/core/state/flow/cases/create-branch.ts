@@ -49,7 +49,7 @@ function addMainBranch(
   nodes[parent.id] = { ...parent, children: [] };
   const children = childId ? [childId] : undefined;
   graph = addNewBranch({...graph, nodes}, parent.id, newBranchId, { isMainBranch: true, children });
-  const mainBranch = ItemFactory.makeBranch({ taskID: newBranchId, condition: 'true', isMainBranch: true });
+  const mainBranch = ItemFactory.makeBranch({ taskID: newBranchId, condition: 'true' });
   return {
     ...state,
     [itemsDictionaryName]: {

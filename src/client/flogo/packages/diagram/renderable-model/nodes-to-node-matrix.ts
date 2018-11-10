@@ -1,6 +1,6 @@
-import {isEmpty, partialRight, times} from 'lodash';
-import {GraphNode, GraphNodeDictionary, NodeType} from '@flogo/core';
-import { NodeMatrix, isNodeWithBranch, NodeWithBranch } from './matrix';
+import { isEmpty, partialRight, times } from 'lodash';
+import { GraphNode, GraphNodeDictionary, NodeType } from '@flogo/core';
+import { NodeMatrix } from './matrix';
 
 interface TranslateContext {
   parentNode: GraphNode;
@@ -17,7 +17,7 @@ export function nodesToNodeMatrix(rootNode: GraphNode, nodes: GraphNodeDictionar
 const arrayOfNulls = partialRight<number, Function, null[]>(times, () => null);
 
 export function translateChildren(context: TranslateContext, matrix: NodeMatrix): NodeMatrix {
-  const children = retrieveChildrenNodes(context).sort(nonBranchesFirst);
+  const children = retrieveChildrenNodes(context).sort(compareNodes);
   if (isEmpty(children)) {
     return matrix;
   }
@@ -46,9 +46,22 @@ function retrieveChildrenNodes({ parentNode, nodes }: TranslateContext) {
   return parentNode.children.map(nodeId => nodes[nodeId]);
 }
 
-function nonBranchesFirst(nodeA: GraphNode, nodeB: GraphNode): number {
-  if (nodeA.type === nodeB.type) {
+const isBranch = (node: GraphNode) => node.type === NodeType.Branch;
+
+/**
+ * Should ensure the following order:
+ * 1. Tasks/activities
+ * 2. Main branch
+ * 3. Regular branch
+ * @param nodeA
+ * @param nodeB
+ */
+function compareNodes(nodeA: GraphNode, nodeB: GraphNode): number {
+  const aIsBranch = isBranch(nodeA);
+  if (aIsBranch && isBranch(nodeB)) {
+    return nodeA.features.isMainBranch ? -1 : 1;
+  } else if (nodeA.type === nodeB.type) {
     return 0;
   }
-  return nodeA.type === NodeType.Branch && !nodeA.features.isMainBranch ? 1 : -1;
+  return aIsBranch ? 1 : -1;
 }

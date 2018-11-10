@@ -8,7 +8,7 @@ import { NodeMatrix } from './matrix';
 // |   |   ├──D2
 // |   |   └──E3
 // |   └──C5
-// └── B6⟶C6
+// └── B6(main)⟶C6
 // |   └──C7
 // └──B8
 function makeTestData(): { root: GraphNode, nodeDictionary: GraphNodeDictionary } {
@@ -18,126 +18,135 @@ function makeTestData(): { root: GraphNode, nodeDictionary: GraphNodeDictionary 
       type: NodeType.Task,
       parents: [],
       children: ['B1', 'L-root-B6', 'L-root-B8'],
-      features: []
+      features: {},
     },
     {
       id: 'B1',
       type: NodeType.Task,
       parents: ['root'],
       children: ['C1', 'L-B1-C5'],
-      features: []
+      features: {},
     },
     {
       id: 'C1',
       type: NodeType.Task,
       parents: ['B1'],
       children: ['L-C1-D2'],
-      features: []
+      features: {},
     },
     {
       id: 'D2',
       type: NodeType.Task,
       parents: ['L-C1-D2'],
       children: ['L-D2-E3', 'L-D2-E4'],
-      features: []
+      features: {},
     },
     {
       id: 'E3',
       type: NodeType.Task,
       parents: ['L-D2-E3'],
       children: [],
-      features: []
+      features: {},
     },
     {
       id: 'E4',
       type: NodeType.Task,
       parents: ['L-D2-E4'],
       children: [],
-      features: []
+      features: {},
     },
     {
       id: 'C5',
       type: NodeType.Task,
       parents: ['L-B1-C5'],
       children: [],
-      features: []
+      features: {},
     },
     {
       id: 'B6',
       type: NodeType.Task,
       parents: ['L-root-C6'],
-      children: ['C6', 'L-B6-C7'],
-      features: []
+      children: ['L-B6-C7', 'L-B6-C6'],
+      features: {},
+    },
+    {
+      id: 'L-B6-C6',
+      type: NodeType.Branch,
+      parents: ['B6'],
+      children: ['C6'],
+      features: {
+        isMainBranch: true,
+      },
     },
     {
       id: 'C6',
       type: NodeType.Task,
-      parents: ['B6'],
+      parents: ['L-B6-C6'],
       children: [],
-      features: []
+      features: {},
     },
     {
       id: 'C7',
       type: NodeType.Task,
       parents: ['L-B6-C7'],
       children: [],
-      features: []
+      features: {},
     },
     {
       id: 'B8',
       type: NodeType.Task,
       parents: ['L-root-B8'],
       children: [],
-      features: []
+      features: {},
     },
     {
       id: 'L-root-B6',
       type: NodeType.Branch,
       parents: ['root'],
       children: ['B6'],
-      features: []
+      features: {},
     },
     {
       id: 'L-root-B8',
       type: NodeType.Branch,
       parents: ['root'],
       children: ['B8'],
-      features: []
+      features: {},
     },
     {
       id: 'L-B6-C7',
       type: NodeType.Branch,
       parents: ['B6'],
       children: ['C7'],
-      features: []
+      features: {},
     },
     {
       id: 'L-B1-C5',
       type: NodeType.Branch,
       parents: ['B1'],
       children: ['C5'],
-      features: []
+      features: {},
     },
     {
       id: 'L-C1-D2',
       type: NodeType.Branch,
       parents: ['C1'],
       children: ['D2'],
-      features: []
+      features: {},
     },
     {
       id: 'L-D2-E3',
       type: NodeType.Branch,
       parents: ['D2'],
       children: ['E3'],
-      features: []
+      features: {},
     },
     {
       id: 'L-D2-E4',
       type: NodeType.Branch,
       parents: ['D2'],
       children: ['E4'],
-      features: []
+      features: {},
     },
   ];
   const nodeDictionary: GraphNodeDictionary = fromPairs(
@@ -157,7 +166,7 @@ describe('diagram.nodesToNodeMatrix', function () {
       [null, null, null, 'L-D2-E3', 'E3'],
       [null, null, null, 'L-D2-E4', 'E4'],
       [null, 'L-B1-C5', 'C5'],
-      ['L-root-B6', 'B6', 'C6'],
+      ['L-root-B6', { nodeId: 'B6', branchId: 'L-B6-C6' }, 'C6'],
       [null, 'L-B6-C7', 'C7'],
       ['L-root-B8', 'B8'],
     ];
@@ -179,13 +188,22 @@ describe('diagram.nodesToNodeMatrix', function () {
               return result;
             }
 
-            const extractNodeId = node => node ? node.id : null;
+            const extractNodeId = (node) => {
+              if (!node) {
+                return null;
+              } else if (!node.node) {
+                return node.id;
+              }
+              return { nodeId: node.node.id, branchId: node.branch.id };
+            };
             for (let i = 0; i < actualMatrix.length; i++) {
               const actualValues = actualMatrix[i].map(extractNodeId);
               const expectedValues = expectedMatrix[i];
               if (!isEqual(actualValues, expectedValues)) {
+                result.pass = false;
                 result.message = `Actual row at index ${i} doesn't match expectation.
                   Expected ${JSON.stringify(expectedValues)}. Actual: ${JSON.stringify(actualValues)}`;
+                return result;
               }
             }
             result.pass = true;
