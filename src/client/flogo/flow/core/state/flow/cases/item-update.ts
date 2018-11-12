@@ -1,28 +1,23 @@
-import {GraphNode, Item} from '@flogo/core';
-import {isIterableTask} from '@flogo/shared/utils';
+import {BaseItemTask, GraphNode, Item, ItemBranch, NodeType} from '@flogo/core';
+import {isBranchConfigured, isIterableTask} from '@flogo/shared/utils';
 import {FlowState} from '../flow.state';
 import {getGraphName, getItemsDictionaryName} from '../../utils';
 import {HandlerType} from '@flogo/flow/core/models/handler-type';
-import {BaseItemTask} from '@flogo/core/interfaces/flow/items';
 
-export function nodeUpdate(state: FlowState, payload: { handlerType: HandlerType, node?: Partial<GraphNode> }) {
-  const {handlerType, node} = payload;
-  if (!node) {
+export function nodeUpdate(state: FlowState, payload: { handlerType: HandlerType, item?: { id: string } & Partial<ItemBranch> }) {
+  const {handlerType, item} = payload;
+  if (!item) {
     return state;
   }
-  const itemsDictionaryName = getItemsDictionaryName(handlerType);
   const graphName = getGraphName(handlerType);
   const graph = state[graphName];
-  const currentNode = graph.nodes[node.id];
-  const item = state[itemsDictionaryName][node.id];
+  const currentNode = graph.nodes[item.id];
   const newNodeState: GraphNode = {
     ...currentNode,
-    ...node,
+    ...item,
     status: {
-      ...currentNode.status,
-      ...(node.status || {}),
-      iterable: isIterableTask(item),
-    },
+      isBranchConfigured: isBranchConfigured(item.condition)
+    }
   };
   return {
     ...state,
@@ -30,7 +25,7 @@ export function nodeUpdate(state: FlowState, payload: { handlerType: HandlerType
       ...graph,
       nodes: {
         ...graph.nodes,
-        [node.id]: newNodeState
+        [item.id]: newNodeState
       }
     }
   };

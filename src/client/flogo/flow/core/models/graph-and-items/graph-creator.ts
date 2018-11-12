@@ -8,7 +8,7 @@ import {
   flow as backendFlow,
   ItemActivityTask
 } from '@flogo/core';
-import { isIterableTask, isSubflowTask } from '@flogo/shared/utils';
+import {isBranchConfigured, isIterableTask, isSubflowTask} from '@flogo/shared/utils';
 
 const defaultFeatures: NodeFeatures = {
   selectable: true,
@@ -23,7 +23,7 @@ const defaultStatus: NodeStatus = {
   invalid: false,
   executed: false,
   executionErrored: null,
-  iterable: false,
+  iterable: false
 };
 
 export function makeTaskNodes(tasks: backendFlow.Task[], items: Dictionary<Item>): Dictionary<GraphNode> {
@@ -60,6 +60,7 @@ export function makeBranchNode(id: string, link: backendFlow.Link): GraphNode {
     type: NodeType.Branch,
     parents: [link.from],
     children: [link.to],
+    status: {isBranchConfigured: isBranchConfigured(link.value) }
   });
 }
 

@@ -14,18 +14,20 @@ const fillWithPlaceholders = (fromCount: number, max: number) => times(max - fro
 // and the overflow case should be handled somewhere else.
 export function createTileMatrix(nodeMatrix: NodeMatrix, nodes: GraphNodeDictionary, maxRowLength, isReadOnly = false): TileMatrix {
   const maxTileIndex = maxRowLength - 1;
-  const nodeToTile = (node, index) => !!node ? tileFactory.makeTask(node, index >= maxTileIndex) : TILE_PADDING;
+  const nodeToTile = (node, index) => {
+    let hasBranch = false;
+    if (!!node) {
+      hasBranch = !!node.children.find(child => nodes[child].type === NodeType.Branch);
+      return {...tileFactory.makeTask(node, index >= maxTileIndex), hasBranch: hasBranch};
+    } else {
+      return TILE_PADDING;
+    }
+  };
   return nodeMatrix.map(rowOfNodes => {
     if (rowOfNodes.length <= 0) {
       return [];
     }
     const rowOfTiles: Tile[] = rowOfNodes.map(nodeToTile);
-    rowOfTiles.forEach((rowOfTile: TaskTile) => {
-      if (rowOfTile.task && rowOfTile.task.type === NodeType.Task) {
-        const hasBranch = rowOfTile.task.children.find(child => nodes[child].type === NodeType.Branch);
-        rowOfTile.hasBranch = !!hasBranch;
-      }
-    });
     const lastNode = rowOfNodes[rowOfNodes.length - 1];
     const isInsertAllowed = lastNode.features && lastNode.features.canHaveChildren;
     if (!isReadOnly && isInsertAllowed && rowOfTiles.length < maxRowLength) {

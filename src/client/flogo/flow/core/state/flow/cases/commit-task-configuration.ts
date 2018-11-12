@@ -8,7 +8,7 @@ import {graphUpdate, itemUpdate} from './item-update';
 import { removeSubschemaIfNotUsed } from '@flogo/flow/core/state/flow/cases/remove-subschema';
 
 export function commitTaskConfiguration(state: FlowState, payload: PayloadOf<CommitItemConfiguration>) {
-  const { handlerType, item: { id: itemId } } = payload;
+  const {handlerType, item: {id: itemId}} = payload;
   const oldLinkedSubflowId = getLinkedSubflow(getItem(state, handlerType, itemId) as ItemSubflow);
   state = itemUpdate(state, payload);
   state = graphUpdate(state, payload);

@@ -17,6 +17,7 @@ export interface NodeStatus {
   executed?: boolean;
   executionErrored?: Array<string> | null;
   iterable?: boolean;
+  isBranchConfigured?: boolean;
 }
 
 export interface GraphNode {

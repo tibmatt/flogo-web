@@ -507,7 +507,8 @@ export const mockResultantUIFlow = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          isBranchConfigured: false
         }
       },
       '::branch::2': {
@@ -531,7 +532,8 @@ export const mockResultantUIFlow = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          isBranchConfigured: true
         }
       }
     }
@@ -835,7 +837,8 @@ export const mockResultantUIFlowWithError = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          isBranchConfigured: false
         }
       },
       '::branch::4': {
@@ -859,7 +862,8 @@ export const mockResultantUIFlowWithError = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          isBranchConfigured: true
         }
       }
     }
@@ -1176,7 +1180,8 @@ export let mockResultantUIFlowWithTransformations = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          isBranchConfigured: false
         }
       },
       '::branch::6': {
@@ -1200,7 +1205,8 @@ export let mockResultantUIFlowWithTransformations = {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          isBranchConfigured: true
         }
       }
     }

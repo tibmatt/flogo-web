@@ -10,7 +10,7 @@
 
   .branch-option-container {
     background-color: #79b8dc;
-    border: none;
+    border: solid 3px transparent;
   }
   .main-branch-link {
     border-top: solid 4px #79b8dc;
@@ -45,6 +45,23 @@
 
 }
 
+:host(.has-condition) {
+  .menu-icon-close {
+    color: @color-bg;
+  }
+  .branch-option-container {
+    background-color: #afbbda;
+    border: solid 3px transparent;
+  }
+  .branch-child-link {
+    &:hover {
+      .branch-option-container {
+        border: solid 3px transparent;
+        background-color: #899bcf;
+      }
+    }
+  }
+}
 .menu-icon {
   color: @color-dark-gray;
   margin-left: 3px;
@@ -144,7 +161,6 @@
 }
 
 .branch-option-container {
-  content: "";
   position: absolute;
   top: 5px;
   right: -10px;
