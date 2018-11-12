@@ -334,6 +334,10 @@ export function isIterableTask(task: Task | Item): boolean {
   return !isEmpty(get(task, 'settings.iterate'));
 }
 
+export function isBranchConfigured(branchCondition): boolean {
+  return branchCondition && branchCondition !== 'true';
+}
+
 export function getProfileType(app) {
   let profileType: FLOGO_PROFILE_TYPE;
   if (app.device) {

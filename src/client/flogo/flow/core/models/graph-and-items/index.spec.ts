@@ -576,7 +576,8 @@ describe('flow.core.models.graph-and-items', function () {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          isBranchConfigured: false
         }
       },
       dummy_branch_2: {
@@ -597,7 +598,8 @@ describe('flow.core.models.graph-and-items', function () {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
+          isBranchConfigured: false
         }
       },
       dummy_branch_3: {
@@ -619,6 +621,7 @@ describe('flow.core.models.graph-and-items', function () {
           executed: false,
           executionErrored: null,
           iterable: false,
+          isBranchConfigured: false,
         }
       },
       dummy_branch_4: {
@@ -640,6 +643,7 @@ describe('flow.core.models.graph-and-items', function () {
           executed: false,
           executionErrored: null,
           iterable: false,
+          isBranchConfigured: false,
         }
       }
     });

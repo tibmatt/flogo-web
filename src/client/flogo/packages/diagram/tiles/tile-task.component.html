@@ -34,15 +34,22 @@
 <div class="shape-container">
   <svg xmlns="http://www.w3.org/2000/svg"
        xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="60" viewBox="0 0 128 62">
-    <ng-template [ngIf]="!isTerminal" [ngIfElse]="terminalShape">
+    <ng-template [ngIf]="!hasBranch && !isTerminal" [ngIfElse]="tileWithBranch">
       <g class="tile" fill="none" fill-rule="evenodd" transform="translate(2 1)">
         <path class="tile__shadow" [attr.filter]="shadow" d="M117.27 60H0l11.264-29.92L0 0h117.371L128 30.376z"/>
         <path class="tile__bg" [attr.fill]="bgFill" d="M117.27 60H0l11.264-29.92L0 0h117.371L128 30.376z"/>
         <path class="tile__stroke" stroke="#F4F4F4" stroke-width=".8" d="M117.27 60H0l11.264-29.92L0 0h117.371L128 30.376z"/>
       </g>
     </ng-template>
+    <ng-template #tileWithBranch>
+      <g *ngIf="!isTerminal; else terminalShape" class="tile__branch" fill="none" fill-rule="evenodd" transform="translate(2 1)">
+        <path class="tile__shadow" [attr.filter]="shadow" d="M107.27 60H0l11.264-29.92L0 0h107.371L118 30.376z"/>
+        <path class="tile__bg" [attr.fill]="bgFill" d="M107.27 60H0l11.264-29.92L0 0h107.371L118 30.376z" />
+        <path class="tile__stroke" stroke="#F4F4F4" stroke-width=".8" d="M107.27 60H0l11.264-29.92L0 0h107.371L118 30.376z"/>
+      </g>
+    </ng-template>
     <ng-template #terminalShape>
-      <g class="tile__terminal" fill="none" fill-rule="evenodd" transform="translate(2 1)">
+      <g  class="tile__terminal" fill="none" fill-rule="evenodd" transform="translate(2 1)">
         <path class="tile__shadow" [attr.filter]="shadow" d="M117.27 60H0l11.264-29.92L0 0h117.371z"/>
         <path class="tile__bg" [attr.fill]="bgFill" d="M117.27 60H0l11.264-29.92L0 0h117.371z" />
         <path class="tile__stroke" stroke="#F4F4F4" stroke-width=".8" d="M117.27 60H0l11.264-29.92L0 0h117.371z"/>

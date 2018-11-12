@@ -195,17 +195,18 @@
 }
 
 :host(.tile-has-branch) {
-  transform: translateX(3px) scale(0.92, 1);
-  margin-left: -7px;
-  margin-right: 6px;
-  &:hover {
-    transform: scale(1.04) translate(-3%, 0);
+  .content {
+    width: 70%;
+    left: 1px;
+  }
+  .menu__icon {
+    padding: 2px 3px;
+  }
+  .badges {
+    right: 21px;
   }
 }
 
-:host(.tile-has-branch.is-selected) {
-  transform: scale(1.04) translate(-3%, 0);
-}
 
 :host(.is-selected) {
   transform: scale(1.04);

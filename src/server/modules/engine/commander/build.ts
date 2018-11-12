@@ -1,11 +1,8 @@
-import path from 'path';
+import { join as joinPath } from 'path';
 import { runShellCMD } from '../../../common/utils/process';
 import { logger } from "../../../common/logging";
 
-const DEFAULT_ENV = {
-  // necessary for cross compiling and static linking
-  CGO_ENABLED: '0'
-};
+import { mergeEnvWithOpts } from './merge-env-with-opts';
 
 /**
  * Build the engine.
@@ -29,18 +26,18 @@ const DEFAULT_ENV = {
  * @returns {Promise<{path: string}>} path to generated binary
  */
 export function build(enginePath, opts) {
-  const defaultEnginePath = path.join(enginePath);
+  const defaultEnginePath = joinPath(enginePath);
 
   opts = _mergeOpts(opts);
 
   const args = _translateOptsToCommandArgs(opts);
-  const env = _getEnv(opts);
+  const env = mergeEnvWithOpts(opts, process.env);
 
   logger.info(`[log] Build flogo: "flogo build ${args}" compileOpts:`);
 
   return runShellCMD('flogo', ['build'].concat(args), {
     cwd: defaultEnginePath,
-    env: Object.assign({}, process.env, env),
+    env,
   });
 }
 
@@ -60,7 +57,7 @@ function _mergeOpts(opts) {
 }
 
 function _translateOptsToCommandArgs(opts) {
-  const args = [];
+  const args = [] as string[];
   if (opts.optimize) {
     args.push('-o');
   }
@@ -78,22 +75,4 @@ function _translateOptsToCommandArgs(opts) {
   }
 
   return args;
-}
-
-function _getEnv(opts) {
-  const env = {...DEFAULT_ENV};
-
-  if (!opts.compile) {
-    return env;
-  }
-
-  if (opts.compile.os) {
-    env.GOOS = opts.compile.os;
-  }
-
-  if (opts.compile.arch) {
-    env.GOARCH = opts.compile.arch;
-  }
-
-  return env;
 }
