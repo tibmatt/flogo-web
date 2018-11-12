@@ -14,6 +14,10 @@ import {FlowGraph} from '@flogo/core';
 @Component({
   selector: 'flogo-flow-diagram',
   templateUrl: 'flow-diagram.component.html',
+  styles: [`
+    :host { display: flex; }
+    flogo-diagram { flex: 1; }
+  `],
 })
 
 export class FlogoFlowDiagramComponent {
