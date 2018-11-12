@@ -3,15 +3,18 @@ import { FlowState } from '../flow.state';
 import { RemoveItem } from '../flow.actions';
 import { getGraphName, getItem, getItemsDictionaryName, PayloadOf } from '../../utils';
 import { removeNode } from '../../../models/flow/remove-node';
-import { CurrentSelection, SelectionType } from '../../../models/selection';
+import { CurrentSelection, SelectionType } from '../../../models';
 import { getLinkedSubflow } from './get-linked-subflow';
+import { removeMainBranchIfNeeded } from './remove-main-branch-if-needed';
 import { removeSubschemaIfNotUsed } from './remove-subschema';
 
 export function removeItem(prevState: FlowState, payload: PayloadOf<RemoveItem>): FlowState {
   const {handlerType, itemId} = payload;
-  const itemToRemove = getItem(prevState, handlerType, itemId);
 
-  let nextState = applyRemoveItem(prevState, payload);
+  let nextState = removeMainBranchIfNeeded(prevState, handlerType, itemId);
+
+  const itemToRemove = getItem(prevState, handlerType, itemId);
+  nextState = applyRemoveItem(prevState, payload);
   if (nextState === prevState) {
     return prevState;
   }
