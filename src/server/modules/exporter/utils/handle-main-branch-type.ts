@@ -2,7 +2,7 @@ import { isUndefined } from 'lodash';
 import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE as LINK_TYPE } from '../../../common/constants';
 import { Link } from '../../../interfaces';
 
-const isConditionNotConfigured = (value) => isUndefined(value) || (value && value.toLowerCase().trim() === 'true');
+const isConditionNotConfigured = (value) => isUndefined(value) || value === 'true';
 
 export function handleMainBranchType(link: Link): Link {
   const {type, value} = determineLinkTypeAndValue(link);
