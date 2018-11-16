@@ -1,14 +1,14 @@
-import { _parseFlowMappings } from './flow.model';
+import { parseFlowMappings } from './flow.model';
 
 describe('flow.model', function() {
   describe('#parseFlowMappings', function() {
     it('works with empty mapping collections', function() {
-      expect(_parseFlowMappings(undefined)).toBeTruthy();
-      expect(_parseFlowMappings([])).toBeTruthy();
+      expect(parseFlowMappings(undefined)).toBeTruthy();
+      expect(parseFlowMappings([])).toBeTruthy();
     });
 
     it('Ignores unknown property values', function() {
-      const parsedMappings = _parseFlowMappings([{
+      const parsedMappings = parseFlowMappings([{
         value: 1,
         type: 2,
         mapTo: 'myField',
@@ -23,15 +23,25 @@ describe('flow.model', function() {
     });
 
     it('Ignores empty strings', function() {
-      expect(_parseFlowMappings([{
+      expect(parseFlowMappings([{
         value: '',
         type: 2,
         mapTo: 'myThing'
       }]).length).toEqual(0);
     });
 
+    it('Does not ignore non-empty strings', function() {
+      ['\n', '\n\r', '\t'].forEach((value) => {
+        expect(parseFlowMappings([{
+          value,
+          type: 2,
+          mapTo: 'myThing'
+        }]).length).toEqual(1, `Expected ${JSON.stringify(value)} to be treated as non-empty string`);
+      });
+    });
+
     describe('For different value types', function() {
-      const parsedMappings = _parseFlowMappings([
+      const parsedMappings = parseFlowMappings([
         { value: '$myMapping.value', type: 1, mapTo: 'a' },
         { value: 1, type: 2,  mapTo: 'b' },
         { value: false, type: 2, mapTo: 'c' },
