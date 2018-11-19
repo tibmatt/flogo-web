@@ -3,8 +3,9 @@ import isEmpty from 'lodash/isEmpty';
 import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
 import { isIterableTask } from '../../../common/utils';
 import { appHasSubflowTasks } from '../../../common/utils/subflow';
-import {FLOGO_TASK_TYPE, LEGACY_FLOW_TYPE} from '../../../common/constants';
+import { FLOGO_TASK_TYPE, LEGACY_FLOW_TYPE } from '../../../common/constants';
 import { mappingsToAttributes } from "../mappings-to-attributes";
+import { handleMainBranchType } from "../utils/handle-main-branch-type";
 
 const MICROSERVICE_ACTION_REF = 'github.com/TIBCOSoftware/flogo-contrib/action/flow';
 
@@ -69,7 +70,7 @@ export class LegacyMicroServiceFormatter {
       rootTask: {
         id: 'root',
         type: FLOGO_TASK_TYPE.TASK,
-        links: action.links,
+        links: (action.links || []).map(handleMainBranchType),
         tasks: action.tasks
       },
       errorHandlerTask
@@ -85,7 +86,7 @@ export class LegacyMicroServiceFormatter {
       id: '__error_root',
       type: FLOGO_TASK_TYPE.TASK,
       tasks,
-      links
+      links: (links || []).map(handleMainBranchType)
     }
   }
 

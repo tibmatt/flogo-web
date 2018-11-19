@@ -3,6 +3,7 @@ import isEmpty from 'lodash/isEmpty';
 import { appHasSubflowTasks } from '../../../common/utils/subflow';
 import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
 import {mappingsToAttributes} from "../mappings-to-attributes";
+import { handleMainBranchType } from "../utils/handle-main-branch-type";
 
 const DEVICE_ACTION_REF = 'github.com/TIBCOSoftware/flogo-contrib/device/action/flow';
 
@@ -88,7 +89,7 @@ export class DeviceFormatter {
     if (isEmpty(tasks)) {
       return flowData;
     }
-    flowData.links = cloneDeep(links);
+    flowData.links = cloneDeep(links || []).map(handleMainBranchType);
     flowData.tasks = this.formatTasks(cloneDeep(tasks));
     return flowData;
   }
