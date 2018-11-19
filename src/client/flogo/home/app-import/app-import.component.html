@@ -1,6 +1,5 @@
-<bs-modal [cssClass]="'flogo-common-modal flogo-error'" #errorModal (onClose)="onModalCloseOrDismiss()"
-       (onDismiss)="onModalCloseOrDismiss()">
-  <i class="flogo-icon-close flogo-error__close" (click)="closeModal()"></i>
+<div class="'flogo-common-modal flogo-error'">
+  <i class="flogo-icon-close flogo-error__close" (click)="control.close()"></i>
   <div class="flogo-error__header">
     <h4 class="flogo-error__head">
       <i class="flogo-icon-info flogo-error__warning"></i>
@@ -19,8 +18,8 @@
     </div>
   </div>
   <div class="flogo-error__btn-container">
-    <button class="flogo-button--default flogo-error__confirm" (click)="closeModal()">
+    <button class="flogo-button--default flogo-error__confirm" (click)="control.close()">
       {{"MODAL:OKAY" | translate}}
     </button>
   </div>
-</bs-modal>
+</div>

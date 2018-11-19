@@ -15,9 +15,11 @@ export class ModalService {
   constructor(private injector: Injector, private overlay: Overlay) {
   }
 
-  openModal<T>(contentComponent: ComponentType<ModalContent>, componentData: T): ModalControl {
+  openModal<T>(contentComponent: ComponentType<ModalContent>, componentData?: T): ModalControl {
     const data = new WeakMap<any, any>();
-    data.set(MODAL_TOKEN, componentData);
+    if (componentData) {
+      data.set(MODAL_TOKEN, componentData);
+    }
     const overlayRef = this.createModalOverlay();
     return this.buildAndAttach(overlayRef, contentComponent, data);
   }

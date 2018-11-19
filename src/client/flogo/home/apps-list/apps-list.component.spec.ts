@@ -16,6 +16,8 @@ import { ProfilesAPIService } from '@flogo/core/services/restapi/v2/profiles-api
 import { MockProfilesAPIService } from '@flogo/core/services/restapi/v2/profiles-api.service.mock';
 import { NotificationsService } from '@flogo/core/notifications/notifications.service';
 import { NotificationsServiceMock } from '@flogo/core/notifications/testing';
+import {ModalService} from '@flogo/core/modal';
+import {MockModalService} from '@flogo/core/modal/modal.service.mock';
 
 describe('FlogoAppList component', () => {
   const applications = [
@@ -72,6 +74,7 @@ describe('FlogoAppList component', () => {
         { provide: ErrorService, useClass: ErrorService },
         { provide: AppsApiService, useClass: AppsApiServiceMock },
         { provide: NotificationsService, useValue: new NotificationsServiceMock() },
+        { provide: ModalService, useClass: MockModalService }
       ]
     });
     return TestBed.compileComponents();

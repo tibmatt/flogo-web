@@ -9,6 +9,10 @@ import { FlogoAppImportComponent } from './app-import/app-import.component';
 import { ImportErrorFormatterService } from './core/import-error-formatter.service';
 import { FlogoNewAppComponent } from './new-app/new-app.component';
 import { HomeRoutingModule } from './home-routing.module';
+import {ModalService} from '@flogo/core/modal';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {PortalModule} from '@angular/cdk/portal';
+import {ScrollDispatchModule} from '@angular/cdk/scrolling';
 
 @NgModule({
   imports: [
@@ -17,6 +21,9 @@ import { HomeRoutingModule } from './home-routing.module';
     BsModalModule,
     FlogoSharedModule,
     HomeRoutingModule,
+    OverlayModule,
+    PortalModule,
+    ScrollDispatchModule
   ],
   declarations: [
     FlogoHomeComponent,
@@ -26,7 +33,12 @@ import { HomeRoutingModule } from './home-routing.module';
   ],
   bootstrap: [FlogoHomeComponent],
   providers: [
-    ImportErrorFormatterService
+    ImportErrorFormatterService,
+    ModalService
+  ],
+  entryComponents: [
+    FlogoNewAppComponent,
+    FlogoAppImportComponent
   ]
 })
 export class FlogoHomeModule {

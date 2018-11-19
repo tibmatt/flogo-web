@@ -3,24 +3,25 @@ import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '
 import { App } from '@flogo/core';
 import { NotificationsService } from '@flogo/core/notifications';
 import { AppsApiService } from '@flogo/core/services/restapi/v2/apps-api.service';
+import {ModalService} from '@flogo/core/modal';
+import {FlogoNewAppComponent} from '@flogo/home/new-app/new-app.component';
+import {AppImportErrorData, FlogoAppImportComponent} from '@flogo/home/app-import/app-import.component';
 
 @Component({
   selector: 'flogo-home-apps-list',
   templateUrl: 'apps-list.component.html',
   styleUrls: ['apps-list.component.less']
 })
+
 export class FlogoAppsListComponent implements OnInit {
   @ViewChild('importInput') importInput: ElementRef;
   @Output() appSelected: EventEmitter<App> = new EventEmitter<App>();
 
-  showValidationErrors: boolean;
-  importValidationErrors: any;
-  showProfileSeclectionDialog = false;
-
   public applications: Array<App> = [];
 
   constructor(private apiApplications: AppsApiService,
-              private notifications: NotificationsService) {
+              private notifications: NotificationsService,
+              private modalService: ModalService) {
   }
 
   ngOnInit() {
@@ -54,7 +55,6 @@ export class FlogoAppsListComponent implements OnInit {
     } catch (error) {
       this.notifyUser(false, error);
     }
-    this.importInput.nativeElement.value = '';
   }
 
   notifyUser(isImported: boolean, errorDetails?: Error) {
@@ -76,8 +76,8 @@ export class FlogoAppsListComponent implements OnInit {
     } else {
       if (error[0].status === 400) {
         if (error[0].meta && error[0].meta.details) {
-          this.importValidationErrors = error[0].meta.details;
-          this.showValidationErrors = true;
+          const importValidationErrors = error[0].meta.details;
+          this.modalService.openModal<AppImportErrorData>(FlogoAppImportComponent, {importValidationErrors: importValidationErrors});
           key = 'APP-LIST:VALIDATION_ERROR';
         }
       } else if (error.status === 500) {
@@ -87,22 +87,17 @@ export class FlogoAppsListComponent implements OnInit {
     this.notifications.error({ key });
   }
 
-  resetValidationErrors() {
-    this.showValidationErrors = false;
-    this.importValidationErrors = [];
-  }
-
   openProfileSelect() {
-    this.showProfileSeclectionDialog = true;
-  }
-
-  closeModal() {
-    this.showProfileSeclectionDialog = false;
+    this.modalService.openModal<any>(FlogoNewAppComponent).result
+      .subscribe(profileDetails => {
+        if (profileDetails) {
+          this.onAdd(profileDetails);
+        }
+      });
   }
 
   onAdd(profileDetails) {
     this.apiApplications.createNewApp(profileDetails).then((application: App) => {
-      this.closeModal();
       this.emitAppSelected(application);
     });
   }

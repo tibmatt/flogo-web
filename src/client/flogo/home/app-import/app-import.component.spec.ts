@@ -1,31 +1,34 @@
-import { FlogoAppImportComponent } from './app-import.component';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { BsModalModule } from 'ng2-bs3-modal';
-import { ImportErrorFormatterService } from '../core/import-error-formatter.service';
-import { By } from '@angular/platform-browser';
-import { mockImportErrorResponse } from './mocks/error.response.mock';
-import { NoDependenciesFakeLanguageModule } from '@flogo/core/language/testing';
+import {FlogoAppImportComponent} from './app-import.component';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { DebugElement, NO_ERRORS_SCHEMA} from '@angular/core';
+import {ImportErrorFormatterService} from '../core/import-error-formatter.service';
+import {By} from '@angular/platform-browser';
+import {mockImportErrorResponse} from './mocks/error.response.mock';
+import {NoDependenciesFakeLanguageModule} from '@flogo/core/language/testing';
+import {MODAL_TOKEN, ModalControl} from '@flogo/core/modal';
+import {ValidationDetail} from '@flogo/core';
+import {OverlayRef} from '@angular/cdk/overlay';
 
-@Component({
-  selector: 'flogo-container-component',
-  template: `
-    <div class="flows">
-      <flogo-home-app-import [importValidationErrors]="errors" (modalClose)="closeModal()"></flogo-home-app-import>
-    </div>
-  `
-})
-class ContainerComponent {
-  errors;
+const newAppImportDataStub: ValidationDetail = {
+  keyword: 'abc',
+  dataPath: '/abc',
+  schemaPath: 'schema/abc',
+  message: 'hello world',
+};
 
-  closeModal() {
-    return true;
+export class ErrorFormatterStub {
+  getErrorsDetails() {
+    return newAppImportDataStub;
   }
 }
 
 describe('Component: FlogoAppImportComponent', () => {
-  let comp: ContainerComponent;
-  let fixture: ComponentFixture<ContainerComponent>;
+  let comp: FlogoAppImportComponent;
+  let fixture: ComponentFixture<FlogoAppImportComponent>;
+  const overlayRefStub = jasmine.createSpyObj<OverlayRef>('overlayRef', [
+    'dispose'
+  ]);
+  const modalControl = new ModalControl(overlayRefStub);
 
   function compileComponent() {
     return TestBed.compileComponents();
@@ -33,37 +36,35 @@ describe('Component: FlogoAppImportComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NoDependenciesFakeLanguageModule, BsModalModule],
-      declarations: [FlogoAppImportComponent, ContainerComponent], // declare the test component
-      providers: [ImportErrorFormatterService],
+      imports: [NoDependenciesFakeLanguageModule],
+      declarations: [FlogoAppImportComponent], // declare the test component
+      providers: [
+        {provide: ImportErrorFormatterService, useClass: ErrorFormatterStub},
+        {provide: ModalControl, useValue: modalControl},
+        {provide: MODAL_TOKEN, useValue: newAppImportDataStub}],
       schemas: [NO_ERRORS_SCHEMA]
-    });
+    }).compileComponents();
   });
-
+  beforeEach(() => {
+    fixture = TestBed.createComponent(FlogoAppImportComponent);
+    comp = fixture.componentInstance;
+  });
   it('Should list 3 errors', (done) => {
-    compileComponent()
-      .then(() => {
-        fixture = TestBed.createComponent(ContainerComponent);
-        comp = fixture.componentInstance;
-        comp.errors = mockImportErrorResponse[0].meta.details;
-        fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-error__list'));
-        expect(res.length).toEqual(3);
-        done();
-      });
+    fixture.detectChanges();
+    comp.errorDetails = mockImportErrorResponse[0].meta.details;
+    fixture.detectChanges();
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-error__list'));
+    expect(res.length).toEqual(3);
+    done();
   });
 
   it('Should list the last error as an activity missing error', (done) => {
-    compileComponent()
-      .then(() => {
-        fixture = TestBed.createComponent(ContainerComponent);
-        comp = fixture.componentInstance;
-        comp.errors = mockImportErrorResponse[0].meta.details;
-        fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-error__list-container .flogo-error__content'));
-        const el: HTMLElement = res[2].nativeElement;
-        expect(el.innerHTML).toEqual('IMPORT-ERROR:ACTIVITY_MISSING_CONTENT');
-        done();
-      });
+    fixture.detectChanges();
+    comp.errorDetails = mockImportErrorResponse[0].meta.details;
+    fixture.detectChanges();
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-error__list-container .flogo-error__content'));
+    const el: HTMLElement = res[2].nativeElement;
+    expect(el.innerHTML).toEqual('IMPORT-ERROR:ACTIVITY_MISSING_CONTENT');
+    done();
   });
 });

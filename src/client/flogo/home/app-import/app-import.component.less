@@ -1,8 +1,24 @@
 @import '../../../assets/_mixins';
 @import '../../../assets/_variables';
+@import '../../../assets/uxpl/modal';
+
 @error-header-color: #ee3342;
+
+:host {
+  .uxpl-modal-confirmation;
+  display: inline-block;
+}
+
 .flogo-error__close {
-  .modal__close;
+  color: @pale-gray;
+  position: absolute;
+  top: 0;
+  left: 91%;
+  height: 1.25rem;
+  width: 1.25rem;
+  margin-right: 1.25rem;
+  margin-top: 1.25rem;
+  cursor: pointer;
 }
 
 .flogo-error__head {

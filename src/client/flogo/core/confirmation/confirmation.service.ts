@@ -7,7 +7,7 @@ import { ConfirmationContent } from './confirmation-content';
 @Injectable()
 export class ConfirmationService {
 
-  constructor(private injector: Injector, private overlay: Overlay) { }
+  constructor(private injector: Injector, public overlay: Overlay) { }
 
   openModal<T extends ConfirmationContent>(contentComponent: ComponentType<T>, customTokens?: WeakMap<any, any>): ConfirmationControl {
     const overlayRef = this.createModalOverlay();

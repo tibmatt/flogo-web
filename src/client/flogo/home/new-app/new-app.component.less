@@ -1,18 +1,27 @@
-@import "../../../assets/_variables";
-@import "../../../assets/_mixins";
+@import '../../../assets/_variables';
+@import '../../../assets/uxpl/modal';
+
+:host {
+  .uxpl-modal-confirmation;
+  display: inline-block;
+  width: 535px;
+  max-width: 535px;
+}
 
 .flogo-profile__modal-body {
   text-align: center;
 }
 
 .flogo-profile__close {
-  .modal__close;
-  top: 24px;
-  right: 24px;
-
-  height: 18px;
-  width: 18px;
-
+  color: @pale-gray;
+  position: absolute;
+  top: 0;
+  left: 94%;
+  height: 1.25rem;
+  width: 1.25rem;
+  margin-right: 1.25rem;
+  margin-top: 1.25rem;
+  cursor: pointer;
 }
 
 .flogo-profile__head {
@@ -22,7 +31,7 @@
 }
 
 .flogo-profile__container {
-  padding: 30px 0;
+  padding: 20px;
 
   .flogo-profile__section-wrapper {
     display: flex;
@@ -46,7 +55,7 @@
     }
 
     .flogo-profile__section:nth-of-type(1) {
-      margin-left: 90px;
+      margin-left: 80px;
     }
 
     .flogo-profile__section:nth-of-type(2) {
