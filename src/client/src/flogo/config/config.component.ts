@@ -6,7 +6,7 @@ import { ConfigurationService } from '../core/services/configuration.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { environment } from 'environments/environment';
+import { environment } from '../../environments/environment';
 const SERVER_NAMES = ['engine', 'stateServer', 'flowServer'];
 
 @Component({

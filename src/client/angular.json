@@ -8,22 +8,23 @@
   "projects": {
     "flogo-web": {
       "root": "",
-      "sourceRoot": "",
+      "sourceRoot": "src",
       "projectType": "application",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "../../dist/public",
-            "index": "index.html",
-            "main": "main.ts",
-            "tsConfig": "tsconfig.app.json",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "tsConfig": "src/tsconfig.app.json",
             "preserveSymlinks": true,
-            "polyfills": "polyfills.ts",
+            "polyfills": "src/polyfills.ts",
             "assets": [
+              "src/favicon.ico",
               {
                 "glob": "**/*",
-                "input": "assets",
+                "input": "src/assets",
                 "output": "/assets"
               },
               {
@@ -37,13 +38,8 @@
                 "output": "/assets/min-maps"
               },
               {
-                "glob": "favicon.ico",
-                "input": "",
-                "output": "/"
-              },
-              {
                 "glob": "**/*",
-                "input": "i18n",
+                "input": "src/i18n",
                 "output": "/i18n"
               }
             ],
@@ -52,14 +48,19 @@
               "node_modules/font-awesome/css/font-awesome.min.css",
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
-              "assets/ui-pattern/css/tibco-cloud-ui-pattern.css",
-              "styles.less"
+              "src/assets/ui-pattern/css/tibco-cloud-ui-pattern.css",
+              "src/styles.less"
             ],
             "scripts": [
               "node_modules/lodash/lodash.min.js",
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js"
-            ]
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src"
+              ]
+            },
           },
           "configurations": {
             "production": {
@@ -74,8 +75,8 @@
               "buildOptimizer": true,
               "fileReplacements": [
                 {
-                  "replace": "/environments/environment.ts",
-                  "with": "/environments/environment.prod.ts"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
                 }
               ]
             }
@@ -101,10 +102,10 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "test.ts",
-            "karmaConfig": "./karma.conf.js",
-            "polyfills": "polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
+            "main": "src/test.ts",
+            "karmaConfig": "src/karma.conf.js",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
               "node_modules/lodash/lodash.min.js",
               "node_modules/jquery/dist/jquery.min.js",
@@ -115,13 +116,14 @@
               "node_modules/font-awesome/css/font-awesome.min.css",
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
-              "assets/ui-pattern/css/tibco-cloud-ui-pattern.css",
-              "styles.less"
+              "src/assets/ui-pattern/css/tibco-cloud-ui-pattern.css",
+              "src/styles.less"
             ],
             "assets": [
+              "src/favicon.ico",
               {
                 "glob": "**/*",
-                "input": "assets",
+                "input": "src/assets",
                 "output": "/assets"
               },
               {
@@ -135,24 +137,24 @@
                 "output": "/assets/min-maps"
               },
               {
-                "glob": "favicon.ico",
-                "input": "",
-                "output": "/"
-              },
-              {
                 "glob": "**/*",
-                "input": "i18n",
+                "input": "src/i18n",
                 "output": "/i18n"
               }
-            ]
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src"
+              ]
+            },
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "./tsconfig.app.json",
-              "./tsconfig.spec.json"
+              "src/tsconfig.app.json",
+              "src/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
