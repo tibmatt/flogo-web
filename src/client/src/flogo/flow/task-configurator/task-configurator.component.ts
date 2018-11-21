@@ -22,6 +22,7 @@ import { getFlowMetadata, getInputContext } from '@flogo/flow/core/models/task-c
 import { getStateWhenConfigureChanges } from '../shared/configurator/configurator.selector';
 import {createSaveAction} from '@flogo/flow/task-configurator/models/save-action-creator';
 import {hasTaskWithSameName} from '@flogo/flow/core/models/unique-task-name';
+import { AppState } from '@flogo/flow/core/state/app.state';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',
@@ -87,7 +88,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   private destroy$ = SingleEmissionSubject.create();
 
   constructor(
-    private store: Store<FlowState>,
+    private store: Store<AppState>,
     private _flowService: FlowsService,
     private mapperControllerFactory: MapperControllerFactory,
     private notificationsService: NotificationsService,
@@ -98,7 +99,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store
-      .pipe<FlowState>(
+      .pipe(
         getStateWhenConfigureChanges([FLOGO_TASK_TYPE.TASK, FLOGO_TASK_TYPE.TASK_SUB_PROC, FLOGO_TASK_TYPE.TASK_ITERATOR]),
         takeUntil(this.destroy$),
       )

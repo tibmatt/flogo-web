@@ -56,6 +56,7 @@ export class NotificationsService {
       // in case route changes before timeout, notification should be removed by route cleaner
       operators.push(takeUntil(this.getNextRouteChange()));
     }
+    // @ts-ignore https://github.com/ReactiveX/rxjs/issues/3989
     timer(waitMs)
       .pipe(...operators)
       .subscribe(() => this.removeNotification(notification));

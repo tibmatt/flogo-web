@@ -6,8 +6,6 @@ import { select, Store } from '@ngrx/store';
 import {
   Action,
   ActionBase,
-  FLOGO_TASK_TYPE,
-  GraphNode,
   ItemActivityTask,
   ItemBranch,
   ItemSubflow,
@@ -15,6 +13,7 @@ import {
 } from '@flogo/core';
 import { isMapperActivity } from '@flogo/shared/utils';
 
+import { AppState } from '@flogo/flow/core/state/app.state';
 import { FlowState, FlowSelectors, FlowActions } from '@flogo/flow/core/state';
 import { HandlerType } from '@flogo/flow/core/models';
 import { uniqueTaskName } from '@flogo/flow/core/models/unique-task-name';
@@ -37,7 +36,7 @@ export interface SaveBranchConfigEventData {
 }
 
 export function createSaveAction(
-  store: Store<FlowState>,
+  store: Store<AppState>,
   saveData: SaveTaskConfigEventData
 ): Observable<FlowActions.CommitItemConfiguration> {
   return store.
@@ -48,7 +47,7 @@ export function createSaveAction(
   );
 }
 export function createSaveBranchAction(
-  store: Store<FlowState>,
+  store: Store<AppState>,
   saveData: SaveBranchConfigEventData
 ): Observable<FlowActions.ItemUpdated> {
   return store.

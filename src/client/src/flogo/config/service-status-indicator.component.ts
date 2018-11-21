@@ -21,7 +21,7 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
   status: string = null;
   statusCode: any = null;
 
-  private configChangeSubject: BehaviorSubject<any> = null;
+  private configChangeSubject: BehaviorSubject<ServiceUrlConfig> = null;
   private subscription: Subscription = null;
   private colors: any = {
     'online': 'green',
@@ -41,7 +41,7 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
 
     this.subscription = combineLatest(configChangeStream, interval(PING_INTERVAL_MS))
         .pipe(
-          switchMap(([config]: [ServiceUrlConfig]) => this.configService.pingService(config)),
+          switchMap(([config]: [ServiceUrlConfig, any]) => this.configService.pingService(config)),
           catchError((error: any) => {
             this.statusCode = error.status;
             if (error.status === 500 || error.status === 502) {

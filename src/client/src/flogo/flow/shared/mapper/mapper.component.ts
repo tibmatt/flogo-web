@@ -6,7 +6,6 @@ import {
   catchError,
   debounceTime,
   distinctUntilChanged,
-  distinctUntilKeyChanged,
   first,
   map,
   share,
@@ -166,7 +165,7 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
 
     this.mapperService
       .state$.pipe(
-        distinctUntilKeyChanged('context'),
+        distinctUntilChanged(),
         takeUntil(stop$),
         first(),
       )

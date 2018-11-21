@@ -172,7 +172,7 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
       this.popoverComponentRef = this.popoverRef.attach(this.contentPortal);
       // we need to manually trigger a position recalculation anytime the help section appears or dissapears because
       // it forces a change in the distribution of the container potentially clipping the autosuggestion list outside the view
-      const reposition = () => setTimeout(this.popoverRef.updatePosition());
+      const reposition = () => setTimeout(() => this.popoverRef.updatePosition());
       merge(
         this.helpVisibilityChanges(),
         this.resultsContainerVisibilityChanges()

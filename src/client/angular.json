@@ -60,7 +60,7 @@
               "includePaths": [
                 "src"
               ]
-            },
+            }
           },
           "configurations": {
             "production": {
@@ -146,7 +146,7 @@
               "includePaths": [
                 "src"
               ]
-            },
+            }
           }
         },
         "lint": {

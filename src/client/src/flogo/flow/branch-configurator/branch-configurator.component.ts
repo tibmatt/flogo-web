@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {FlowState} from '@flogo/flow/core/state';
+import { FlowState } from '@flogo/flow/core/state';
+import { AppState } from '@flogo/flow/core/state/app.state';
 import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
 import {FLOGO_TASK_TYPE, GraphNode, ItemBranch, LanguageService} from '@flogo/core';
 import {MapperController, MapperControllerFactory} from '@flogo/flow/shared/mapper';
@@ -52,7 +53,7 @@ export class BranchConfiguratorComponent implements OnInit {
   private destroy$ = SingleEmissionSubject.create();
 
   constructor(
-    private store: Store<FlowState>,
+    private store: Store<AppState>,
     private _flowService: FlowsService,
     private translate: LanguageService,
     private mapperControllerFactory: MapperControllerFactory,
@@ -61,7 +62,7 @@ export class BranchConfiguratorComponent implements OnInit {
 
   ngOnInit() {
     this.store
-      .pipe<FlowState>(
+      .pipe(
         getStateWhenConfigureChanges([FLOGO_TASK_TYPE.TASK_BRANCH]),
         takeUntil(this.destroy$),
       )
