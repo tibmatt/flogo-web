@@ -10,11 +10,10 @@
       "prefix": "flogo-web",
       "architect": {
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@nrwl/builders:jest",
           "options": {
-            "main": "libs/parser/src/test.ts",
-            "tsConfig": "libs/parser/tsconfig.spec.json",
-            "karmaConfig": "libs/parser/karma.conf.js"
+            "jestConfig": "libs/parser/jest.config.js",
+            "tsConfig": "libs/parser/tsconfig.spec.json"
           }
         },
         "lint": {

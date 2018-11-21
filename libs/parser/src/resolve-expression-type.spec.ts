@@ -1,12 +1,11 @@
-import { expect } from 'chai';
 import { resolveExpressionType } from './resolve-expression-type';
 
-describe('Parser Type Resolver', function () {
+describe('Parser Type Resolver', () => {
 
   function assertParsedType(expectedType, expr) {
-    it(`For ${expr}`, () => {
+    test(`For ${expr}`, () => {
       const parsedType = resolveExpressionType(expr);
-      expect(parsedType).to.equal(expectedType, `Expected ${expectedType} but got ${parsedType}`);
+      expect(parsedType).toBe(expectedType);
     });
   }
 
