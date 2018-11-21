@@ -9,7 +9,14 @@
   },
   "projects": {
     "parser": {
-      "tags": ["shared"]
+      "tags": [
+        "shared"
+      ]
+    },
+    "server": {
+      "tags": [
+        "server"
+      ]
     }
   }
 }
