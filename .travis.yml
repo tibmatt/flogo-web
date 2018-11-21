@@ -10,29 +10,17 @@ cache:
 # Handle git submodules yourself
 git:
   submodules: false
-before_install:
- - yarn --cwd src/parser installbuild
- - yarn submodules:link
 install: true
 
 jobs:
   fast_finish: true
   include:
     - stage: test
-      name: "Code linting"
-      install: yarn --cwd src/client install
-      script: yarn --cwd src/client travis:lint
-    - stage: test
-      name: "Unit tests"
-      addons:
-        chrome: stable
-      install:
-        - yarn --cwd src/client install
-        - yarn --cwd src/server install
+      name: "Unit tests and code checks"
+      install: yarn install --frozen-lockfile --non-interactive --audit --silent
       script:
-        - yarn test:parser --reporter dot
-        - yarn test:server --reporter dot
-        - yarn --cwd src/client travis:test --reporters dots
+        - yarn test
+        - yarn lint
     - stage: build
       language: bash
       node_js:

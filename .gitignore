@@ -1,43 +1,45 @@
-## Intellij
-.idea/
-*.ipr
-*.iml
-*.iws
+# See http://help.github.com/ignore-files/ for more about ignoring files.
 
-## Atom Start
-atom.sh
+# compiled output
+/dist
+/tmp
+/out-tsc
 
-# Build dirs
-submodules/**/build/
-submodules/**/out/
+# dependencies
+/node_modules
+**/node_modules
 
-## OS X Resources
-.DS_Store
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-bin/
-pkg/
-**/vendor/src/
-**/vendor/manifest
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
-tags
-
-# ignore node/grunt dependency directories
-node_modules/
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
 npm-debug.log
 yarn-error.log
+testem.log
+/typings
 
-# ignore bower depedency directories
-bower_components/
-
-# temp directories
-.tmp/
-.sass-cache/
-
-# ignore files/folder in dist
-**/dist
+# System Files
+.DS_Store
+Thumbs.db
 
 .env
-.vscode/
 .build-cache
 submodules/
 Dockerfile
