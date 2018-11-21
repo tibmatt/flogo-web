@@ -191,15 +191,21 @@ const WhiteSpace = createToken({
   line_breaks: true,
 });
 
+const Lookup = createToken({
+  name: 'Lookup',
+  label: '$',
+  pattern: /\$/,
+});
+
 const RESOLVER_PATTERN = new RegExp(`[_${UnicodeCategory.Letter}][_\.${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`);
 function matchResolverIdentifier(text: string, startOffset?: number, tokens?: IToken[]) {
   if (tokens.length < 3) {
     return null;
   }
   const lastTokenIdx = tokens.length - 1;
-  const isLexingResolver = tokenMatcher(tokens[lastTokenIdx], Token.LSquare)
-    && tokenMatcher(tokens[lastTokenIdx - 1], Token.IdentifierName)
-    &&  tokenMatcher(tokens[lastTokenIdx - 2], Token.Lookup);
+  const isLexingResolver = tokenMatcher(tokens[lastTokenIdx], LSquare)
+    && tokenMatcher(tokens[lastTokenIdx - 1], IdentifierName)
+    &&  tokenMatcher(tokens[lastTokenIdx - 2], Lookup);
   if (isLexingResolver) {
     return RESOLVER_PATTERN.exec(text.substr(startOffset));
   }
@@ -211,12 +217,6 @@ const ResolverIdentifier = createToken({
   label: 'ResolverIdentifier',
   pattern: { exec: matchResolverIdentifier },
   line_breaks: false,
-});
-
-const Lookup = createToken({
-  name: 'Lookup',
-  label: '$',
-  pattern: /\$/,
 });
 
 const BinaryOp = createToken({

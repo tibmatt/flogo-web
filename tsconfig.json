@@ -1,21 +1,28 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./dist/cjs",
     "sourceMap": true,
-    "baseUrl": "./",
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es5",
-    "module": "commonjs",
     "typeRoots": [
       "node_modules/@types"
     ],
     "lib": [
       "es2017",
       "dom"
-    ]
-  }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@flogo-web/parser": [
+        "libs/parser/src/index.ts"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }
