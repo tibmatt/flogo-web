@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { ActionsImporter } from './actions-importer';
 
 describe('importer.device.ActionsImporter', () => {
@@ -36,15 +35,14 @@ describe('importer.device.ActionsImporter', () => {
       expect(() => {
         formattedAction = deviceActionsImporter
           .formatAction({ id: 'a', name: 'my action' });
-      }).to.not.throw();
-      expect(formattedAction)
-        .to.deep.include({ id: 'a', name: 'my action' })
+      }).not.toThrowError();
+      expect(formattedAction).toMatchObject({ id: 'a', name: 'my action' })
     });
 
     test('should set the id as name if name is not provided', () => {
       const formattedAction = deviceActionsImporter
         .formatAction({ id: 'myCoolAction', data: {} });
-      expect(formattedAction.name).to.equal('myCoolAction');
+      expect(formattedAction.name).toBe('myCoolAction');
     });
 
     test('should convert tasks and links into a root task', () => {
@@ -61,14 +59,12 @@ describe('importer.device.ActionsImporter', () => {
         },
       };
       const formattedAction = deviceActionsImporter.formatAction(actionToTest);
-      expect(formattedAction)
-        .to.deep.include({ id: 'a', name: 'my action' })
-        .and.to.have.keys('tasks', 'links');
+      expect(formattedAction).toEqual(expect.arrayContaining(['tasks', 'links']));
 
-      expect(formattedAction.links).to.be.an('array').and.to.deep.include(mockLink);
-      expect(formattedAction.tasks).to.be.an('array').of.length(2);
+      expect(Array.isArray(formattedAction.links)).toBe(true).and.toContain(mockLink);
+      expect(formattedAction.tasks).to.be.an('array').toHaveLength(2);
       const taskIds = formattedAction.tasks.map(task => task.id);
-      expect(taskIds).to.have.members([2, 3]);
+      expect(taskIds).toEqual(expect.arrayContaining([2, 3]));
     });
   });
 
@@ -92,24 +88,22 @@ describe('importer.device.ActionsImporter', () => {
     });
 
     test('should correctly map a task to the internal model', () => {
-      expect(context.mappedTask).to.deep.include(context.taskProps);
-      expect(context.mappedTask.attributes).to.be.an('array').with.length(3);
+      expect(context.mappedTask).toContain(context.taskProps);
+      expect(context.mappedTask.attributes).to.be.an('array').toHaveLength(3);
     });
 
     test(
       'should correctly match the task attributes with its corresponding activity schema',
       () => {
-        expect(context.mappedTask.attributes)
-          .to.deep.include({ name: 'pin', type: 'int', value: 25 })
-          .and.to.deep.include({ name: 'digital', type: 'boolean', value: true });
+        expect(context.mappedTask.attributes).toMatchObject({ name: 'pin', type: 'int', value: 25 })
+          .and.toMatchObject({ name: 'digital', type: 'boolean', value: true });
       }
     );
 
     test(
       'should add those attributes defined in the activity schema but not provided by the activity',
       () => {
-        expect(context.mappedTask.attributes)
-          .to.deep.include({ name: 'value', type: 'int', value: '' });
+        expect(context.mappedTask.attributes).toMatchObject({ name: 'value', type: 'int', value: '' });
       }
     );
   });

@@ -1,5 +1,4 @@
 import Ajv from 'ajv';
-import { expect } from 'chai';
 import { SCHEMA_NAMESPACE as V1_SCHEMA_NAMESPACE } from '../schema-namespace';
 
 class Asserter {
@@ -12,7 +11,7 @@ class Asserter {
    * @return {Asserter}
    */
   assertIsValid() {
-    expect(this.isValid).to.equal(true);
+    expect(this.isValid).toBe(true);
     return this;
   }
 
@@ -20,7 +19,7 @@ class Asserter {
    * @return {Asserter}
    */
   assertIsInvalid() {
-    expect(this.isValid).to.equal(false);
+    expect(this.isValid).toBe(false);
     return this;
   }
 
@@ -28,7 +27,7 @@ class Asserter {
    * @return {Asserter}
    */
   assertHasErrorForRequiredProp(propertyName) {
-    expect(this.errors[0]).to.deep.include({
+    expect(this.errors[0]).toMatchObject({
       keyword: 'required',
       params: { missingProperty: propertyName },
     });
@@ -39,7 +38,7 @@ class Asserter {
    * @return {Asserter}
    */
   assertHasErrorForEmptyProp(propertyName) {
-    expect(this.errors[0]).to.deep.include({
+    expect(this.errors[0]).toMatchObject({
       keyword: 'minLength',
       dataPath: `.${propertyName}`,
     });
@@ -47,7 +46,7 @@ class Asserter {
   }
 
   assertHasErrorForMismatchingPropertyType(propertyName, expectedType) {
-    expect(this.errors[0]).to.deep.include({
+    expect(this.errors[0]).toMatchObject({
       dataPath: `.${propertyName}`,
       keyword: 'type',
       params: {type: expectedType},
@@ -55,7 +54,7 @@ class Asserter {
   }
 
   assertHasErrorForMismatchingPattern(propertyName) {
-    expect(this.errors[0]).to.deep.include({
+    expect(this.errors[0]).toMatchObject({
       keyword: 'pattern',
       dataPath: `.${propertyName}`,
 
@@ -63,7 +62,7 @@ class Asserter {
   }
 
   assertHasErrorForMismatchingPropertyEnum(propertyName, expectedType) {
-    expect(this.errors[0]).to.deep.include({
+    expect(this.errors[0]).toMatchObject({
       dataPath: `.${propertyName}`,
       keyword: 'enum',
       params: {allowedValues: expectedType},

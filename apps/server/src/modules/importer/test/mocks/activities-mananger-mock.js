@@ -1,4 +1,4 @@
-const activities = require('../samples/activities');
+const activities = require('../samples/activities.json');
 
 export class ActivitiesManagerMock {
   static find() {

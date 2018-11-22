@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { StandardTaskConverter } from './standard-task-converter';
 
 describe('importer.standard.StandardTaskConverter', () => {
@@ -21,12 +20,11 @@ describe('importer.standard.StandardTaskConverter', () => {
       const taskConverter = new StandardTaskConverter(sourceTask, activitySchema);
 
       const convertedAttributes = taskConverter.convertAttributes();
-      expect(convertedAttributes).to.have.length(1);
+      expect(convertedAttributes).toHaveLength(1);
       expect(
-        convertedAttributes.map(attribute => [attribute.name, attribute.value]))
-        .to.deep.include.members([
+        convertedAttributes.map(attribute => [attribute.name, attribute.value])).toEqual(expect.arrayContaining([
           ['baz', 'hello world'],
-        ]);
+        ]));
     });
 
     test(
@@ -49,12 +47,11 @@ describe('importer.standard.StandardTaskConverter', () => {
         const taskConverter = new StandardTaskConverter(sourceTask, activitySchema);
 
         const convertedAttributes = taskConverter.convertAttributes();
-        expect(convertedAttributes).to.have.length(1);
+        expect(convertedAttributes).toHaveLength(1);
         expect(
-          convertedAttributes.map(attribute => [attribute.name, attribute.value]))
-          .to.deep.include.members([
+          convertedAttributes.map(attribute => [attribute.name, attribute.value])).toEqual(expect.arrayContaining([
             ['baz', 'hello world']
-          ]);
+          ]));
       }
     );
   });

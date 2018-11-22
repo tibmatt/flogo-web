@@ -1,11 +1,10 @@
-import { expect } from 'chai';
 import cloneDeep from 'lodash/cloneDeep';
 
-import { makeAjvContext } from './test-utils.spec';
+import { makeAjvContext } from './test-utils';
 
-const triggerSchema = require('../trigger');
-const commonSchema = require('../common');
-const flowSchema = require('../flow');
+const triggerSchema = require('../trigger.json');
+const commonSchema = require('../common.json');
+const flowSchema = require('../flow.json');
 
 describe('JSONSchema: Flow', () => {
   let testContext;
@@ -39,8 +38,8 @@ describe('JSONSchema: Flow', () => {
     };
     const flowUnderTest = cloneDeep(flow);
     const isValid = testContext.ajvContext.validate(flowUnderTest);
-    expect(isValid).to.equal(true);
-    expect(flowUnderTest).to.deep.include(flow);
+    expect(isValid).toBe(true);
+    expect(flowUnderTest).toMatchObject(flow);
   });
 
   describe('#/definitions', () => {
@@ -83,17 +82,17 @@ describe('JSONSchema: Flow', () => {
 
       test('should accept input mappings', () => {
         const action = {input: [{...validSchemas.metadataItem}]};
-        expect(metadataValidator.validate(action)).to.equal(true);
+        expect(metadataValidator.validate(action)).toBe(true);
       });
 
       test('should accept output mappings', () => {
         const action = {output: [{...validSchemas.metadataItem}]};
-        expect(metadataValidator.validate(action)).to.equal(true);
+        expect(metadataValidator.validate(action)).toBe(true);
       });
 
       test('should accept both input and output mappings', () => {
         const action = {...validSchemas.metadata};
-        expect(metadataValidator.validate(action)).to.equal(true);
+        expect(metadataValidator.validate(action)).toBe(true);
       });
     });
 
@@ -146,7 +145,7 @@ describe('JSONSchema: Flow', () => {
         const originalTask = {...validSchemas.task, settings};
         const taskUnderTest = cloneDeep(originalTask);
         taskValidator.validate(taskUnderTest);
-        expect(taskUnderTest).to.deep.include(originalTask);
+        expect(taskUnderTest).toMatchObject(originalTask);
       });
 
       ['id', 'activity'].forEach(requiredProp => {

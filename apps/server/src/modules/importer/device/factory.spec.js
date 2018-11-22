@@ -1,5 +1,4 @@
 import sinon from 'sinon';
-import { expect } from 'chai';
 import { DeviceAppImporterFactory } from './factory';
 
 describe('importer.device.factory', () => {
@@ -23,14 +22,12 @@ describe('importer.device.factory', () => {
 
       const contributions = await deviceFactory.loadContributions();
 
-      expect(contributions).to.have.property('activities')
-        .of.length(3)
+      expect(contributions).to.have.property('activities').toHaveLength(3)
         .that.deep.contains({ ref: 'activity1', type: 'flogo:device:activity' })
         .and.deep.contains({ ref: 'activity2', type: 'flogo:device:activity' })
         .and.deep.contains({ ref: 'activity3', type: 'flogo:device:activity' });
 
-      expect(contributions).to.have.property('triggers')
-        .of.length(2)
+      expect(contributions).to.have.property('triggers').toHaveLength(2)
         .that.deep.contains({ ref: 'trigger1', type: 'flogo:device:trigger' })
         .and.deep.contains({ ref: 'trigger2', type: 'flogo:device:trigger' });
     }

@@ -1,9 +1,7 @@
-import { expect } from 'chai';
+import { makeAjvContext } from './test-utils';
 
-import { makeAjvContext } from './test-utils.spec';
-
-const triggerSchema = require('../trigger');
-const commonSchema = require('../common');
+const triggerSchema = require('../trigger.json');
+const commonSchema = require('../common.json');
 
 describe('JSONSchema: Trigger', () => {
   let testContext;
@@ -45,7 +43,7 @@ describe('JSONSchema: Trigger', () => {
 
   test('should allow correct triggers', () => {
     const isValid = testContext.ajvContext.validate(validTrigger);
-    expect(isValid).to.equal(true);
+    expect(isValid).toBe(true);
   });
 
   test('handlers should be an array', () => {
@@ -64,17 +62,17 @@ describe('JSONSchema: Trigger', () => {
       });
 
       test('should not allow empty refs', () => {
-        expect(validate({})).to.equal(false);
-        expect(validate(null)).to.equal(false);
+        expect(validate({})).toBe(false);
+        expect(validate(null)).toBe(false);
       });
 
       test('flowURI is required', () => {
-        expect(validate({ flowURI: '' })).to.equal(false);
-        expect(validate({ flowURI: null })).to.equal(false);
+        expect(validate({ flowURI: '' })).toBe(false);
+        expect(validate({ flowURI: null })).toBe(false);
       });
 
       test('should allow correct values', () => {
-        expect(validate({ flowURI: 'res://flow:example' })).to.equal(true);
+        expect(validate({ flowURI: 'res://flow:example' })).toBe(true);
       });
     });
 
@@ -94,17 +92,17 @@ describe('JSONSchema: Trigger', () => {
 
       test('should accept input mappings', () => {
         const action = { ...actionWithoutMappings, mappings: { input: [{ ...validMapping }] } };
-        expect(validator.validate(action)).to.equal(true);
+        expect(validator.validate(action)).toBe(true);
       });
 
       test('should accept output mappings', () => {
         const action = { ...actionWithoutMappings, mappings: { output: [{ ...validMapping }] } };
-        expect(validator.validate(action)).to.equal(true);
+        expect(validator.validate(action)).toBe(true);
       });
 
       test('should accept both input and output mappings', () => {
         const action = { ...validAction };
-        expect(validator.validate(action)).to.equal(true);
+        expect(validator.validate(action)).toBe(true);
       });
     });
 
@@ -123,7 +121,7 @@ describe('JSONSchema: Trigger', () => {
 
       test('should accept empty settings', () => {
         const isValid = validator.validate({ action: { ...validAction }, settings: {} });
-        expect(isValid).to.equal(true);
+        expect(isValid).toBe(true);
       });
 
       test('should accept any settings', () => {
@@ -135,7 +133,7 @@ describe('JSONSchema: Trigger', () => {
             c: { foo: 'bar' },
           },
         });
-        expect(isValid).to.equal(true);
+        expect(isValid).toBe(true);
       });
 
       test(
@@ -155,9 +153,9 @@ describe('JSONSchema: Trigger', () => {
             settings: { ...settings },
           };
           const isValid = validateAndRemoveAdditional(actionUnderTest);
-          expect(isValid).to.equal(true);
+          expect(isValid).toBe(true);
           expect(actionUnderTest).to.not.have.key('unknownProp');
-          expect(actionUnderTest.settings).to.deep.include(settings);
+          expect(actionUnderTest.settings).toContain(settings);
         }
       );
     });

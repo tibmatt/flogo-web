@@ -1,8 +1,6 @@
-import { expect } from 'chai';
+import { makeAjvContext } from './test-utils';
 
-import { makeAjvContext } from './test-utils.spec';
-
-const commonSchema = require('../common');
+const commonSchema = require('../common.json');
 
 describe('JSONSchema: Common', () => {
   let testContext;
@@ -21,7 +19,7 @@ describe('JSONSchema: Common', () => {
       test(`#/definitions/${defName} rejects unknown types`, () => {
         const validateValueType = testContext.ajvContext.compileDefinitionSubschema(defName);
         const isValid = validateValueType('somethingelse');
-        expect(isValid).to.equal(false);
+        expect(isValid).toBe(false);
       });
     });
   });
@@ -38,7 +36,7 @@ describe('JSONSchema: Common', () => {
         type: 'literal',
         mapTo: 'someProp',
         value: 4,
-      })).to.equal(true);
+      })).toBe(true);
     });
 
     test('should reject incomplete mappings', () => {
@@ -49,8 +47,7 @@ describe('JSONSchema: Common', () => {
         { type: 'expression', mapTo: 3, value: null },
       ];
       incompleteMappings
-        .forEach((mapping, i) => expect(isValidMapping(mapping))
-          .to.equal(false, `Expected mapping with index ${i} to be invalid`));
+        .forEach((mapping, i) => expect(isValidMapping(mapping)).toBe(false));
     });
   });
 
@@ -65,18 +62,18 @@ describe('JSONSchema: Common', () => {
       expect(validate([
         { type: 'literal', mapTo: 'someProp', value: 5 },
         { type: 'expression', mapTo: 'someOtherProp', value: 'somexpr' },
-      ])).to.equal(true);
+      ])).toBe(true);
     });
 
     test('should reject incorrect mappings', () => {
       expect(validate([
         { type: 'expression', mapTo: 'someProp', value: 'someexpr' },
         { im: 'incorrect' },
-      ])).to.equal(false);
+      ])).toBe(false);
     });
 
     test('should accept empty collections', () => {
-      expect(validate([])).to.equal(true);
+      expect(validate([])).toBe(true);
     });
   });
 });

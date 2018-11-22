@@ -1,4 +1,4 @@
-const commonApp = require('../samples/common-app-details');
+const commonApp = require('../samples/common-app-details.json');
 
 export class ActionsManagerMock {
   static create(appId, actionData) {

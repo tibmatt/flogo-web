@@ -1,5 +1,4 @@
 import sinon from 'sinon';
-import { expect } from 'chai';
 import { AbstractTriggersHandlersImporter } from './abstract-trigger-handlers-importer';
 
 describe('importer.common.AbstractTriggerHandlersImporter', () => {
@@ -60,22 +59,21 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
     });
 
     test('should call reconcile handlers for every trigger', () => {
-      expect(reconcileHandlerStub.callCount).to.equal(8);
+      expect(reconcileHandlerStub.callCount).toBe(8);
       expect(reconcileHandlerStub.alwaysCalledWith(['mockHandlers']));
     });
 
     test('should process all triggers', () => {
-      expect(result).to.have.length(2);
-      expect(result.map(group => group.trigger.id))
-        .to.deep.equal(['trigger1', 'trigger2']);
+      expect(result).toHaveLength(2);
+      expect(result.map(group => group.trigger.id)).toEqual(['trigger1', 'trigger2']);
     });
 
     test('should omit dangling handlers (not linked to an action)', () => {
       const pluckActionIdsFromHandlers = handlerGroup => handlerGroup.map(h => h.actionId);
       const actionIdGroups = result.map(group => pluckActionIdsFromHandlers(group.reconciledHandlers));
-      expect(actionIdGroups).to.have.length(2);
+      expect(actionIdGroups).toHaveLength(2);
       actionIdGroups.forEach(group => {
-        expect(group).to.deep.equal(['actionA', 'actionB']);
+        expect(group).toEqual(['actionA', 'actionB']);
       });
     });
   });
@@ -89,14 +87,14 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
       ];
       linkedHandlers.forEach(handler => {
         const reconciledHandler = importer.reconcileHandlerWithAction(handler);
-        expect(reconciledHandler).to.be.ok;
-        expect(reconciledHandler.actionId).to.equal(`${handler.actionId}-stored`);
+        expect(reconciledHandler).toBeTruthy();
+        expect(reconciledHandler.actionId).toBe(`${handler.actionId}-stored`);
       });
     });
 
     test('should handle dangling handlers', () => {
       const danglingHandler = { id: 'x-1', actionId: '??' };
-      expect(importer.reconcileHandlerWithAction(danglingHandler).actionId).to.be.a('null');
+      expect(importer.reconcileHandlerWithAction(danglingHandler).actionId).toBeNull();
     });
   });
 
@@ -107,14 +105,13 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
       { trigger: { id: 'trigger1' }, reconciledHandlers: [{ actionId: 'a-stored', handler: {} }] },
       { trigger: { id: 'trigger2' }, reconciledHandlers: [{ actionId: 'b-stored', handler: {} }] },
     ]);
-    expect(storeTriggersSpy.callCount).to.equal(2);
+    expect(storeTriggersSpy.callCount).toBe(2);
     const callArgs = storeHandlersStub.getCalls().map(call => {
       const [triggerId, [handlerInfo]] = call.args;
       return [triggerId, handlerInfo.actionId];
     });
-    expect(callArgs)
-      .to.deep.include(['trigger1', 'a-stored'])
-      .and.to.deep.include(['trigger2', 'b-stored']);
+    expect(callArgs).toContain(['trigger1', 'a-stored'])
+      .and.toContain(['trigger2', 'b-stored']);
   });
 
   test('#storeHandlers', async () => {
@@ -123,13 +120,12 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
       { actionId: 'actionA', handler: { id: 'handlerA' } },
       { actionId: 'actionB', handler: { id: 'handlerB' } },
     ]);
-    expect(handlerStoreSpy.callCount).to.equal(2);
+    expect(handlerStoreSpy.callCount).toBe(2);
     const callArgs = handlerStoreSpy.getCalls().map(call => {
       const [triggerId, actionId, { id: handlerId }] = call.args;
       return [triggerId, actionId, handlerId];
     });
-    expect(callArgs)
-      .to.deep.include(['triggerX', 'actionA', 'handlerA'])
-      .and.to.deep.include(['triggerX', 'actionB', 'handlerB']);
+    expect(callArgs).toContain(['triggerX', 'actionA', 'handlerA'])
+      .and.toContain(['triggerX', 'actionB', 'handlerB']);
   });
 });

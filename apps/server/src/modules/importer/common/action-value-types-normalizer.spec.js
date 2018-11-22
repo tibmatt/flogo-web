@@ -1,5 +1,4 @@
 import cloneDeep from 'lodash/cloneDeep';
-import { expect } from 'chai';
 
 import { actionValueTypesNormalizer } from './action-value-type-normalizer';
 
@@ -57,43 +56,40 @@ describe('importer.common.actionValueTypesNormalizer', () => {
   test('should correctly normalize metadata inputs and outputs', () => {
     const inputs = extractValues(normalizedAction.metadata.input);
     const outputs = extractValues(normalizedAction.metadata.output);
-    expect(inputs).to.have.deep.members([
+    expect(inputs).toEqual(expect.arrayContaining([
       { in1: 'any' },
       { in2: 'integer' },
       { in3: 'string' },
-    ]);
-    expect(outputs).to.have.deep.members([
+    ]));
+    expect(outputs).toEqual(expect.arrayContaining([
       { out1: 'integer' },
       { out2: 'long' },
-    ]);
+    ]));
   });
 
   test('should correctly normalize task value types for root task', () => {
     const taskAttributeTypes = extractTaskHandlerAttributeTypes('rootTask');
     const [task1Types, task2Types] = taskAttributeTypes;
-    expect(task1Types).to.have.deep.members([
+    expect(task1Types).toEqual(expect.arrayContaining([
       { attr1: 'double' },
       { attr2: 'complexObject' },
-    ]);
-    expect(task2Types).to.have.deep.members([
+    ]));
+    expect(task2Types).toEqual(expect.arrayContaining([
       { attr1: 'double' },
       { attr2: 'complexObject' },
       { attr3: 'any' },
-    ]);
+    ]));
   });
 
-  test(
-    'should correctly normalize task value types for error task',
-    () => {
-      const taskAttributeTypes = extractTaskHandlerAttributeTypes('errorHandler');
-      const [taskTypes] = taskAttributeTypes;
-      expect(taskTypes).to.have.deep.members([
-        { attr1: 'array' },
-        { attr2: 'params' },
-        { attr3: 'integer' },
-      ]);
-    }
-  );
+  test('should correctly normalize task value types for error task', () => {
+    const taskAttributeTypes = extractTaskHandlerAttributeTypes('errorHandler');
+    const [taskTypes] = taskAttributeTypes;
+    expect(taskTypes).toEqual(expect.arrayContaining([
+      { attr1: 'array' },
+      { attr2: 'params' },
+      { attr3: 'integer' },
+    ]));
+  });
 
   function extractTaskHandlerAttributeTypes(handlerName) {
     let handler;

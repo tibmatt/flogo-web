@@ -1,4 +1,4 @@
-const deviceContribs = require('../samples/device-contribs');
+const deviceContribs = require('../samples/device-contribs.json');
 
 export class ContribManagerMock {
   static find() {

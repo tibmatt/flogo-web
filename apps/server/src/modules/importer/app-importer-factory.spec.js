@@ -1,5 +1,4 @@
 import sinon from 'sinon';
-import { expect } from 'chai';
 import { DeviceAppImporterFactory } from './device/factory';
 import { LegacyAppImporterFactory } from './legacy/factory';
 import { AppImporterFactory } from './app-importer-factory';
@@ -26,14 +25,14 @@ describe('importer.AppImporterFactory', () => {
     test(
       '#isLegacyApp should correctly determine it is a standard app',
       async () => {
-        expect(appImporterFactory.isStandardApp(standardApp)).to.equal(true);
+        expect(appImporterFactory.isStandardApp(standardApp)).toBe(true);
       }
     );
 
     test('#isStandardApp should accept only appModel 1.0.0', async () => {
       ['', '1.2.4', undefined, 1, 'xyx'].forEach(appModelTestVal =>
-        expect(appImporterFactory.isStandardApp({ appModel: appModelTestVal })).not.to.equal(true));
-      expect(appImporterFactory.isStandardApp({})).not.to.equal(true);
+        expect(appImporterFactory.isStandardApp({ appModel: appModelTestVal })).not.toBe(true));
+      expect(appImporterFactory.isStandardApp({})).not.toBe(true);
     });
 
     test(
@@ -50,7 +49,7 @@ describe('importer.AppImporterFactory', () => {
     test(
       '#isLegacyApp should correctly determine it is a legacy app',
       async () => {
-        expect(appImporterFactory.isLegacyApp(legacyApp)).to.equal(true);
+        expect(appImporterFactory.isLegacyApp(legacyApp)).toBe(true);
       }
     );
 
@@ -68,7 +67,7 @@ describe('importer.AppImporterFactory', () => {
     test(
       '#isDeviceApp should correctly determine it is a device app',
       async () => {
-        expect(appImporterFactory.isDeviceApp(deviceApp)).to.equal(true);
+        expect(appImporterFactory.isDeviceApp(deviceApp)).toBe(true);
       }
     );
 
@@ -85,8 +84,8 @@ describe('importer.AppImporterFactory', () => {
       .stub(appImporterFactory, factorySelector)
       .returns({ id: factorySelector });
     const dependendenciesFactory = appImporterFactory.getDependenciesFactory(testApp);
-    expect(dependendenciesFactory.id).to.equal(factorySelector);
-    expect(dependenciesFactoryCreator.calledOnce).to.equal(true);
+    expect(dependendenciesFactory.id).toBe(factorySelector);
+    expect(dependenciesFactoryCreator.calledOnce).toBe(true);
   }
 
   function createTestContext(sandboxInstance) {

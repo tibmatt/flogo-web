@@ -1,5 +1,4 @@
 import sinon from 'sinon';
-import { expect } from 'chai';
 import { DeviceFormatter } from './device-formatter';
 
 describe('exporter.formatters.DeviceFormatter', () => {
@@ -35,15 +34,15 @@ describe('exporter.formatters.DeviceFormatter', () => {
     };
 
     const triggers = appResult.triggers;
-    expect(triggers).to.be.an('array').of.length(3);
-    triggers.forEach(trigger => expect(trigger.handlers).to.have.length(1));
+    expect(triggers).to.be.an('array').toHaveLength(3);
+    triggers.forEach(trigger => expect(trigger.handlers).toHaveLength(1));
 
     const { triggers: triggersOfTypeX, handlers: handlersOfTypeX } = infoForTriggerWithNameThatStartsWith('triggerX');
-    expect(triggersOfTypeX).to.have.length(2);
-    expect(handlersOfTypeX).to.deep.equal(['handlerX1', 'handlerX2']);
+    expect(triggersOfTypeX).toHaveLength(2);
+    expect(handlersOfTypeX).toEqual(['handlerX1', 'handlerX2']);
 
     const { triggers: triggersOfTypeY, handlers: handlersOfTypeY } = infoForTriggerWithNameThatStartsWith('triggerY');
-    expect(triggersOfTypeY).to.have.length(1);
-    expect(handlersOfTypeY).to.deep.equal(['handlerY1']);
+    expect(triggersOfTypeY).toHaveLength(1);
+    expect(handlersOfTypeY).toEqual(['handlerY1']);
   });
 });

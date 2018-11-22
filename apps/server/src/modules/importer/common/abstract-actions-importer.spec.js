@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { AbstractActionsImporter } from './abstract-actions-importer';
 
 describe('importer.common.AbstractActionsImporter', () => {
@@ -28,11 +27,11 @@ describe('importer.common.AbstractActionsImporter', () => {
         ],
       };
       const actionMap = await importerInstance.importAll('appId', actionsMock);
-      expect(actionMap).to.be.a('Map');
+      expect(typeof actionMap).toBe('Map');
       ['a', 'b', 'c'].forEach(id => {
         const action = actionMap.get(id);
-        expect(action).to.be.ok;
-        expect(action.id).to.equal(`${id}-processed`);
+        expect(action).toBeTruthy();
+        expect(action.id).toBe(`${id}-processed`);
       });
     }
   );

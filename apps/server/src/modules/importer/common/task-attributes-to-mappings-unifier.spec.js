@@ -137,12 +137,9 @@ describe('importer.common.task-attributes-to-mappings-unifier', () => {
     }]);
   });
 
-  test(
-    'Should not process the unifier for task3 as it is a subflow',
-    () => {
-      expect(extractMappings(resultAction, 'task3')).toEqual(extractMappings(dataUnderTest.action, 'task3'));
-    }
-  );
+  test('Should not process the unifier for task3 as it is a subflow', () => {
+    expect(extractMappings(resultAction, 'task3')).toEqual(extractMappings(dataUnderTest.action, 'task3'));
+  });
 
   test('Should not process the unifier for task4 as it is a mapper', () => {
     expect(extractMappings(resultAction, 'task4')).toEqual(extractMappings(dataUnderTest.action, 'task4'));

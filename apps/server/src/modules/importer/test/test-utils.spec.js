@@ -1,4 +1,3 @@
-import {expect} from "chai";
 import get from "lodash/get";
 import {Validator} from "../../../common/validator/validator";
 import {ActionsManagerMock} from "./mocks/actions-manager-mock";
@@ -10,17 +9,17 @@ class Asserter {
   }
 
   assertIsSuccessful() {
-    expect(this.isSuccessful).to.equal(true);
+    expect(this.isSuccessful).toBe(true);
     return this;
   }
 
   assertIsFailed() {
-    expect(this.isSuccessful).to.equal(false);
+    expect(this.isSuccessful).toBe(false);
     return this;
   }
 
   assertHasFailedWithError(keyword, params) {
-    expect(this.errors[0]).to.deep.include({
+    expect(this.errors[0]).toMatchObject({
       keyword,
       params,
     });
@@ -28,22 +27,22 @@ class Asserter {
   }
 
   assertDataWithInstanceOf(data, constructor) {
-    expect(data).to.be.an.instanceOf(constructor);
+    expect(data).toBeInstanceOf(constructor);
     return this;
   }
 
   assertMethodCalledWithDataAsExpected(args, expected) {
-    args.forEach((arg, idx) => expect(arg[1]).to.deep.include({...expected[idx]}));
+    args.forEach((arg, idx) => expect(arg[1]).toMatchObject({...expected[idx]}));
     return this;
   }
 
   assertMethodReturnedWithDataAsExpected(data, expected) {
-    expect({data}).to.deep.include({data: expected});
+    expect({data}).toMatchObject({data: expected});
     return this;
   }
 
   assertRequiredMethodsAreDefined(spyObj) {
-    spyObj.exceptions.forEach(exception => expect(exception).to.equal(undefined));
+    spyObj.exceptions.forEach(exception => expect(exception).toBeUndefined());
     return this;
   }
 }
@@ -80,14 +79,20 @@ export function makeImporterContext(importerFactory) {
   return new AppImporterTestContext(importerFactory);
 }
 
-export function commonTestCases(name) {
+export function commonTestCases(name, testContext, testLifeCycle) {
+  if (testLifeCycle) {
+    beforeAll(testLifeCycle.beforeAll);
+    beforeEach(testLifeCycle.beforeEach);
+    afterEach(testLifeCycle.afterEach);
+  }
+
   test(`should import a ${name} application`, async () => {
-    const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
+    const assert = await testContext.importerContext.importAndCreateAssert(this.appToImport);
     assert.assertIsSuccessful();
   });
 
   test('should throw error when invalid type of application', async () => {
-    const assert = await this.importerContext.importAndCreateAssert({appModel: "0.0.1"});
+    const assert = await testContext.importerContext.importAndCreateAssert({appModel: "0.0.1"});
     assert.assertIsFailed()
       .assertHasFailedWithError('cannot-identify-app-type', {
         "knownTypes": [
@@ -118,8 +123,8 @@ export function commonTestCases(name) {
   test(
     'should throw error if application uses a trigger which is not recognised by the server',
     async () => {
-      this.appToImport.triggers[0].ref = "some.domain/path/to/trigger";
-      const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
+      testContext.appToImport.triggers[0].ref = "some.domain/path/to/trigger";
+      const assert = await testContext.importerContext.importAndCreateAssert(testContext.appToImport);
       assert.assertIsFailed()
         .assertHasFailedWithError('trigger-installed', {
           "ref": "some.domain/path/to/trigger"
@@ -130,8 +135,8 @@ export function commonTestCases(name) {
   test(
     'should throw error if application uses an activity which is not recognised by the server',
     async () => {
-      this.appToImport = this.testOptions.updateTasksRef(this.appToImport);
-      const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
+      testContext.appToImport = testContext.testOptions.updateTasksRef(testContext.appToImport);
+      const assert = await testContext.importerContext.importAndCreateAssert(testContext.appToImport);
       assert.assertIsFailed()
         .assertHasFailedWithError('activity-installed', {
           "ref": "some.domain/path/to/activity"
@@ -142,61 +147,55 @@ export function commonTestCases(name) {
   test(
     "dependenciesFactory.create(): should create instances of necessary dependencies",
     async () => {
-      const spyingCreateAppImporter = this.sinonSandbox.spy(this.importerFactory, "createAppImporter");
-      const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
+      const spyingCreateAppImporter = testContext.sinonSandbox.spy(testContext.importerFactory, "createAppImporter");
+      const assert = await testContext.importerContext.importAndCreateAssert(testContext.appToImport);
       assert.assertIsSuccessful()
-        .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].actionsImporter, this.testOptions.depsConstructors.actionsImporter)
+        .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].actionsImporter, testContext.testOptions.depsConstructors.actionsImporter)
         .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].validator, Validator)
-        .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].triggersHandlersImporter, this.testOptions.depsConstructors.triggersHandlersImporter);
+        .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].triggersHandlersImporter, testContext.testOptions.depsConstructors.triggersHandlersImporter);
     }
   );
 
-  test(
-    "ActionImporter: should implement extractActions method",
-    async () => {
-      const spyingExtractActions = this.sinonSandbox.spy(this.testOptions.depsConstructors.actionsImporter.prototype, "extractActions");
-      const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
-      assert.assertRequiredMethodsAreDefined(spyingExtractActions)
-        .assertIsSuccessful();
-    }
-  );
+  test("ActionImporter: should implement extractActions method", async () => {
+    const spyingExtractActions = testContext.sinonSandbox.spy(testContext.testOptions.depsConstructors.actionsImporter.prototype, "extractActions");
+    const assert = await testContext.importerContext.importAndCreateAssert(testContext.appToImport);
+    assert.assertRequiredMethodsAreDefined(spyingExtractActions)
+      .assertIsSuccessful();
+  });
 
-  test(
-    "TriggerHandlerImporter: should implement required method",
-    async () => {
-      const spyingExtractTriggers = this.sinonSandbox.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractTriggers");
-      const spyingExtractHandlers = this.sinonSandbox.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractHandlers");
-      const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
-      assert.assertRequiredMethodsAreDefined(spyingExtractTriggers)
-        .assertRequiredMethodsAreDefined(spyingExtractHandlers)
-        .assertIsSuccessful();
-    }
-  );
+  test("TriggerHandlerImporter: should implement required method", async () => {
+    const spyingExtractTriggers = testContext.sinonSandbox.spy(testContext.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractTriggers");
+    const spyingExtractHandlers = testContext.sinonSandbox.spy(testContext.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractHandlers");
+    const assert = await testContext.importerContext.importAndCreateAssert(testContext.appToImport);
+    assert.assertRequiredMethodsAreDefined(spyingExtractTriggers)
+      .assertRequiredMethodsAreDefined(spyingExtractHandlers)
+      .assertIsSuccessful();
+  });
 
   test("should save actions as supported by server", async () => {
-    const spyingActionCreate = this.sinonSandbox.spy(ActionsManagerMock, "create");
-    const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
+    const spyingActionCreate = testContext.sinonSandbox.spy(ActionsManagerMock, "create");
+    const assert = await testContext.importerContext.importAndCreateAssert(testContext.appToImport);
     assert.assertIsSuccessful()
-      .assertMethodCalledWithDataAsExpected(spyingActionCreate.args, this.testOptions.expectedActions);
+      .assertMethodCalledWithDataAsExpected(spyingActionCreate.args, testContext.testOptions.expectedActions);
   });
 
   test(
     "TriggerHandlerImporter:  should transform triggers as expected",
     async () => {
-      const spyingTriggerExtract = this.sinonSandbox.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractTriggers");
-      const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
+      const spyingTriggerExtract = testContext.sinonSandbox.spy(testContext.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractTriggers");
+      const assert = await testContext.importerContext.importAndCreateAssert(testContext.appToImport);
       assert.assertIsSuccessful()
-        .assertMethodReturnedWithDataAsExpected(spyingTriggerExtract.returnValues[0], this.testOptions.expectedTriggers);
+        .assertMethodReturnedWithDataAsExpected(spyingTriggerExtract.returnValues[0], testContext.testOptions.expectedTriggers);
     }
   );
 
   test(
     "TriggerHandlerImporter:  should reconcile handlers with new action id",
     async () => {
-      const spyingReconcileHandlers = this.sinonSandbox.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "reconcileTriggersAndActions");
-      const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
+      const spyingReconcileHandlers = testContext.sinonSandbox.spy(testContext.testOptions.depsConstructors.triggersHandlersImporter.prototype, "reconcileTriggersAndActions");
+      const assert = await testContext.importerContext.importAndCreateAssert(testContext.appToImport);
       assert.assertIsSuccessful()
-        .assertMethodReturnedWithDataAsExpected(spyingReconcileHandlers.returnValues[0], this.testOptions.expectedReconciledTriggers);
+        .assertMethodReturnedWithDataAsExpected(spyingReconcileHandlers.returnValues[0], testContext.testOptions.expectedReconciledTriggers);
     }
   );
 

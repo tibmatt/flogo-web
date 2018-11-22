@@ -1,11 +1,10 @@
-import {expect} from 'chai';
 import cloneDeep from 'lodash/cloneDeep';
-import {makeAjvContext} from './test-utils.spec';
+import {makeAjvContext} from './test-utils';
 
-const triggerSchema = require('../trigger');
-const commonSchema = require('../common');
-const flowSchema = require('../flow');
-const appSchema = require('../app');
+const triggerSchema = require('../trigger.json');
+const commonSchema = require('../common.json');
+const flowSchema = require('../flow.json');
+const appSchema = require('../app.json');
 
 describe('JSONSchema: App', () => {
   let testContext;
@@ -36,8 +35,8 @@ describe('JSONSchema: App', () => {
 
   test('should allow correct app', () => {
     const isValid = testContext.ajvContext.validate(testContext.appUnderTest);
-    expect(isValid).to.equal(true);
-    expect(testContext.appUnderTest).to.deep.include(testContext.app);
+    expect(isValid).toBe(true);
+    expect(testContext.appUnderTest).toContain(testContext.app);
   });
 
   ['name', 'type', 'appModel'].forEach(requiredProp => {

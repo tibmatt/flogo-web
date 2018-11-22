@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { validatorFactory } from './validator-factory';
 
 describe('importer.validator-factory', () => {
@@ -20,17 +19,17 @@ describe('importer.validator-factory', () => {
     } catch (error) {
       thrownError = error;
     }
-    expect(!!thrownError).to.equal(true, 'validation was expected to fail but no error was thrown');
+    expect(!!thrownError).toBe(true);
 
     const { details: validationDetails } = thrownError.details.errors;
-    expect(validationDetails).to.not.be.empty;
+    expect(Object.keys(validationDetails)).not.toHaveLength(0);
 
-    expect(validationDetails[0]).to.deep.include({
+    expect(validationDetails[0]).toMatchObject({
       dataPath: '.trigger',
       keyword: 'trigger-installed',
       params: { ref: 'foo' },
     });
-    expect(validationDetails[1]).to.deep.include({
+    expect(validationDetails[1]).toMatchObject({
       dataPath: '.activity',
       keyword: 'activity-installed',
       params: { ref: 'bar' },

@@ -7,20 +7,17 @@ import {StandardActionsImporter} from "../standard/standard-actions-importer";
 import {StandardTriggersHandlersImporter} from "../standard/standard-triggers-handlers-importer";
 import sinon from "sinon";
 
-const app = require('./samples/standard-app');
-const testData = require('./samples/standard-test-data');
+const app = require('./samples/standard-app.json');
+const testData = require('./samples/standard-test-data.json');
 
 describe('Importer: Standard', () => {
-  let testContext;
+  let testContext = {};
+  let testLifeCycle = {};
 
-  beforeEach(() => {
-    testContext = {};
-  });
-
-  beforeAll(async function () {
-    this.importerFactory = new AppImporterFactory(ResourceStorageRegistryMock);
-    this.importerContext = makeImporterContext(this.importerFactory);
-    this.testOptions = new TestOptions({
+  testLifeCycle.beforeAll = async function () {
+    testContext.importerFactory = new AppImporterFactory(ResourceStorageRegistryMock);
+    testContext.importerContext = makeImporterContext(this.importerFactory);
+    testContext.testOptions = new TestOptions({
       updateTasksRefCb: function (app) {
         app.resources[0].data.tasks[0].activity.ref = "some.domain/path/to/activity";
         return app;
@@ -33,19 +30,22 @@ describe('Importer: Standard', () => {
       expectedTriggers: [...testData.expect.extractTriggers],
       expectedReconciledTriggers: [...testData.expect.reconciledTriggers]
     });
-  });
+  };
 
-  beforeEach(() => {
+  testLifeCycle.beforeEach = () => {
     testContext.appToImport = cloneDeep(app);
     testContext.sinonSandbox = sinon.sandbox.create();
-  });
+  };
 
-  afterEach(() => {
+  testLifeCycle.afterEach = () => {
     testContext.sinonSandbox.restore();
-  });
+  };
 
-  commonTestCases('standard');
+  commonTestCases('standard', testContext, testLifeCycle);
 
+  beforeAll(testLifeCycle.beforeAll);
+  beforeEach(testLifeCycle.beforeEach);
+  afterEach(testLifeCycle.afterEach);
   test(
     "TriggerHandlerImporter:  should transform handlers as expected",
     async () => {

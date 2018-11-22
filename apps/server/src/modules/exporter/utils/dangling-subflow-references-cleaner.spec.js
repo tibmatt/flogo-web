@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { DanglingSubflowReferencesCleaner } from './dangling-subflow-references-cleaner';
 
 describe('exporter.utils.DanglingSubflowReferencesCleaner', () => {
@@ -19,14 +18,14 @@ describe('exporter.utils.DanglingSubflowReferencesCleaner', () => {
     .cleanMappings(task, linkedFlow);
 
   test('should remove dangling references', () => {
-    expect(cleanMappings.find(mapping => mapping.name === 'dangling')).to.not.be.ok;
+    expect(cleanMappings.find(mapping => mapping.name === 'dangling')).toBeFalsy();
   });
 
   test('valid mappings should stay', () => {
-    expect(cleanMappings).to.have.length(2)
-      .and.to.deep.include.members([
-        { mapTo: 'foo', value: 'oof', type: 2 },
-        { mapTo: 'bar', value: 'rab', type: 2 },
-      ]);
+    expect(cleanMappings).toHaveLength(2);
+    expect(cleanMappings).toEqual(expect.arrayContaining([
+      { mapTo: 'foo', value: 'oof', type: 2 },
+      { mapTo: 'bar', value: 'rab', type: 2 }
+    ]));
   });
 });

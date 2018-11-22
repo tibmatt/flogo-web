@@ -1,5 +1,4 @@
 import sinon from 'sinon';
-import { expect } from 'chai';
 
 import { AppImporter } from './app-importer';
 
@@ -17,7 +16,7 @@ describe('importer.AppImporter', () => {
       } catch (e) {
         error = e;
       }
-      expect(error).to.be.ok;
+      expect(error).toBeTruthy();
       sandbox.restore();
     });
 
@@ -55,17 +54,17 @@ describe('importer.AppImporter', () => {
       });
       test('should validate the app structure', () => {
         const validatorStub = testDoubles.validatorStub;
-        expect(validatorStub.calledOnce).to.equal(true);
+        expect(validatorStub.calledOnce).toBe(true);
       });
       test('should store the app', () => {
         const appCreationStub = testDoubles.appCreationStub;
-        expect(appCreationStub.calledOnce).to.equal(true);
-        expect(appCreationStub.calledWith({ id: 'myValidCleanAppId' })).to.equal(true);
+        expect(appCreationStub.calledOnce).toBe(true);
+        expect(appCreationStub.calledWith({ id: 'myValidCleanAppId' })).toBe(true);
       });
       test('should import the actions into the created app', () => {
         const actionsImporterStub = testDoubles.actionsImporterStub;
-        expect(actionsImporterStub.calledOnce).to.equal(true);
-        expect(actionsImporterStub.calledWith('createdAppId', { id: 'myValidRawAppId' })).to.equal(true);
+        expect(actionsImporterStub.calledOnce).toBe(true);
+        expect(actionsImporterStub.calledWith('createdAppId', { id: 'myValidRawAppId' })).toBe(true);
       });
       test(
         'should configure the trigger handlers importer and import the triggers and handlers',
@@ -74,7 +73,7 @@ describe('importer.AppImporter', () => {
         }
       );
       test('should return the imported app', () => {
-        expect(importResult.id).to.equal('createdAppId');
+        expect(importResult.id).toBe('createdAppId');
       });
     });
   });

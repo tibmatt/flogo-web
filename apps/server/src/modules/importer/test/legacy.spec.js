@@ -7,20 +7,16 @@ import {ActionsImporter} from "../legacy/actions-importer";
 import {TriggersHandlersImporter} from "../legacy/triggers-handlers-importer";
 import sinon from "sinon";
 
-const app = require('./samples/legacy-app');
-const testData = require('./samples/legacy-test-data');
+const app = require('./samples/legacy-app.json');
+const testData = require('./samples/legacy-test-data.json');
 
+let testContext = {};
 describe('Importer: Legacy', () => {
-  let testContext;
-
-  beforeEach(() => {
-    testContext = {};
-  });
 
   beforeAll(async function () {
-    this.importerFactory = new AppImporterFactory(ResourceStorageRegistryMock);
-    this.importerContext = makeImporterContext(this.importerFactory);
-    this.testOptions = new TestOptions({
+    testContext.importerFactory = new AppImporterFactory(ResourceStorageRegistryMock);
+    testContext.importerContext = makeImporterContext(this.importerFactory);
+    testContext.testOptions = new TestOptions({
       updateTasksRefCb: function (app) {
         app.actions[0].data.flow.rootTask.tasks[0].activityRef = "some.domain/path/to/activity";
         return app;
@@ -44,5 +40,5 @@ describe('Importer: Legacy', () => {
     testContext.sinonSandbox.restore();
   });
 
-  commonTestCases('legacy');
+  commonTestCases('legacy', testContext);
 });
