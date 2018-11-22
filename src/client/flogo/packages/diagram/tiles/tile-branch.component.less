@@ -9,28 +9,31 @@
 :host(.has-run) {
 
   .branch-option-container {
-    background-color: #79b8dc;
-    border: solid 3px transparent;
+    background-color: @color-secondary;
   }
   .menu-icon-close {
-    color: @color-bg;
+    color: #ffffff;
   }
   .branch-child-line {
-    border-top: solid 4px #79b8dc;
+    border-top: solid 4px @color-secondary;
   }
-  .branch-child-link {
-    &:hover {
-      .branch-child-line {
-        border-top: solid 4px #899bcf;
-      }
-      .branch-option-container {
-        border: solid 3px transparent;
-        background-color: #899bcf;
+  .branch-child-link:hover {
+    .branch-child-line {
+      border-top: solid 4px @color-secondary;
+    }
+    .branch-option-container {
+      background-color: @color-secondary;
+    }
+
+    & + .main-child-link {
+      border-right-color:@color-secondary;
+      &::before {
+        background-color: @color-secondary;
       }
     }
   }
   .main-child-link {
-    border-right: solid 4px #79b8dc;
+    border-right: solid 4px @color-secondary;
     &::before {
       background-color: @color-secondary;
     }
@@ -43,25 +46,43 @@
     color: @color-bg;
   }
   .branch-option-container {
-    background-color: #afbbda;
-    border: solid 3px transparent;
+    background-color: #ffffff;
+    border: 0.15em solid @branch-color-primary;
   }
-  .branch-child-link {
-    &:hover {
-      .branch-option-container {
-        border: solid 3px transparent;
-        background-color: #899bcf;
+  .branch-child-link:hover {
+    .branch-option-container {
+      background-color: #ffffff;
+      border: 0.15em solid @branch-color-secondary;
+
+      .menu-icon-close {
+        color: @color-medium-gray;
+        top: -0.25em;
+        right: 0.04em;
       }
     }
   }
 }
+
+:host(.has-run.--configured) {
+  .branch-option-container {
+    border: 0.15em solid @color-secondary;
+  }
+
+  .branch-child-link:hover {
+    .branch-option-container {
+      border: 0.15em solid @color-secondary;
+    }
+  }
+}
+
 .menu-icon {
   color: @color-dark-gray;
-  margin-left: 2px;
-  margin-right: 2px;
-  padding: 4px;
-  position: relative;
-  top: 6px;
+  margin-right: 4px;
+  padding: 6px;
+  font-size: 12px;
+  &:last-child {
+    margin-right: 0;
+  }
   &:hover {
     color: @primary-blue;
     font-weight: 600;
@@ -81,7 +102,7 @@
 
     .branch-child-line {
       box-shadow: -1px 3px 6px 0 rgba(0, 0, 0, 0.3);
-      border-top: solid 4px #899bcf;
+      border-top: solid 4px @branch-color-secondary;
     }
 
     .branch-option-container {
@@ -89,49 +110,50 @@
       height: 18px;
       top: 2px;
       box-shadow: -1px 3px 6px 0 rgba(0, 0, 0, 0.3);
-      border: solid 3px #899bcf;
+      background-color: @branch-color-secondary;
       transition: all 100ms ease-in;
     }
     .menu-icon-close {
-      display: inline-block;
+      display: initial;
     }
     & + .main-child-link {
       box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
-      border-right: solid 4px #899bcf;
+      border-right: solid 4px @branch-color-secondary;
       &::before {
-        background-color: #899bcf;
+        background-color: @branch-color-secondary;
       }
     }
   }
 }
 
 .branch-child-line {
-  border-top: solid 4px #afbbda;
+  border-top: solid 4px @branch-color-primary;
   width: 22px;
   height: 2px;
 }
 
 .main-child-link {
-  border-right: solid 4px #afbbda;
+  border-right: solid 4px @branch-color-primary;
   width: 2px;
   height: 119px;
   position: absolute;
   left: 115px;
   top: -90px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    border-radius: 50%;
+    z-index: 5;
+    width: 8px;
+    height: 8px;
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
+    background-color: @branch-color-primary;
+  }
 }
 
-.main-child-link::before {
-  content: '';
-  position: absolute;
-  top: -4px;
-  right: -6px;
-  border-radius: 50%;
-  z-index: 5;
-  width: 8px;
-  height: 8px;
-  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
-  background-color: #afbbda;
-}
 
 .branch-option-container {
   position: absolute;
@@ -142,31 +164,29 @@
   width: 12px;
   height: 12px;
   box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
-  background-color: #ffffff;
-  border: solid 3px #afbbda;
+  background-color: @branch-color-primary;
   cursor: pointer;
+  text-align: center;
 }
 
 .branch-options-display {
-  height: 32px;
-  border: solid 3px transparent;
+  display: flex;
+  padding: 5px 4px;
   border-radius: 3px;
   box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
-  font-size: 12px;
   position: absolute;
-  top: -5px;
-  left: -37px;
-  background: white;
   z-index: 6;
+  top: -5px;
+  transform: translateX(-50%);
+  background: #ffffff;
   cursor: pointer;
 }
 
 .menu-icon-close {
-  color: #899bcf;
+  color: #ffffff;
   font-size: 0.9em;
-  position: absolute;
-  top: -0.1em;
-  left: -0.05em;
+  position: relative;
+  top: -1px;
   display: none;
 }
 

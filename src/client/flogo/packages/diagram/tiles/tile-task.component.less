@@ -110,6 +110,7 @@
 .kebabmenu {
   padding: 1px;
   font-size: 14px;
+  color: @color-medium-gray;
   &:hover {
     color: @primary-blue;
     background-color: rgba(0, 129, 203, 0.1);
@@ -201,7 +202,7 @@
 }
 
 .main-branch-link {
-  border-top: solid 4px #afbbda;
+  border-top: solid 4px @branch-color-primary;
   width: 19px;
   position: absolute;
   right: -10px;
@@ -217,8 +218,7 @@
     width: 12px;
     height: 12px;
     box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
-    background-color: #afbbda;
-    border: solid 2px #afbbda;
+    background-color: @branch-color-primary;
   }
 }
 
@@ -251,7 +251,7 @@
   }
   .menu__icon, .kebabmenu {
     &:hover {
-      background-color: #419BF9;
+      background-color: rgba(255, 255, 255, 0.2);;
       color: @color-bg;
     }
   }
