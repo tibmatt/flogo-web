@@ -1,8 +1,8 @@
 import { activitiesDBService} from '../../common/db/activities';
 
-import { BaseRegistered } from '../base-registered';
+import { BaseRegistered } from '../base-registered/index';
 
-import { logger } from '../../common/logging';
+import { logger } from '../../common/logging/index';
 import {triggersDBService} from "../../common/db/triggers";
 
 /*

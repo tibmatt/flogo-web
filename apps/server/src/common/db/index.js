@@ -3,7 +3,7 @@ import { generateShortId, ISONow } from './common';
 export { apps } from './apps';
 export { indexer } from './indexer';
 export { contribs } from './contribs';
-export { triggerDBService } from './triggers';
+export { triggersDBService } from './triggers';
 export { activitiesDBService } from './activities';
 
 export const dbUtils = {

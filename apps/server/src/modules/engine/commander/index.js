@@ -5,7 +5,7 @@ import { build } from './build';
 
 const path = require('path');
 
-module.exports = {
+export const commander = {
   /**
    *
    * @param enginePath

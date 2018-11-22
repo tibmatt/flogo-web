@@ -4,7 +4,7 @@ import {Engine} from './engine';
 import { logger, engineLogger } from '../../common/logging';
 import {config} from '../../config/app-config';
 import { installDeviceContributions } from './../init/install-device-contribs';
-import {ContribInstallController} from "./contrib-install-controller";
+import {ContribInstallController} from "../contrib-install-controller";
 
 const CONTRIB_INSTALLER = 'contribInstaller';
 let engineRegistry = {};

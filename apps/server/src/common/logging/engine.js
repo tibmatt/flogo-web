@@ -1,8 +1,16 @@
 import path from 'path';
 import winston from 'winston';
-import { splitLines, cleanAsciiColors } from '../../common/utils';
 
 import { config } from '../../config/app-config';
+
+function splitLines(str) {
+  let lines = (str||'').match(/[^\r\n]+/g);
+  return lines || [];
+}
+
+function cleanAsciiColors(line) {
+  return line.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,"");
+}
 
 // TODO: use getLogger(loggerIdentifier) ex: getLogger('testEngine')
 

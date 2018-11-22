@@ -7,7 +7,7 @@ import { fileExists } from '../../common/utils/file';
 import { processHost } from '../../common/utils/process';
 import { config } from '../../config/app-config';
 
-module.exports = {
+export const execController = {
   start(enginePath, engineName, options) {
     options = Object.assign({}, { binDir: 'bin' }, options);
 

@@ -2,10 +2,9 @@ import { readFile } from 'fs-extra';
 
 import { logger } from '../../common/logging';
 import { config } from './../../config/app-config';
-import { getInitializedEngine } from './../../modules/init';
+import { getInitializedEngine } from './../../modules/engine';
 import { determinePathToVendor } from '../engine/determine-path-to-vendor';
 
-import { AppsManager } from './index';
 import { writeJSONFile } from '../../common/utils';
 
 const defaultBuildOptions = options => ({ optimize: true, embedConfig: true, ...options });
@@ -15,17 +14,17 @@ export async function buildBinary(appId, options) {
 }
 
 /**
- * @param appId
+ * @param exportApp {Function}
  * @param options
  * @param options.shimTriggerId
  * @return {Promise<T>}
  */
-export async function buildPlugin(appId, options) {
-  return orchestrateBuild(appId, (engine) => engine.buildPlugin(defaultBuildOptions(options)))
+export async function buildPlugin(exportApp, options) {
+  return orchestrateBuild(exportApp, (engine) => engine.buildPlugin(defaultBuildOptions(options)))
     .then(result => ({ ...result, trigger: options.shimTriggerId, plugin: true }));
 }
 
-export async function orchestrateBuild(appId, execBuildCommand) {
+export async function orchestrateBuild(exportApp, execBuildCommand) {
   const engineOptions = {
     forceCreate: true,
     // noLib: true,
@@ -36,7 +35,7 @@ export async function orchestrateBuild(appId, execBuildCommand) {
   const timer = logger.startTimer();
 
   const [exportedApp, pathToVendor] = await Promise.all([
-    exportAppAndWriteToFileSystem(appId, engineOptions.defaultFlogoDescriptorPath),
+    exportAppAndWriteToFileSystem(exportApp, engineOptions.defaultFlogoDescriptorPath),
     determinePathToVendor(config.defaultEngine.path),
   ]);
 
@@ -52,8 +51,8 @@ export async function orchestrateBuild(appId, execBuildCommand) {
   return { appName: exportedApp.name, data: binaryStream };
 }
 
-async function exportAppAndWriteToFileSystem(appId, outputToPath) {
-  const exportedApp = await AppsManager.export(appId);
+async function exportAppAndWriteToFileSystem(exportApp, outputToPath) {
+  const exportedApp = await exportApp();
   await writeJSONFile(outputToPath, exportedApp);
   return exportedApp;
 }

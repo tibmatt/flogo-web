@@ -1,29 +1,15 @@
-import _ from 'lodash';
+import * as _ from 'lodash';
 import {inspect} from 'util';
 
 import {FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE} from '../constants';
 import {runShellCMD} from "./process";
 
 export * from './file';
+export * from './json';
 
 export function atob( str ) {
   return new Buffer( str, 'base64' ).toString( 'binary' );
 }
-
-/**
- * judge whether a string is a valid json string. if i
- * @param  {string}  str - the JSON string
- * @return {object|undefined} if it is a valid json, return json, otherwise return undefined
- */
-export function isJSON( str ) {
-  try {
-    return JSON.parse(str);
-  } catch (e) {
-    return undefined;
-  }
-}
-
-export let parseJSON = isJSON;
 
 /** *******
  * GitHub related utility functions
@@ -119,15 +105,6 @@ export function gitUpdate( folderPath ) {
  */
 export function inspectObj( obj ) {
   console.log( inspect( obj, { depth : 7, color : true } ) );
-}
-
-export function splitLines(str) {
-  let lines = (str||'').match(/[^\r\n]+/g);
-  return lines || [];
-}
-
-export function cleanAsciiColors(line) {
-  return line.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,"");
 }
 
 /**

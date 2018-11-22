@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 import { AppsManager } from '../../modules/apps';
+import { ResourceStorageRegistry } from '../../modules/resource-storage-registry';
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
 import { exportApp } from './apps/export';
 import { buildApp } from './apps/build';
@@ -117,7 +118,7 @@ async function deleteApp(ctx, next) {
 
 async function importApp(ctx, next) {
   try {
-    ctx.body = await AppsManager.import(ctx.request.body);
+    ctx.body = await AppsManager.import(ctx.request.body, ResourceStorageRegistry);
   } catch (error) {
     if (error.isOperational && error.type === ERROR_TYPES.COMMON.VALIDATION) {
       throw ErrorManager.createRestError('Validation error in /apps getApp', {

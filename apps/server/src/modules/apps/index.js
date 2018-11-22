@@ -218,7 +218,7 @@ export class AppsManager {
    * @throws Not found error if app not found
    */
   static async build(appId, options) {
-    return buildBinary(appId, options);
+    return buildBinary(() => AppsManager.export(appId), options);
   }
 
   /**

@@ -7,7 +7,7 @@ import { readJSONFile } from '../../common/utils/file';
 import { normalizeContribSchema } from '../../common/contrib-schema-normalize';
 import { determinePathToVendor } from './determine-path-to-vendor';
 
-module.exports = {
+export const loader = {
   exists(enginePath) {
     return new Promise((resolve, reject) => {
       fs.stat(enginePath, (err, stats) => {

@@ -1,8 +1,8 @@
 export { SCHEMA_NAMESPACE } from './schema-namespace';
 
-const common = require('./common');
-const trigger = require('./trigger');
-const flow = require('./flow');
-const app = require('./app');
+const common = require('./common.json');
+const trigger = require('./trigger.json');
+const flow = require('./flow.json');
+const app = require('./app.json');
 
 export { common, trigger, flow, app };

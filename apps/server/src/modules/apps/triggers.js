@@ -1,6 +1,7 @@
 import pick from 'lodash/pick';
 import mapKeys from 'lodash/mapKeys';
 
+import { AppsManager } from './index';
 import { TriggerManager as TriggerContribManager } from '../triggers';
 import { ContribsManager as ContribDeviceManager } from '../contribs';
 import { apps as appsDb, dbUtils } from '../../common/db';
@@ -250,7 +251,7 @@ export class AppsTriggersManager {
       throw ErrorManager.makeError('Cannot build shim for unknown trigger id', { type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND });
     }
     const build = trigger.ref === REF_TRIGGER_LAMBDA ? buildPlugin : buildBinary;
-    return build(trigger.appId, { ...options, shimTriggerId: normalizeName(trigger.name) });
+    return build(() => AppsManager.export(trigger.appId), { ...options, shimTriggerId: normalizeName(trigger.name) });
   }
 
 }

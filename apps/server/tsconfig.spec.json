@@ -4,7 +4,9 @@
     "outDir": "../../dist/out-tsc/apps/server",
     "module": "commonjs",
     "types": ["jest", "node"],
-    "allowJs": true
+    "allowJs": true,
+    "checkJs": false,
+    "esModuleInterop": true
   },
   "include": ["**/*.spec.ts", "**/*.d.ts"]
 }

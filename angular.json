@@ -43,9 +43,7 @@
             "outputPath": "dist/apps/server",
             "main": "apps/server/src/server.ts",
             "tsConfig": "apps/server/tsconfig.app.json",
-            "assets": [
-              "apps/server/src/assets"
-            ]
+            "assets": []
           },
           "configurations": {
             "production": {

@@ -8,9 +8,9 @@ import { processHost } from '../../common/utils/process';
 import { buildAndCopyBinary } from './build/binary';
 import { buildPlugin } from './build/plugin';
 
-const loader = require('./loader');
-const commander = require('./commander');
-const exec = require('./exec-controller');
+import { loader } from './loader';
+import { commander } from './commander';
+import { execController as exec } from './exec-controller';
 
 const DIR_TEST_BIN = 'bin-test';
 const DIR_BUILD_BIN = 'bin-build';
@@ -52,7 +52,7 @@ class Engine {
 
   load() {
     return commander.list(this.path)
-      .then((installedContribs: string[]) => loader.loadMetadata(this.path, installedContribs))
+      .then((installedContribs) => loader.loadMetadata(this.path, installedContribs))
       .then((contribMetadata: TaskCollections) => {
         this.tasks = contribMetadata;
         return contribMetadata;

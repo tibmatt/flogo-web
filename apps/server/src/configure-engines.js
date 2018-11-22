@@ -1,6 +1,8 @@
 import { config } from './config/app-config';
 import { apps, indexer, contribs } from './common/db';
-import { syncTasks, installDefaults, getInitializedEngine, ensureDefaultDirs } from './modules/init';
+import { getInitializedEngine } from './modules/engine';
+import { installDefaults, ensureDefaultDirs } from './modules/init';
+import { syncTasks } from './modules/contrib-install-controller/sync-tasks';
 
 ensureDefaultDirs()
   .then(() => getInitializedEngine(config.defaultEngine.path, { forceCreate: true }))

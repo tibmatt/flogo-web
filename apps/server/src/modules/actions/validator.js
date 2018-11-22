@@ -1,6 +1,6 @@
 import Ajv from 'ajv';
 
-const actionSchema = require('./schema');
+const actionSchema = require('./schema.json');
 
 class Validator {
 

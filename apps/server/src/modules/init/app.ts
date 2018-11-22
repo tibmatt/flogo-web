@@ -1,6 +1,7 @@
 import { createServer, Server } from 'http';
 
 import * as Koa from 'koa';
+import 'koa-body';
 const KoaApp = require('koa');
 const Router = require('koa-router');
 const cors = require('@koa/cors');

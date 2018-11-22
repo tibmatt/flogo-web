@@ -1,8 +1,8 @@
-import {copyFile, fileExists, rmFolder} from '../../../common/utils';
+import {copyFile, fileExists, rmFolder} from '../../common/utils';
 import path from 'path';
-import {logger} from '../../../common/logging';
-import {ERROR_TYPES, ErrorManager} from '../../../common/errors';
-import {syncTasks} from '../../init';
+import {logger} from '../../common/logging';
+import {ERROR_TYPES, ErrorManager} from '../../common/errors';
+import {syncTasks} from './sync-tasks';
 
 const INSTALLATION_STATE = {
   INIT: 'initializing',
