@@ -20,6 +20,12 @@ export class TileBranchComponent extends AbstractTileTaskComponent implements On
     super(svgFixer);
   }
 
+  @HostBinding('class.--configured')
+  get hasCondition() {
+    const condition = !this.tile.task.status.isBranchConfigured;
+    return condition;
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     super.ngOnChanges(changes);
     const {spanRows: spanRowsChange} = changes;
@@ -47,10 +53,6 @@ export class TileBranchComponent extends AbstractTileTaskComponent implements On
 
   get branchPosition() {
     return (TILE_HEIGHT / 2) - this.containerHeight;
-  }
-
-  get tilesConnectorPosition() {
-    return (BOTTOM_DISTANCE / 4) - this.containerHeight;
   }
 
   onBranchOptions(event) {

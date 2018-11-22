@@ -5,22 +5,32 @@
 @menu-tab-radius: 8px;
 
 :host {
-  .tile-container();
+  height: @tile-height;
+  width: @tile-width;
   cursor: pointer;
   position: relative;
-  transition: all 0.2s ease-in-out;
   font-size: 12px;
 
   &:hover {
-    transform: scale(1.04);
+    .task-container {
+      transform: scale(1.04);
+    }
   }
+}
+
+.task-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 100%;
+  transition: all 0.2s ease-in-out;
 }
 
 .shape-container {
   display: block;
   pointer-events: none;
   position: absolute;
-  z-index: 1;
   width: 100%;
   height: 100%;
   margin: 0;
@@ -29,7 +39,6 @@
 
 .content {
   color: @color-plain;
-  z-index: 2;
   align-items: center;
   width: 76%;
   height: 100%;
@@ -191,7 +200,32 @@
   }
 }
 
-:host(.tile-has-branch) {
+.main-branch-link {
+  border-top: solid 4px #afbbda;
+  width: 19px;
+  position: absolute;
+  right: -10px;
+  top: (@tile-height/2)-2;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    border-radius: 50%;
+    z-index: 5;
+    width: 12px;
+    height: 12px;
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
+    background-color: #afbbda;
+    border: solid 2px #afbbda;
+  }
+}
+
+:host(.--with-branches) {
+  .task-container {
+    z-index: 2;
+  }
   .content {
     width: 70%;
     left: 1px;
@@ -206,7 +240,9 @@
 
 
 :host(.is-selected) {
-  transform: scale(1.04);
+  .task-container {
+    transform: scale(1.04);
+  }
   .tile__bg {
     fill: @color-link-hover;
   }
@@ -228,6 +264,13 @@
   .tile__stroke {
     stroke: @color-secondary;
     stroke-width: 2px;
+  }
+  .main-branch-link {
+    border-top: solid 4px @color-secondary;
+    &::after {
+      background-color: @color-secondary;
+      border: solid 2px @color-secondary;
+    }
   }
 }
 
