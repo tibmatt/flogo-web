@@ -12,7 +12,7 @@
     background-color: @color-secondary;
   }
   .menu-icon-close {
-    color: #ffffff;
+    color: @color-bg;
   }
   .branch-child-line {
     border-top: solid 4px @color-secondary;
@@ -46,18 +46,18 @@
     color: @color-bg;
   }
   .branch-option-container {
-    background-color: #ffffff;
-    border: 0.15em solid @branch-color-primary;
+    background-color: @color-bg;
+    border: 0.2em solid @branch-color-primary;
   }
   .branch-child-link:hover {
     .branch-option-container {
       background-color: #ffffff;
-      border: 0.15em solid @branch-color-secondary;
+      border: 0.2em solid @branch-color-secondary;
 
       .menu-icon-close {
         color: @color-medium-gray;
-        top: -0.25em;
-        right: 0.04em;
+        top: -0.35em;
+        right: 0.05em;
       }
     }
   }
@@ -65,12 +65,12 @@
 
 :host(.has-run.--configured) {
   .branch-option-container {
-    border: 0.15em solid @color-secondary;
+    border: 0.2em solid @color-secondary;
   }
 
   .branch-child-link:hover {
     .branch-option-container {
-      border: 0.15em solid @color-secondary;
+      border: 0.2em solid @color-secondary;
     }
   }
 }
@@ -178,15 +178,15 @@
   z-index: 6;
   top: -5px;
   transform: translateX(-50%);
-  background: #ffffff;
+  background: @color-bg;
   cursor: pointer;
 }
 
 .menu-icon-close {
-  color: #ffffff;
+  color: @color-bg;
   font-size: 0.9em;
   position: relative;
-  top: -1px;
+  top: -0.15em;
   display: none;
 }
 
