@@ -1,22 +1,17 @@
 import { ChangeDetectionStrategy, Component, HostBinding, OnChanges } from '@angular/core';
-import {AbstractTileTaskComponent} from './abstract-tile-task.component';
-import {animate, style, transition, trigger} from '@angular/animations';
+import { animate, style, transition, trigger } from '@angular/animations';
 import { SvgRefFixerService } from '@flogo/core';
+import { AbstractTileTaskComponent } from './abstract-tile-task.component';
+import { OpenCloseMenuAnimation } from './tile.animations';
 
 @Component({
   selector: 'flogo-diagram-tile-task',
   templateUrl: './tile-task.component.html',
   styleUrls: ['./tile-task.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [  trigger('menuOptions', [
-    transition('void => *', [
-      style({opacity: 0}),
-      animate('100ms ease-in')
-    ]),
-    transition('* => void', [
-      animate('100ms ease-in', style({ opacity: 0}))
-    ]),
-  ])]
+  animations: [
+    trigger('menuOptions', OpenCloseMenuAnimation)
+  ]
 })
 export class TileTaskComponent extends AbstractTileTaskComponent implements OnChanges {
   @HostBinding('class.--with-branches') hasBranch = false;
