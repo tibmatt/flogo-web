@@ -4,6 +4,7 @@
     "outDir": "../../dist/out-tsc/global-custom-jest-integration",
     "module": "commonjs",
     "types": ["jest", "node"],
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
   },
   "files": ["jest.setup.ts"],

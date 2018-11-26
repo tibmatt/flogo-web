@@ -2,7 +2,7 @@ import cloneDeep from "lodash/cloneDeep";
 import sinon from 'sinon';
 import {ResourceStorageRegistryMock} from './resource-storage-mock';
 import {AppImporterFactory} from '../app-importer-factory';
-import {commonTestCases, makeImporterContext} from "./test-utils.spec";
+import {createSharedTestCases, makeImporterContext} from "./test-utils";
 import {TestOptions} from "./test-options";
 import {ActionsImporter} from "../device/actions-importer";
 import {TriggersHandlersImporter} from "../device/triggers-handlers-importer";
@@ -15,7 +15,7 @@ describe('Importer: Device', () => {
 
   beforeAll(async function () {
     testContext.importerFactory = new AppImporterFactory(ResourceStorageRegistryMock);
-    testContext.importerContext = makeImporterContext(this.importerFactory);
+    testContext.importerContext = makeImporterContext(testContext.importerFactory);
     testContext.testOptions = new TestOptions({
       updateTasksRefCb: function (app) {
         app.actions[0].data.flow.tasks[0].activityRef = "some.domain/path/to/activity";
@@ -40,5 +40,8 @@ describe('Importer: Device', () => {
     testContext.sinonSandbox.restore();
   });
 
-  commonTestCases('device', testContext);
+  createSharedTestCases('device', () => testContext)
+    .forEach(([descr, testCase]) => {
+      test(descr, testCase);
+    });
 });

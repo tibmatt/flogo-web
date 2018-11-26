@@ -1,6 +1,6 @@
 import {ResourceStorageRegistryMock} from './resource-storage-mock';
 import {AppImporterFactory} from '../app-importer-factory';
-import {commonTestCases, makeImporterContext} from "./test-utils.spec";
+import {createSharedTestCases, makeImporterContext} from "./test-utils";
 import cloneDeep from 'lodash/cloneDeep';
 import {TestOptions} from "./test-options";
 import {ActionsImporter} from "../legacy/actions-importer";
@@ -40,5 +40,5 @@ describe('Importer: Legacy', () => {
     testContext.sinonSandbox.restore();
   });
 
-  commonTestCases('legacy', testContext);
+  createSharedTestCases('legacy', testContext);
 });

@@ -28,7 +28,7 @@ export class AbstractActionsImporter {
   // flow -> subflow relationship chain and store them in reverse order so we can fix the subflow refs as we go storing
   // the actions but it will require to deal with cyclic references e.g. flow1 -> subflow1 -> flow1
   async reconcileSubflows(actionRegistry) {
-    const reconcileOperations = [...actionRegistry.entries()]
+    const reconcileOperations = Array.from(actionRegistry.entries())
       .filter(([, action]) => actionHasSubflowTasks(action))
       .map(async ([originalActionId, action]) => {
         action = this.reconcileSubflowTasksInAction(action, actionRegistry);
