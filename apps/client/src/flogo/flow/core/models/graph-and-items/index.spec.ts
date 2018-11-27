@@ -1,5 +1,5 @@
-import { ContribSchema, Dictionary, FLOGO_TASK_TYPE, FlowGraph, GraphNode, Item, NodeType } from '@flogo/core';
-import { ObjectSlice } from '@flogo/core/testing';
+import { ContribSchema, Dictionary, FLOGO_TASK_TYPE, FlowGraph, GraphNode, Item, NodeType } from '@flogo-web/client/core';
+import { ObjectSlice } from '@flogo-web/client/core/testing';
 import { makeGraphAndItems } from './index';
 
 describe('flow.core.models.graph-and-items', function () {

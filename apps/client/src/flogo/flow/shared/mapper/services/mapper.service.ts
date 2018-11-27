@@ -4,7 +4,7 @@ import { filter, switchMap } from 'rxjs/operators';
 
 import { MapperTreeNode } from '../models/mapper-treenode.model';
 import { MapperController} from './mapper-controller';
-import { MapperState } from '@flogo/flow/shared/mapper/models/mapper-state';
+import { MapperState } from '@flogo-web/client/flow/shared/mapper/models/mapper-state';
 
 @Injectable()
 export class MapperService implements OnDestroy {

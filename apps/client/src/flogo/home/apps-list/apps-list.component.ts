@@ -1,8 +1,8 @@
 import { sortBy } from 'lodash';
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { App } from '@flogo/core';
-import { NotificationsService } from '@flogo/core/notifications';
-import { AppsApiService } from '@flogo/core/services/restapi/v2/apps-api.service';
+import { App } from '@flogo-web/client/core';
+import { NotificationsService } from '@flogo-web/client/core/notifications';
+import { AppsApiService } from '@flogo-web/client/core/services/restapi/v2/apps-api.service';
 
 @Component({
   selector: 'flogo-home-apps-list',

@@ -2,7 +2,7 @@ import objectContaining = jasmine.objectContaining;
 import ObjectContaining = jasmine.ObjectContaining;
 
 import { createTileMatrix } from './create-tile-matrix';
-import {GraphNode, GraphNodeDictionary, NodeType} from '@flogo/core';
+import {GraphNode, GraphNodeDictionary, NodeType} from '@flogo-web/client/core';
 import { InsertTile, TaskTile, Tile, TileType } from '../interfaces';
 import { NodeMatrix } from '../renderable-model/matrix';
 

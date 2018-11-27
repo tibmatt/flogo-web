@@ -3,13 +3,13 @@ import {FlowState, FlowActions, FlowSelectors} from '../../core/state/index';
 import {Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {PayloadOf} from '../../core/state/utils';
-import {activitySchemaToTask, createSubFlowTask, getProfileType, isSubflowTask} from '@flogo/shared/utils';
-import {CONTRIB_REF_PLACEHOLDER, ItemActivityTask, ItemSubflow, NodeType, Task} from '@flogo/core';
+import {activitySchemaToTask, createSubFlowTask, getProfileType, isSubflowTask} from '@flogo-web/client/shared/utils';
+import {CONTRIB_REF_PLACEHOLDER, ItemActivityTask, ItemSubflow, NodeType, Task} from '@flogo-web/client/core';
 import {assign} from 'lodash';
-import {uniqueTaskName} from '@flogo/flow/core/models/unique-task-name';
-import {extractItemInputsFromTask, taskIdGenerator} from '@flogo/core/models';
-import {makeNode} from '@flogo/flow/core/models/graph-and-items/graph-creator';
-import {HandlerType, InsertTaskSelection} from '@flogo/flow/core/models';
+import {uniqueTaskName} from '@flogo-web/client/flow/core/models/unique-task-name';
+import {extractItemInputsFromTask, taskIdGenerator} from '@flogo-web/client/core/models';
+import {makeNode} from '@flogo-web/client/flow/core/models/graph-and-items/graph-creator';
+import {HandlerType, InsertTaskSelection} from '@flogo-web/client/flow/core/models';
 
 interface TaskAddData {
   ref: string;

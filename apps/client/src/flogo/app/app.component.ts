@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { ApplicationDetail, AppDetailService} from './core';
 
 import { FlowsService } from '../core/services/flows.service';
-import { NotificationsService } from '@flogo/core/notifications';
+import { NotificationsService } from '@flogo-web/client/core/notifications';
 
 @Component({
   selector: 'flogo-app',

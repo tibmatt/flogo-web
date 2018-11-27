@@ -1,11 +1,11 @@
-import {FlowsListComponent} from '@flogo/flow/shared/flows-list/flows-list.component';
+import {FlowsListComponent} from '@flogo-web/client/flow/shared/flows-list/flows-list.component';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {DebugElement} from '@angular/core';
-import {SharedModule as FlogoSharedModule} from '@flogo/shared';
-import {FakeRootLanguageModule} from '@flogo/core/language/testing';
+import {SharedModule as FlogoSharedModule} from '@flogo-web/client/shared';
+import {FakeRootLanguageModule} from '@flogo-web/client/core/language/testing';
 import {FormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
-import { Action } from '@flogo/core';
+import { Action } from '@flogo-web/client/core';
 
 describe('Component: FlowsListComponent', () => {
   let comp: FlowsListComponent;

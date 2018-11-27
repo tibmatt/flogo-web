@@ -2,7 +2,7 @@ import {ActionButtonsComponent} from './action-buttons.component';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
-import {NoDependenciesFakeLanguageModule} from '@flogo/core/language/testing';
+import {NoDependenciesFakeLanguageModule} from '@flogo-web/client/core/language/testing';
 
 describe('Component: ActionButtonsComponent', () => {
   let component: ActionButtonsComponent;

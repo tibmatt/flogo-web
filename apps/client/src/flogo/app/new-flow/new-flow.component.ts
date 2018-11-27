@@ -3,7 +3,7 @@ import {FormGroup, FormBuilder, Validators, AbstractControl} from '@angular/form
 
 import {APIFlowsService} from '../../core/services/restapi/v2/flows-api.service';
 import {UniqueNameValidator} from './unique-name.validator';
-import {MODAL_TOKEN, modalAnimate, ModalControl} from '@flogo/core/modal';
+import {MODAL_TOKEN, modalAnimate, ModalControl} from '@flogo-web/client/core/modal';
 
 export interface NewFlowData {
   appId: string;

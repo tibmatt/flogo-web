@@ -1,4 +1,4 @@
-import { ValueType } from '@flogo/core/constants';
+import { ValueType } from '@flogo-web/client/core/constants';
 
 export type ContribSchema = ActivitySchema | TriggerSchema;
 

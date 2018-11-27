@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, HostBinding, OnChanges } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { SvgRefFixerService } from '@flogo/core';
+import { SvgRefFixerService } from '@flogo-web/client/core';
 import { AbstractTileTaskComponent } from './abstract-tile-task.component';
 import { OpenCloseMenuAnimation } from './tile.animations';
 

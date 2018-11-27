@@ -1,5 +1,5 @@
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { LanguageService } from '@flogo/core';
+import { LanguageService } from '@flogo-web/client/core';
 import { NgModule } from '@angular/core';
 
 @NgModule({

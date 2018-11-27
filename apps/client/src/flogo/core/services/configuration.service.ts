@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ServiceUrlConfig } from '@flogo/core/services/service-url-config.model';
-import { RestApiService } from '@flogo/core/services/restapi';
+import { ServiceUrlConfig } from '@flogo-web/client/core/services/service-url-config.model';
+import { RestApiService } from '@flogo-web/client/core/services/restapi';
 
 @Injectable()
 export class ConfigurationService {

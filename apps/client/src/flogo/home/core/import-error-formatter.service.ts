@@ -1,4 +1,4 @@
-import {LanguageService, ValidationDetail} from '@flogo/core';
+import {LanguageService, ValidationDetail} from '@flogo-web/client/core';
 import { Injectable } from '@angular/core';
 
 @Injectable()

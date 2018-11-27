@@ -5,8 +5,8 @@ import { ScrollDispatchModule } from '@angular/cdk/scrolling';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
 
-import {SharedModule as FlogoSharedModule} from '@flogo/shared';
-import {MapperModule} from '@flogo/flow/shared/mapper';
+import {SharedModule as FlogoSharedModule} from '@flogo-web/client/shared';
+import {MapperModule} from '@flogo-web/client/flow/shared/mapper';
 
 import { MonacoEditorModule } from '../../shared/monaco-editor';
 import {ConfiguratorService} from './services/configurator.service';

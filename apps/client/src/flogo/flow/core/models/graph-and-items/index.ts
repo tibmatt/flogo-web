@@ -10,8 +10,8 @@ import {
   FlowGraph,
   GraphNode,
   Item
-} from '@flogo/core';
-import { isSubflowTask } from '@flogo/shared/utils';
+} from '@flogo-web/client/core';
+import { isSubflowTask } from '@flogo-web/client/shared/utils';
 
 import { makeTaskNodes, makeBranchNode } from './graph-creator';
 import { makeBranchItem, makeTaskItems } from './items-creator';

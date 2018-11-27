@@ -1,8 +1,8 @@
 import { isEmpty } from 'lodash';
 import { Injectable } from '@angular/core';
-import { MapperController, MapperControllerFactory } from '@flogo/flow/shared/mapper';
-import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo/core';
-import { TriggerHandler } from '@flogo/flow/core';
+import { MapperController, MapperControllerFactory } from '@flogo-web/client/flow/shared/mapper';
+import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo-web/client/core';
+import { TriggerHandler } from '@flogo-web/client/flow/core';
 import { CurrentTriggerState, SettingControlInfo, TriggerInformation } from '../interfaces';
 import { SettingsFormBuilder } from './settings-form-builder';
 import { createValidatorsForSchema } from './settings-validation';

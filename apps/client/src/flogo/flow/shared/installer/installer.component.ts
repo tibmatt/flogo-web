@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild, Input, Output } from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
-import { RESTAPIContributionsService } from '@flogo/core/services/restapi/v2/contributions.service';
-import {FLOGO_CONTRIB_TYPE, FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
+import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
+import {FLOGO_CONTRIB_TYPE, FLOGO_PROFILE_TYPE} from '@flogo-web/client/core/constants';
 import {
   FLOGO_INSTALLER_STATUS_STANDBY,
   FLOGO_INSTALLER_STATUS_IDLE,

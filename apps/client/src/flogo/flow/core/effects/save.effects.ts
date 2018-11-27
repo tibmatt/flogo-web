@@ -6,7 +6,7 @@ import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
 import { FlowActions } from '../state';
-import { FlogoFlowService as FlowsService } from '@flogo/flow/core/flow.service';
+import { FlogoFlowService as FlowsService } from '@flogo-web/client/flow/core/flow.service';
 const ActionType = FlowActions.ActionType;
 
 @Injectable()

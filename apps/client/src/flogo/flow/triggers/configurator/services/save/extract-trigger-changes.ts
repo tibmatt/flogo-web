@@ -1,6 +1,6 @@
 import { fromPairs } from 'lodash';
 import { FormGroup } from '@angular/forms';
-import { SettingControlGroup } from '@flogo/flow/triggers/configurator/interfaces';
+import { SettingControlGroup } from '@flogo-web/client/flow/triggers/configurator/interfaces';
 import { convertSettingsFormValues } from './convert-setting-form-values';
 
 export function extractTriggerChanges(form: FormGroup) {

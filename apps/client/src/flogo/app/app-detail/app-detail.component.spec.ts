@@ -2,23 +2,23 @@ import { ComponentFixture, TestBed, tick, fakeAsync, async } from '@angular/core
 import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
 import { BsModalModule } from 'ng2-bs3-modal';
-import {FLOGO_PROFILE_TYPE} from '@flogo/core';
-import { NotificationsServiceMock } from '@flogo/core/notifications/testing';
-import { NotificationsService } from '@flogo/core/notifications/notifications.service';
-import { SharedModule as FlogoSharedModule } from '@flogo/shared/shared.module';
-import { CoreModule as FlogoCoreModule } from '@flogo/core/core.module';
+import {FLOGO_PROFILE_TYPE} from '@flogo-web/client/core';
+import { NotificationsServiceMock } from '@flogo-web/client/core/notifications/testing';
+import { NotificationsService } from '@flogo-web/client/core/notifications/notifications.service';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared/shared.module';
+import { CoreModule as FlogoCoreModule } from '@flogo-web/client/core/core.module';
 import { FlogoApplicationDetailComponent } from './app-detail.component';
 import { AppDetailService, ApplicationDetail } from '../core';
 import { FlogoProfileService } from '../../core/services/profile.service';
 import { FlogoAppSettingsComponent } from '../settings/settings.component';
 import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
 import {FlowTriggerGroupComponent} from '../trigger-group/trigger-group.component';
-import { FakeRootLanguageModule } from '@flogo/core/language/testing';
-import {FlogoApplicationFlowsComponent} from '@flogo/app/shared/flows/flows.component';
-import {FlowGroupComponent} from '@flogo/app/flow-group/flow-group.component';
-import {FlogoNewFlowComponent} from '@flogo/app/new-flow/new-flow.component';
-import {TriggerShimBuildComponent} from '@flogo/app/shim-trigger/shim-trigger.component';
-import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
+import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
+import {FlogoApplicationFlowsComponent} from '@flogo-web/client/app/shared/flows/flows.component';
+import {FlowGroupComponent} from '@flogo-web/client/app/flow-group/flow-group.component';
+import {FlogoNewFlowComponent} from '@flogo-web/client/app/new-flow/new-flow.component';
+import {TriggerShimBuildComponent} from '@flogo-web/client/app/shim-trigger/shim-trigger.component';
+import {RESTAPIContributionsService} from '@flogo-web/client/core/services/restapi/v2/contributions.service';
 
 
 

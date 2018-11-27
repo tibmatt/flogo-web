@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { WindowRef } from '@flogo/core/services/window-ref';
+import { WindowRef } from '@flogo-web/client/core/services/window-ref';
 import { getFileName } from './restapi/restapi-utils';
 
 @Injectable()

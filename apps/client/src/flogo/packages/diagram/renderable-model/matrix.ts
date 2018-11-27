@@ -1,4 +1,4 @@
-import { GraphNode } from '@flogo/core';
+import { GraphNode } from '@flogo-web/client/core';
 import { Tile } from '../interfaces';
 
 type Matrix<T> = T[][];

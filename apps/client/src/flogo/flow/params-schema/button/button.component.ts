@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FlowMetadata } from '@flogo/core/interfaces';
+import { FlowMetadata } from '@flogo-web/client/core/interfaces';
 
 @Component({
   selector: 'flogo-flow-params-schema-button',

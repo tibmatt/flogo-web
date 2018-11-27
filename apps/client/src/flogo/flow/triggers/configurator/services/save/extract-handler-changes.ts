@@ -1,8 +1,8 @@
 import { fromPairs } from 'lodash';
 import { FormGroup } from '@angular/forms';
-import { AttributeMapping } from '@flogo/core';
-import { TriggerHandler } from '@flogo/flow/core';
-import { MapperController, MapperTranslator } from '@flogo/flow/shared/mapper';
+import { AttributeMapping } from '@flogo-web/client/core';
+import { TriggerHandler } from '@flogo-web/client/flow/core';
+import { MapperController, MapperTranslator } from '@flogo-web/client/flow/shared/mapper';
 import { SettingControlGroup } from '../../interfaces';
 import { SaveParams } from './save-params';
 import { convertSettingsFormValues } from './convert-setting-form-values';

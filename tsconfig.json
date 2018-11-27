@@ -20,7 +20,10 @@
     "paths": {
       "@flogo-web/parser": [
         "libs/parser/src/index.ts"
-      ]
+      ],
+      "@flogo-web/client/*": [
+        "apps/client/src/flogo/*"
+      ],
     }
   },
   "exclude": [

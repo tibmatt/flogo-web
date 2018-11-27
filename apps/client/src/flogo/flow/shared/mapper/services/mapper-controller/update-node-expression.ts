@@ -1,5 +1,5 @@
 import { MapperTreeNode } from '../../models';
-import { resolveExpressionType } from 'flogo-parser';
+import { resolveExpressionType } from '@flogo-web/parser';
 
 export function updateNodeExpression(currentNode: MapperTreeNode, expression: string) {
   const isExpressionInvalid = expression && expression.trim() && !resolveExpressionType(expression);

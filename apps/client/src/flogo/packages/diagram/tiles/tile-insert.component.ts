@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { DiagramSelection, InsertTile, DiagramSelectionType } from '../interfaces';
-import {BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS} from '@flogo/core';
+import {BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS} from '@flogo-web/client/core';
 
 @Component({
   selector: 'flogo-diagram-tile-insert',

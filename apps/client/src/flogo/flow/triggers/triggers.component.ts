@@ -5,19 +5,19 @@ import { from } from 'rxjs';
 import { takeUntil, mergeMap, reduce } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
-import { LanguageService, FlowMetadata, TriggerSchema, Dictionary } from '@flogo/core';
-import { TriggersApiService } from '@flogo/core/services';
-import { FLOGO_PROFILE_TYPE, TRIGGER_MENU_OPERATION } from '@flogo/core/constants';
-import { objectFromArray } from '@flogo/shared/utils';
-import {RESTAPIHandlersService} from '@flogo/core/services/restapi/v2/handlers-api.service';
+import { LanguageService, FlowMetadata, TriggerSchema, Dictionary } from '@flogo-web/client/core';
+import { TriggersApiService } from '@flogo-web/client/core/services';
+import { FLOGO_PROFILE_TYPE, TRIGGER_MENU_OPERATION } from '@flogo-web/client/core/constants';
+import { objectFromArray } from '@flogo-web/client/shared/utils';
+import {RESTAPIHandlersService} from '@flogo-web/client/core/services/restapi/v2/handlers-api.service';
 
-import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
-import {UIModelConverterService} from '@flogo/flow/core/ui-model-converter.service';
+import { SingleEmissionSubject } from '@flogo-web/client/core/models/single-emission-subject';
+import {UIModelConverterService} from '@flogo-web/client/flow/core/ui-model-converter.service';
 
 import { AppState } from '../core/state/app.state';
 
 import { Trigger } from '../core';
-import { TriggerMenuSelectionEvent } from '@flogo/flow/triggers/trigger-block/models';
+import { TriggerMenuSelectionEvent } from '@flogo-web/client/flow/triggers/trigger-block/models';
 import { RenderableTrigger } from './interfaces/renderable-trigger';
 import { getTriggersState } from '../core/state/triggers/triggers.selectors';
 import * as TriggerActions from '../core/state/triggers/triggers.actions';

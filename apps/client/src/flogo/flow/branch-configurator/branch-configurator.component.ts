@@ -1,22 +1,22 @@
 import {Component, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import { FlowState } from '@flogo/flow/core/state';
-import { AppState } from '@flogo/flow/core/state/app.state';
-import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
-import {FLOGO_TASK_TYPE, GraphNode, ItemBranch, LanguageService} from '@flogo/core';
-import {MapperController, MapperControllerFactory} from '@flogo/flow/shared/mapper';
+import { FlowState } from '@flogo-web/client/flow/core/state';
+import { AppState } from '@flogo-web/client/flow/core/state/app.state';
+import {FlogoFlowService as FlowsService} from '@flogo-web/client/flow/core';
+import {FLOGO_TASK_TYPE, GraphNode, ItemBranch, LanguageService} from '@flogo-web/client/core';
+import {MapperController, MapperControllerFactory} from '@flogo-web/client/flow/shared/mapper';
 import {
  getStateWhenConfigureChanges,
-} from '@flogo/flow/shared/configurator/configurator.selector';
+} from '@flogo-web/client/flow/shared/configurator/configurator.selector';
 import {skip, takeUntil} from 'rxjs/operators';
-import {SingleEmissionSubject} from '@flogo/core/models';
+import {SingleEmissionSubject} from '@flogo-web/client/core/models';
 import {cloneDeep} from 'lodash';
-import {getInputContext} from '@flogo/flow/core/models/task-configure/get-input-context';
+import {getInputContext} from '@flogo-web/client/flow/core/models/task-configure/get-input-context';
 import {Subscription} from 'rxjs';
-import * as FlowActions from '@flogo/flow/core/state/flow/flow.actions';
+import * as FlowActions from '@flogo-web/client/flow/core/state/flow/flow.actions';
 import {animate, style, transition, trigger} from '@angular/animations';
-import {createSaveBranchAction} from '@flogo/flow/task-configurator/models/save-action-creator';
-import {createBranchMappingContext} from '@flogo/flow/branch-configurator/branch-configurator-context';
+import {createSaveBranchAction} from '@flogo-web/client/flow/task-configurator/models/save-action-creator';
+import {createBranchMappingContext} from '@flogo-web/client/flow/branch-configurator/branch-configurator-context';
 
 
 @Component({

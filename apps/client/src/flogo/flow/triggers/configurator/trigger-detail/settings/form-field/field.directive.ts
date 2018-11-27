@@ -1,6 +1,6 @@
 import { Directive, ElementRef, forwardRef, HostListener, Input, Renderer2 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ValueType } from '@flogo/core';
+import { ValueType } from '@flogo-web/client/core';
 import { SettingValue } from '../../settings-value';
 import { parseValue } from '../parse-value';
 

@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { of as observableOfValue } from 'rxjs';
 
-import { Action, Dictionary, UiFlow } from '@flogo/core';
-import { APIFlowsService } from '@flogo/core/services/restapi/v2/flows-api.service';
-import { FlowsService } from '@flogo/core/services/flows.service';
-import { isSubflowTask } from '@flogo/shared/utils';
+import { Action, Dictionary, UiFlow } from '@flogo-web/client/core';
+import { APIFlowsService } from '@flogo-web/client/core/services/restapi/v2/flows-api.service';
+import { FlowsService } from '@flogo-web/client/core/services/flows.service';
+import { isSubflowTask } from '@flogo-web/client/shared/utils';
 import {savableFlow} from './models/backend-flow/flow.model';
 
 import { UIModelConverterService } from './ui-model-converter.service';

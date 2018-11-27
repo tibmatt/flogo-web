@@ -4,7 +4,7 @@ import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Action } from '@flogo/core/interfaces';
+import { Action } from '@flogo-web/client/core/interfaces';
 import { RestApiService } from '../rest-api.service';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnChanges, Output, ViewChild} from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
 import { ImportErrorFormatterService } from '../core/import-error-formatter.service';
-import {ValidationDetail} from '@flogo/core';
+import {ValidationDetail} from '@flogo-web/client/core';
 
 
 @Component({

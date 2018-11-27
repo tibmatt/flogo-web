@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {HttpUtilsService} from '@flogo/core/services/restapi/http-utils.service';
-import { FileDownloaderService } from '@flogo/core/services/file-downloader.service';
+import {HttpUtilsService} from '@flogo-web/client/core/services/restapi/http-utils.service';
+import { FileDownloaderService } from '@flogo-web/client/core/services/file-downloader.service';
 
 @Injectable()
 export class ShimTriggerBuildApiService {

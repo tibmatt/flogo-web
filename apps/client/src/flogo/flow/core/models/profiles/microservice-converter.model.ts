@@ -1,7 +1,7 @@
-import { FlowMetadata, MetadataAttribute } from '@flogo/core/interfaces';
-import { ValueType } from '@flogo/core/constants';
+import { FlowMetadata, MetadataAttribute } from '@flogo-web/client/core/interfaces';
+import { ValueType } from '@flogo-web/client/core/constants';
 import { AbstractModelConverter } from '../ui-converter.model';
-import {ActivitySchema, FLOGO_PROFILE_TYPE} from '@flogo/core';
+import {ActivitySchema, FLOGO_PROFILE_TYPE} from '@flogo-web/client/core';
 
 export class MicroServiceModelConverter extends AbstractModelConverter {
 

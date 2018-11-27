@@ -3,14 +3,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component, DebugElement } from '@angular/core';
 import { BsModalModule } from 'ng2-bs3-modal';
-import { SharedModule as FlogoSharedModule } from '@flogo/shared';
-import { CoreModule as FlogoCoreModule } from '@flogo/core';
-import { FakeRootLanguageModule } from '@flogo/core/language/testing';
-import {FlowSummary } from '@flogo/core/interfaces/app/flow-summary';
-import { AppDetailService } from '@flogo/app/core/apps.service';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared';
+import { CoreModule as FlogoCoreModule } from '@flogo-web/client/core';
+import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
+import {FlowSummary } from '@flogo-web/client/core/interfaces/app/flow-summary';
+import { AppDetailService } from '@flogo-web/client/app/core/apps.service';
 import { FlogoExportFlowsComponent } from './export-flows.component';
-import { NotificationsService } from '@flogo/core/notifications/notifications.service';
-import { NotificationsServiceMock } from '@flogo/core/notifications/testing';
+import { NotificationsService } from '@flogo-web/client/core/notifications/notifications.service';
+import { NotificationsServiceMock } from '@flogo-web/client/core/notifications/testing';
 
 @Component({
   template: `<flogo-export-flow [flows]="flows" [isLegacyExport]="isLegacyExport"></flogo-export-flow>`

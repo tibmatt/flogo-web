@@ -1,8 +1,8 @@
 import {Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
-import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
-import {TriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
-import {TRIGGER_MENU_OPERATION} from '@flogo/core/constants';
+import {SingleEmissionSubject} from '@flogo-web/client/core/models/single-emission-subject';
+import {TriggerMenuSelectionEvent} from '@flogo-web/client/flow/triggers/trigger-block/models';
+import {TRIGGER_MENU_OPERATION} from '@flogo-web/client/core/constants';
 import {Trigger} from '../../core';
 
 export interface TriggerMenuSelectionEvent {

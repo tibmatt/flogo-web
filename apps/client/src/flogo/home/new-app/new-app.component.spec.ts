@@ -5,7 +5,7 @@ import { ProfilesAPIService } from '../../core/services/restapi/v2/profiles-api.
 import { MockProfilesAPIService } from '../../core/services/restapi/v2/profiles-api.service.mock';
 import { By } from '@angular/platform-browser';
 import { FLOGO_PROFILE_TYPE } from '../../core/constants';
-import { NoDependenciesFakeLanguageModule } from '@flogo/core/language/testing';
+import { NoDependenciesFakeLanguageModule } from '@flogo-web/client/core/language/testing';
 
 describe('Component: FlogoNewAppComponent', () => {
   let comp: FlogoNewAppComponent;

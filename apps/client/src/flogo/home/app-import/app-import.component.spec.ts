@@ -5,7 +5,7 @@ import { BsModalModule } from 'ng2-bs3-modal';
 import { ImportErrorFormatterService } from '../core/import-error-formatter.service';
 import { By } from '@angular/platform-browser';
 import { mockImportErrorResponse } from './mocks/error.response.mock';
-import { NoDependenciesFakeLanguageModule } from '@flogo/core/language/testing';
+import { NoDependenciesFakeLanguageModule } from '@flogo-web/client/core/language/testing';
 
 @Component({
   selector: 'flogo-container-component',

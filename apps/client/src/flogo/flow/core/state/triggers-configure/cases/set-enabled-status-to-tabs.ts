@@ -1,5 +1,5 @@
 import { isEmpty, mapValues } from 'lodash';
-import { TriggerConfigureState, TriggerConfigureTab } from '@flogo/flow/core';
+import { TriggerConfigureState, TriggerConfigureTab } from '@flogo-web/client/flow/core';
 
 export function setEnabledStatusToTabs(state: TriggerConfigureState): TriggerConfigureState {
   return {

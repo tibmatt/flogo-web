@@ -3,7 +3,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {DebugElement} from '@angular/core';
 import {LogsContentComponent} from './content.component';
 import {SearchPipe} from '../search.pipe';
-import {LogService} from '@flogo/core/services/log.service';
+import {LogService} from '@flogo-web/client/core/services/log.service';
 
 const LOG_LINES = [
   {

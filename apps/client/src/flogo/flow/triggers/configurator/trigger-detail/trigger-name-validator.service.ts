@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { TriggersApiService } from '@flogo/core/services/restapi/v2/triggers-api.service';
+import { TriggersApiService } from '@flogo-web/client/core/services/restapi/v2/triggers-api.service';
 import { timer, Observable } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 

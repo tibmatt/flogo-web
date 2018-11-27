@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ValueType as ValueType } from '@flogo/core/constants';
+import { ValueType as ValueType } from '@flogo-web/client/core/constants';
 import { MapperTreeNode } from '../models/mapper-treenode.model';
 
 @Injectable()

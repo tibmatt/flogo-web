@@ -1,4 +1,4 @@
-import { TriggerConfigureState, TriggerConfigureTab } from '@flogo/flow/core';
+import { TriggerConfigureState, TriggerConfigureTab } from '@flogo-web/client/flow/core';
 
 const COMPARABLE_PROPERTIES: Array<keyof TriggerConfigureTab> = [ 'isValid', 'isDirty', 'isEnabled', 'isPending' ];
 function didStateChange(prevTab: TriggerConfigureTab, nextTab: TriggerConfigureTab) {

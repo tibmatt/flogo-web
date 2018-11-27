@@ -3,7 +3,7 @@ import { Subscription, interval, of } from 'rxjs';
 import { delayWhen } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
-import { FlowState, FlowActions, FlowSelectors } from '@flogo/flow/core/state';
+import { FlowState, FlowActions, FlowSelectors } from '@flogo-web/client/flow/core/state';
 
 import { MINIMIZED_WIDTH, CLOSE_WRAPPER_ANIMATION_DURATION } from '../variables';
 import { TogglerRefService } from '../toggler-ref.service';

@@ -1,10 +1,10 @@
 import { defaultsDeep, get } from 'lodash';
-import { FlowState } from '@flogo/flow/core/state';
-import { Dictionary, GraphNode, Item, ItemSubflow, ItemTask, NodeType } from '@flogo/core';
-import { mergeItemWithSchema, PartialActivitySchema } from '@flogo/core/models';
-import { isSubflowTask } from '@flogo/shared/utils';
+import { FlowState } from '@flogo-web/client/flow/core/state';
+import { Dictionary, GraphNode, Item, ItemSubflow, ItemTask, NodeType } from '@flogo-web/client/core';
+import { mergeItemWithSchema, PartialActivitySchema } from '@flogo-web/client/core/models';
+import { isSubflowTask } from '@flogo-web/client/shared/utils';
 import { makeErrorTask } from '../make-error-task';
-import { FlowMetadata } from '@flogo/flow/task-configurator/models/flow-metadata';
+import { FlowMetadata } from '@flogo-web/client/flow/task-configurator/models/flow-metadata';
 
 // todo: fcastill - specify return interfaces
 export function getInputContext(taskId: string, state: FlowState): any[] {

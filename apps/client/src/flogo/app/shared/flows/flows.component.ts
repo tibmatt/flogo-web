@@ -1,6 +1,6 @@
 import { sortBy } from 'lodash';
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ElementRef } from '@angular/core';
-import { FlowSummary } from '@flogo/core';
+import { FlowSummary } from '@flogo-web/client/core';
 
 @Component({
   selector: 'flogo-apps-flows',

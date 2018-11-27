@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChange, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ValueType } from '@flogo/core/constants';
+import { ValueType } from '@flogo-web/client/core/constants';
 import { Observable } from 'rxjs';
 import { SettingValue } from '../../settings-value';
 import { SettingControlInfo } from '../../../interfaces';

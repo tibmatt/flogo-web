@@ -1,5 +1,5 @@
 import { AbstractModelConverter } from '../ui-converter.model';
-import { ActivitySchema, FLOGO_PROFILE_TYPE } from '@flogo/core';
+import { ActivitySchema, FLOGO_PROFILE_TYPE } from '@flogo-web/client/core';
 
 export class DeviceModelConverter extends AbstractModelConverter {
 

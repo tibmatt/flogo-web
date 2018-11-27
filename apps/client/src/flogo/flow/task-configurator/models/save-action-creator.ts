@@ -10,13 +10,13 @@ import {
   ItemBranch,
   ItemSubflow,
   ItemTask
-} from '@flogo/core';
-import { isMapperActivity } from '@flogo/shared/utils';
+} from '@flogo-web/client/core';
+import { isMapperActivity } from '@flogo-web/client/shared/utils';
 
-import { AppState } from '@flogo/flow/core/state/app.state';
-import { FlowState, FlowSelectors, FlowActions } from '@flogo/flow/core/state';
-import { HandlerType } from '@flogo/flow/core/models';
-import { uniqueTaskName } from '@flogo/flow/core/models/unique-task-name';
+import { AppState } from '@flogo-web/client/flow/core/state/app.state';
+import { FlowState, FlowSelectors, FlowActions } from '@flogo-web/client/flow/core/state';
+import { HandlerType } from '@flogo-web/client/flow/core/models';
+import { uniqueTaskName } from '@flogo-web/client/flow/core/models/unique-task-name';
 
 export interface SaveTaskConfigEventData {
   tileId: string;

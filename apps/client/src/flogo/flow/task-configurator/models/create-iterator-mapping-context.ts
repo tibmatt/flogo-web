@@ -1,4 +1,4 @@
-import { ValueType } from '@flogo/core';
+import { ValueType } from '@flogo-web/client/core';
 
 export const ITERABLE_VALUE_KEY = 'iterate';
 

@@ -21,18 +21,18 @@ import { ProfilesAPIService } from './services/restapi/v2/profiles-api.service';
 import { FlogoProfileService } from './services/profile.service';
 import { RESTAPIContributionsService } from './services/restapi/v2/contributions.service';
 import { SvgRefFixerService } from './services/svg-ref-fixer.service';
-import { LogService } from '@flogo/core/services/log.service';
+import { LogService } from '@flogo-web/client/core/services/log.service';
 import { FlogoNavbarComponent } from './navbar/navbar.component';
 import { WalkthroughModule } from './walkthrough/walkthrough.module';
 import { ShimTriggerBuildApiService } from './services/restapi/v2/shim-trigger-build-api.service';
 import { FileDownloaderService } from './services/file-downloader.service';
-import {SharedModule as FlogoSharedModule} from '@flogo/shared';
-import {ConfirmationModalComponent} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.component';
-import {ConfirmationService} from '@flogo/core/confirmation/confirmation.service';
+import {SharedModule as FlogoSharedModule} from '@flogo-web/client/shared';
+import {ConfirmationModalComponent} from '@flogo-web/client/core/confirmation/confirmation-modal/confirmation-modal.component';
+import {ConfirmationService} from '@flogo-web/client/core/confirmation/confirmation.service';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {ConfirmationModalService} from './confirmation/confirmation-modal/confirmation-modal.service';
 import { NotificationsModule } from './notifications';
-import {ModalService} from '@flogo/core/modal/modal.service';
+import {ModalService} from '@flogo-web/client/core/modal/modal.service';
 
 @NgModule({
   imports: [

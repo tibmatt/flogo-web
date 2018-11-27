@@ -4,12 +4,12 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 
-import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
-import { MapperController } from '@flogo/flow/shared/mapper/services/mapper-controller/mapper-controller';
+import { SingleEmissionSubject } from '@flogo-web/client/core/models/single-emission-subject';
+import { MapperController } from '@flogo-web/client/flow/shared/mapper/services/mapper-controller/mapper-controller';
 
-import { TriggerConfigureSelectors, TriggerConfigureActions } from '@flogo/flow/core/state/triggers-configure';
-import { FlowState } from '@flogo/flow/core/state';
-import { TriggerConfigureTabType, TriggerConfigureTab } from '@flogo/flow/core/interfaces';
+import { TriggerConfigureSelectors, TriggerConfigureActions } from '@flogo-web/client/flow/core/state/triggers-configure';
+import { FlowState } from '@flogo-web/client/flow/core/state';
+import { TriggerConfigureTabType, TriggerConfigureTab } from '@flogo-web/client/flow/core/interfaces';
 
 import { CurrentTriggerState, TriggerInformation } from '../interfaces';
 import { ConfigureDetailsService } from './details.service';

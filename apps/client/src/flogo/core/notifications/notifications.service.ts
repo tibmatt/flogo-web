@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, timer, Observable, Subscription } from 'rxjs';
 import { Router, NavigationStart } from '@angular/router';
 import { filter, take, takeUntil } from 'rxjs/operators';
-import { Notification, NotificationMessage } from '@flogo/core/notifications/notifications';
+import { Notification, NotificationMessage } from '@flogo-web/client/core/notifications/notifications';
 
 const keepPersistableOnly = (notifications: Notification[]) => notifications.filter(n => n.persistAfterNavigation);
 const DEFAULT_TIMEOUT = 4500;

@@ -1,5 +1,5 @@
 import {CommonModule} from '@angular/common';
-import {CoreModule as FlowCoreModule} from '@flogo/core';
+import {CoreModule as FlowCoreModule} from '@flogo-web/client/core';
 import {NgModule} from '@angular/core';
 import {SubFlowComponent} from './sub-flow.component';
 import {BsModalModule} from 'ng2-bs3-modal';

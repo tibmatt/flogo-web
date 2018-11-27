@@ -11,12 +11,12 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BsModalModule } from 'ng2-bs3-modal';
 
-import { CoreModule, LanguageService } from '@flogo/core';
-import { createTranslateLoader } from '@flogo/core/language';
-import { initializer } from '@flogo/core/initializer';
-import { SharedModule as FlogoSharedModule } from '@flogo/shared';
+import { CoreModule, LanguageService } from '@flogo-web/client/core';
+import { createTranslateLoader } from '@flogo-web/client/core/language';
+import { initializer } from '@flogo-web/client/core/initializer';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared';
 
-import { LogsModule as FlogoLogsModule } from '@flogo/logs';
+import { LogsModule as FlogoLogsModule } from '@flogo-web/client/logs';
 
 import { appRoutingProviders, routing } from './flogo.routing';
 import { FlogoAppComponent } from './flogo.component';

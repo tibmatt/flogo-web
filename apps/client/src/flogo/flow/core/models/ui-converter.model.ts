@@ -11,10 +11,10 @@ import {
   TriggerSchema,
   FLOGO_CONTRIB_TYPE,
   ActivitySchema
-} from '@flogo/core';
-import { ErrorService } from '@flogo/core/services/error.service';
-import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
-import { flogoGenTriggerID, flogoGenNodeID, isSubflowTask } from '@flogo/shared/utils';
+} from '@flogo-web/client/core';
+import { ErrorService } from '@flogo-web/client/core/services/error.service';
+import {RESTAPIContributionsService} from '@flogo-web/client/core/services/restapi/v2/contributions.service';
+import { flogoGenTriggerID, flogoGenNodeID, isSubflowTask } from '@flogo-web/client/shared/utils';
 
 import { ItemFactory } from './graph-and-items/item-factory';
 import { makeGraphAndItems } from './graph-and-items';

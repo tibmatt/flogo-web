@@ -1,4 +1,4 @@
-import {FLOGO_TASK_TYPE} from '@flogo/core/constants';
+import {FLOGO_TASK_TYPE} from '@flogo-web/client/core/constants';
 
 export function calculateNextId(items: any, parseInput?) {
   let maxCount;

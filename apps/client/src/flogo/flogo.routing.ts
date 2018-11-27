@@ -1,6 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
-import { ExternalWindowComponent } from '@flogo/logs';
+import { ExternalWindowComponent } from '@flogo-web/client/logs';
 
 export const appRoutes: Routes = [
   {

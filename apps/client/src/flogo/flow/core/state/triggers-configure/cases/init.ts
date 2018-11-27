@@ -1,6 +1,6 @@
-import { Dictionary, FLOGO_PROFILE_TYPE, TriggerSchema } from '@flogo/core';
-import { FlowState } from '@flogo/flow/core/state/flow/flow.state';
-import { getProfileType } from '@flogo/shared/utils';
+import { Dictionary, FLOGO_PROFILE_TYPE, TriggerSchema } from '@flogo-web/client/core';
+import { FlowState } from '@flogo-web/client/flow/core/state/flow/flow.state';
+import { getProfileType } from '@flogo-web/client/shared/utils';
 import { OpenConfigureWithSelection } from '../trigger-configure.actions';
 import {
   Trigger,
@@ -8,7 +8,7 @@ import {
   TriggerConfigureTab,
   TriggerConfigureTabType,
   TriggerConfigureTrigger
-} from '@flogo/flow/core/interfaces';
+} from '@flogo-web/client/flow/core/interfaces';
 import { getDeviceTabs, getMicroServiceTabs } from './tab-base-by-profile';
 import { setEnabledStatusToTabs } from './set-enabled-status-to-tabs';
 

@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Action as ActionSchema, ActivitySchema, Dictionary, GraphNode, Item, ItemTask, StepAttribute } from '@flogo/core';
+import { Action as ActionSchema, ActivitySchema, Dictionary, GraphNode, Item, ItemTask, StepAttribute } from '@flogo-web/client/core';
 import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
 

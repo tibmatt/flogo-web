@@ -1,5 +1,5 @@
-import { FlowState } from '@flogo/flow/core/state';
-import { Action as ActionSchema } from '@flogo/core';
+import { FlowState } from '@flogo-web/client/flow/core/state';
+import { Action as ActionSchema } from '@flogo-web/client/core';
 
 export function subflowSchemaUpdate(state: FlowState, payload: { newSubflowSchema?: ActionSchema }) {
   const { newSubflowSchema } = payload;

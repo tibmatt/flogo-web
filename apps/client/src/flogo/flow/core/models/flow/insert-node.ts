@@ -1,4 +1,4 @@
-import { FlowGraph, GraphNode } from '@flogo/core';
+import { FlowGraph, GraphNode } from '@flogo-web/client/core';
 
 export function insertNode(flowGraph: FlowGraph, node: GraphNode, parentId?: string): FlowGraph {
   const parent = flowGraph.nodes[parentId];

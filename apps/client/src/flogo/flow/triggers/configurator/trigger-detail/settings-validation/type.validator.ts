@@ -1,5 +1,5 @@
 import { isNaN as isNotaNumber, isBoolean, isPlainObject, isArray, isNumber } from 'lodash';
-import { ValueType } from '@flogo/core';
+import { ValueType } from '@flogo-web/client/core';
 import { ValidationErrors } from '@angular/forms';
 import { ErrorTypeMismatch, ErrorTypes } from './error-types';
 

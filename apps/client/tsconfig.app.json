@@ -2,11 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc/apps/client",
-    "types": [],
-    "paths": {
-      "@flogo/*": ["src/flogo/*"]
-    },
+    "types": []
   },
-  "exclude": ["test.ts", "**/*.spec.ts"],
+  "exclude": ["test.ts", "**/*.spec.ts", "**/*.mock.ts", "**/testing/*"],
   "include": ["**/*.ts"]
 }

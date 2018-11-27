@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { SvgRefFixerService } from '@flogo/core';
+import { SvgRefFixerService } from '@flogo-web/client/core';
 import { DiagramSelection, TaskTile, DiagramActionSelf, DiagramActionChild, DiagramSelectionType } from '../interfaces';
 import { actionEventFactory } from '../action-event-factory';
 

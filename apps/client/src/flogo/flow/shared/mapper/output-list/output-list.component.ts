@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-import { selectFilterFromOutputs, selectNodesFromOutputs } from '@flogo/flow/shared/mapper/services/selectors';
+import { selectFilterFromOutputs, selectNodesFromOutputs } from '@flogo-web/client/flow/shared/mapper/services/selectors';
 
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
 import { TYPE_PARAM_OUTPUT } from '../services/dragging.service';

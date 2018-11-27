@@ -10,7 +10,7 @@ import { taskItemCreated } from './cases/task-item-created';
 import { removeItem } from './cases/remove-item';
 import { itemUpdate, nodeUpdate } from './cases/item-update';
 import { executionUpdate } from './cases/execution-update';
-import { commitTaskConfiguration } from '@flogo/flow/core/state/flow/cases/commit-task-configuration';
+import { commitTaskConfiguration } from '@flogo-web/client/flow/core/state/flow/cases/commit-task-configuration';
 import { runnerReducer } from './runner.reducer';
 
 const ActionType = actions.ActionType;

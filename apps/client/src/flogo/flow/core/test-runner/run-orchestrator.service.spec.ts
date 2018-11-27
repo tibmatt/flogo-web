@@ -3,7 +3,7 @@ import { of, from, throwError as _throw, concat } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import Spy = jasmine.Spy;
 
-import { RunApiService, StatusResponse, ErrorService } from '@flogo/core/services';
+import { RunApiService, StatusResponse, ErrorService } from '@flogo-web/client/core/services';
 import { ERRORS, RunStatusCode, RunOrchestratorService } from './run-orchestrator.service';
 
 describe('Service: RunOrchestratorService', function (this: {

@@ -3,9 +3,9 @@ import {Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {
   FlowActions, FlowSelectors, FlowState, getErrorFlowHasExecutionErrors, getPrimaryFlowHasExecutionErrors
-} from '@flogo/flow/core/state';
+} from '@flogo-web/client/flow/core/state';
 import {takeUntil} from 'rxjs/operators';
-import {SingleEmissionSubject} from '@flogo/core/models';
+import {SingleEmissionSubject} from '@flogo-web/client/core/models';
 
 @Component({
   selector: 'flogo-flow-tabs',

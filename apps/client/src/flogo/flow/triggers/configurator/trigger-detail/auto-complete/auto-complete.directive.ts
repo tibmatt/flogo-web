@@ -23,9 +23,9 @@ import { Observable, ReplaySubject, of as observableOf, concat, combineLatest, m
 import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 
 import { AUTOCOMPLETE_OPTIONS, AutoCompleteContentComponent, AutocompleteOptions } from './auto-complete-content.component';
-import { SingleEmissionSubject } from '@flogo/core/models';
-import { SettingValue } from '@flogo/flow/triggers/configurator/trigger-detail/settings-value';
-import { FieldValueAccesorDirective } from '@flogo/flow/triggers/configurator/trigger-detail/settings/form-field/field.directive';
+import { SingleEmissionSubject } from '@flogo-web/client/core/models';
+import { SettingValue } from '@flogo-web/client/flow/triggers/configurator/trigger-detail/settings-value';
+import { FieldValueAccesorDirective } from '@flogo-web/client/flow/triggers/configurator/trigger-detail/settings/form-field/field.directive';
 import {filterSourceBy} from './filter-source-by';
 
 const POPOVER_WIDTH = '344px';

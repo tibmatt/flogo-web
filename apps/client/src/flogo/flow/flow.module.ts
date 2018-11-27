@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
-import { SharedModule as FlogoSharedModule } from '@flogo/shared';
-import { LogsModule as FlogoLogsModule } from '@flogo/logs';
-import { DiagramModule } from '@flogo/packages/diagram';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared';
+import { LogsModule as FlogoLogsModule } from '@flogo-web/client/logs';
+import { DiagramModule } from '@flogo-web/client/packages/diagram';
 import { ScrollDispatchModule } from '@angular/cdk/scrolling';
 
 import { MonacoEditorModule } from './shared/monaco-editor';
@@ -14,7 +14,7 @@ import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
 
 import { CoreModule as FlowCoreModule } from './core';
 
-import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
+import {TriggersModule as FlogoFlowTriggersModule} from '@flogo-web/client/flow/triggers';
 import { TaskMapperModule as FlogoTaskMapperModule } from './task-configurator';
 import { BranchMapperModule } from './branch-configurator';
 import { ParamsSchemaModule } from './params-schema';

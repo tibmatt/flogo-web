@@ -1,6 +1,6 @@
 import {of as observableOf,  Observable } from 'rxjs';
 
-import { LanguageService } from '@flogo/core';
+import { LanguageService } from '@flogo-web/client/core';
 import { Injectable } from '@angular/core';
 
 @Injectable()

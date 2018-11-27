@@ -1,4 +1,4 @@
-import { flow } from '@flogo/core';
+import { flow } from '@flogo-web/client/core';
 
 export interface TriggerHandler {
   actionId: string;

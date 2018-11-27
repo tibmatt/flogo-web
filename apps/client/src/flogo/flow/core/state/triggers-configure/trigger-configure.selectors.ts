@@ -2,7 +2,7 @@ import { createSelector, select, Store } from '@ngrx/store';
 import { switchMap, map } from 'rxjs/operators';
 import { of as observableOf } from 'rxjs';
 
-import { FlowState, selectActionId, selectApp } from '@flogo/flow/core/state';
+import { FlowState, selectActionId, selectApp } from '@flogo-web/client/flow/core/state';
 // todo: move to shared location
 import { TriggerStatus, CurrentTriggerState } from '../../../triggers/configurator/interfaces';
 import { selectFlowMetadata, selectHandlers, selectTriggerConfigure, selectTriggers } from '../flow/flow.selectors';

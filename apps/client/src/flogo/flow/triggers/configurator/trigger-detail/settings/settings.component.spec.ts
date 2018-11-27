@@ -1,5 +1,5 @@
 import {ConfigureSettingsComponent} from './settings.component';
-import {ConfirmationService} from '@flogo/core/confirmation';
+import {ConfirmationService} from '@flogo-web/client/core/confirmation';
 import Spy = jasmine.Spy;
 import {EDITION_DATA_TOKEN} from './confirm-edition/confirm-edition.component';
 import {ElementRef} from '@angular/core';

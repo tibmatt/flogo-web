@@ -1,4 +1,4 @@
-import { FLOGO_TASK_TYPE } from '@flogo/core/constants';
+import { FLOGO_TASK_TYPE } from '@flogo-web/client/core/constants';
 import { TaskAttributes } from './attribute';
 import { AttributeMapping } from './attribute-mapping';
 import { Link } from './link';

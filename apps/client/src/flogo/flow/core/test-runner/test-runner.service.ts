@@ -4,13 +4,13 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { catchError, filter, map, mergeMap, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 
-import { Dictionary, FlowGraph, GraphNode, Interceptor, LanguageService, NodeType, ItemActivityTask, ActivitySchema } from '@flogo/core';
-import { NotificationsService } from '@flogo/core/notifications';
-import { OperationalError } from '@flogo/core/services';
-import { FlowActions, FlowSelectors } from '@flogo/flow/core/state';
-import { isBranchExecuted } from '@flogo/flow/core/models/flow/branch-execution-status';
-import { logRunStatus } from '@flogo/flow/core/test-runner/log-run-status';
-import { FlowState } from '@flogo/flow/core/state';
+import { Dictionary, FlowGraph, GraphNode, Interceptor, LanguageService, NodeType, ItemActivityTask, ActivitySchema } from '@flogo-web/client/core';
+import { NotificationsService } from '@flogo-web/client/core/notifications';
+import { OperationalError } from '@flogo-web/client/core/services';
+import { FlowActions, FlowSelectors } from '@flogo-web/client/flow/core/state';
+import { isBranchExecuted } from '@flogo-web/client/flow/core/models/flow/branch-execution-status';
+import { logRunStatus } from '@flogo-web/client/flow/core/test-runner/log-run-status';
+import { FlowState } from '@flogo-web/client/flow/core/state';
 import {
   RunOrchestratorService,
   ERRORS as RUNNER_ERRORS,

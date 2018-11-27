@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FakeTranslatePipe } from '@flogo/core/language/testing';
+import { FakeTranslatePipe } from '@flogo-web/client/core/language/testing';
 import { NotificationsService } from './notifications.service';
 import { NotificationsComponent } from './notifications.component';
 import { NotificationsServiceMock } from './testing/notifications.service.mock';

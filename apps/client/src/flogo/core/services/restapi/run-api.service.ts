@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable ,  throwError as _throw } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
-import { flowToJSON_Link, Interceptor, InterceptorTask, Snapshot, Step } from '@flogo/core/interfaces';
+import { flowToJSON_Link, Interceptor, InterceptorTask, Snapshot, Step } from '@flogo-web/client/core/interfaces';
 import { RestApiService } from './rest-api.service';
 
 /**

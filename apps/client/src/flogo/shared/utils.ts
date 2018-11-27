@@ -1,7 +1,7 @@
 import { assign, cloneDeep, each, get, isEmpty, isObject, isUndefined, kebabCase, uniqueId, trimStart } from 'lodash';
-import { ValueType, FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
-import { Item, Task } from '@flogo/core';
-import {TYPE_LITERAL_ASSIGNMENT} from '@flogo/flow/shared/mapper';
+import { ValueType, FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '@flogo-web/client/core/constants';
+import { Item, Task } from '@flogo-web/client/core';
+import {TYPE_LITERAL_ASSIGNMENT} from '@flogo-web/client/flow/shared/mapper';
 
 export function flogoGenTriggerID(): string {
   return `Flogo::Trigger::${Date.now()}`;

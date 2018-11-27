@@ -1,4 +1,4 @@
-import { TriggerConfigureTabType } from '@flogo/flow/core/interfaces';
+import { TriggerConfigureTabType } from '@flogo-web/client/flow/core/interfaces';
 
 const SETTINGS_TAB: { type: TriggerConfigureTabType, i18nKey: string } = {
   type: TriggerConfigureTabType.Settings,

@@ -3,13 +3,13 @@ import { select, Store } from '@ngrx/store';
 import {Observable} from 'rxjs';
 
 import { FlowState, FlowActions, FlowSelectors } from '../core/state';
-import {DiagramAction, DiagramActionType, DiagramSelection} from '@flogo/packages/diagram';
-import {HandlerType} from '@flogo/flow/core/models';
-import {DiagramActionChild, DiagramActionSelf} from '@flogo/packages/diagram/interfaces';
+import {DiagramAction, DiagramActionType, DiagramSelection} from '@flogo-web/client/packages/diagram';
+import {HandlerType} from '@flogo-web/client/flow/core/models';
+import {DiagramActionChild, DiagramActionSelf} from '@flogo-web/client/packages/diagram/interfaces';
 import {takeUntil} from 'rxjs/operators';
-import {SingleEmissionSubject} from '@flogo/core/models';
-import {newBranchId} from '@flogo/flow/core/models/flow/id-generator';
-import {FlowGraph} from '@flogo/core';
+import {SingleEmissionSubject} from '@flogo-web/client/core/models';
+import {newBranchId} from '@flogo-web/client/flow/core/models/flow/id-generator';
+import {FlowGraph} from '@flogo-web/client/core';
 
 @Component({
   selector: 'flogo-flow-diagram',

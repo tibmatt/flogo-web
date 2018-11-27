@@ -1,4 +1,4 @@
-import { ParseResult } from 'flogo-parser';
+import { ParseResult } from '@flogo-web/parser';
 
 export interface SettingValue {
   viewValue: string;

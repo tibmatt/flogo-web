@@ -1,4 +1,4 @@
-import { Dictionary, StepAttribute } from '@flogo/core';
+import { Dictionary, StepAttribute } from '@flogo-web/client/core';
 import { FormGroup } from '@angular/forms';
 
 export function mergeFormWithOutputs(form: FormGroup, lastExecutionResult: Dictionary<StepAttribute>) {

@@ -13,9 +13,9 @@ import {
   Task,
   LanguageService,
   Item,
-} from '@flogo/core';
+} from '@flogo-web/client/core';
 
-import { NotificationsService } from '@flogo/core/notifications';
+import { NotificationsService } from '@flogo-web/client/core/notifications';
 
 import { FlowData } from './core';
 import { FlowMetadata } from './task-configurator/models/flow-metadata';
@@ -26,20 +26,20 @@ import {
   FLOGO_PROFILE_TYPE,
   FLOGO_TASK_TYPE
 } from '../core/constants';
-import { getProfileType, isMapperActivity } from '@flogo/shared/utils';
+import { getProfileType, isMapperActivity } from '@flogo-web/client/shared/utils';
 
 import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
-import { mergeItemWithSchema } from '@flogo/core/models';
+import { mergeItemWithSchema } from '@flogo-web/client/core/models';
 import { HandlerType, SelectionType } from './core/models';
 import { FlowState } from './core/state';
 
-import { SingleEmissionSubject } from '@flogo/core/models';
+import { SingleEmissionSubject } from '@flogo-web/client/core/models';
 import { Trigger } from './core';
-import { TestRunnerService } from '@flogo/flow/core/test-runner/test-runner.service';
-import {ConfirmationResult} from '@flogo/core';
-import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
-import { MonacoEditorLoaderService } from '@flogo/flow/shared/monaco-editor';
+import { TestRunnerService } from '@flogo-web/client/flow/core/test-runner/test-runner.service';
+import {ConfirmationResult} from '@flogo-web/client/core';
+import {ConfirmationModalService} from '@flogo-web/client/core/confirmation/confirmation-modal/confirmation-modal.service';
+import { MonacoEditorLoaderService } from '@flogo-web/client/flow/shared/monaco-editor';
 
 interface TaskContext {
   isTrigger: boolean;

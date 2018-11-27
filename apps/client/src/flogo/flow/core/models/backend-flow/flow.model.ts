@@ -1,9 +1,9 @@
 import { difference, cloneDeep, find, get, each, includes, isEmpty, isNumber, isString, isUndefined, trim  } from 'lodash';
-import { convertTaskID, getDefaultValue, isSubflowTask } from '@flogo/shared/utils';
+import { convertTaskID, getDefaultValue, isSubflowTask } from '@flogo-web/client/shared/utils';
 
-import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '@flogo/core/constants';
-import { FlowMetadata, MetadataAttribute } from '@flogo/core/interfaces/flow/index';
-import { mergeItemWithSchema } from '@flogo/core/models';
+import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '@flogo-web/client/core/constants';
+import { FlowMetadata, MetadataAttribute } from '@flogo-web/client/core/interfaces/flow/index';
+import { mergeItemWithSchema } from '@flogo-web/client/core/models';
 
 import {
   AttributeMapping as DiagramTaskAttributeMapping,
@@ -28,7 +28,7 @@ import {
   FlowGraph,
   GraphNode,
   NodeType, Action,
-} from '@flogo/core';
+} from '@flogo-web/client/core';
 
 const DEBUG = false;
 const INFO = true;

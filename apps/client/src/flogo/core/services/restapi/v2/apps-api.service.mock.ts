@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { App } from '@flogo/core';
+import { App } from '@flogo-web/client/core';
 import { HttpUtilsService } from '../http-utils.service';
 import { AppsApiService } from './apps-api.service';
 

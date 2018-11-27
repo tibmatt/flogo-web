@@ -4,7 +4,7 @@ import {TaskTile, Tile} from '../interfaces/tile';
 
 import {NodeMatrix, TileMatrix} from './matrix';
 import {tileFactory} from './tile-factory';
-import {GraphNodeDictionary, NodeType} from '@flogo/core';
+import {GraphNodeDictionary, NodeType} from '@flogo-web/client/core';
 
 const TILE_PADDING = tileFactory.makePadding();
 const TILE_PLACEHOLDER = tileFactory.makePlaceholder();

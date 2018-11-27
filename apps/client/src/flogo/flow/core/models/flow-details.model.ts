@@ -2,10 +2,10 @@ import { isEqual } from 'lodash';
 import { Store } from '@ngrx/store';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-import { GraphNode, Item, UiFlow } from '@flogo/core';
+import { GraphNode, Item, UiFlow } from '@flogo-web/client/core';
 
-import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
-import { getProfileType } from '@flogo/shared/utils';
+import { FLOGO_PROFILE_TYPE } from '@flogo-web/client/core/constants';
+import { getProfileType } from '@flogo-web/client/shared/utils';
 
 import { FlowActions, FlowSelectors } from '../state';
 import { AppState } from '../state/app.state';

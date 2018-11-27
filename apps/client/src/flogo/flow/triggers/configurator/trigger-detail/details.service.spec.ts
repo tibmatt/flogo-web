@@ -1,5 +1,5 @@
-import { ValueType } from '@flogo/core';
-import { MapperControllerFactory } from '@flogo/flow/shared/mapper';
+import { ValueType } from '@flogo-web/client/core';
+import { MapperControllerFactory } from '@flogo-web/client/flow/shared/mapper';
 import { CurrentTriggerState } from '../interfaces';
 import { ConfigureTriggerSchema, ConfigureTriggersMock } from '../mocks/triggers.mock';
 import { ConfigureDetailsService } from './details.service';

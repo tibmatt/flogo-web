@@ -1,4 +1,4 @@
-import { parse, RecognitionException, LexingError } from 'flogo-parser';
+import { parse, RecognitionException, LexingError } from '@flogo-web/parser';
 
 const getAsArray = (fromErrorsArr) => {
   return !!fromErrorsArr ? fromErrorsArr : [];

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ContribSchema } from '@flogo/core';
+import { ContribSchema } from '@flogo-web/client/core';
 import { map } from 'rxjs/operators';
-import {FLOGO_CONTRIB_TYPE, FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
+import {FLOGO_CONTRIB_TYPE, FLOGO_PROFILE_TYPE} from '@flogo-web/client/core/constants';
 import {RestApiService} from '../rest-api.service';
 import { Observable } from 'rxjs';
 

@@ -1,6 +1,6 @@
 import {isEmpty, isString, mapValues, isUndefined, isNull} from 'lodash';
 import {Injectable} from '@angular/core';
-import {Dictionary} from '@flogo/core';
+import {Dictionary} from '@flogo-web/client/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {SettingControlInfo, SettingControlGroup, TriggerInformation} from '../interfaces';
 import { SettingValue } from './settings-value';

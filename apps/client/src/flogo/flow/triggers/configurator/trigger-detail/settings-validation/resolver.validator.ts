@@ -1,6 +1,6 @@
 import { fromPairs } from 'lodash';
 import { SettingValue } from '../settings-value';
-import { ScopeResolver } from 'flogo-parser';
+import { ScopeResolver } from '@flogo-web/parser';
 import { isResolverExpression } from './is-resolver-expression';
 import { ErrorTypes } from './error-types';
 

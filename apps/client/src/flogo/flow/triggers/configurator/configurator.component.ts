@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Observable ,  of } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 
-import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
+import { SingleEmissionSubject } from '@flogo-web/client/core/models/single-emission-subject';
 
 import { TriggerConfigureSelectors } from '../../core/state/triggers-configure';
 import * as TriggerConfigureActions from '../../core/state/triggers-configure/trigger-configure.actions';
@@ -12,7 +12,7 @@ import { configuratorAnimations } from './configurator.animations';
 import {ConfiguratorService as TriggerConfiguratorService} from './services/configurator.service';
 import { FlowState } from '../../core/state';
 import { TriggerStatus } from './interfaces';
-import { ConfirmationService, ConfirmationResult } from '@flogo/core';
+import { ConfirmationService, ConfirmationResult } from '@flogo-web/client/core';
 import {ConfirmationComponent} from './confirmation';
 import { TRIGGER_STATUS_TOKEN } from './confirmation/status.token';
 

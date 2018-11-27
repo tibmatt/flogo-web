@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RestApiService } from '../rest-api.service';
-import { TriggerHandler } from '@flogo/flow/core';
+import { TriggerHandler } from '@flogo-web/client/flow/core';
 
 @Injectable()
 export class RESTAPIHandlersService {

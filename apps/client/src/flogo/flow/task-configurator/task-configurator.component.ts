@@ -5,24 +5,24 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-import {ActivitySchema, Task} from '@flogo/core/interfaces';
-import { mergeItemWithSchema, SingleEmissionSubject } from '@flogo/core/models';
-import { NotificationsService } from '@flogo/core/notifications';
+import {ActivitySchema, Task} from '@flogo-web/client/core/interfaces';
+import { mergeItemWithSchema, SingleEmissionSubject } from '@flogo-web/client/core/models';
+import { NotificationsService } from '@flogo-web/client/core/notifications';
 
 import { MapperTranslator, MapperControllerFactory, MapperController } from '../shared/mapper';
 
-import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
+import {FlogoFlowService as FlowsService} from '@flogo-web/client/flow/core';
 import {Tabs} from '../shared/tabs/models/tabs.model';
 import {SubFlowConfig} from './subflow-config';
-import { isIterableTask, isMapperActivity, isSubflowTask } from '@flogo/shared/utils';
-import {ActionBase, FLOGO_TASK_TYPE, Item, ItemActivityTask, ItemSubflow, ItemTask} from '@flogo/core';
+import { isIterableTask, isMapperActivity, isSubflowTask } from '@flogo-web/client/shared/utils';
+import {ActionBase, FLOGO_TASK_TYPE, Item, ItemActivityTask, ItemSubflow, ItemTask} from '@flogo-web/client/core';
 import { createIteratorMappingContext, getIteratorOutputSchema, ITERABLE_VALUE_KEY, ITERATOR_OUTPUT_KEY } from './models';
-import { FlowState, FlowActions } from '@flogo/flow/core/state';
-import { getFlowMetadata, getInputContext } from '@flogo/flow/core/models/task-configure/get-input-context';
+import { FlowState, FlowActions } from '@flogo-web/client/flow/core/state';
+import { getFlowMetadata, getInputContext } from '@flogo-web/client/flow/core/models/task-configure/get-input-context';
 import { getStateWhenConfigureChanges } from '../shared/configurator/configurator.selector';
-import {createSaveAction} from '@flogo/flow/task-configurator/models/save-action-creator';
-import {hasTaskWithSameName} from '@flogo/flow/core/models/unique-task-name';
-import { AppState } from '@flogo/flow/core/state/app.state';
+import {createSaveAction} from '@flogo-web/client/flow/task-configurator/models/save-action-creator';
+import {hasTaskWithSameName} from '@flogo-web/client/flow/core/models/unique-task-name';
+import { AppState } from '@flogo-web/client/flow/core/state/app.state';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',

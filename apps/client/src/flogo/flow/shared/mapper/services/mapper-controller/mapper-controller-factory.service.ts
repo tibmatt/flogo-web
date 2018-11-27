@@ -7,7 +7,7 @@ import { TreeService } from '../tree.service';
 import { TreeNodeFactoryService } from '../tree-node-factory.service';
 import { MapperController } from './mapper-controller';
 import { createMapperContext } from './create-mapper-context';
-import { MapperSchema } from '@flogo/flow/task-configurator/models';
+import { MapperSchema } from '@flogo-web/client/flow/task-configurator/models';
 
 @Injectable()
 export class MapperControllerFactory {

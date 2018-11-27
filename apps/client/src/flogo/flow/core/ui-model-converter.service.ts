@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import { Dictionary, FLOGO_PROFILE_TYPE } from '@flogo/core';
-import { ErrorService } from '@flogo/core/services';
+import { Dictionary, FLOGO_PROFILE_TYPE } from '@flogo-web/client/core';
+import { ErrorService } from '@flogo-web/client/core/services';
 import { RESTAPIContributionsService } from '../../core/services/restapi/v2/contributions.service';
 import { AbstractModelConverter } from './models/ui-converter.model';
 import { MicroServiceModelConverter } from './models/profiles/microservice-converter.model';
 import { DeviceModelConverter } from './models/profiles/device-converter.model';
-import {ActionBase} from '@flogo/core';
+import {ActionBase} from '@flogo-web/client/core';
 
 @Injectable()
 export class UIModelConverterService {

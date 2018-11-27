@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { GraphNode, GraphNodeDictionary, NodeType } from '@flogo/core';
+import { GraphNode, GraphNodeDictionary, NodeType } from '@flogo-web/client/core';
 import { nodesToNodeMatrix } from './nodes-to-node-matrix';
 import { fromPairs } from 'lodash';
 import { NodeMatrix } from './matrix';

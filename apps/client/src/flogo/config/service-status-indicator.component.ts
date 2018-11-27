@@ -3,8 +3,8 @@ import { catchError, distinctUntilChanged, retry, switchMap } from 'rxjs/operato
 import { Component, Input, OnInit, DoCheck, OnDestroy } from '@angular/core';
 
 import { getURL } from '../shared/utils';
-import { ConfigurationService } from '@flogo/core/services/configuration.service';
-import { ServiceUrlConfig } from '@flogo/core/services/service-url-config.model';
+import { ConfigurationService } from '@flogo-web/client/core/services/configuration.service';
+import { ServiceUrlConfig } from '@flogo-web/client/core/services/service-url-config.model';
 
 const PING_INTERVAL_MS = 5000;
 

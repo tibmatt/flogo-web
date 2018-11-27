@@ -1,5 +1,5 @@
 import {Injectable, InjectionToken, Injector} from '@angular/core';
-import {FlowActions, FlowSelectors, FlowState} from '@flogo/flow/core/state';
+import {FlowActions, FlowSelectors, FlowState} from '@flogo-web/client/flow/core/state';
 import {Store} from '@ngrx/store';
 import {Overlay, OverlayRef} from '@angular/cdk/overlay';
 import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
@@ -7,7 +7,7 @@ import {TaskAddComponent, TASKADD_OPTIONS} from './task-add.component';
 import {Activity, TaskAddOptions} from './core/task-add-options';
 import {Observable} from 'rxjs';
 import {createTaskAddAction} from './models/task-add-action-creator';
-import {ActionBase, ActivitySchema} from '@flogo/core';
+import {ActionBase, ActivitySchema} from '@flogo-web/client/core';
 
 @Injectable()
 export class AddActivityService {

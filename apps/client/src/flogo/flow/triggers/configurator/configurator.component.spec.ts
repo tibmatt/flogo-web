@@ -3,12 +3,12 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
 import { Store, StoreModule } from '@ngrx/store';
-import {FakeRootLanguageModule} from '@flogo/core/language/testing';
-import { featureReducer, FlowState, INITIAL_STATE } from '@flogo/flow/core/state';
+import {FakeRootLanguageModule} from '@flogo-web/client/core/language/testing';
+import { featureReducer, FlowState, INITIAL_STATE } from '@flogo-web/client/flow/core/state';
 import {ConfiguratorModule} from './configurator.module';
 import {TriggersMock} from './mocks/triggers.mock';
 import {ConfiguratorStatus} from './interfaces';
-import { OpenConfigureWithSelection } from '@flogo/flow/core/state/triggers-configure/trigger-configure.actions';
+import { OpenConfigureWithSelection } from '@flogo-web/client/flow/core/state/triggers-configure/trigger-configure.actions';
 
 const TEST_STATE: FlowState = {
   ...INITIAL_STATE,

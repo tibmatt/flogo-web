@@ -2,7 +2,7 @@ import { FlowsService } from './flows.service';
 import { RESTAPIHandlersService } from './restapi/v2/handlers-api.service';
 import { APIFlowsService } from './restapi/v2/flows-api.service';
 import { TriggersApiService } from './restapi';
-import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
+import {RESTAPIContributionsService} from '@flogo-web/client/core/services/restapi/v2/contributions.service';
 import Spy = jasmine.Spy;
 
 describe('Service: FlowsService', function (this: {

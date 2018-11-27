@@ -1,6 +1,6 @@
 import {Component, Inject, InjectionToken} from '@angular/core';
-import {ConfirmationControl} from '@flogo/core/confirmation/confirmation-control';
-import {ConfirmationContent} from '@flogo/core/confirmation/confirmation-content';
+import {ConfirmationControl} from '@flogo-web/client/core/confirmation/confirmation-control';
+import {ConfirmationContent} from '@flogo-web/client/core/confirmation/confirmation-content';
 import {animate, style, transition, trigger} from '@angular/animations';
 
 export const CONFIRMATION_MODAL_TOKEN = new InjectionToken('flogo/core/confirmation/flogo-confirmation-modal');

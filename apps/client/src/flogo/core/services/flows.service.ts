@@ -4,8 +4,8 @@ import { objectFromArray } from '../../shared/utils';
 import { TriggersApiService } from './restapi';
 import { RESTAPIHandlersService as HandlersService } from './restapi/v2/handlers-api.service';
 import { APIFlowsService as FlowsApiService } from './restapi/v2/flows-api.service';
-import { FLOGO_PROFILE_TYPE, TriggerSchema } from '@flogo/core';
-import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
+import { FLOGO_PROFILE_TYPE, TriggerSchema } from '@flogo-web/client/core';
+import {RESTAPIContributionsService} from '@flogo-web/client/core/services/restapi/v2/contributions.service';
 
 @Injectable()
 export class FlowsService {

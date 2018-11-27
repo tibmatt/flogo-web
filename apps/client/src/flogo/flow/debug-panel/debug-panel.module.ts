@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule as NgCommonModule } from '@angular/common';
-import { SharedModule } from '@flogo/shared';
-import { FormBuilderModule as DynamicFormModule } from '@flogo/flow/shared/dynamic-form';
+import { SharedModule } from '@flogo-web/client/shared';
+import { FormBuilderModule as DynamicFormModule } from '@flogo-web/client/flow/shared/dynamic-form';
 
 import { PanelContentComponent } from './panel-content/panel-content.component';
 import { FieldsComponent } from './fields/fields.component';

@@ -3,7 +3,7 @@ import { createSelector, createFeatureSelector, MemoizedSelector } from '@ngrx/s
 import {
   ContribSchema, Dictionary, FLOGO_CONTRIB_TYPE_VALUES, Item, ItemActivityTask, FLOGO_TASK_TYPE,
    FlowGraph
-} from '@flogo/core';
+} from '@flogo-web/client/core';
 import { remove } from 'lodash';
 
 import { FlowState } from './flow.state';
@@ -11,11 +11,11 @@ import {getGraphName, getItemsDictionaryName, nodesContainErrors} from '../utils
 import { determineRunnableStatus } from './views/determine-runnable-status';
 
 import { InsertTaskSelection, HandlerType, TaskSelection, SelectionType } from '../../models';
-import { DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
-import { Activity } from '@flogo/flow/task-add';
-import { getProfileType } from '@flogo/shared/utils';
-import { CONTRIB_REF_PLACEHOLDER } from '@flogo/core/constants';
-import { NodeDictionary } from '@flogo/core/interfaces/graph/graph';
+import { DiagramSelectionType } from '@flogo-web/client/packages/diagram/interfaces';
+import { Activity } from '@flogo-web/client/flow/task-add';
+import { getProfileType } from '@flogo-web/client/shared/utils';
+import { CONTRIB_REF_PLACEHOLDER } from '@flogo-web/client/core/constants';
+import { NodeDictionary } from '@flogo-web/client/core/interfaces/graph/graph';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(selectFlowState, (flowState: FlowState) => flowState.currentSelection);

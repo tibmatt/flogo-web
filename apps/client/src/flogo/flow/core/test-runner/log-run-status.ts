@@ -1,4 +1,4 @@
-import { RunStatusCode as RUNNER_STATUS } from '@flogo/flow/core/test-runner/run-orchestrator.service';
+import { RunStatusCode as RUNNER_STATUS } from '@flogo-web/client/flow/core/test-runner/run-orchestrator.service';
 
 export function logRunStatus(processStatus) {
   switch (processStatus.status) {

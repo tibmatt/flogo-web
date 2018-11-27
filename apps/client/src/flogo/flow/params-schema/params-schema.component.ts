@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 
 import { BsModalComponent } from 'ng2-bs3-modal';
 
-import { ValueType } from '@flogo/core/constants';
+import { ValueType } from '@flogo-web/client/core/constants';
 
 @Component({
   selector: 'flogo-flow-params-schema',

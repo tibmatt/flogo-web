@@ -7,14 +7,14 @@ import {
 import { Observable, of as observableOf } from 'rxjs';
 import { switchMap, map, take, tap, filter } from 'rxjs/operators';
 
-import {LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER} from '@flogo/core';
-import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
-import { LocalStorageService, SanitizeService } from '@flogo/core/services';
-import { ShimTriggerBuildApiService } from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
-import { ModalService } from '@flogo/core/modal';
-import { ConfirmationResult, ConfirmationModalService } from '@flogo/core/confirmation';
-import { NotificationsService } from '@flogo/core/notifications';
-import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
+import {LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER} from '@flogo-web/client/core';
+import { FLOGO_PROFILE_TYPE } from '@flogo-web/client/core/constants';
+import { LocalStorageService, SanitizeService } from '@flogo-web/client/core/services';
+import { ShimTriggerBuildApiService } from '@flogo-web/client/core/services/restapi/v2/shim-trigger-build-api.service';
+import { ModalService } from '@flogo-web/client/core/modal';
+import { ConfirmationResult, ConfirmationModalService } from '@flogo-web/client/core/confirmation';
+import { NotificationsService } from '@flogo-web/client/core/notifications';
+import {RESTAPIContributionsService} from '@flogo-web/client/core/services/restapi/v2/contributions.service';
 import {
 AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup, SETTING_DONT_WARN_MISSING_TRIGGERS
 } from '../core';

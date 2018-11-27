@@ -1,5 +1,5 @@
 import {taskIdGenerator} from './task-id-generator';
-import {FLOGO_PROFILE_TYPE} from '@flogo/core';
+import {FLOGO_PROFILE_TYPE} from '@flogo-web/client/core';
 
 const mockTasksAvailable = {
   'RmxvZ286OlRyaWdnZXI6OjE1MDQ2Mjg3ODI1NzU': {

@@ -2,12 +2,12 @@ import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BsModalModule } from 'ng2-bs3-modal';
-import {MODAL_TOKEN, ModalControl, ModalService} from '@flogo/core/modal';
+import {MODAL_TOKEN, ModalControl, ModalService} from '@flogo-web/client/core/modal';
 import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
 import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
 import { CoreModule as FlogoCoreModule } from '../../core/core.module';
 import {FlogoNewFlowComponent, NewFlowData} from './new-flow.component';
-import { FakeRootLanguageModule } from '@flogo/core/language/testing';
+import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
 
 const EXISTING_FLOW_NAME = 'existing';
 const flowsServiceStub = {

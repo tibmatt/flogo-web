@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { MonacoEditorModule } from '@flogo/flow/shared/monaco-editor';
+import { MonacoEditorModule } from '@flogo-web/client/flow/shared/monaco-editor';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TextBoxComponent } from './textbox/textbox.component';

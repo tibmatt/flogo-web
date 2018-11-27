@@ -2,9 +2,9 @@ import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Dictionary, Item, ItemActivityTask } from '@flogo/core';
-import { HandlerType } from '@flogo/flow/core/models';
-import { FlowSelectors, FlowActions, FlowState } from '@flogo/flow/core/state';
+import { Dictionary, Item, ItemActivityTask } from '@flogo-web/client/core';
+import { HandlerType } from '@flogo-web/client/flow/core/models';
+import { FlowSelectors, FlowActions, FlowState } from '@flogo-web/client/flow/core/state';
 
 export function createSaveChangesAction(store: Store<FlowState>, taskId, changes): Observable<null | FlowActions.ItemUpdated> {
   return store.pipe(
