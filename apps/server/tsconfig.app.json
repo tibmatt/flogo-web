@@ -5,7 +5,8 @@
     "types": ["node"],
     "allowJs": true,
     "checkJs": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["**/*.spec.ts", "scripts"],
   "include": ["**/*.ts"]

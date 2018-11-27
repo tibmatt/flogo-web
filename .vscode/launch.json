@@ -27,8 +27,51 @@
       "cwd": "${workspaceFolder}",
       "internalConsoleOptions": "neverOpen",
       "trace": true,
-      "sourceMaps": false,
+      "sourceMaps": true,
+      "runtimeExecutable": "${env:HOME}/.nvm/versions/node/v10.13.0/bin/node",
       "console": "integratedTerminal",
-    }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jest All",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "sourceMaps": true,
+      "args": [
+        "--runInBand"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Jest Tests",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "--inspect-brk",
+        "${workspaceRoot}/node_modules/.bin/jest",
+        "--runInBand",
+        "--no-cache",
+        "--i",
+        "--config",
+        "${workspaceRoot}/jest.config.js"
+      ],
+      "sourceMaps": false,
+      "windows": {
+        "args": [
+          "--inspect-brk",
+          "${workspaceRoot}/node_modules/jest/bin/jest.js",
+          "--runInBand",
+          "--config",
+          "${workspaceRoot}/jest.config.js"
+        ],
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
   ]
 }
