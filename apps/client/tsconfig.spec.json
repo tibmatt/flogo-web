@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc/apps/client",
+    "types": ["jasmine", "node"],
+    "paths": {
+      "@flogo/*": ["src/flogo/*"]
+    },
+  },
+  "files": ["src/test.ts", "src/polyfills.ts"],
+  "include": ["**/*.spec.ts", "**/*.d.ts"]
+}

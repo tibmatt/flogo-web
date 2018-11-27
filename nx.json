@@ -17,6 +17,14 @@
       "tags": [
         "server"
       ]
+    },
+    "client": {
+      "tags": [
+        "client"
+      ]
+    },
+    "client-e2e": {
+      "tags": []
     }
   }
 }
