@@ -8,6 +8,6 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "exclude": ["**/*.spec.ts", "scripts"],
+  "exclude": ["**/*.spec.ts", "**/tests/*", "scripts"],
   "include": ["**/*.ts"]
 }
