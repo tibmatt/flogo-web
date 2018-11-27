@@ -154,8 +154,8 @@ describe('JSONSchema: Trigger', () => {
           };
           const isValid = validateAndRemoveAdditional(actionUnderTest);
           expect(isValid).toBe(true);
-          expect(actionUnderTest).to.not.have.key('unknownProp');
-          expect(actionUnderTest.settings).toContain(settings);
+          expect(actionUnderTest).not.toHaveProperty('unknownProp');
+          expect(actionUnderTest.settings).toMatchObject(settings);
         }
       );
     });

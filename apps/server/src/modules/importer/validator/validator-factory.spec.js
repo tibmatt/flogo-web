@@ -37,10 +37,10 @@ describe('importer.validator-factory', () => {
   });
 
   test('should allow installed contributions', () => {
-    expect(validator.validate({
+    expect(() => validator.validate({
       trigger: 'ref/to/a/trigger',
       activity: 'ref/to/an/activity',
-    })).not.to.throw;
+    })).not.toThrowError();
   });
 
   function makeTestSchema() {

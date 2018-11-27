@@ -22,14 +22,20 @@ describe('importer.device.factory', () => {
 
       const contributions = await deviceFactory.loadContributions();
 
-      expect(contributions).to.have.property('activities').toHaveLength(3)
-        .that.deep.contains({ ref: 'activity1', type: 'flogo:device:activity' })
-        .and.deep.contains({ ref: 'activity2', type: 'flogo:device:activity' })
-        .and.deep.contains({ ref: 'activity3', type: 'flogo:device:activity' });
+      expect(contributions).toHaveProperty('activities');
+      expect(contributions.activities).toHaveLength(3);
+      expect(contributions.activities).toEqual(expect.arrayContaining([
+        { ref: 'activity1', type: 'flogo:device:activity' },
+        { ref: 'activity2', type: 'flogo:device:activity' },
+        { ref: 'activity3', type: 'flogo:device:activity' }
+      ]));
 
-      expect(contributions).to.have.property('triggers').toHaveLength(2)
-        .that.deep.contains({ ref: 'trigger1', type: 'flogo:device:trigger' })
-        .and.deep.contains({ ref: 'trigger2', type: 'flogo:device:trigger' });
+      expect(contributions).toHaveProperty('triggers');
+      expect(contributions.triggers).toHaveLength(2);
+      expect(contributions.triggers).toEqual(expect.arrayContaining([
+        { ref: 'trigger1', type: 'flogo:device:trigger' },
+        { ref: 'trigger2', type: 'flogo:device:trigger' },
+      ]));
     }
   );
 });

@@ -59,10 +59,17 @@ describe('importer.device.ActionsImporter', () => {
         },
       };
       const formattedAction = deviceActionsImporter.formatAction(actionToTest);
-      expect(formattedAction).toEqual(expect.arrayContaining(['tasks', 'links']));
+      expect(formattedAction)
+        .toMatchObject({ id: 'a', name: 'my action' });
+      expect(formattedAction)
+        .toHaveProperty('tasks');
+      expect(formattedAction)
+        .toHaveProperty('links');
 
-      expect(Array.isArray(formattedAction.links)).toBe(true).and.toContain(mockLink);
-      expect(formattedAction.tasks).to.be.an('array').toHaveLength(2);
+      expect(Array.isArray(formattedAction.links)).toBe(true);
+      expect(formattedAction.links).toContain(mockLink);
+      expect(Array.isArray(formattedAction.links)).toBe(true);
+      expect(formattedAction.tasks).toHaveLength(2);
       const taskIds = formattedAction.tasks.map(task => task.id);
       expect(taskIds).toEqual(expect.arrayContaining([2, 3]));
     });
@@ -88,22 +95,31 @@ describe('importer.device.ActionsImporter', () => {
     });
 
     test('should correctly map a task to the internal model', () => {
-      expect(context.mappedTask).toContain(context.taskProps);
-      expect(context.mappedTask.attributes).to.be.an('array').toHaveLength(3);
+      expect(context.mappedTask).toMatchObject(context.taskProps);
+      expect(Array.isArray(context.mappedTask.attributes)).toBe(true);
+      expect(context.mappedTask.attributes).toHaveLength(3);
     });
 
     test(
       'should correctly match the task attributes with its corresponding activity schema',
       () => {
-        expect(context.mappedTask.attributes).toMatchObject({ name: 'pin', type: 'int', value: 25 })
-          .and.toMatchObject({ name: 'digital', type: 'boolean', value: true });
+        expect(context.mappedTask.attributes).toEqual(
+          expect.arrayContaining([
+            { name: 'pin', type: 'int', value: 25 },
+            { name: 'digital', type: 'boolean', value: true }
+          ])
+        );
       }
     );
 
     test(
       'should add those attributes defined in the activity schema but not provided by the activity',
       () => {
-        expect(context.mappedTask.attributes).toMatchObject({ name: 'value', type: 'int', value: '' });
+        expect(context.mappedTask.attributes).toEqual(
+          expect.arrayContaining([
+            { name: 'value', type: 'int', value: '' }
+          ])
+        );
       }
     );
   });

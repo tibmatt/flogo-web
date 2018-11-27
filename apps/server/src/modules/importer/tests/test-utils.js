@@ -84,7 +84,7 @@ export function createSharedTestCases(name, testContext) {
   const addTest = (description, testCase) => allCases.push([description, testCase]);
 
   addTest(`should import a ${name} application`, async () => {
-    const assert = await testContext().importerContext.importAndCreateAssert(this.appToImport);
+    const assert = await testContext().importerContext.importAndCreateAssert(testContext().appToImport);
     assert.assertIsSuccessful();
   });
 

@@ -5,8 +5,9 @@
     "module": "commonjs",
     "types": ["jest", "node"],
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowJs": true,
   },
   "files": ["jest.setup.ts"],
-  "include": ["**/*.spec.ts", "**/*.d.ts"]
+  "include": ["**/*.spec.ts", "**/*.spec.js", "**/*.d.ts"]
 }

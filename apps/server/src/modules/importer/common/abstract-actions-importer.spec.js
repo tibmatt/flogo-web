@@ -27,7 +27,7 @@ describe('importer.common.AbstractActionsImporter', () => {
         ],
       };
       const actionMap = await importerInstance.importAll('appId', actionsMock);
-      expect(typeof actionMap).toBe('Map');
+      expect(actionMap).toBeInstanceOf(Map);
       ['a', 'b', 'c'].forEach(id => {
         const action = actionMap.get(id);
         expect(action).toBeTruthy();

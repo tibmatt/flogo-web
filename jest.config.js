@@ -1,27 +1,9 @@
-module.exports = {
-  testMatch: ['**/+(*.)+(spec|test).+(ts|js)?(x)'],
-  transform: {
-    '^.+\\.(ts|js|html)$': 'jest-preset-angular/preprocessor.js'
-  },
-  resolver: '@nrwl/builders/plugins/jest/resolver',
-  moduleFileExtensions: ['ts', 'js', 'html'],
-  collectCoverage: true,
-  coverageReporters: ['html']
-};
-
-
-// const jestProjects = [
-//   'apps/server',
-//   'libs/parser',
-// ].join(',');
+const jestProjects = [
+  'apps/server',
+  'libs/parser',
+].join(',');
 
 // module.exports = {
-//   globals: {
-//     'ts-jest': {
-//       tsConfigFile: './tsconfig.spec.json'
-//     },
-//     __TRANSFORM_HTML__: true
-//   },
 //   testMatch: [`**/{${jestProjects}}/**/+(*.)+(spec|test).+(ts|js)?(x)`],
 //   transform: {
 //     '^.+\\.(ts|js|html)$': 'jest-preset-angular/preprocessor.js'
@@ -29,6 +11,24 @@ module.exports = {
 //   resolver: '@nrwl/builders/plugins/jest/resolver',
 //   moduleFileExtensions: ['ts', 'js', 'html'],
 //   collectCoverage: true,
-//   coverageReporters: ['html'],
-//   setupTestFrameworkScriptFile: './jest.setup.ts'
+//   coverageReporters: ['html']
 // };
+
+
+module.exports = {
+  globals: {
+    'ts-jest': {
+      tsConfigFile: './tsconfig.spec.json'
+    },
+    __TRANSFORM_HTML__: true
+  },
+  testMatch: [`**/{${jestProjects}}/**/+(*.)+(spec|test).+(ts|js)?(x)`],
+  transform: {
+    '^.+\\.(ts|js|html)$': 'jest-preset-angular/preprocessor.js'
+  },
+  resolver: '@nrwl/builders/plugins/jest/resolver',
+  moduleFileExtensions: ['ts', 'js', 'html'],
+  collectCoverage: true,
+  coverageReporters: ['html'],
+  setupTestFrameworkScriptFile: '<rootDir>/jest.setup.ts'
+};

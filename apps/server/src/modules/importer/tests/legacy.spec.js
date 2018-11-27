@@ -15,7 +15,7 @@ describe('Importer: Legacy', () => {
 
   beforeAll(async function () {
     testContext.importerFactory = new AppImporterFactory(ResourceStorageRegistryMock);
-    testContext.importerContext = makeImporterContext(this.importerFactory);
+    testContext.importerContext = makeImporterContext(testContext.importerFactory);
     testContext.testOptions = new TestOptions({
       updateTasksRefCb: function (app) {
         app.actions[0].data.flow.rootTask.tasks[0].activityRef = "some.domain/path/to/activity";
@@ -40,5 +40,9 @@ describe('Importer: Legacy', () => {
     testContext.sinonSandbox.restore();
   });
 
-  createSharedTestCases('legacy', testContext);
+  const getTestContext = () => testContext;
+  createSharedTestCases('legacy', getTestContext)
+    .forEach(([description, testCase]) => {
+      test(description, testCase);
+    });
 });

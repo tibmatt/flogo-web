@@ -49,7 +49,7 @@ describe('importer.device.TriggersHandlersImporter', () => {
       });
     });
     test('should format the settings', () => {
-      expect(formattedTrigger.settings).toEqual(expect.arrayContaining(['pin', 'digital', 'condition']));
+      expect(Object.keys(formattedTrigger.settings)).toEqual(expect.arrayContaining(['pin', 'digital', 'condition']));
     });
     test('should correctly define a handler', () => {
       const [handler] = formattedTrigger.handlers;

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 import {inspect} from 'util';
 
 import {FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE} from '../constants';

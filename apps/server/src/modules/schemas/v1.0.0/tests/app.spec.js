@@ -36,7 +36,7 @@ describe('JSONSchema: App', () => {
   test('should allow correct app', () => {
     const isValid = testContext.ajvContext.validate(testContext.appUnderTest);
     expect(isValid).toBe(true);
-    expect(testContext.appUnderTest).toContain(testContext.app);
+    expect(testContext.appUnderTest).toMatchObject(testContext.app);
   });
 
   ['name', 'type', 'appModel'].forEach(requiredProp => {

@@ -22,9 +22,13 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceRoot}/node_modules/.bin/ng",
-      "args": ["test", "--runInBand", "-i"],
-      "outFiles": ["${workspaceRoot}/dist/**/*"],
-      "cwd": "${workspaceFolder}"
+      "args": ["test","--run-in-band"],
+      // "outFiles": ["${workspaceRoot}/dist/**/*"],
+      "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "neverOpen",
+      "trace": true,
+      "sourceMaps": false,
+      "console": "integratedTerminal",
     }
   ]
 }

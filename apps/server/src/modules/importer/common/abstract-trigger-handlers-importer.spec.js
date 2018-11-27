@@ -110,8 +110,12 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
       const [triggerId, [handlerInfo]] = call.args;
       return [triggerId, handlerInfo.actionId];
     });
-    expect(callArgs).toContain(['trigger1', 'a-stored'])
-      .and.toContain(['trigger2', 'b-stored']);
+    expect(callArgs).toEqual(
+      expect.arrayContaining([
+        ['trigger1', 'a-stored'],
+        ['trigger2', 'b-stored'],
+      ])
+    );
   });
 
   test('#storeHandlers', async () => {
@@ -125,7 +129,11 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
       const [triggerId, actionId, { id: handlerId }] = call.args;
       return [triggerId, actionId, handlerId];
     });
-    expect(callArgs).toContain(['triggerX', 'actionA', 'handlerA'])
-      .and.toContain(['triggerX', 'actionB', 'handlerB']);
+    expect(callArgs).toEqual(
+      expect.arrayContaining([
+        ['triggerX', 'actionA', 'handlerA'],
+        ['triggerX', 'actionB', 'handlerB']
+      ])
+    );
   });
 });

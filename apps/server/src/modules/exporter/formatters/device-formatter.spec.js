@@ -34,7 +34,8 @@ describe('exporter.formatters.DeviceFormatter', () => {
     };
 
     const triggers = appResult.triggers;
-    expect(triggers).to.be.an('array').toHaveLength(3);
+    expect(Array.isArray(triggers)).toBe(true)
+    expect(triggers).toHaveLength(3);
     triggers.forEach(trigger => expect(trigger.handlers).toHaveLength(1));
 
     const { triggers: triggersOfTypeX, handlers: handlersOfTypeX } = infoForTriggerWithNameThatStartsWith('triggerX');
