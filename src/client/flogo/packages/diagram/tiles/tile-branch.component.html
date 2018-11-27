@@ -1,15 +1,14 @@
 <div class="branch">
 
-  <div class="branch-child-link">
+  <div class="branch-child-link" (fgClickOutside)="closeBranchOptions()" (click)="openBranchOptions()">
     <div class="branch-child-line"></div>
-    <div class="branch-option-container"
-         (fgClickOutside)="closeBranchOptions()" (click)="onBranchOptions($event)">
-      <i class="flogo-icon-menu-horizontal menu-icon-close" *ngIf="!displayBranchOptions"></i>
+    <div class="branch-option-container">
+      <i class="flogo-icon-menu-horizontal menu-icon-close" [hidden]="displayBranchOptions"></i>
     </div>
-    <div *ngIf="displayBranchOptions" class="branch-options-display">
+    <div *ngIf="displayBranchOptions" class="branch-options-display" @menu>
       <i class="flogo-icon-delete menu-icon" (click)="onRemove($event)"></i>
       <i class="flogo-icon-settings menu-icon" (click)="onConfigure($event)"></i>
-      <i class="flogo-icon-menu-horizontal menu-icon" [ngClass]="{'branch-menu-open': displayBranchOptions}"(click)="onBranchOptions($event)"></i>
+      <i class="flogo-icon-menu-horizontal menu-icon" [ngClass]="{'branch-menu-open': displayBranchOptions}" (click)="toggleBranchOptions($event)"></i>
     </div>
   </div>
   <div class="main-child-link" [style.height.px]="branchHeight" [style.top.px]="branchPosition"></div>
