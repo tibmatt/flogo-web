@@ -13,7 +13,6 @@
                              (select)="onInsertSelected($event)"></flogo-diagram-tile-insert>
   <flogo-diagram-tile-task *ngIf="tile.type === tileTypes.Task && tile.task?.type === nodeTypes.Task"
                            @tileTask
-                           class="tile--task interactive-tile"
                            [tile]="tile"
                            [currentSelection]="selection"
                            [isReadOnly]="isReadOnly"
@@ -24,7 +23,7 @@
   ></flogo-diagram-tile-task>
   <flogo-diagram-tile-branch *ngIf="tile.type === tileTypes.Task && tile.task?.type === nodeTypes.Branch"
                            @tileGeneric
-                           class="tile--branch interactive-tile"
+                           class="tile--branch"
                            [tile]="tile"
                            [currentSelection]="selection"
                            [isReadOnly]="isReadOnly"

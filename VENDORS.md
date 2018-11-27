@@ -12,7 +12,7 @@ All notable changes to this project's dependencies will be documented in this fi
   - [find-up@^3.0.0](https://github.com/sindresorhus/find-up) [MIT]
   - [got@^9.2.2](https://github.com/sindresorhus/got) [MIT]
   - [koa-send@^5.0.0](https://github.com/koajs/send) [MIT]
-  - [npm-run-all@^4.1.3](https://github.com/mysticatea/npm-run-all) [MIT]
+  - [npm-run-all@^4.1.5](https://github.com/mysticatea/npm-run-all) [MIT]
 - ** Upgraded **
   - [koa@2.5.3](https://github.com/koajs/koa) [MIT] (Was 1.4.1)
   - [koa-body@4.0.4](https://github.com/dlau/koa-body) [MIT] (Was 1.6.0)

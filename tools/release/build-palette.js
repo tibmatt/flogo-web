@@ -12,7 +12,10 @@ const fileStat = promisify(fs.stat);
 
 const DEFAULT_PALETTE_FILENAME = 'default-palette.json';
 
-const ignoreRefs = [ 'github.com/TIBCOSoftware/flogo-contrib/activity/inference' ];
+const ignoreRefs = [ 
+  'github.com/TIBCOSoftware/flogo-contrib/activity/inference',
+  'github.com/TIBCOSoftware/flogo-contrib/activity/mongodb',
+];
 
 const pathToContrib = process.env.FLOGO_WEB_BUILD_CONTRIB_PATH || path.resolve('/flogo', 'flogo-contrib');
 console.log('Will look for flogo-contrib in: ', pathToContrib);
