@@ -1,7 +1,9 @@
-import { ChangeDetectorRef, Component, HostBinding, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
-import {SvgRefFixerService} from '@flogo/core';
-import {AbstractTileTaskComponent} from './abstract-tile-task.component';
 import { get } from 'lodash';
+import { ChangeDetectorRef, Component, HostBinding, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import { trigger } from '@angular/animations';
+import { SvgRefFixerService } from '@flogo/core';
+import { AbstractTileTaskComponent } from './abstract-tile-task.component';
+import { OpenCloseMenuAnimation } from './tile.animations';
 
 const ROW_HEIGHT = 78;
 const BOTTOM_DISTANCE = 8;
@@ -12,6 +14,9 @@ const TILE_HEIGHT = 60;
   templateUrl: './tile-branch.component.html',
   styleUrls: ['./tile-branch.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('menu', OpenCloseMenuAnimation),
+  ],
 })
 export class TileBranchComponent extends AbstractTileTaskComponent implements OnChanges {
   @Input() spanRows: number;
@@ -56,9 +61,15 @@ export class TileBranchComponent extends AbstractTileTaskComponent implements On
     return (TILE_HEIGHT / 2) - this.containerHeight;
   }
 
-  onBranchOptions(event) {
-    event.stopPropagation();
+  openBranchOptions() {
+    if (!this.displayBranchOptions) {
+      this.displayBranchOptions = true;
+    }
+  }
+
+  toggleBranchOptions() {
     this.displayBranchOptions = !this.displayBranchOptions;
+    event.stopPropagation();
   }
 
   closeBranchOptions() {
