@@ -1,7 +1,6 @@
-import { expect } from 'chai';
 import { normalizeContribUrl } from './url-parser';
 
-const assertParsedEquals = (url, expected) => expect(normalizeContribUrl(url)).to.equal(expected, `Incorrect parse for ${url}`);
+const assertParsedEquals = (url, expected) => expect(normalizeContribUrl(url)).toEqual(expected, `Incorrect parse for ${url}`);
 
 describe('parse', () => {
   it('should parse url', function () {

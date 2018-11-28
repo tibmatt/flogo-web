@@ -1,5 +1,4 @@
-import {expect} from 'chai';
-import {portTaskTypeForIterators} from './port-task-type-for-iterators';
+import { portTaskTypeForIterators } from './port-task-type-for-iterators';
 
 describe('importer.common.portTaskTypeForIterators', () => {
   const testData = {
@@ -35,18 +34,18 @@ describe('importer.common.portTaskTypeForIterators', () => {
   const getTaskTypeAfterPorting = (task) => portTaskTypeForIterators(task).type;
 
   it('should not change the task type for a normal task', () => {
-    expect(getTaskTypeAfterPorting(testData.normalTask)).to.equal(1);
+    expect(getTaskTypeAfterPorting(testData.normalTask)).toEqual(1);
   });
 
   it('should not change the task type for a subflow task', () => {
-    expect(getTaskTypeAfterPorting(testData.subflowTask)).to.equal(4);
+    expect(getTaskTypeAfterPorting(testData.subflowTask)).toEqual(4);
   });
 
   it('should change the task type for an iterable task', () => {
-    expect(getTaskTypeAfterPorting(testData.iterableTask)).to.equal(1);
+    expect(getTaskTypeAfterPorting(testData.iterableTask)).toEqual(1);
   });
 
   it('should not change the task type for a normal task', () => {
-    expect(getTaskTypeAfterPorting(testData.subFlowIterableTask)).to.equal(4);
+    expect(getTaskTypeAfterPorting(testData.subFlowIterableTask)).toEqual(4);
   });
 });

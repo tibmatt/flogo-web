@@ -1,6 +1,7 @@
 {
   "extends": "../../tslint.json",
   "rules": {
+    "no-implicit-dependencies": [true, ["@flogo-web/parser"]],
     "no-console": [
       false
     ]

@@ -1,4 +1,4 @@
-import isString from 'lodash/isString';
+import { isString } from 'lodash';
 import { parse, ExprStmt } from '@flogo-web/parser';
 import { MAPPING_EXPRESSION_TYPE } from '../../../common/constants';
 
