@@ -14,32 +14,36 @@ module.exports = () => {
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
       require('@angular-devkit/build-angular/plugins/karma'),
-      require('karma-mocha-reporter')
+      require('karma-mocha-reporter'),
     ],
     client: {
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
+      clearContext: false, // leave Jasmine Spec Runner output visible in browser
     },
     coverageIstanbulReporter: {
       dir: join(__dirname, '../../coverage'),
       reports: ['html', 'lcovonly'],
-      fixWebpackSourcePaths: true
+      fixWebpackSourcePaths: true,
     },
-    reporters: ['mocha', 'kjhtml'],
+    reporters: process.env.TRAVIS ? ['mocha', 'kjhtml'] : ['mocha'],
     mochaReporter: {
-      output: 'full'
+      output: 'full',
     },
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
-        flags: ['--no-sandbox']
-      }
+        flags: [
+          '--headless',
+          '--disable-gpu',
+          // Without a remote debugging port, Google Chrome exits immediately.
+          '--remote-debugging-port=9222',
+        ],
+      },
     },
     browsers: process.env.TRAVIS ? ['Chrome_travis_ci'] : ['Chrome'],
     port: 9876,
     colors: true,
     logLevel: constants.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
-    singleRun: true
+    singleRun: true,
   };
 };

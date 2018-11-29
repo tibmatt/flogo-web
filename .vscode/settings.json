@@ -24,5 +24,6 @@
         "**/.tmp": true,
         "**/dist": true
     },
-    "vsicons.presets.angular": true
+    "vsicons.presets.angular": true,
+    "editor.formatOnSave": true
   }
