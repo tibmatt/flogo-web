@@ -1,4 +1,4 @@
-import path from 'path';
+import * as path from 'path';
 
 import './load-env';
 
@@ -38,7 +38,8 @@ const config = {
   localPath: LOCAL_DIR,
   defaultAppJsonPath: path.join(rootPath, 'config', 'sample-app.json'),
   defaultContribsPath: path.join(rootPath, 'config', 'default-devices-contrib.json'),
-  defaultFlogoDescriptorPath: process.env.FLOGO_WEB_DEFAULT_DESCRIPTOR || path.join(rootPath, 'config', 'default-flogo.json'),
+  defaultFlogoDescriptorPath:
+    process.env.FLOGO_WEB_DEFAULT_DESCRIPTOR || path.join(rootPath, 'config', 'default-flogo.json'),
   libVersion,
   app: {
     basePath: '/v1/api',
@@ -73,8 +74,7 @@ const config = {
     port: '8081',
     path: './',
     name: 'build-engine',
-    installConfig: {
-    },
+    installConfig: {},
     config: {
       loglevel: 'DEBUG',
       // flowRunner will be eventually replaced by actionRunner
@@ -94,27 +94,31 @@ const config = {
           maxStepCount: 32000,
         },
       },
-      services: [{
-        name: 'stateRecorder',
-        enabled: false,
-        settings: {
-          host: FLOW_STATE_SERVICE_HOST,
-          port: FLOW_STATE_SERVICE_PORT,
+      services: [
+        {
+          name: 'stateRecorder',
+          enabled: false,
+          settings: {
+            host: FLOW_STATE_SERVICE_HOST,
+            port: FLOW_STATE_SERVICE_PORT,
+          },
         },
-      }, {
-        name: 'flowProvider',
-        enabled: true,
-        settings: {
-          host: FLOW_SERVICE_HOST,
-          port: FLOW_SERVICE_PORT,
+        {
+          name: 'flowProvider',
+          enabled: true,
+          settings: {
+            host: FLOW_SERVICE_HOST,
+            port: FLOW_SERVICE_PORT,
+          },
         },
-      }, {
-        name: 'engineTester',
-        enabled: true,
-        settings: {
-          port: FLOW_TESTER_PORT,
+        {
+          name: 'engineTester',
+          enabled: true,
+          settings: {
+            port: FLOW_TESTER_PORT,
+          },
         },
-      }],
+      ],
     },
   },
   flogoWeb: {
@@ -165,9 +169,7 @@ const config = {
   },
 };
 
-export {
-  config,
-};
+export { config };
 
 function __extractDomain(url) {
   let domain;

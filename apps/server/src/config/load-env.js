@@ -1,5 +1,5 @@
-import findUp from 'find-up';
-import dotenv from 'dotenv';
+const findUp = require('find-up');
+const dotenv = require('dotenv');
 
 const pathToEnvFile = findUp.sync('.env');
 if (pathToEnvFile) {

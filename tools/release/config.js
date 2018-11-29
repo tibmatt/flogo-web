@@ -2,19 +2,20 @@ import path from 'path';
 
 const sourceRoot = 'src';
 export const Sources = {
-  root: sourceRoot,
-  client: path.join(sourceRoot, 'client'),
-  server: path.join(sourceRoot, 'server'),
-  parser: path.join(sourceRoot, 'parser'),
+  root: '',
+  client: path.join('apps', 'client'),
+  server: path.join('apps', 'server'),
   packages: path.join(sourceRoot, 'packages'),
 };
 
-const distRoot = process.env.DIST_BUILD ? path.join('dist', 'build') : 'dist';
+const root = 'dist';
+const distSrcRoot = process.env.DIST_BUILD ? path.join(root, 'build') : 'dist';
 export const Dist = {
-  root: distRoot,
-  public: path.join(distRoot, 'public'),
-  server: path.join(distRoot, 'server'),
-  packages: path.join(distRoot, 'packages'),
+  root,
+  srcRoot: distSrcRoot,
+  public: path.join(distSrcRoot, 'public'),
+  server: path.join(distSrcRoot, 'server'),
+  packages: path.join(distSrcRoot, 'packages'),
 };
 
-export const ABSOLUTE_DIST_SERVER_PATH= '/tmp/flogo-web/build/server';
+export const ABSOLUTE_DIST_SERVER_PATH = '/tmp/flogo-web/build/server';

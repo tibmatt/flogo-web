@@ -1,4 +1,4 @@
-import mapKeys from 'lodash/mapKeys';
+const mapKeys = require('lodash/mapKeys');
 
 interface UpdateQuery {
   $set?: any;

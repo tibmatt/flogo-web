@@ -10,7 +10,6 @@ import { ErrorManager } from '../../common/errors';
 import { IMPORT_ERRORS } from './errors';
 
 export class AppImporterFactory {
-
   /**
    * @param {ResourceStorageRegistry} resourceStorageRegistry
    */
@@ -23,15 +22,21 @@ export class AppImporterFactory {
     if (dependenciesFactory) {
       return this.createAppImporter(await dependenciesFactory.create());
     }
-    throw ErrorManager.createCustomValidationError('Could not identify app type to import', IMPORT_ERRORS.CANNOT_IDENTIFY_APP_TYPE, {
-      params: {
-        knownTypes: [
-          { name: 'standard', properties: { type: 'flogo:app', appModel: '1.0.0' } },
-          { name: 'device', properties: { type: 'flogo:app:device' } },
-          { name: 'legacy', properties: { type: 'flogo:app', appModel: null } },
-        ],
-      },
-    });
+    return Promise.reject(
+      ErrorManager.createCustomValidationError(
+        'Could not identify app type to import',
+        IMPORT_ERRORS.CANNOT_IDENTIFY_APP_TYPE,
+        {
+          params: {
+            knownTypes: [
+              { name: 'standard', properties: { type: 'flogo:app', appModel: '1.0.0' } },
+              { name: 'device', properties: { type: 'flogo:app:device' } },
+              { name: 'legacy', properties: { type: 'flogo:app', appModel: null } },
+            ],
+          },
+        }
+      )
+    );
   }
 
   // Since we only have three types of importers as of feb 2018 we're using
@@ -75,12 +80,7 @@ export class AppImporterFactory {
   }
 
   createAppImporter({ validator, actionsImporter, triggersHandlersImporter }) {
-    return new AppImporter(
-      validator,
-      this.getAppsManager(),
-      actionsImporter,
-      triggersHandlersImporter,
-    );
+    return new AppImporter(validator, this.getAppsManager(), actionsImporter, triggersHandlersImporter);
   }
 
   isMicroserviceprofile(rawApp) {
@@ -90,6 +90,4 @@ export class AppImporterFactory {
   getAppsManager() {
     return this.resourceStorageRegistry.getAppsManager();
   }
-
 }
-

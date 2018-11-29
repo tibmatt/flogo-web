@@ -1,6 +1,5 @@
 const Router = require('koa-router');
 import { ActionsManager } from '../../modules/actions';
-import { ActionCompiler } from '../../modules/engine';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 
 export function actions(router) {
@@ -12,8 +11,7 @@ export function actions(router) {
     .get(`/recent`, listRecentActions)
     .get(`/:actionId`, getAction)
     .patch(`/:actionId`, updateAction)
-    .del(`/:actionId`, deleteAction)
-    .get(`/:actionId/build`, makeBuild);
+    .del(`/:actionId`, deleteAction);
   router.use('/actions', actions.routes(), actions.allowedMethods());
 }
 
@@ -25,7 +23,7 @@ async function listActions(ctx, next) {
   const filterId = ctx.request.query['filter[id]'];
   const getFields = ctx.request.query['fields'];
   if (filterName || filterId) {
-    const filter = options.filter = {};
+    const filter = (options.filter = {});
     if (filterName) {
       filter.by = 'name';
       filter.value = filterName;
@@ -129,7 +127,6 @@ async function updateAction(ctx, next) {
   }
 }
 
-
 async function deleteAction(ctx, next) {
   const actionId = ctx.params.actionId;
   const removed = await ActionsManager.remove(actionId);
@@ -144,33 +141,3 @@ async function deleteAction(ctx, next) {
 
   ctx.status = 204;
 }
-
-/*@deprecated - not used in the application */
-async function makeBuild(ctx, next) {
-  const actionId = ctx.params.actionId;
-
-  let compileOptions;
-  // TODO: make sure os and arch are valid
-  if (ctx.query.os || ctx.query.arch) {
-    const { os, arch } = ctx.query;
-    compileOptions = { os, arch };
-  }
-
-  const exportedAction = await ActionsManager.exportToFlow(actionId);
-
-  if (!exportedAction) {
-    throw ErrorManager.createRestNotFoundError('Action not found', {
-      title: 'Action not found',
-      detail: 'No action with the specified id',
-      value: actionId,
-    });
-  }
-
-  const { trigger, flow } = exportedAction;
-  ctx.body = await ActionCompiler.compileFlow(trigger, flow, compileOptions);
-  ctx.type = 'application/octet-stream';
-  ctx.attachment();
-
-  next();
-}
-

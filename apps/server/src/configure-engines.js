@@ -5,17 +5,13 @@ import { installDefaults, ensureDefaultDirs } from './modules/init';
 import { syncTasks } from './modules/contrib-install-controller/sync-tasks';
 
 ensureDefaultDirs()
-  .then(() => getInitializedEngine(config.defaultEngine.path, { forceCreate: true }))
+  .then(() => getInitializedEngine(config.defaultEngine.path, { forceCreate: false }))
   .then(engine => syncTasks(engine, true))
   .then(() => {
     console.log('[log] init test engine done');
     return installDefaults();
   })
-  .then(() => Promise.all([
-    apps.compact(),
-    indexer.compact(),
-    contribs.compact(),
-  ]))
+  .then(() => Promise.all([apps.compact(), indexer.compact(), contribs.compact()]))
   .catch(error => {
     console.error(error);
     console.error(error.stack);

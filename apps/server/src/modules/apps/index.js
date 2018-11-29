@@ -23,12 +23,7 @@ import { Validator } from './validator';
 import { getProfileType } from '../../common/utils/profile';
 import { APP_ERRORS } from './errors';
 
-const EDITABLE_FIELDS = [
-  'name',
-  'version',
-  'description',
-  'device',
-];
+const EDITABLE_FIELDS = ['name', 'version', 'description', 'device'];
 
 const PUBLISH_FIELDS = [
   'id',
@@ -41,11 +36,10 @@ const PUBLISH_FIELDS = [
   'createdAt',
   'updatedAt',
   'triggers',
-  'actions'
+  'actions',
 ];
 
 export class AppsManager {
-
   static create(app) {
     let inputData = app;
     let isDevice = false;
@@ -59,16 +53,16 @@ export class AppsManager {
     inputData._id = shortid.generate();
     inputData.name = inputData.name.trim();
     inputData = build(inputData);
-    return appStore.insert(inputData)
+    return appStore
+      .insert(inputData)
       .catch(error => {
         if (error.errorType === 'uniqueViolated') {
           logger.debug(`Name ${inputData.name} already exists, will create new name`);
-          return ensureUniqueName(inputData.name)
-            .then(name => {
-              logger.debug(`Will use ${name}`);
-              inputData.name = name;
-              return appStore.insert(inputData);
-            });
+          return ensureUniqueName(inputData.name).then(name => {
+            logger.debug(`Will use ${name}`);
+            inputData.name = name;
+            return appStore.insert(inputData);
+          });
         }
         return Promise.reject(error);
       })
@@ -82,56 +76,61 @@ export class AppsManager {
    */
   static update(appId, newData) {
     const inputData = cleanInput(newData);
-    return appStore
-      // fetch editable fields only
-      .findOne({ _id: appId }, fromPairs(EDITABLE_FIELDS.concat('_id').map(field => [field, 1])))
-      .then(app => {
-        if (!app) {
-          throw ErrorManager.makeError('App not found', { type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND });
-        }
+    return (
+      appStore
+        // fetch editable fields only
+        .findOne({ _id: appId }, fromPairs(EDITABLE_FIELDS.concat('_id').map(field => [field, 1])))
+        .then(app => {
+          if (!app) {
+            throw ErrorManager.makeError('App not found', { type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND });
+          }
 
-        const mergedData = Object.assign({}, app, inputData);
-        if (isEqual(mergedData, app)) {
-          // no changes, we don't need to update anything
-          return false;
-        }
+          const mergedData = Object.assign({}, app, inputData);
+          if (isEqual(mergedData, app)) {
+            // no changes, we don't need to update anything
+            return false;
+          }
 
-        let isDevice = false;
-        if (getProfileType(mergedData) === FLOGO_PROFILE_TYPES.DEVICE) {
-          isDevice = true;
-        }
+          let isDevice = false;
+          if (getProfileType(mergedData) === FLOGO_PROFILE_TYPES.DEVICE) {
+            isDevice = true;
+          }
 
-        const errors = Validator.validateSimpleApp(mergedData, isDevice);
-        if (errors) {
-          throw ErrorManager.createValidationError('Validation error', { details: errors });
-        }
-        if (inputData.name) {
-          inputData.name = inputData.name.trim();
-          return validateUniqueName(inputData.name);
-        }
-        return true;
-      })
-      .then(shouldUpdate => {
-        if (shouldUpdate) {
-          delete inputData._id;
-          return appStore.update({ _id: appId }, { $set: Object.assign({ updatedAt: nowISO() }, inputData) });
-        }
-        return null;
-      })
-      .then(() => AppsManager.findOne(appId, { withFlows: true }));
+          const errors = Validator.validateSimpleApp(mergedData, isDevice);
+          if (errors) {
+            throw ErrorManager.createValidationError('Validation error', { details: errors });
+          }
+          if (inputData.name) {
+            inputData.name = inputData.name.trim();
+            return validateUniqueName(inputData.name);
+          }
+          return true;
+        })
+        .then(shouldUpdate => {
+          if (shouldUpdate) {
+            delete inputData._id;
+            return appStore.update({ _id: appId }, { $set: Object.assign({ updatedAt: nowISO() }, inputData) });
+          }
+          return null;
+        })
+        .then(() => AppsManager.findOne(appId, { withFlows: true }))
+    );
 
     function validateUniqueName(inputName) {
       const name = getAppNameForSearch(inputName);
-      return appStore.findOne({ _id: { $ne: appId }, name: new RegExp(`^${name}$`, 'i') }, { _id: 1, name: 1 })
+      return appStore
+        .findOne({ _id: { $ne: appId }, name: new RegExp(`^${name}$`, 'i') }, { _id: 1, name: 1 })
         .then(nameExists => {
           if (nameExists) {
-            throw ErrorManager.createValidationError('Validation error', [{
-              property: 'name',
-              title: 'Name already exists',
-              detail: 'There\'s another app with that name',
-              value: inputName,
-              type: CONSTRAINTS.UNIQUE,
-            }]);
+            throw ErrorManager.createValidationError('Validation error', [
+              {
+                property: 'name',
+                title: 'Name already exists',
+                detail: "There's another app with that name",
+                value: inputName,
+                type: CONSTRAINTS.UNIQUE,
+              },
+            ]);
           }
           return true;
         });
@@ -144,15 +143,13 @@ export class AppsManager {
    * @param appId {string} appId
    */
   static remove(appId) {
-    return appStore.remove({ _id: appId })
-      .then(numRemoved => {
-        const wasRemoved = numRemoved > 0;
-        if (wasRemoved) {
-          return ActionsManager.removeFromRecentByAppId(appId)
-            .then(() => wasRemoved);
-        }
-        return wasRemoved;
-      });
+    return appStore.remove({ _id: appId }).then(numRemoved => {
+      const wasRemoved = numRemoved > 0;
+      if (wasRemoved) {
+        return ActionsManager.removeFromRecentByAppId(appId).then(() => wasRemoved);
+      }
+      return wasRemoved;
+    });
   }
 
   /**
@@ -179,8 +176,7 @@ export class AppsManager {
       terms.name = new RegExp(`^${name}$`, 'i');
     }
 
-    return appStore.find(terms)
-      .then(apps => apps.map(cleanForOutput));
+    return appStore.find(terms).then(apps => apps.map(cleanForOutput));
   }
 
   /**
@@ -197,14 +193,12 @@ export class AppsManager {
    * @param options.withFlows retrieve flows
    */
   static findOne(appId, { withFlows } = { withFlows: false }) {
-    return appStore.findOne({ _id: appId })
-      .then(app => app ? cleanForOutput(app) : null);
+    return appStore.findOne({ _id: appId }).then(app => (app ? cleanForOutput(app) : null));
   }
 
-
   // TODO documentation
-  static import(fromApp) {
-    return importApp(fromApp);
+  static import(fromApp, resourceRegistry) {
+    return importApp(fromApp, resourceRegistry);
   }
 
   /**
@@ -234,19 +228,20 @@ export class AppsManager {
    */
   static export(appId, { appModel = EXPORT_MODE.STANDARD_MODEL, format, flowIds } = {}) {
     if (appModel !== EXPORT_MODE.STANDARD_MODEL && appModel !== EXPORT_MODE.LEGACY_MODEL) {
-      throw ErrorManager.makeError(`Cannot export to unknown application model "${appModel}"`, { type: APP_ERRORS.UNKNOWN_APP_MODEL });
-    }
-    return AppsManager.findOne(appId)
-      .then(app => {
-        if (!app) {
-          throw ErrorManager.makeError('Application not found', { type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND });
-        }
-
-        const isFullExportMode = format !== EXPORT_MODE.FORMAT_FLOWS;
-        const exportOptions = { isFullExportMode, onlyThisActions: flowIds };
-
-        return exportApplication(app, appModel, exportOptions);
+      throw ErrorManager.makeError(`Cannot export to unknown application model "${appModel}"`, {
+        type: APP_ERRORS.UNKNOWN_APP_MODEL,
       });
+    }
+    return AppsManager.findOne(appId).then(app => {
+      if (!app) {
+        throw ErrorManager.makeError('Application not found', { type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND });
+      }
+
+      const isFullExportMode = format !== EXPORT_MODE.FORMAT_FLOWS;
+      const exportOptions = { isFullExportMode, onlyThisActions: flowIds };
+
+      return exportApplication(app, appModel, exportOptions);
+    });
   }
 
   static validate(app, { clean } = { clean: false }) {
@@ -264,7 +259,6 @@ export class AppsManager {
   static list(...args) {
     return AppsManager.find(args);
   }
-
 }
 export default AppsManager;
 
@@ -281,11 +275,8 @@ function cleanInput(app) {
 }
 
 function build(app) {
-  const now = (new Date()).toISOString();
-  return defaults(
-    app,
-    { createdAt: now, updatedAt: null, triggers: [], actions: [] },
-  );
+  const now = new Date().toISOString();
+  return defaults(app, { createdAt: now, updatedAt: null, triggers: [], actions: [] });
 }
 
 function cleanForOutput(app) {
@@ -298,14 +289,13 @@ function cleanForOutput(app) {
 }
 
 function nowISO() {
-  return (new Date()).toISOString();
+  return new Date().toISOString();
 }
 
 function ensureUniqueName(forName) {
   const normalizedName = escapeRegExp(forName.trim().toLowerCase());
-  return appStore.find({ name: new RegExp(`^${normalizedName}`, 'i') })
-    .then(apps => {
-      const greatestIndex = findGreatestNameIndex(forName, apps);
-      return greatestIndex < 0 ? forName : `${forName} (${greatestIndex + 1})`;
-    });
+  return appStore.find({ name: new RegExp(`^${normalizedName}`, 'i') }).then(apps => {
+    const greatestIndex = findGreatestNameIndex(forName, apps);
+    return greatestIndex < 0 ? forName : `${forName} (${greatestIndex + 1})`;
+  });
 }

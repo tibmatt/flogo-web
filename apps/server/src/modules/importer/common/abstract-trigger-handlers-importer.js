@@ -1,7 +1,9 @@
 import flow from 'lodash/fp/flow';
 import map from 'lodash/fp/map';
 import filter from 'lodash/fp/filter';
-import { normalizeHandlerMappings } from './normalize-handler-mappings';
+// TODO: regular import {normalizedHandlerMappings} is undefined during runtime, probably something related
+// with the combination of typescript + js + class extension
+const { normalizeHandlerMappings } = require('./normalize-handler-mappings');
 
 export class AbstractTriggersHandlersImporter {
   /**
@@ -51,7 +53,7 @@ export class AbstractTriggersHandlersImporter {
       map(reconciledHandler => ({
         ...reconciledHandler,
         handler: normalizeHandlerMappings(reconciledHandler.handler),
-      })),
+      }))
     );
     return rawTriggers.map(trigger => {
       const rawHandlers = this.extractHandlers(trigger);
@@ -110,5 +112,4 @@ export class AbstractTriggersHandlersImporter {
     }
     /* eslint-enable no-await-in-loop, no-restricted-syntax */
   }
-
 }

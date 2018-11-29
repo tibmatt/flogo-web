@@ -1,5 +1,5 @@
 import { isString } from 'lodash';
-import { parse, ExprStmt } from '@flogo-web/parser';
+import { parse } from '@flogo-web/parser';
 import { MAPPING_EXPRESSION_TYPE } from '../../../common/constants';
 
 const CURRENT_SCOPE_RESOLVER = '$';
@@ -33,7 +33,7 @@ export function normalizeSingleHandlerMapping(mapping) {
 function shouldPrefixWithScopeResolver(expression) {
   const { ast } = parse(expression);
   if (ast && ast.type === 'ExprStmt') {
-    const { x: exprNode } = ast as ExprStmt;
+    const { x: exprNode } = ast; // as ExprStmt;
     const headNode = getAssignExpressionHead(exprNode);
     return !!headNode && headNode.type === 'Identifier';
   }

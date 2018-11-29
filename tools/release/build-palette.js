@@ -12,7 +12,7 @@ const fileStat = promisify(fs.stat);
 
 const DEFAULT_PALETTE_FILENAME = 'default-palette.json';
 
-const ignoreRefs = [ 
+const ignoreRefs = [
   'github.com/TIBCOSoftware/flogo-contrib/activity/inference',
   'github.com/TIBCOSoftware/flogo-contrib/activity/mongodb',
 ];
@@ -34,7 +34,7 @@ export async function buildPalette() {
   const palette = makePalette(contribs);
   console.log('** Generated new default palette **');
   console.log(inspect(palette));
-  return writeJsonFile(path.resolve(Sources.server, 'config', DEFAULT_PALETTE_FILENAME), palette);
+  return writeJsonFile(path.resolve(Sources.server, 'src', 'config', DEFAULT_PALETTE_FILENAME), palette);
 }
 
 function makePalette(extensions) {

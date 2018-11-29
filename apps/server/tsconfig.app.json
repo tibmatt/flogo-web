@@ -6,7 +6,8 @@
     "allowJs": true,
     "checkJs": false,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017"
   },
   "exclude": ["**/*.spec.ts", "**/tests/*"],
   "include": ["**/*.ts"]
