@@ -3,7 +3,9 @@ import * as path from 'path';
 import './load-env';
 
 const rootPath = path.resolve(__dirname, '..');
-const publicPath = process.env.FLOGO_WEB_PUBLICDIR || path.resolve(rootPath, '..', 'client');
+const PUBLIC_DIR = process.env.FLOGO_WEB_PUBLICDIR || path.resolve(rootPath, '..', 'client');
+const LOCAL_DIR = process.env.FLOGO_WEB_LOCALDIR || path.resolve(rootPath, '..', '..', 'dist', 'local');
+
 const FLOW_SERVICE_HOST = process.env.FLOGO_FLOW_SERVICE_HOST || 'localhost';
 const FLOW_STATE_SERVICE_HOST = process.env.FLOGO_FLOW_STATE_SERVICE_HOST || 'localhost';
 const FLOW_WEB_HOST = __extractDomain(process.env.FLOGO_FLOW_WEB_HOST || 'localhost');
@@ -12,9 +14,9 @@ const FLOW_STATE_SERVICE_PORT = process.env.FLOGO_FLOW_STATE_SERVICE_PORT || '91
 const FLOW_SERVICE_PORT = process.env.FLOGO_FLOW_SERVICE_PORT || '9090';
 const FLOW_TESTER_PORT = process.env.FLOGO_FLOW_TESTER_PORT || '8080';
 
-const LOCAL_DIR = process.env.FLOGO_WEB_LOCALDIR || path.resolve(rootPath, '..', '..', 'dist', 'local');
 const DB_DIR = process.env.FLOGO_WEB_DBDIR || path.resolve(LOCAL_DIR, 'db');
-console.log('Local dir', LOCAL_DIR);
+
+console.log(`localDir=${LOCAL_DIR},publicDir=${PUBLIC_DIR}`);
 
 const logLevel = process.env.FLOGO_WEB_LOGLEVEL || 'debug';
 
@@ -32,7 +34,7 @@ if (!libVersion || libVersion === 'latest') {
 const config = {
   db: 'http://localhost:5984/flogo-web',
   rootPath,
-  publicPath,
+  publicPath: PUBLIC_DIR,
   logLevel,
   localPath: LOCAL_DIR,
   defaultAppJsonPath: path.join(rootPath, 'config', 'sample-app.json'),
