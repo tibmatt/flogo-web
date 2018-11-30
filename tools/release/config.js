@@ -8,14 +8,12 @@ export const Sources = {
   packages: path.join(sourceRoot, 'packages'),
 };
 
-const root = 'dist';
-const distSrcRoot = process.env.DIST_BUILD ? path.join(root, 'build') : 'dist';
+const distRoot = 'dist';
 export const Dist = {
-  root,
-  srcRoot: distSrcRoot,
-  public: path.join(distSrcRoot, 'public'),
-  server: path.join(distSrcRoot, 'server'),
-  packages: path.join(distSrcRoot, 'packages'),
+  root: distRoot,
+  public: path.join(distRoot, 'apps', 'public'),
+  server: path.join(distRoot, 'apps', 'server'),
+  packages: path.join(distRoot, 'packages'),
 };
 
-export const ABSOLUTE_DIST_SERVER_PATH = '/tmp/flogo-web/build/server';
+export const ABSOLUTE_DIST_SERVER_PATH = path.resolve('..', 'dist');

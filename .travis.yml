@@ -21,8 +21,27 @@ jobs:
       script:
         - yarn test
         - yarn lint
+    - stage: newbuild
+      language: bash
+      if: branch = nx
+      name: "Build the docker image"
+      node_js:
+      services:
+        - docker
+      before_install:
+        - "echo -e \"machine github.com\n  login ${GITHUB_USER_TOKEN}\" >> ~/.netrc"
+        - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}" ;
+      install: skip
+      script: docker build -f docker/dev.Dockerfile -t flogo/flogo-web:dev-v0.9.0  .
+      after_script:
+        - "[ -f \"${HOME}/.netrc\" ] && rm -f ${HOME}/.netrc"
+      after_success:
+        - "if [ \"${TRAVIS_BRANCH}\" == \"nx\" ]; then
+          docker push flogo/flogo-web:dev-v0.9.0 ;
+          fi"
     - stage: build
       language: bash
+      if: branch != nx
       node_js:
       services:
         - docker

@@ -3,8 +3,7 @@ import * as path from 'path';
 import './load-env';
 
 const rootPath = path.resolve(__dirname, '..');
-const publicPath = path.resolve(rootPath, '..', 'public');
-
+const publicPath = process.env.FLOGO_WEB_PUBLICDIR || path.resolve(rootPath, '..', 'client');
 const FLOW_SERVICE_HOST = process.env.FLOGO_FLOW_SERVICE_HOST || 'localhost';
 const FLOW_STATE_SERVICE_HOST = process.env.FLOGO_FLOW_STATE_SERVICE_HOST || 'localhost';
 const FLOW_WEB_HOST = __extractDomain(process.env.FLOGO_FLOW_WEB_HOST || 'localhost');
