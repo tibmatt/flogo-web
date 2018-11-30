@@ -26,6 +26,7 @@ RUN yarn --pure-lockfile && yarn release && \
 
 
 FROM base as release
+ENV NODE_ENV production
 ENV FLOGO_WEB_LOCALDIR /flogo-web/local
 ENV FLOGO_WEB_PUBLICDIR /flogo-web/apps/client
 COPY --from=builder /tmp/build/dist/ /flogo-web/

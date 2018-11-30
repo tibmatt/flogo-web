@@ -1,15 +1,16 @@
-# Client application coding  guidelines
-A style guide for syntax, conventions, and structuring Angular applications 
-   
-### Style Guides for Reference   
+# Client application coding guidelines
+
+A style guide for syntax, conventions, and structuring Angular applications
+
+### Style Guides for Reference
+
 Refer to the following style guides if need be:
 
 - [JavaScript Style Guide](https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml)
 - [HTML/CSS Style Guide](https://google-styleguide.googlecode.com/svn/trunk/htmlcssguide.xml)
 - [Angular Style Guide](https://angular.io/guide/styleguide)
-	
 
-## Guidelines for Developers   
+## Guidelines for Developers
 
 ### Javascript
 
@@ -17,6 +18,7 @@ Client code mostly follows the official [Angular Style Guide](https://angular.io
 considerations are detailed below.
 
 #### One component, directive, service, filter... per file, and add meaningful suffix.
+
 **Valid Suffix**
 
 1. component
@@ -30,28 +32,6 @@ considerations are detailed below.
 9. model
 
 When you define class, you also need to add `Component`, `Directive`... as suffix
-
-
-#### Using rxjs
-
-There are few special considerations when using [rxjs](https://github.com/ReactiveX/rxjs) in flogo-web:
-
-##### Do NOT import from `rxjs/Rx`
-
-The RxJS library is large. Importing the `rxjs/Rx` package will import the whole RxJS library into the application,
-this will result in increased page loading times as the application will be forced to download resources it is not going to use.
-
-Instead, when you need to use of the RxJS library import directly from the `rxjs` module or its submodules, examples:
-
-```typescript
-// Correct, importing from each module 
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
-```
-
-#### Avoid name collision, use module name as prefix, this rule for class name, directive name, selector name...
-
-// TODO: example
 
 #### Unit and Integration tests
 

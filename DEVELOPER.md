@@ -2,31 +2,31 @@
 
 This document describes how to set up your development environment to build, run and test flogo web.
 
-> Before developing client code please also read the [client code guideline](/docs/client-code-guideline.md)
+> :warning: Before developing client code please also read the [client code guideline](/docs/client-code-guideline.md)
 
-> Additional developer documentation can be found in [docs](/docs)
+> :information_source: Additional developer documentation can be found in [docs](/docs)
 
 **Table of Contents**
 
 - [Building and Testing Flogo Web](#building-and-testing-flogo-web)
-  * [Setup](#setup)
-    + [Prerequisite Software](#prerequisite-software)
-    + [Getting the Sources](#getting-the-sources)
-    + [Getting the Service Images](#getting-the-service-images)
-  * [Running the application locally](#running-the-application-locally)
-    + [Start the services](#start-the-services)
-    + [Before running the application](#before-running-the-application)
-    + [Running the Application in Development Mode](#running-the-application-in-development-mode)
-  * [Running Tests Locally](#running-tests-locally)
-    + [Before running the tests](#before-running-the-tests)
-    + [Running the tests](#running-the-tests)
-  * [Customize the server environment](#customize-the-server-environment)
-  * [Other tasks](#other-tasks)
-    + [Install/update third party dependencies (node modules)](#installupdate-third-party-dependencies-node-modules)
-    + [Managing the services:](#managing-the-services)
-    + [Managing engine/local data](#managing-enginelocal-data)
-    + [Misc](#misc)
-  * [Project structure and advanced usage.](#project-structure-and-advanced-usage)
+  - [Setup](#setup)
+    - [Prerequisite Software](#prerequisite-software)
+    - [Getting the Sources](#getting-the-sources)
+    - [Getting the Service Images](#getting-the-service-images)
+  - [Running the application locally](#running-the-application-locally)
+    - [Start the services](#start-the-services)
+    - [Before running the application](#before-running-the-application)
+    - [Running the Application in Development Mode](#running-the-application-in-development-mode)
+  - [Running Tests Locally](#running-tests-locally)
+    - [Before running the tests](#before-running-the-tests)
+    - [Running the tests](#running-the-tests)
+    - [Running tests for a single subpackage](#running-tests-for-a-single-subpackage)
+  - [Customize the server environment](#customize-the-server-environment)
+  - [Other tasks](#other-tasks)
+    - [Managing the services:](#managing-the-services)
+    - [Managing engine/local data](#managing-enginelocal-data)
+    - [Misc](#misc)
+  - [Project architecture and advanced usage.](#project-architecture-and-advanced-usage)
 
 ## Setup
 
@@ -34,13 +34,13 @@ This document describes how to set up your development environment to build, run
 
 - git
 - [Docker and docker-compose](https://www.docker.com) for Mac or Windows or Linux (https://www.docker.com) 17.12.0 or later
-- [Node JS 8.9.3 or greater](https://nodejs.org/en/download/releases/)
-- [yarn](https://yarnpkg.com) 
+- [NodeJS 10.14 or greater](https://nodejs.org/en/download/releases/)
+- [yarn v1.9.4 or grater](https://yarnpkg.com)
 - [Latest Flogo CLI (flogo-cli)](https://github.com/TIBCOSoftware/flogo-cli)
   - The following will be necessary and they should be installed as part of installing the flogo-cli tool:
-    - GO Lang 1.9 - Follow the instructions here https://golang.org/doc/install
+    - GO Lang v1.10 - Follow the instructions here https://golang.org/doc/install
     - [Go dep](https://golang.github.io/dep/)
-    - Make sure you add $GOPATH/bin to your $PATH variable. Instructions related to the $GOPATH variable are found in the above link in the ["Test your installation" section](https://golang.org/doc/install#testing).
+    - Make sure you add $GOPATH/bin to your$PATH variable. Instructions related to the \$GOPATH variable are found in the above link in the ["Test your installation" section](https://golang.org/doc/install#testing)
 
 ### Getting the Sources
 
@@ -64,11 +64,13 @@ Chose and follow **one** of these methods to get the images:
 **METHOD 1: Pull from dockerhub**
 
 In your terminal log into docker hub
+
 ```
 docker login
 ```
 
-After you authenticated in a terminal make sure you're in flogo-web's project root and run: 
+After you authenticated in a terminal make sure you're in flogo-web's project root and run:
+
 ```sh
 yarn run services:pull
 ```
@@ -76,6 +78,7 @@ yarn run services:pull
 **METHOD 2: Pull from TIBCO reldocker**
 
 In your terminal login to reldocker using you LDAP credentials
+
 ```sh
 docker login reldocker.tibco.com
 ```
@@ -83,12 +86,14 @@ docker login reldocker.tibco.com
 After you authenticated, pull the images:
 
 Pull and rename the state service image
+
 ```sh
 docker pull reldocker.tibco.com/flogo/state-service:latest
-docker tag reldocker.tibco.com/flogo/state-service:latest flogo/state-service:latest 
+docker tag reldocker.tibco.com/flogo/state-service:latest flogo/state-service:latest
 ```
 
 Pull and rename the flow service image
+
 ```sh
 docker pull reldocker.tibco.com/flogo/flow-service:latest
 docker tag reldocker.tibco.com/flogo/flow-service:latest flogo/flow-service:latest
@@ -98,7 +103,7 @@ docker tag reldocker.tibco.com/flogo/flow-service:latest flogo/flow-service:late
 
 For this method you will need access to the [flogo-cicd repository](https://github.com/TIBCOSoftware/flogo-cicd).
 Once you have access follow the instructions in flogo-cicd's readme using the private registry method
-and build *only* the following images (in the specified order, do not use the "build-all.sh" script):
+and build _only_ the following images (in the specified order, do not use the "build-all.sh" script):
 
 1. flogo/go-builder
 1. flogo/state-service
@@ -113,6 +118,7 @@ Run `docker images` to make sure they were correctly built.
 flow-services and state-service must be running in order to the test run a flow from the UI.
 
 To start the services from the project root run:
+
 ```sh
 yarn run services:start
 ```
@@ -134,12 +140,13 @@ they run as two separate services and as such you will need two terminal windows
 **Start the Server Application**
 
 In terminal 1 go to flogo-web project root and run:
+
 ```sh
-yarn run dev:server
+yarn start server
 ```
 
-Server will start running. Please be patient if this is the first time you run the server app as it can take several 
-minutes to finish the startup process because it will need to create a Flogo engine instance and install the 
+Server will start running. Please be patient if this is the first time you run the server app as it can take several
+minutes to finish the startup process because it will need to create a Flogo engine instance and install the
 default activities and triggers.
 
 When you see the following banner in the console Flogo Web's server will be ready to respond:
@@ -161,37 +168,44 @@ When you see the following banner in the console Flogo Web's server will be read
 In a second terminal flogo-web project root and run:
 
 ```sh
-yarn run dev:client
+yarn start client
 ```
 
-Client application will start, when you see the following banner in the console flogo client app will be ready to be used in your browser:
-
-```
-** Angular Live Development Server is listening on localhost:4200, open your browser on http://localhost:4200/ **
-```
-
-> Note: You can also run both client and server at once in a single terminal by running `yarn run dev`.
-> The caveat is that the output is not as clear as when running the processes separately, also during development it is usually 
-> helpful to be able to restart one application and not the other. 
+Client application will start processing, once the processing progress reaches 100% you should see `ℹ ｢wdm｣: Compiled successfully` in the terminal and the app will be ready to be accessed in your browser.
 
 ## Running Tests Locally
 
-### Before running the tests 
+### Before running the tests
 
 Make sure your dependencies are up to date:
+
 ```sh
 yarn install
-yarn install:submodules
 ```
 
 ### Running the tests
 
 From the project root:
+
 ```sh
-yarn run test
+yarn test
 ```
 
 This will run the unit test for all the sub packages i.e. server, client and parser.
+
+### Running tests for a single subpackage
+
+From the project root:
+
+```sh
+yarn test <name-of-the-package>
+```
+
+For example
+
+```sh
+yarn test server
+```
 
 ## Customize the server environment
 
@@ -211,44 +225,45 @@ yarn run <command>
 
 For example: `yarn run services:status`
 
-### Install/update third party dependencies (node modules)
-- `install:submodules`: Install all submodules dependencies
-- `install:submodule:client`: Install client dependencies
-- `install:submodule:server`: Install server dependencies
-- `install:submodule:parser`: Install parser dependencies
-- `clean:all-node-modules`: Warning: Will delete all node_modules in the project, including those of subpackages
-
 ### Managing the services:
+
 - `services:status`: Check services status (running, stopped, etc.)
 - `services:pull`: Try to pull (download) newer versions of the services (Only availabe for dockerhub)
 - `services:stop`: Stop the services
 - `services:clear`: Warning: destructive. Remove all the service instances and cleanup all services database.
 
 ### Managing engine/local data
-- `clean:local`: Clean ALL your local data. This will remove the engine, database and logs. 
+
+- `clean:local`: Clean ALL your local data. This will remove the engine, database and logs.
 - `clean:engines`: Remove the local engines only. This will force the server to rebuild the engine on next startup.
 
 ### Misc
+
 - `update-global-flogo`: Update global flogo-cli to the latest available
 
-## Project structure and advanced usage.
+## Project architecture and advanced usage.
 
-Flogo Web is composed of a root package and other subpackages. Each package is independent and can handle most of its own lifecycle.
-The root mostly delegates the tasks to the subpackages and orchestrates them during the release (production build) process.
+The Flogo Web project follows a monorepo approach and it is composed of multiple subpackages. These packages are located in two directories:
+
+- `/libs`: Independent and reusable modules.
+- `/apps`: Deployable apps which integrate and compose the modules and libs. Currently there are only two apps; backend (server) and client (frontend).
+
+> :books: You might want to look at [some pros of conse of monorepos](https://github.com/babel/babel/blob/master/doc/design/monorepo.md).
+
+For this the project leverages [@angular/cli](https://cli.angular.io/) and [Nx](https://nrwl.io/nx/overview). It is advised for contributors of this project to become familiar with these tools so they can take advantage of their features such as code generation and dependency inspection.
 
 Flogo Web uses npm/yarn scripts for its build process. Take a look at README.md of the packages as well as at the scripts section
 in the `package.json` of the root project and the subpackages to find other commands available.
 
-Root package is at the root project level and subpackages are located in `src`. Project structure is following:
+Project structure is following:
 
 ```
 -- flogo-web (root package.json)
   |--- package.json (root package)
-  |--- src/
-       |---- client/
-       |        `--- package.json
-       |---- server/
-       |       `--- package.json
-       `---- parser/
-               `--- package.json
+  |--- apps/
+  |    |---- client/
+  |    `---- server/
+  `--- libs/
+        |---- parser/
+        `---- ...more libs
 ```
