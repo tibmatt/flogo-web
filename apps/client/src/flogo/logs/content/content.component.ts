@@ -1,13 +1,11 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {LogService} from '@flogo-web/client/core/services/log.service';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { LogService } from '@flogo-web/client/core/services/log.service';
 
-@Component(
-  {
-    selector: 'flogo-logs-content',
-    templateUrl: 'content.component.html',
-    styleUrls: ['content.component.less']
-  }
-)
+@Component({
+  selector: 'flogo-logs-content',
+  templateUrl: 'content.component.html',
+  styleUrls: ['content.component.less'],
+})
 export class LogsContentComponent {
   @Output() windowAction: EventEmitter<string>;
   @Input() isExternal = false;
@@ -22,8 +20,7 @@ export class LogsContentComponent {
     this.windowAction.emit('close');
   }
 
-  back() {
-  }
+  back() {}
 
   maximize() {
     this.windowAction.emit('maximize');
@@ -35,7 +32,6 @@ export class LogsContentComponent {
 
   public isError(item) {
     const message = item.message || '';
-    return (message.indexOf('▶ ERROR') !== -1 || message.indexOf('▶ WARNI') !== -1);
+    return message.indexOf('▶ ERROR') !== -1 || message.indexOf('▶ WARNI') !== -1;
   }
-
 }

@@ -8,10 +8,12 @@ import { SanitizeService } from '../../core/services/sanitize.service';
 @Component({
   selector: 'flogo-test-container',
   template: `
-            <h3 [(fgContentEditable)]="name"
-                placeholder="Test placeholder"
-            (fgContentEditableChange)="changed($event,null)"></h3>
-            `
+    <h3
+      [(fgContentEditable)]="name"
+      placeholder="Test placeholder"
+      (fgContentEditableChange)="changed($event, null)"
+    ></h3>
+  `,
 })
 class ContainerComponent {
   @Output() changes = new EventEmitter();
@@ -31,13 +33,12 @@ describe('Directive: ContenteditableDirective', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [SanitizeService],
-      declarations: [ContenteditableDirective, ContainerComponent]
+      declarations: [ContenteditableDirective, ContainerComponent],
     });
     fixture = TestBed.createComponent(ContainerComponent);
     container = fixture.componentInstance;
     debugElement = fixture.debugElement.query(By.directive(ContenteditableDirective));
   });
-
 
   it('Changing the model variable should change the inner text', () => {
     container.name = 'a new name';
@@ -60,7 +61,6 @@ describe('Directive: ContenteditableDirective', () => {
     h3Element.innerHTML = 'A new value';
     h3Debug.triggerEventHandler('blur', null);
     fixture.detectChanges();
-
   });
 
   it('Should display a placeholder when initialized empty', () => {
@@ -68,6 +68,4 @@ describe('Directive: ContenteditableDirective', () => {
     fixture.detectChanges();
     expect(debugElement.nativeElement.innerText).toBe('Test placeholder');
   });
-
 });
-

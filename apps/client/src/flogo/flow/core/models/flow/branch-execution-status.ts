@@ -20,7 +20,5 @@ function isBranchNode(node: GraphNode) {
 }
 
 function executedNodeFinder(nodes: Dictionary<GraphNode>) {
-  return (nodeIds: string[]) => !!nodeIds
-    .map(nodeId => nodes[nodeId])
-    .find(relatedNode => relatedNode.status.executed);
+  return (nodeIds: string[]) => !!nodeIds.map(nodeId => nodes[nodeId]).find(relatedNode => relatedNode.status.executed);
 }

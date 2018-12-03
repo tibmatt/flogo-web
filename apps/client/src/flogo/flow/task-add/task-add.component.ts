@@ -1,17 +1,16 @@
-import { Component, Inject, InjectionToken, OnInit} from '@angular/core';
-import {Observable, ReplaySubject} from 'rxjs';
-import {filterActivitiesBy} from './core/filter-activities-by';
-import {ActionBase, ActivitySchema, CONTRIB_REF_PLACEHOLDER} from '@flogo-web/client/core';
-import {Activity, TaskAddOptions} from './core/task-add-options';
+import { Component, Inject, InjectionToken, OnInit } from '@angular/core';
+import { Observable, ReplaySubject } from 'rxjs';
+import { filterActivitiesBy } from './core/filter-activities-by';
+import { ActionBase, ActivitySchema, CONTRIB_REF_PLACEHOLDER } from '@flogo-web/client/core';
+import { Activity, TaskAddOptions } from './core/task-add-options';
 
 export const TASKADD_OPTIONS = new InjectionToken<TaskAddOptions>('flogo-flow-task-add');
 
 @Component({
   templateUrl: 'task-add.component.html',
-  styleUrls: ['task-add.component.less']
+  styleUrls: ['task-add.component.less'],
 })
 export class TaskAddComponent implements OnInit {
-
   filteredActivities$: Observable<Activity[]>;
   filterText$: ReplaySubject<string>;
   isInstallOpen = false;

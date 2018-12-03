@@ -1,17 +1,16 @@
-import {Injectable, InjectionToken, Injector} from '@angular/core';
-import {FlowActions, FlowSelectors, FlowState} from '@flogo-web/client/flow/core/state';
-import {Store} from '@ngrx/store';
-import {Overlay, OverlayRef} from '@angular/cdk/overlay';
-import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
-import {TaskAddComponent, TASKADD_OPTIONS} from './task-add.component';
-import {Activity, TaskAddOptions} from './core/task-add-options';
-import {Observable} from 'rxjs';
-import {createTaskAddAction} from './models/task-add-action-creator';
-import {ActionBase, ActivitySchema} from '@flogo-web/client/core';
+import { Injectable, InjectionToken, Injector } from '@angular/core';
+import { FlowActions, FlowSelectors, FlowState } from '@flogo-web/client/flow/core/state';
+import { Store } from '@ngrx/store';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
+import { TaskAddComponent, TASKADD_OPTIONS } from './task-add.component';
+import { Activity, TaskAddOptions } from './core/task-add-options';
+import { Observable } from 'rxjs';
+import { createTaskAddAction } from './models/task-add-action-creator';
+import { ActionBase, ActivitySchema } from '@flogo-web/client/core';
 
 @Injectable()
 export class AddActivityService {
-
   shouldKeepPopoverActive: boolean;
   popoverReference: OverlayRef;
 
@@ -28,7 +27,7 @@ export class AddActivityService {
   }
 
   cancel() {
-    this.store.dispatch(new FlowActions.CancelCreateItem({parentId: this.parentId}));
+    this.store.dispatch(new FlowActions.CancelCreateItem({ parentId: this.parentId }));
   }
 
   closeAndDestroy() {
@@ -40,16 +39,15 @@ export class AddActivityService {
 
   open(attachTo: HTMLElement, parentId: string) {
     this.parentId = parentId;
-    const positionStrategy = this.overlay.position()
+    const positionStrategy = this.overlay
+      .position()
       .flexibleConnectedTo(attachTo)
-      .withPositions(
-        [
-          { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
-          { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' },
-          { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' },
-          { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' }
-        ]
-      );
+      .withPositions([
+        { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
+        { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' },
+        { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' },
+        { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' },
+      ]);
     if (!this.contentPortal) {
       const customTokens = this.createInjectorTokens();
       const injector = new PortalInjector(this.injector, customTokens);
@@ -80,17 +78,13 @@ export class AddActivityService {
       appAndFlowInfo$: this.appAndFlowInfo$,
       selectActivity: (ref: string, selectedSubFlow?: ActionBase) => this.selectedActivity(ref, selectedSubFlow),
       installedActivity: (schema: ActivitySchema) => this.store.dispatch(new FlowActions.ActivityInstalled(schema)),
-      updateActiveState: (isOpen: boolean) => (this.shouldKeepPopoverActive = isOpen)
+      updateActiveState: (isOpen: boolean) => (this.shouldKeepPopoverActive = isOpen),
     };
-    return new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>()
-      .set(TASKADD_OPTIONS, taskAddOptions);
+    return new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>().set(TASKADD_OPTIONS, taskAddOptions);
   }
 
   private selectedActivity(ref: string, flowData?: ActionBase) {
-    createTaskAddAction(
-      this.store,
-      {ref, flowData}
-    ).subscribe((action: FlowActions.TaskItemCreated) => {
+    createTaskAddAction(this.store, { ref, flowData }).subscribe((action: FlowActions.TaskItemCreated) => {
       this.store.dispatch(action);
     });
   }

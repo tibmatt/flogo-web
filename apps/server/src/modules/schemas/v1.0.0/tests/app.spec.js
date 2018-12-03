@@ -1,5 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep';
-import {makeAjvContext} from './test-utils';
+import { makeAjvContext } from './test-utils';
 
 const triggerSchema = require('../trigger.json');
 const commonSchema = require('../common.json');
@@ -15,11 +15,9 @@ describe('JSONSchema: App', () => {
 
   const validSchemas = generateValidSchemas();
   beforeEach(() => {
-    testContext.ajvContext = makeAjvContext(
-      'app',
-      [commonSchema, triggerSchema, flowSchema, appSchema],
-      {removeAdditional: true},
-    );
+    testContext.ajvContext = makeAjvContext('app', [commonSchema, triggerSchema, flowSchema, appSchema], {
+      removeAdditional: true,
+    });
     testContext.validator = testContext.ajvContext.createValidator();
     testContext.app = {
       name: 'my app',
@@ -27,8 +25,8 @@ describe('JSONSchema: App', () => {
       version: '0.5.3',
       appModel: '1.0.0',
       description: 'app description',
-      triggers: [{...validSchemas.trigger}],
-      resources: [{...validSchemas.resource}]
+      triggers: [{ ...validSchemas.trigger }],
+      resources: [{ ...validSchemas.resource }],
     };
     testContext.appUnderTest = cloneDeep(testContext.app);
   });
@@ -42,14 +40,14 @@ describe('JSONSchema: App', () => {
   ['name', 'type', 'appModel'].forEach(requiredProp => {
     test(`should require ${requiredProp}`, () => {
       delete testContext.appUnderTest[requiredProp];
-      testContext.validator.validateAndCreateAsserter(testContext.appUnderTest)
+      testContext.validator
+        .validateAndCreateAsserter(testContext.appUnderTest)
         .assertIsInvalid()
         .assertHasErrorForRequiredProp(requiredProp);
     });
   });
 
   describe('properties', () => {
-
     describe('/resources', () => {
       let resourceValidator;
       beforeEach(() => {
@@ -57,29 +55,31 @@ describe('JSONSchema: App', () => {
       });
       ['data', 'id'].forEach(requiredProp => {
         test(`should require ${requiredProp}`, () => {
-          const resourceUnderTest = {...validSchemas.resource};
+          const resourceUnderTest = { ...validSchemas.resource };
           delete resourceUnderTest[requiredProp];
-          resourceValidator.validateAndCreateAsserter(resourceUnderTest)
+          resourceValidator
+            .validateAndCreateAsserter(resourceUnderTest)
             .assertIsInvalid()
             .assertHasErrorForRequiredProp(requiredProp);
         });
       });
       test(`should have valid resources ID `, () => {
-        const resourceUnderTest = {...validSchemas.resource};
+        const resourceUnderTest = { ...validSchemas.resource };
         resourceUnderTest.id = 'flowId';
-        resourceValidator.validateAndCreateAsserter(resourceUnderTest)
+        resourceValidator
+          .validateAndCreateAsserter(resourceUnderTest)
           .assertIsInvalid()
           .assertHasErrorForMismatchingPattern('id');
       });
     });
   });
   function generateValidSchemas() {
-    const trigger = {id: 'trigger1', ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli'};
-    const resource = {id: "flow:test", data: {}};
+    const trigger = { id: 'trigger1', ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli' };
+    const resource = { id: 'flow:test', data: {} };
 
     return {
       trigger,
-      resource
+      resource,
     };
   }
 });

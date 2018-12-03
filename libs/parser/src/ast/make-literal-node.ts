@@ -9,10 +9,13 @@ const literalTypeMap = {
   NumberLiteral: 'number',
   True: 'boolean',
   False: 'boolean',
-  Null: 'null'
+  Null: 'null',
 };
 
-export const makeLiteralNode = (nodeType: 'BasicLit' | 'jsonLiteral', cstToken: IToken): JsonLiteralNode | ExprBasicLit => {
+export const makeLiteralNode = (
+  nodeType: 'BasicLit' | 'jsonLiteral',
+  cstToken: IToken
+): JsonLiteralNode | ExprBasicLit => {
   const tokenName = cstToken.tokenType.tokenName;
   return {
     type: nodeType as any,

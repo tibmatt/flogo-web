@@ -33,15 +33,13 @@ describe('importer.device.ActionsImporter', () => {
     test('should account for empty actions', () => {
       let formattedAction = null;
       expect(() => {
-        formattedAction = deviceActionsImporter
-          .formatAction({ id: 'a', name: 'my action' });
+        formattedAction = deviceActionsImporter.formatAction({ id: 'a', name: 'my action' });
       }).not.toThrowError();
-      expect(formattedAction).toMatchObject({ id: 'a', name: 'my action' })
+      expect(formattedAction).toMatchObject({ id: 'a', name: 'my action' });
     });
 
     test('should set the id as name if name is not provided', () => {
-      const formattedAction = deviceActionsImporter
-        .formatAction({ id: 'myCoolAction', data: {} });
+      const formattedAction = deviceActionsImporter.formatAction({ id: 'myCoolAction', data: {} });
       expect(formattedAction.name).toBe('myCoolAction');
     });
 
@@ -51,20 +49,14 @@ describe('importer.device.ActionsImporter', () => {
         data: {
           flow: {
             ...mockAction.data.flow,
-            tasks: [
-              { ...mockTask },
-              { ...mockTask, id: 3 },
-            ],
+            tasks: [{ ...mockTask }, { ...mockTask, id: 3 }],
           },
         },
       };
       const formattedAction = deviceActionsImporter.formatAction(actionToTest);
-      expect(formattedAction)
-        .toMatchObject({ id: 'a', name: 'my action' });
-      expect(formattedAction)
-        .toHaveProperty('tasks');
-      expect(formattedAction)
-        .toHaveProperty('links');
+      expect(formattedAction).toMatchObject({ id: 'a', name: 'my action' });
+      expect(formattedAction).toHaveProperty('tasks');
+      expect(formattedAction).toHaveProperty('links');
 
       expect(Array.isArray(formattedAction.links)).toBe(true);
       expect(formattedAction.links).toContain(mockLink);
@@ -100,28 +92,20 @@ describe('importer.device.ActionsImporter', () => {
       expect(context.mappedTask.attributes).toHaveLength(3);
     });
 
-    test(
-      'should correctly match the task attributes with its corresponding activity schema',
-      () => {
-        expect(context.mappedTask.attributes).toEqual(
-          expect.arrayContaining([
-            { name: 'pin', type: 'int', value: 25 },
-            { name: 'digital', type: 'boolean', value: true }
-          ])
-        );
-      }
-    );
+    test('should correctly match the task attributes with its corresponding activity schema', () => {
+      expect(context.mappedTask.attributes).toEqual(
+        expect.arrayContaining([
+          { name: 'pin', type: 'int', value: 25 },
+          { name: 'digital', type: 'boolean', value: true },
+        ])
+      );
+    });
 
-    test(
-      'should add those attributes defined in the activity schema but not provided by the activity',
-      () => {
-        expect(context.mappedTask.attributes).toEqual(
-          expect.arrayContaining([
-            { name: 'value', type: 'int', value: '' }
-          ])
-        );
-      }
-    );
+    test('should add those attributes defined in the activity schema but not provided by the activity', () => {
+      expect(context.mappedTask.attributes).toEqual(
+        expect.arrayContaining([{ name: 'value', type: 'int', value: '' }])
+      );
+    });
   });
 
   function getActivitySchemaMock() {
@@ -155,5 +139,4 @@ describe('importer.device.ActionsImporter', () => {
       ],
     };
   }
-
 });

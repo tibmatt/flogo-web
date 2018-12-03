@@ -1,7 +1,7 @@
 import { URL } from 'url';
 
 const DEFAULT_PROTOCOL = 'https://';
-const GITHUB_TREEISH_HOSTNAME =  /(^\/?[^/]+\/[^/]+)(\/tree\/[^/]+)/;
+const GITHUB_TREEISH_HOSTNAME = /(^\/?[^/]+\/[^/]+)(\/tree\/[^/]+)/;
 
 export function normalizeContribUrl(url: string) {
   // tslint:disable-next-line:prefer-const

@@ -1,16 +1,18 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ConfirmationService } from '../confirmation.service';
-import { CONFIRMATION_MODAL_TOKEN, ConfirmationModal, ConfirmationModalComponent } from './confirmation-modal.component';
+import {
+  CONFIRMATION_MODAL_TOKEN,
+  ConfirmationModal,
+  ConfirmationModalComponent,
+} from './confirmation-modal.component';
 
 @Injectable()
 export class ConfirmationModalService {
-  constructor(public confirmationService: ConfirmationService) {
-  }
+  constructor(public confirmationService: ConfirmationService) {}
 
-  openModal({title, textMessage}) {
+  openModal({ title, textMessage }) {
     const data = new WeakMap<any, any>();
-    data.set(CONFIRMATION_MODAL_TOKEN, {title, textMessage} as ConfirmationModal);
+    data.set(CONFIRMATION_MODAL_TOKEN, { title, textMessage } as ConfirmationModal);
     return this.confirmationService.openModal(ConfirmationModalComponent, data);
   }
-
 }

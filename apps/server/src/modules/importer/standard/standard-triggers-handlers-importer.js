@@ -2,7 +2,6 @@ import { AbstractTriggersHandlersImporter } from '../common/abstract-trigger-han
 import { convertMappingsCollection, parseResourceIdFromResourceUri } from './utils';
 
 export class StandardTriggersHandlersImporter extends AbstractTriggersHandlersImporter {
-
   extractTriggers(rawApp) {
     return rawApp.triggers || [];
   }
@@ -20,5 +19,4 @@ export class StandardTriggersHandlersImporter extends AbstractTriggersHandlersIm
       actionMappings: convertMappingsCollection(action.mappings),
     };
   }
-
 }

@@ -1,21 +1,21 @@
-import {By} from '@angular/platform-browser';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {DebugElement} from '@angular/core';
-import {LogsContentComponent} from './content.component';
-import {SearchPipe} from '../search.pipe';
-import {LogService} from '@flogo-web/client/core/services/log.service';
+import { By } from '@angular/platform-browser';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DebugElement } from '@angular/core';
+import { LogsContentComponent } from './content.component';
+import { SearchPipe } from '../search.pipe';
+import { LogService } from '@flogo-web/client/core/services/log.service';
 
 const LOG_LINES = [
   {
-   message: 'message 1',
-   timestamp: '7:53:17.574 Feb 20, 2017',
-   level: 'error'
+    message: 'message 1',
+    timestamp: '7:53:17.574 Feb 20, 2017',
+    level: 'error',
   },
   {
     message: 'message 2',
     timestamp: '7:53:17.575 Feb 20, 2017',
-    level: 'warning'
-  }
+    level: 'warning',
+  },
 ];
 
 class LogServiceMocked {
@@ -26,14 +26,12 @@ describe('Component: LogsContentComponent', () => {
   let comp: LogsContentComponent;
   let fixture: ComponentFixture<LogsContentComponent>;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     TestBed.configureTestingModule({
-        imports: [],
-        declarations: [LogsContentComponent, SearchPipe],
-        providers: [
-          {provide: LogService, useClass: LogServiceMocked}
-        ]
-      })
+      imports: [],
+      declarations: [LogsContentComponent, SearchPipe],
+      providers: [{ provide: LogService, useClass: LogServiceMocked }],
+    })
       .compileComponents()
       .then(() => {
         fixture = TestBed.createComponent(LogsContentComponent);
@@ -56,5 +54,4 @@ describe('Component: LogsContentComponent', () => {
     const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.log-line'));
     expect(res.length).toEqual(1);
   });
-
 });

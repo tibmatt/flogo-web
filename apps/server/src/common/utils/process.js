@@ -14,15 +14,15 @@ export function runShellCMD(cmd, args, opts) {
 
     logger.info(`run command: ${cmd} ${args.join(' ')}`);
 
-    _cmd.stdout.on('data', (data) => {
+    _cmd.stdout.on('data', data => {
       _data += data;
     });
 
-    _cmd.stderr.on('data', (data) => {
+    _cmd.stderr.on('data', data => {
       errData += data instanceof Buffer ? data.toString() : data;
     });
 
-    _cmd.on('close', (code) => {
+    _cmd.on('close', code => {
       if (code !== 0) {
         logger.warn(`command exited with code ${code}: ${cmd} ${args.join(' ')}`);
         reject(errData);
@@ -43,5 +43,5 @@ export const processHost = {
       ext = '.exe';
     }
     return ext;
-  }
+  },
 };

@@ -1,12 +1,12 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FlogoFlowService as FlowsService } from '@flogo-web/client/flow/core/flow.service';
 import { BsModalComponent } from 'ng2-bs3-modal';
-import {ActionBase} from '@flogo-web/client/core';
+import { ActionBase } from '@flogo-web/client/core';
 
 @Component({
   selector: 'flogo-flow-sub-flow',
   templateUrl: 'sub-flow.component.html',
-  styleUrls: ['sub-flow.component.less']
+  styleUrls: ['sub-flow.component.less'],
 })
 export class SubFlowComponent implements AfterViewInit, OnInit {
   @Input()

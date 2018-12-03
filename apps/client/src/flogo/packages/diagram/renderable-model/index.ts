@@ -12,7 +12,4 @@ function makeRenderableMatrix(flow: FlowGraph, rowLength: number, isReadOnly = f
   return createTileMatrix(nodeMatrix, flow.nodes, rowLength, isReadOnly);
 }
 
-export {
-  makeRenderableMatrix,
-  TileMatrix,
-};
+export { makeRenderableMatrix, TileMatrix };

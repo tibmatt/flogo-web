@@ -7,7 +7,7 @@ import { parseValue } from '../parse-value';
 export const FIELD_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => FieldValueAccesorDirective),
-  multi: true
+  multi: true,
 };
 
 @Directive({
@@ -21,7 +21,7 @@ export class FieldValueAccesorDirective implements ControlValueAccessor {
   onChange = (_: any) => {};
   onTouched = () => {};
 
-  constructor(private renderer: Renderer2, private elementRef: ElementRef) { }
+  constructor(private renderer: Renderer2, private elementRef: ElementRef) {}
 
   update(value: string) {
     this.renderer.setProperty(this.elementRef.nativeElement, 'value', value);
@@ -47,10 +47,13 @@ export class FieldValueAccesorDirective implements ControlValueAccessor {
     }
   }
 
-  registerOnChange(fn: (_: any) => void): void { this.onChange = fn; }
-  registerOnTouched(fn: () => void): void { this.onTouched = fn; }
+  registerOnChange(fn: (_: any) => void): void {
+    this.onChange = fn;
+  }
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
   setDisabledState(isDisabled: boolean): void {
     this.renderer.setProperty(this.elementRef.nativeElement, 'disabled', isDisabled);
   }
-
 }

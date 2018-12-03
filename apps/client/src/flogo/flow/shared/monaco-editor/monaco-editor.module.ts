@@ -9,27 +9,21 @@ export interface ModuleConfig {
 }
 
 @NgModule({
-  imports: [
-    CommonModule,
-  ],
-  exports: [
-    MonacoEditorLoaderDirective,
-    MonacoEditorComponent,
-  ],
-  declarations: [
-    MonacoEditorLoaderDirective,
-    MonacoEditorComponent,
-  ],
+  imports: [CommonModule],
+  exports: [MonacoEditorLoaderDirective, MonacoEditorComponent],
+  declarations: [MonacoEditorLoaderDirective, MonacoEditorComponent],
 })
 export class MonacoEditorModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: MonacoEditorModule,
-      providers: [{
-        provide: MonacoEditorLoaderService,
-        deps: [NgZone],
-        useFactory: loaderFactory
-      }]
+      providers: [
+        {
+          provide: MonacoEditorLoaderService,
+          deps: [NgZone],
+          useFactory: loaderFactory,
+        },
+      ],
     };
   }
 }

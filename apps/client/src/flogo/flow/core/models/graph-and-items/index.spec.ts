@@ -1,251 +1,259 @@
-import { ContribSchema, Dictionary, FLOGO_TASK_TYPE, FlowGraph, GraphNode, Item, NodeType } from '@flogo-web/client/core';
+import {
+  ContribSchema,
+  Dictionary,
+  FLOGO_TASK_TYPE,
+  FlowGraph,
+  GraphNode,
+  Item,
+  NodeType,
+} from '@flogo-web/client/core';
 import { ObjectSlice } from '@flogo-web/client/core/testing';
 import { makeGraphAndItems } from './index';
 
-describe('flow.core.models.graph-and-items', function () {
+describe('flow.core.models.graph-and-items', function() {
   const tasks = [
     {
-      'id': 'log_1',
-      'name': 'Start processing',
-      'description': 'Simple Log Activity',
-      'type': 1,
-      'activityType': 'github-com-tibco-software-flogo-contrib-activity-log',
-      'activityRef': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'attributes': [
+      id: 'log_1',
+      name: 'Start processing',
+      description: 'Simple Log Activity',
+      type: 1,
+      activityType: 'github-com-tibco-software-flogo-contrib-activity-log',
+      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      attributes: [
         {
-          'name': 'message',
-          'value': 'Received Rest request and starting trigger',
-          'required': false,
-          'type': 'string'
+          name: 'message',
+          value: 'Received Rest request and starting trigger',
+          required: false,
+          type: 'string',
         },
         {
-          'name': 'flowInfo',
-          'value': 'true',
-          'required': false,
-          'type': 'boolean'
+          name: 'flowInfo',
+          value: 'true',
+          required: false,
+          type: 'boolean',
         },
         {
-          'name': 'addToFlow',
-          'value': 'true',
-          'required': false,
-          'type': 'boolean'
-        }
-      ]
+          name: 'addToFlow',
+          value: 'true',
+          required: false,
+          type: 'boolean',
+        },
+      ],
     },
     {
-      'id': 'awsiot_1',
-      'name': 'Update',
-      'description': 'Simple AWS IoT',
-      'type': 1,
-      'activityType': 'github-com-tibco-software-flogo-contrib-activity-awsiot',
-      'activityRef': 'github.com/TIBCOSoftware/flogo-contrib/activity/awsiot',
-      'attributes': [
+      id: 'awsiot_1',
+      name: 'Update',
+      description: 'Simple AWS IoT',
+      type: 1,
+      activityType: 'github-com-tibco-software-flogo-contrib-activity-awsiot',
+      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/awsiot',
+      attributes: [
         {
-          'name': 'thingName',
-          'value': 'flogo_test',
-          'required': false,
-          'type': 'string'
+          name: 'thingName',
+          value: 'flogo_test',
+          required: false,
+          type: 'string',
         },
         {
-          'name': 'awsEndpoint',
-          'value': 'a1njsonnibpa75.iot.us-east-1.amazonaws.com',
-          'required': false,
-          'type': 'string'
+          name: 'awsEndpoint',
+          value: 'a1njsonnibpa75.iot.us-east-1.amazonaws.com',
+          required: false,
+          type: 'string',
         },
         {
-          'name': 'desired',
-          'value': {
-            'switch': 'on'
+          name: 'desired',
+          value: {
+            switch: 'on',
           },
-          'required': false,
-          'type': 'params'
+          required: false,
+          type: 'params',
         },
         {
-          'name': 'reported',
-          'value': {
-            'switch': 'off'
+          name: 'reported',
+          value: {
+            switch: 'off',
           },
-          'required': false,
-          'type': 'params'
-        }
-      ]
+          required: false,
+          type: 'params',
+        },
+      ],
     },
     {
-      'id': 'reply_1',
-      'name': 'Done',
-      'description': 'Simple Reply Activity',
-      'type': 1,
-      'activityType': 'github-com-tibco-software-flogo-contrib-activity-reply',
-      'activityRef': 'github.com/TIBCOSoftware/flogo-contrib/activity/reply',
-      'attributes': [
+      id: 'reply_1',
+      name: 'Done',
+      description: 'Simple Reply Activity',
+      type: 1,
+      activityType: 'github-com-tibco-software-flogo-contrib-activity-reply',
+      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/reply',
+      attributes: [
         {
-          'name': 'code',
-          'value': '200',
-          'required': false,
-          'type': 'integer'
+          name: 'code',
+          value: '200',
+          required: false,
+          type: 'integer',
         },
         {
-          'name': 'data',
-          'value': 'AWS IOT update successfully',
-          'required': false,
-          'type': 'any'
-        }
-      ]
+          name: 'data',
+          value: 'AWS IOT update successfully',
+          required: false,
+          type: 'any',
+        },
+      ],
     },
     {
-      'id': 'log_6',
-      'name': 'Log Message (3)',
-      'description': 'Simple Log Activity',
-      'type': 1,
-      'activityType': 'tibco-log',
-      'activityRef': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'attributes': [
+      id: 'log_6',
+      name: 'Log Message (3)',
+      description: 'Simple Log Activity',
+      type: 1,
+      activityType: 'tibco-log',
+      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      attributes: [
         {
-          'name': 'message',
-          'value': '',
-          'required': false,
-          'type': 'string'
+          name: 'message',
+          value: '',
+          required: false,
+          type: 'string',
         },
         {
-          'name': 'flowInfo',
-          'value': 'false',
-          'required': false,
-          'type': 'boolean'
+          name: 'flowInfo',
+          value: 'false',
+          required: false,
+          type: 'boolean',
         },
         {
-          'name': 'addToFlow',
-          'value': 'false',
-          'required': false,
-          'type': 'boolean'
-        }
-      ]
+          name: 'addToFlow',
+          value: 'false',
+          required: false,
+          type: 'boolean',
+        },
+      ],
     },
     {
-      'id': 'log_7',
-      'name': 'Log Message (4)',
-      'description': 'Simple Log Activity',
-      'type': 1,
-      'activityType': 'tibco-log',
-      'activityRef': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'attributes': [
+      id: 'log_7',
+      name: 'Log Message (4)',
+      description: 'Simple Log Activity',
+      type: 1,
+      activityType: 'tibco-log',
+      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      attributes: [
         {
-          'name': 'message',
-          'value': '',
-          'required': false,
-          'type': 'string'
+          name: 'message',
+          value: '',
+          required: false,
+          type: 'string',
         },
         {
-          'name': 'flowInfo',
-          'value': 'false',
-          'required': false,
-          'type': 'boolean'
+          name: 'flowInfo',
+          value: 'false',
+          required: false,
+          type: 'boolean',
         },
         {
-          'name': 'addToFlow',
-          'value': 'false',
-          'required': false,
-          'type': 'boolean'
-        }
-      ]
+          name: 'addToFlow',
+          value: 'false',
+          required: false,
+          type: 'boolean',
+        },
+      ],
     },
     {
-      'id': 'log_4',
-      'name': 'Log Message',
-      'description': 'Simple Log Activity',
-      'type': 1,
-      'activityType': 'tibco-log',
-      'activityRef': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'attributes': [
+      id: 'log_4',
+      name: 'Log Message',
+      description: 'Simple Log Activity',
+      type: 1,
+      activityType: 'tibco-log',
+      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      attributes: [
         {
-          'name': 'message',
-          'value': '',
-          'required': false,
-          'type': 'string'
+          name: 'message',
+          value: '',
+          required: false,
+          type: 'string',
         },
         {
-          'name': 'flowInfo',
-          'value': 'false',
-          'required': false,
-          'type': 'boolean'
+          name: 'flowInfo',
+          value: 'false',
+          required: false,
+          type: 'boolean',
         },
         {
-          'name': 'addToFlow',
-          'value': 'false',
-          'required': false,
-          'type': 'boolean'
-        }
-      ]
+          name: 'addToFlow',
+          value: 'false',
+          required: false,
+          type: 'boolean',
+        },
+      ],
     },
     {
-      'id': 'log_5',
-      'name': 'Log Message (2)',
-      'description': 'Simple Log Activity',
-      'type': 1,
-      'activityType': 'tibco-log',
-      'activityRef': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'attributes': [
+      id: 'log_5',
+      name: 'Log Message (2)',
+      description: 'Simple Log Activity',
+      type: 1,
+      activityType: 'tibco-log',
+      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      attributes: [
         {
-          'name': 'message',
-          'value': '',
-          'required': false,
-          'type': 'string'
+          name: 'message',
+          value: '',
+          required: false,
+          type: 'string',
         },
         {
-          'name': 'flowInfo',
-          'value': 'false',
-          'required': false,
-          'type': 'boolean'
+          name: 'flowInfo',
+          value: 'false',
+          required: false,
+          type: 'boolean',
         },
         {
-          'name': 'addToFlow',
-          'value': 'false',
-          'required': false,
-          'type': 'boolean'
-        }
-      ]
-    }
+          name: 'addToFlow',
+          value: 'false',
+          required: false,
+          type: 'boolean',
+        },
+      ],
+    },
   ];
   const links = [
     {
-      'id': 1,
-      'from': 'log_1',
-      'to': 'awsiot_1',
-      'type': 0
+      id: 1,
+      from: 'log_1',
+      to: 'awsiot_1',
+      type: 0,
     },
     {
-      'id': 2,
-      'from': 'awsiot_1',
-      'to': 'reply_1',
-      'type': 0
+      id: 2,
+      from: 'awsiot_1',
+      to: 'reply_1',
+      type: 0,
     },
     {
-      'id': 3,
-      'from': 'reply_1',
-      'to': 'log_6',
-      'type': 1,
-      'value': 'true'
+      id: 3,
+      from: 'reply_1',
+      to: 'log_6',
+      type: 1,
+      value: 'true',
     },
     {
-      'id': 4,
-      'from': 'log_6',
-      'to': 'log_7',
-      'type': 1,
-      'value': 'true'
+      id: 4,
+      from: 'log_6',
+      to: 'log_7',
+      type: 1,
+      value: 'true',
     },
     {
-      'id': 5,
-      'from': 'awsiot_1',
-      'to': 'log_4',
-      'type': 1,
-      'value': 'true'
+      id: 5,
+      from: 'awsiot_1',
+      to: 'log_4',
+      type: 1,
+      value: 'true',
     },
     {
-      'id': 6,
-      'from': 'awsiot_1',
-      'to': 'log_5',
-      'type': 1,
-      'value': 'true'
-    }
+      id: 6,
+      from: 'awsiot_1',
+      to: 'log_5',
+      type: 1,
+      value: 'true',
+    },
   ];
 
   const mockSchemas = [
@@ -259,12 +267,17 @@ describe('flow.core.models.graph-and-items', function () {
 
   beforeAll(function() {
     let branchId = 1;
-    const graphAndItems = makeGraphAndItems(tasks, links, <ContribSchema[]>mockSchemas, () => `dummy_branch_${branchId++}`);
+    const graphAndItems = makeGraphAndItems(
+      tasks,
+      links,
+      <ContribSchema[]>mockSchemas,
+      () => `dummy_branch_${branchId++}`
+    );
     graph = graphAndItems.graph;
     items = graphAndItems.items;
   });
 
-  it('should correctly form the items from the flow info', function () {
+  it('should correctly form the items from the flow info', function() {
     expect(items).toEqual({
       log_1: {
         name: 'Start processing',
@@ -274,12 +287,12 @@ describe('flow.core.models.graph-and-items', function () {
         id: 'log_1',
         inputMappings: [],
         type: FLOGO_TASK_TYPE.TASK,
-        'return': false,
+        return: false,
         input: {
           message: 'Received Rest request and starting trigger',
           flowInfo: 'true',
-          addToFlow: 'true'
-        }
+          addToFlow: 'true',
+        },
       },
       awsiot_1: {
         name: 'Update',
@@ -289,17 +302,17 @@ describe('flow.core.models.graph-and-items', function () {
         id: 'awsiot_1',
         inputMappings: [],
         type: FLOGO_TASK_TYPE.TASK,
-        'return': false,
+        return: false,
         input: {
           thingName: 'flogo_test',
           awsEndpoint: 'a1njsonnibpa75.iot.us-east-1.amazonaws.com',
           desired: {
-            'switch': 'on'
+            switch: 'on',
           },
           reported: {
-            'switch': 'off'
-          }
-        }
+            switch: 'off',
+          },
+        },
       },
       reply_1: {
         name: 'Done',
@@ -309,11 +322,11 @@ describe('flow.core.models.graph-and-items', function () {
         id: 'reply_1',
         inputMappings: [],
         type: FLOGO_TASK_TYPE.TASK,
-        'return': false,
+        return: false,
         input: {
           code: '200',
-          data: 'AWS IOT update successfully'
-        }
+          data: 'AWS IOT update successfully',
+        },
       },
       log_6: {
         name: 'Log Message (3)',
@@ -323,12 +336,12 @@ describe('flow.core.models.graph-and-items', function () {
         id: 'log_6',
         inputMappings: [],
         type: FLOGO_TASK_TYPE.TASK,
-        'return': false,
+        return: false,
         input: {
           message: '',
           flowInfo: 'false',
-          addToFlow: 'false'
-        }
+          addToFlow: 'false',
+        },
       },
       log_7: {
         name: 'Log Message (4)',
@@ -338,12 +351,12 @@ describe('flow.core.models.graph-and-items', function () {
         id: 'log_7',
         inputMappings: [],
         type: FLOGO_TASK_TYPE.TASK,
-        'return': false,
+        return: false,
         input: {
           message: '',
           flowInfo: 'false',
-          addToFlow: 'false'
-        }
+          addToFlow: 'false',
+        },
       },
       log_4: {
         name: 'Log Message',
@@ -353,12 +366,12 @@ describe('flow.core.models.graph-and-items', function () {
         id: 'log_4',
         inputMappings: [],
         type: 1,
-        'return': false,
+        return: false,
         input: {
           message: '',
           flowInfo: 'false',
-          addToFlow: 'false'
-        }
+          addToFlow: 'false',
+        },
       },
       log_5: {
         name: 'Log Message (2)',
@@ -368,37 +381,37 @@ describe('flow.core.models.graph-and-items', function () {
         id: 'log_5',
         inputMappings: [],
         type: FLOGO_TASK_TYPE.TASK,
-        'return': false,
+        return: false,
         input: {
           message: '',
           flowInfo: 'false',
-          addToFlow: 'false'
-        }
+          addToFlow: 'false',
+        },
       },
       dummy_branch_1: {
         id: 'dummy_branch_1',
         type: FLOGO_TASK_TYPE.TASK_BRANCH,
-        condition: 'true'
+        condition: 'true',
       },
       dummy_branch_2: {
         id: 'dummy_branch_2',
         type: FLOGO_TASK_TYPE.TASK_BRANCH,
-        condition: 'true'
+        condition: 'true',
       },
       dummy_branch_3: {
         id: 'dummy_branch_3',
         type: FLOGO_TASK_TYPE.TASK_BRANCH,
-        condition: 'true'
+        condition: 'true',
       },
       dummy_branch_4: {
         id: 'dummy_branch_4',
         type: FLOGO_TASK_TYPE.TASK_BRANCH,
-        condition: 'true'
-      }
+        condition: 'true',
+      },
     });
   });
 
-  it('should correctly form a flow graph from the flow info', function () {
+  it('should correctly form a flow graph from the flow info', function() {
     type NodeSlice = ObjectSlice<GraphNode>;
     type PartialNodeDict = Dictionary<NodeSlice | jasmine.ObjectContaining<NodeSlice>>;
 
@@ -415,16 +428,16 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
         },
         status: {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
         },
         children: ['awsiot_1'],
-        parents: []
+        parents: [],
       },
       awsiot_1: {
         title: 'Update',
@@ -437,16 +450,16 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
         },
         status: {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
         },
         children: ['reply_1', 'dummy_branch_3', 'dummy_branch_4'],
-        parents: ['log_1']
+        parents: ['log_1'],
       },
       reply_1: {
         title: 'Done',
@@ -459,13 +472,13 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
         },
         status: {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
         },
         parents: ['awsiot_1'],
         children: ['dummy_branch_1'],
@@ -483,13 +496,13 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
         },
         status: {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
         },
       },
       log_7: {
@@ -497,7 +510,7 @@ describe('flow.core.models.graph-and-items', function () {
         description: 'Simple Log Activity',
         type: NodeType.Task,
         id: 'log_7',
-        parents: [ 'dummy_branch_2' ],
+        parents: ['dummy_branch_2'],
         children: [],
         features: {
           selectable: true,
@@ -505,13 +518,13 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
         },
         status: {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
         },
       },
       log_4: {
@@ -527,13 +540,13 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
         },
         status: {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
         },
       },
       log_5: {
@@ -549,13 +562,13 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
         },
         status: {
           invalid: false,
           executed: false,
           executionErrored: null,
-          iterable: false
+          iterable: false,
         },
       },
       dummy_branch_1: {
@@ -569,15 +582,15 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
         },
         status: {
           invalid: false,
           executed: false,
           executionErrored: null,
           iterable: false,
-          isBranchConfigured: false
-        }
+          isBranchConfigured: false,
+        },
       },
       dummy_branch_2: {
         id: 'dummy_branch_2',
@@ -590,15 +603,15 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
         },
         status: {
           invalid: false,
           executed: false,
           executionErrored: null,
           iterable: false,
-          isBranchConfigured: false
-        }
+          isBranchConfigured: false,
+        },
       },
       dummy_branch_3: {
         id: 'dummy_branch_3',
@@ -611,15 +624,15 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
         },
         status: {
           invalid: false,
           executed: false,
           executionErrored: null,
           iterable: false,
-          isBranchConfigured: false
-        }
+          isBranchConfigured: false,
+        },
       },
       dummy_branch_4: {
         id: 'dummy_branch_4',
@@ -632,16 +645,16 @@ describe('flow.core.models.graph-and-items', function () {
           canBranch: true,
           deletable: true,
           subflow: false,
-          final: false
+          final: false,
         },
         status: {
           invalid: false,
           executed: false,
           executionErrored: null,
           iterable: false,
-          isBranchConfigured: false
-        }
-      }
+          isBranchConfigured: false,
+        },
+      },
     });
   });
 });

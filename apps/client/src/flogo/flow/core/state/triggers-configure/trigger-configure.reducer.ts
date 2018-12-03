@@ -1,6 +1,6 @@
 import { TriggerConfigureState, TriggerConfigureTabType } from '../../interfaces';
-import {FlowState} from '../flow/flow.state';
-import {TriggerConfigureActionType, TriggerConfigureActionUnion} from './trigger-configure.actions';
+import { FlowState } from '../flow/flow.state';
+import { TriggerConfigureActionType, TriggerConfigureActionUnion } from './trigger-configure.actions';
 import { init } from './cases/init';
 import { tabStatusReducer } from './cases/tab-status-reducer';
 
@@ -72,7 +72,7 @@ function updateTriggerSavingStatus(state: TriggerConfigureState, triggerId: stri
       [triggerId]: {
         ...triggers[triggerId],
         isSaving,
-      }
-    }
+      },
+    },
   };
 }

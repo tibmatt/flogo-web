@@ -10,7 +10,7 @@ import { writeJSONFile } from '../../common/utils';
 const defaultBuildOptions = options => ({ optimize: true, embedConfig: true, ...options });
 
 export async function buildBinary(appId, options) {
-  return orchestrateBuild(appId, (engine) => engine.build(defaultBuildOptions(options)));
+  return orchestrateBuild(appId, engine => engine.build(defaultBuildOptions(options)));
 }
 
 /**
@@ -20,8 +20,11 @@ export async function buildBinary(appId, options) {
  * @return {Promise<T>}
  */
 export async function buildPlugin(exportApp, options) {
-  return orchestrateBuild(exportApp, (engine) => engine.buildPlugin(defaultBuildOptions(options)))
-    .then(result => ({ ...result, trigger: options.shimTriggerId, plugin: true }));
+  return orchestrateBuild(exportApp, engine => engine.buildPlugin(defaultBuildOptions(options))).then(result => ({
+    ...result,
+    trigger: options.shimTriggerId,
+    plugin: true,
+  }));
 }
 
 export async function orchestrateBuild(exportApp, execBuildCommand) {
@@ -39,10 +42,10 @@ export async function orchestrateBuild(exportApp, execBuildCommand) {
     determinePathToVendor(config.defaultEngine.path),
   ]);
 
-  const createdEngine = await getInitializedEngine(
-    config.appBuildEngine.path,
-    { ...engineOptions, vendor: pathToVendor },
-  );
+  const createdEngine = await getInitializedEngine(config.appBuildEngine.path, {
+    ...engineOptions,
+    vendor: pathToVendor,
+  });
   const buildResult = await execBuildCommand(createdEngine);
   const binaryStream = await readFile(buildResult.path);
 

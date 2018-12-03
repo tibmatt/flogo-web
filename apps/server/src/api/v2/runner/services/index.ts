@@ -2,15 +2,21 @@ import { config } from '../../../../config/app-config';
 import { createBaseClient } from './base-client';
 
 // keyof config
-type ServiceName = 'stateServer'| 'processServer' | 'engine';
+type ServiceName = 'stateServer' | 'processServer' | 'engine';
 
 export interface Service {
-  client: Client,
+  client: Client;
   getUrl: () => string;
 }
 
-export interface Response { body?: any, statusCode: number };
-export type Client = Record<'get' | 'post' | 'put' | 'patch' | 'delete', (url: string, options?: { body: any }) => Promise<Response>>;
+export interface Response {
+  body?: any;
+  statusCode: number;
+}
+export type Client = Record<
+  'get' | 'post' | 'put' | 'patch' | 'delete',
+  (url: string, options?: { body: any }) => Promise<Response>
+>;
 
 export const Services = {
   stateServer: service('stateServer'),
@@ -44,10 +50,10 @@ function createClient(urlConfig: UrlInfo) {
 
 function buildUrl(urlInfo: UrlInfo) {
   let url = urlInfo.protocol + '://' + urlInfo.host;
-  if(urlInfo.port) {
-    url += ':' + urlInfo.port
+  if (urlInfo.port) {
+    url += ':' + urlInfo.port;
   }
-  if(urlInfo.basePath){
+  if (urlInfo.basePath) {
     url += urlInfo.basePath;
   }
   return url;

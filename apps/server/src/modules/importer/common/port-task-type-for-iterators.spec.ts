@@ -2,36 +2,36 @@ import { portTaskTypeForIterators } from './port-task-type-for-iterators';
 
 describe('importer.common.portTaskTypeForIterators', () => {
   const testData = {
-    'normalTask': {
-      'ref': 'some/activity',
-      'settings': {},
-      'type': 1,
+    normalTask: {
+      ref: 'some/activity',
+      settings: {},
+      type: 1,
     },
-    'subflowTask': {
-      'ref': 'some/activity',
-      'settings': {
-        'flowPath': 'path/to/some/flow'
+    subflowTask: {
+      ref: 'some/activity',
+      settings: {
+        flowPath: 'path/to/some/flow',
       },
-      'type': 4
+      type: 4,
     },
-    'iterableTask': {
-      'ref': 'some/activity',
-      'settings': {
-        'iterate': '10'
+    iterableTask: {
+      ref: 'some/activity',
+      settings: {
+        iterate: '10',
       },
-      'type': 2
+      type: 2,
     },
-    'subFlowIterableTask': {
-      'ref': 'some/activity',
-      'settings': {
-        'flowPath': 'path/to/some/flow',
-        'iterate': '10'
+    subFlowIterableTask: {
+      ref: 'some/activity',
+      settings: {
+        flowPath: 'path/to/some/flow',
+        iterate: '10',
       },
-      'type': 4
-    }
+      type: 4,
+    },
   };
 
-  const getTaskTypeAfterPorting = (task) => portTaskTypeForIterators(task).type;
+  const getTaskTypeAfterPorting = task => portTaskTypeForIterators(task).type;
 
   it('should not change the task type for a normal task', () => {
     expect(getTaskTypeAfterPorting(testData.normalTask)).toEqual(1);

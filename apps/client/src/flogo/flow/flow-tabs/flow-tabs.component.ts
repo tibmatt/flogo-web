@@ -1,18 +1,21 @@
-import {Component} from '@angular/core';
-import {Observable} from 'rxjs';
-import {select, Store} from '@ngrx/store';
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
 import {
-  FlowActions, FlowSelectors, FlowState, getErrorFlowHasExecutionErrors, getPrimaryFlowHasExecutionErrors
+  FlowActions,
+  FlowSelectors,
+  FlowState,
+  getErrorFlowHasExecutionErrors,
+  getPrimaryFlowHasExecutionErrors,
 } from '@flogo-web/client/flow/core/state';
-import {takeUntil} from 'rxjs/operators';
-import {SingleEmissionSubject} from '@flogo-web/client/core/models';
+import { takeUntil } from 'rxjs/operators';
+import { SingleEmissionSubject } from '@flogo-web/client/core/models';
 
 @Component({
   selector: 'flogo-flow-tabs',
   templateUrl: './flow-tabs.component.html',
-  styleUrls: ['./flow-tabs.component.less']
+  styleUrls: ['./flow-tabs.component.less'],
 })
-
 export class FlowTabsComponent {
   isErrorHandlerShown = false;
   showBadgeForError$: Observable<boolean>;
@@ -23,20 +26,18 @@ export class FlowTabsComponent {
     this.store
       .pipe(
         select(FlowSelectors.selectErrorPanelStatus),
-        takeUntil(this.ngOnDestroy$),
+        takeUntil(this.ngOnDestroy$)
       )
-      .subscribe(isErrorPanelOpen => this.isErrorHandlerShown = isErrorPanelOpen);
+      .subscribe(isErrorPanelOpen => (this.isErrorHandlerShown = isErrorPanelOpen));
     this.showBadgeForFlow$ = this.store.pipe(select(getPrimaryFlowHasExecutionErrors));
     this.showBadgeForError$ = this.store.pipe(select(getErrorFlowHasExecutionErrors));
-
   }
 
   selectPrimaryFlow() {
-    this.store.dispatch(new FlowActions.ErrorPanelStatusChange({isOpen: false}));
+    this.store.dispatch(new FlowActions.ErrorPanelStatusChange({ isOpen: false }));
   }
 
   selectErrorHandler() {
-    this.store.dispatch(new FlowActions.ErrorPanelStatusChange({isOpen: true}));
+    this.store.dispatch(new FlowActions.ErrorPanelStatusChange({ isOpen: true }));
   }
-
 }

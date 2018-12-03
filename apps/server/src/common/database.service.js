@@ -15,7 +15,6 @@ function defer() {
 }
 
 export class Database {
-
   constructor(options, indexes = []) {
     this.collection = new Datastore(options);
     indexes.forEach(index => this.collection.ensureIndex(index));
@@ -43,9 +42,9 @@ export class Database {
 
   insertBulk(items) {
     return new Promise((resolve, reject) => {
-      this.collection.insert(items, function (err, newDocs) {
-        if(err) {
-          reject(err)
+      this.collection.insert(items, function(err, newDocs) {
+        if (err) {
+          reject(err);
         } else {
           resolve(newDocs);
         }
@@ -85,8 +84,8 @@ export class Database {
     const id = doc._id || null;
 
     return new Promise((resolve, reject) => {
-      this.collection.update({_id: id}, doc, {upsert: true}, function(err, result) {
-        if(err) {
+      this.collection.update({ _id: id }, doc, { upsert: true }, function(err, result) {
+        if (err) {
           reject(err);
         } else {
           resolve(result);
@@ -105,18 +104,14 @@ export class Database {
       this.collection.on('compaction.done', () => resolve());
     });
   }
-
 }
 
 export class DatabaseService {
   constructor() {
-    this.db = new Database({autoload: true});
+    this.db = new Database({ autoload: true });
   }
 
   init() {
     return Promise.resolve(this.collection);
   }
 }
-
-
-

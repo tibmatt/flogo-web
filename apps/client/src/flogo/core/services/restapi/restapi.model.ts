@@ -4,6 +4,6 @@ export interface ApiError {
   title: string;
   detail: string;
   meta: {
-    [key: string]: any
+    [key: string]: any;
   };
 }

@@ -1,9 +1,7 @@
-import {OverlayRef} from '@angular/cdk/overlay';
-import {Observable, Subject} from 'rxjs';
-
+import { OverlayRef } from '@angular/cdk/overlay';
+import { Observable, Subject } from 'rxjs';
 
 export class ModalControl {
-
   private resultSubscriber: Subject<any>;
   result: Observable<any>;
 

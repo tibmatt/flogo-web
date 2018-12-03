@@ -8,7 +8,6 @@ export interface ArrayMappingInfo {
   fullLinkedPath?: string;
 }
 
-
 export class ArrayMappingHelper {
   static processExpressionForEach(expression: string): ArrayMappingInfo {
     const matches = EXPRESSION_FOR_EACH.exec(expression);
@@ -16,7 +15,8 @@ export class ArrayMappingHelper {
     let params = [];
     if (matches) {
       // todo: escape expression for editor when using snippets?
-      params = matches[1].split(',')
+      params = matches[1]
+        .split(',')
         .map(param => param.trim())
         .filter(param => !!param);
     }

@@ -1,12 +1,10 @@
 import { AbstractActionsImporter, portTaskTypeForIterators } from '../common';
 import omit from 'lodash/omit';
-import get from "lodash/get";
+import get from 'lodash/get';
 
 export class ActionsImporter extends AbstractActionsImporter {
-
   extractActions(fromRawApp) {
-    return (fromRawApp.actions || [])
-      .map(action => this.formatAction(action));
+    return (fromRawApp.actions || []).map(action => this.formatAction(action));
   }
 
   formatAction(action) {
@@ -19,20 +17,15 @@ export class ActionsImporter extends AbstractActionsImporter {
 
   mapTask(task) {
     task.attributes = task.attributes || [];
-    const attributes = this
-      .getSettingsSchema(task.activityRef)
-      .map(attribute => ({
-        ...attribute,
-        value: task.attributes[attribute.name] || '',
-      }));
+    const attributes = this.getSettingsSchema(task.activityRef).map(attribute => ({
+      ...attribute,
+      value: task.attributes[attribute.name] || '',
+    }));
     portTaskTypeForIterators(task);
     return { ...task, attributes };
   }
 
   getSettingsSchema(activityRef) {
-    return this.activitySchemas
-      .find(activitySchema => activitySchema.ref === activityRef)
-      .settings || [];
+    return this.activitySchemas.find(activitySchema => activitySchema.ref === activityRef).settings || [];
   }
-
 }

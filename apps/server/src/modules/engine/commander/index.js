@@ -53,11 +53,9 @@ export const commander = {
     activity: uninstall,
   },
   list(enginePath) {
-    return _exec(enginePath, ['list', '-json'])
-      .then(output => parseJSON(output));
+    return _exec(enginePath, ['list', '-json']).then(output => parseJSON(output));
   },
 };
-
 
 function install(enginePath, contribPath, options) {
   options = options || {};

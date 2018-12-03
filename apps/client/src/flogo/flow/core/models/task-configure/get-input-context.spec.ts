@@ -1,13 +1,13 @@
-import {FlowState, INITIAL_STATE} from '@flogo-web/client/flow/core/state';
-import {getPrecedingTasksForErrorHandler} from '@flogo-web/client/flow/core/models/task-configure/get-input-context';
-import {NodeType} from '@flogo-web/client/core';
-import {FLOGO_TASK_TYPE} from '@flogo-web/client/core/constants';
+import { FlowState, INITIAL_STATE } from '@flogo-web/client/flow/core/state';
+import { getPrecedingTasksForErrorHandler } from '@flogo-web/client/flow/core/models/task-configure/get-input-context';
+import { NodeType } from '@flogo-web/client/core';
+import { FLOGO_TASK_TYPE } from '@flogo-web/client/core/constants';
 
-describe('taskConfigure.getInputContext', function () {
+describe('taskConfigure.getInputContext', function() {
   let state: FlowState;
   let expectedResult: any[];
 
-  beforeEach(function () {
+  beforeEach(function() {
     state = {
       ...INITIAL_STATE,
       mainItems: {
@@ -18,9 +18,8 @@ describe('taskConfigure.getInputContext', function () {
           ref: 'logRef',
           id: 'log_2',
           type: 1,
-          inputMappings: []
-
-        }
+          inputMappings: [],
+        },
       },
       mainGraph: {
         rootId: 'log_2',
@@ -31,9 +30,9 @@ describe('taskConfigure.getInputContext', function () {
             features: {},
             status: {},
             children: [],
-            parents: []
-          }
-        }
+            parents: [],
+          },
+        },
       },
       errorItems: {
         log_3: {
@@ -43,10 +42,8 @@ describe('taskConfigure.getInputContext', function () {
           ref: 'logRef',
           id: 'log_3',
           type: 1,
-          inputMappings: []
-
-
-        }
+          inputMappings: [],
+        },
       },
       errorGraph: {
         rootId: 'log_3',
@@ -57,9 +54,9 @@ describe('taskConfigure.getInputContext', function () {
             children: [],
             parents: [],
             features: {},
-            status: {}
-          }
-        }
+            status: {},
+          },
+        },
       },
       isErrorPanelOpen: true,
       schemas: {
@@ -73,59 +70,67 @@ describe('taskConfigure.getInputContext', function () {
           return: false,
           version: '0.0.1',
           inputs: [],
-          outputs: []
-        }
+          outputs: [],
+        },
       },
     };
 
-    expectedResult = [{
-      id: 'log_2',
-      type: FLOGO_TASK_TYPE.TASK,
-      version: '0.0.1',
-      name: 'Log Message',
-      activityRef: 'logRef',
-      ref: 'logRef',
-      description: 'Simple Log Activity',
-      attributes: {
-        inputs: [],
-        outputs: []
+    expectedResult = [
+      {
+        id: 'log_2',
+        type: FLOGO_TASK_TYPE.TASK,
+        version: '0.0.1',
+        name: 'Log Message',
+        activityRef: 'logRef',
+        ref: 'logRef',
+        description: 'Simple Log Activity',
+        attributes: {
+          inputs: [],
+          outputs: [],
+        },
+        inputMappings: [],
+        settings: {},
+        __props: {},
+        __status: {},
       },
-      inputMappings: [],
-      settings: {},
-      __props: {},
-      __status: {}
-    }, {
-      id: '',
-      name: 'On Error',
-      type: FLOGO_TASK_TYPE.TASK_ROOT,
-      triggerType: '__error-trigger',
-      attributes: {
-        outputs: [{
-          name: 'activity',
-          type: 'string',
-          title: 'activity',
-          value: ''
-        }, {
-          name: 'message',
-          type: 'string',
-          title: 'message',
-          value: ''
-        }, {
-          name: 'data',
-          type: 'any',
-          title: 'data',
-          value: ''
-        }, {
-          name: 'code',
-          type: 'string',
-          title: 'code',
-          value: ''
-        }]
-      }
-    }];
+      {
+        id: '',
+        name: 'On Error',
+        type: FLOGO_TASK_TYPE.TASK_ROOT,
+        triggerType: '__error-trigger',
+        attributes: {
+          outputs: [
+            {
+              name: 'activity',
+              type: 'string',
+              title: 'activity',
+              value: '',
+            },
+            {
+              name: 'message',
+              type: 'string',
+              title: 'message',
+              value: '',
+            },
+            {
+              name: 'data',
+              type: 'any',
+              title: 'data',
+              value: '',
+            },
+            {
+              name: 'code',
+              type: 'string',
+              title: 'code',
+              value: '',
+            },
+          ],
+        },
+      },
+    ];
   });
 
-  it('should get preceding tasks for Error Handler while configuring', function () {
+  it('should get preceding tasks for Error Handler while configuring', function() {
     const taskId = 'log_3';
     const result = getPrecedingTasksForErrorHandler(taskId, state);
     expectedResult.forEach((expectedRow, rowIndex) => {
@@ -134,5 +139,4 @@ describe('taskConfigure.getInputContext', function () {
     });
     expect(result).toEqual(expectedResult);
   });
-
 });

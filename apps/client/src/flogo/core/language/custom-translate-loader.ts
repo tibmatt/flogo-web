@@ -1,12 +1,11 @@
-import {of as observableOf,  Observable } from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import { of as observableOf, Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { HttpClient } from '@angular/common/http';
 import { TranslateLoader } from '@ngx-translate/core';
 
 export class CustomTranslateLoader implements TranslateLoader {
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   public getTranslation(lang: string): Observable<any> {
     return this.http.get(`/i18n/${lang}.json`).pipe(

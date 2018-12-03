@@ -4,8 +4,7 @@ import { RestApiService } from '@flogo-web/client/core/services/restapi';
 
 @Injectable()
 export class ConfigurationService {
-  constructor(private restApi: RestApiService,
-  ) {}
+  constructor(private restApi: RestApiService) {}
 
   getConfig() {
     return this.restApi.get('services');
@@ -18,5 +17,4 @@ export class ConfigurationService {
   pingService(config: ServiceUrlConfig) {
     return this.restApi.get(`services/${config.name}/health`);
   }
-
 }

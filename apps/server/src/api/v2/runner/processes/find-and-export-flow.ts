@@ -19,12 +19,12 @@ async function transformToProcess(action) {
   const {
     description,
     metadata,
-    data: { flow }
+    data: { flow },
   } = exporter.formatAction(action);
   return {
     name: flow.name,
     description: description || '',
     metadata: metadata || { input: [], output: [] },
-    flow
+    flow,
   };
 }

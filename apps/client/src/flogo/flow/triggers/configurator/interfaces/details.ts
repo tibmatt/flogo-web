@@ -2,17 +2,17 @@ import {
   TriggerConfigureTab,
   TriggerConfigureField,
   TriggerConfigureFields,
-  TriggerConfigureTabType
+  TriggerConfigureTabType,
 } from '@flogo-web/client/flow/core';
-import {Dictionary, SchemaAttribute, TriggerSchema} from '@flogo-web/client/core';
-import {ValidatorFn} from '@angular/forms';
+import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo-web/client/core';
+import { ValidatorFn } from '@angular/forms';
 
 export interface ConfigureTriggerDetails {
   tabs: TriggerConfigureTab[];
   fields: {
     [tabName in TriggerConfigureTabType]: {
-      [fieldName: string]: TriggerConfigureFields | TriggerConfigureField
-    };
+      [fieldName: string]: TriggerConfigureFields | TriggerConfigureField;
+    }
   };
   schema: TriggerSchema;
 }
@@ -20,7 +20,7 @@ export interface ConfigureTriggerDetails {
 export type SettingControlGroupType = 'triggerSettings' | 'handlerSettings';
 export enum SettingControlGroup {
   TRIGGER = 'triggerSettings',
-  HANDLER = 'handlerSettings'
+  HANDLER = 'handlerSettings',
 }
 export interface SettingControlInfo extends SchemaAttribute {
   propsAllowed: string[];
@@ -28,9 +28,7 @@ export interface SettingControlInfo extends SchemaAttribute {
 }
 
 export interface TriggerInformation {
-  settingsControls: {
-    [groupType in SettingControlGroupType]: Dictionary<SettingControlInfo>;
-  };
+  settingsControls: { [groupType in SettingControlGroupType]: Dictionary<SettingControlInfo> };
   trigger: {
     handlersCount: number;
     homePage: string;

@@ -1,1 +1,1 @@
-export {FlowsListModule} from './flows-list.module';
+export { FlowsListModule } from './flows-list.module';

@@ -11,23 +11,9 @@ import { FlogoNewAppComponent } from './new-app/new-app.component';
 import { HomeRoutingModule } from './home-routing.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    BsModalModule,
-    FlogoSharedModule,
-    HomeRoutingModule,
-  ],
-  declarations: [
-    FlogoHomeComponent,
-    FlogoAppsListComponent,
-    FlogoAppImportComponent,
-    FlogoNewAppComponent
-  ],
+  imports: [CommonModule, FormsModule, BsModalModule, FlogoSharedModule, HomeRoutingModule],
+  declarations: [FlogoHomeComponent, FlogoAppsListComponent, FlogoAppImportComponent, FlogoNewAppComponent],
   bootstrap: [FlogoHomeComponent],
-  providers: [
-    ImportErrorFormatterService
-  ]
+  providers: [ImportErrorFormatterService],
 })
-export class FlogoHomeModule {
-}
+export class FlogoHomeModule {}

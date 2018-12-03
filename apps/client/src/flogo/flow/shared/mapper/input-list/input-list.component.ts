@@ -8,7 +8,7 @@ import { MapperTreeNode } from '../models/mapper-treenode.model';
 @Component({
   selector: 'flogo-mapper-input-list',
   templateUrl: 'input-list.component.html',
-  styleUrls: ['input-list.component.css']
+  styleUrls: ['input-list.component.css'],
 })
 export class InputListComponent implements OnInit {
   @Input() searchPlaceholder: string;
@@ -16,8 +16,7 @@ export class InputListComponent implements OnInit {
   selectedInput$: Observable<MapperTreeNode>;
   filterTerm$: Observable<string>;
 
-  constructor(private mapperService: MapperService) {
-  }
+  constructor(private mapperService: MapperService) {}
 
   ngOnInit() {
     const mapperState$ = this.mapperService.state$.pipe(shareReplay());

@@ -26,7 +26,7 @@ export class Tabs implements Iterable<[string, Tab]> {
   }
 
   constructor(tabsInfo: any[]) {
-    const tabPairs = tabsInfo.map(({name, labelKey}) => [name, makeTab(labelKey)] as [string, Tab]);
+    const tabPairs = tabsInfo.map(({ name, labelKey }) => [name, makeTab(labelKey)] as [string, Tab]);
     this.tabs = new Map<string, Tab>(tabPairs);
     this[Symbol.iterator] = this.tabs[Symbol.iterator].bind(this.tabs);
   }
@@ -54,5 +54,4 @@ export class Tabs implements Iterable<[string, Tab]> {
     const invalidTab = Array.from(this.tabs.values()).find(tab => !tab.isValid);
     return !invalidTab;
   }
-
 }

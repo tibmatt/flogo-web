@@ -6,7 +6,6 @@ import { TASK_TYPE } from '../../transfer/common/type-mapper';
 import { parseResourceIdFromResourceUri, portMappingType } from './utils';
 
 export class StandardTaskConverter {
-
   /**
    * @static
    * @param resourceTask
@@ -29,7 +28,12 @@ export class StandardTaskConverter {
   }
 
   convert() {
-    const { id, name, description, activity: { ref: activityRef } } = this.resourceTask;
+    const {
+      id,
+      name,
+      description,
+      activity: { ref: activityRef },
+    } = this.resourceTask;
     const { type, settings } = this.resolveTypeAndSettings();
     const inputMappings = this.convertInputMappings();
     const attributes = this.convertAttributes();
@@ -92,5 +96,4 @@ export class StandardTaskConverter {
     const { input: resourceInputMappings = [] } = mappings;
     return resourceInputMappings.map(mapping => portMappingType(mapping));
   }
-
 }

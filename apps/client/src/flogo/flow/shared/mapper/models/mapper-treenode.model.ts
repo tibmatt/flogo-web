@@ -31,4 +31,3 @@ export interface MapperTreeNode extends TreeNode {
   isRequired?: boolean;
   isDirty?: boolean;
 }
-

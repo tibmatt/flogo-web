@@ -5,7 +5,7 @@ import { BaseField } from './field-base';
 @Component({
   selector: 'flogo-flow-dynamic-field-group',
   templateUrl: './dynamic-field-group.component.html',
-  styleUrls: ['./dynamic-field-group.component.less']
+  styleUrls: ['./dynamic-field-group.component.less'],
 })
 export class DynamicFieldGroupComponent {
   @Input() fieldGroup: FormGroup;

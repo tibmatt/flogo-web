@@ -14,15 +14,10 @@ describe('importer.device.TriggersHandlersImporter', () => {
     const extractedTriggerSequence = importer.extractTriggers({
       triggers: [1, 2, 3],
     });
-    expect(extractedTriggerSequence).toEqual(expect.arrayContaining([
-      { param: 1 },
-      { param: 2 },
-      { param: 3 },
-    ]));
+    expect(extractedTriggerSequence).toEqual(expect.arrayContaining([{ param: 1 }, { param: 2 }, { param: 3 }]));
 
     expect(triggerFormatterStub.callCount).toBe(3);
-    const argsSequence = triggerFormatterStub.args
-      .reduce((all, argsOnNthCall) => all.concat(argsOnNthCall), []);
+    const argsSequence = triggerFormatterStub.args.reduce((all, argsOnNthCall) => all.concat(argsOnNthCall), []);
     expect(argsSequence).toEqual([1, 2, 3]);
     sandbox.restore();
   });
@@ -75,22 +70,16 @@ describe('importer.device.TriggersHandlersImporter', () => {
       });
     });
 
-    test(
-      'should correctly match the trigger settings with its corresponding activity schema',
-      () => {
-        expect(triggerInstanceSettings).toMatchObject({
-            pin: 25,
-            condition: 'xyz',
-          });
-      }
-    );
+    test('should correctly match the trigger settings with its corresponding activity schema', () => {
+      expect(triggerInstanceSettings).toMatchObject({
+        pin: 25,
+        condition: 'xyz',
+      });
+    });
 
-    test(
-      'should add those settings defined in the trigger schema but not provided by the trigger instance',
-      () => {
-        expect(triggerInstanceSettings).toMatchObject({ digital: false });
-      }
-    );
+    test('should add those settings defined in the trigger schema but not provided by the trigger instance', () => {
+      expect(triggerInstanceSettings).toMatchObject({ digital: false });
+    });
   });
 
   function getTriggerSchemaMock() {

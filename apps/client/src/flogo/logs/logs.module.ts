@@ -7,19 +7,11 @@ import { LogsContentComponent } from './content/content.component';
 import { ExternalWindowComponent } from './external-window/external-window.component';
 
 @NgModule({
-  imports: [// module dependencies
+  imports: [
+    // module dependencies
     SharedModule,
   ],
-  declarations: [
-    SearchPipe,
-    LogsComponent,
-    LogsContentComponent,
-    ExternalWindowComponent
-  ],
-  exports: [
-    LogsComponent,
-    ExternalWindowComponent,
-  ]
+  declarations: [SearchPipe, LogsComponent, LogsContentComponent, ExternalWindowComponent],
+  exports: [LogsComponent, ExternalWindowComponent],
 })
-export class LogsModule {
-}
+export class LogsModule {}

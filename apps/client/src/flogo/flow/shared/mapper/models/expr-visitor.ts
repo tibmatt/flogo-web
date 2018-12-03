@@ -298,7 +298,6 @@ export interface IExpressionNode extends INamedNode {
   getExpression(): INode;
 }
 
-
 export interface IMemberExpressionNode extends IExpressionNode, ILocatable {
   getObject(): any;
 
@@ -314,9 +313,7 @@ export interface ICallExpressionNode extends IExpressionNode {
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface IIdentifierNode extends IExpressionNode {
-
-}
+export interface IIdentifierNode extends IExpressionNode {}
 
 export interface ILiteralNode extends IExpressionNode {
   getValue(): string;
@@ -327,8 +324,7 @@ export interface ILocatable {
 }
 
 export abstract class BaseNode implements INode {
-  constructor(private name: string, private parentNode: INode, private location?: ILocation) {
-  }
+  constructor(private name: string, private parentNode: INode, private location?: ILocation) {}
 
   getName() {
     return this.name;
@@ -353,9 +349,7 @@ export abstract class BaseExpressionNode extends BaseNode implements IExpression
   abstract getExpression(): INode;
 }
 
-
 export class ProgramNode extends BaseNode implements IProgramNode {
-
   constructor(private body: any[], parentNode: INode) {
     super('Program', parentNode, null);
   }
@@ -380,7 +374,6 @@ export class ProgramNode extends BaseNode implements IProgramNode {
   }
 }
 
-
 export class ExpressionStatementNode extends BaseNode {
   constructor(private expression: any, parentNode: INode) {
     super('ExpressionStatement', parentNode, null);
@@ -403,8 +396,7 @@ export class ExpressionStatementNode extends BaseNode {
 export type IArgumentNode = ICallExpressionNode | ILiteralNode | IIdentifierNode;
 
 export class ArgumentNode implements INode {
-  constructor(private node: IArgumentNode, private parentNode: INode) {
-  }
+  constructor(private node: IArgumentNode, private parentNode: INode) {}
 
   accept(visitor: INodeVisitor) {
     visitor.visitEnterArgument(this);
@@ -480,11 +472,16 @@ export class CallExpressionNode extends BaseExpressionNode implements ICallExpre
   }
 }
 
-
 export class MemberExpressionNode extends BaseExpressionNode implements IMemberExpressionNode {
   expression: INode;
 
-  constructor(private object: any, private property: any, private computed: boolean, parentNode: INode, location: ILocation) {
+  constructor(
+    private object: any,
+    private property: any,
+    private computed: boolean,
+    parentNode: INode,
+    location: ILocation
+  ) {
     super('MemberExpression', parentNode, location);
   }
 
@@ -578,7 +575,8 @@ export class LiteralNode extends BaseExpressionNode implements ILiteralNode {
   }
 }
 
-export type NodeTypes = IProgramNode
+export type NodeTypes =
+  | IProgramNode
   | IExpressionStatementNode
   | ICallExpressionNode
   | IMemberExpressionNode
@@ -638,7 +636,6 @@ export interface INodeVisitor {
 }
 
 export abstract class NodeVisitor implements INodeVisitor {
-
   abstract visitEnterProgram(node: ProgramNode);
 
   abstract visitEnterExpressionStatement(node: ExpressionStatementNode);
@@ -669,7 +666,6 @@ export abstract class NodeVisitor implements INodeVisitor {
 }
 
 export class CodeVisitor extends NodeVisitor {
-
   visitEnterProgram(node: ProgramNode) {
     console.log('Enter Program...');
     // console.log(node);
@@ -739,5 +735,4 @@ export class CodeVisitor extends NodeVisitor {
     console.log('Leave Literal...' + node.getName());
     // console.log(node);
   }
-
 }

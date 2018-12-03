@@ -1,7 +1,6 @@
 import { Subject } from 'rxjs';
 
 export class SingleEmissionSubject extends Subject<void> {
-
   static create() {
     return new SingleEmissionSubject();
   }
@@ -14,5 +13,4 @@ export class SingleEmissionSubject extends Subject<void> {
     this.next();
     this.complete();
   }
-
 }

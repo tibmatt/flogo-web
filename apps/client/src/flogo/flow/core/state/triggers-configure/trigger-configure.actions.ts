@@ -1,5 +1,5 @@
-import {Action} from '@ngrx/store';
-import {Dictionary, TriggerSchema} from '@flogo-web/client/core';
+import { Action } from '@ngrx/store';
+import { Dictionary, TriggerSchema } from '@flogo-web/client/core';
 import { TriggerConfigureTabType } from '../../interfaces';
 
 export enum TriggerConfigureActionType {
@@ -14,7 +14,7 @@ export enum TriggerConfigureActionType {
 
 export class OpenConfigureWithSelection implements Action {
   readonly type = TriggerConfigureActionType.OpenConfigureWithSelection;
-  constructor(public payload: { triggerId: string, triggerSchemas: Dictionary<TriggerSchema> }) {}
+  constructor(public payload: { triggerId: string; triggerSchemas: Dictionary<TriggerSchema> }) {}
 }
 
 export class CloseConfigure implements Action {
@@ -33,11 +33,13 @@ export class SelectTab implements Action {
 
 export class ConfigureStatusChanged implements Action {
   readonly type = TriggerConfigureActionType.CofigureStatusChanged;
-  constructor(public payload: {
-    triggerId: string,
-    groupType: TriggerConfigureTabType,
-    newStatus: { isValid: boolean, isDirty: boolean, isEnabled?: boolean, isPending?: boolean; },
-  }) {}
+  constructor(
+    public payload: {
+      triggerId: string;
+      groupType: TriggerConfigureTabType;
+      newStatus: { isValid: boolean; isDirty: boolean; isEnabled?: boolean; isPending?: boolean };
+    }
+  ) {}
 }
 
 export class SaveTriggerStarted implements Action {
@@ -50,7 +52,8 @@ export class SaveTriggerCompleted implements Action {
   constructor(public payload: { triggerId: string }) {}
 }
 
-export type TriggerConfigureActionUnion = OpenConfigureWithSelection
+export type TriggerConfigureActionUnion =
+  | OpenConfigureWithSelection
   | CloseConfigure
   | SelectTrigger
   | SelectTab

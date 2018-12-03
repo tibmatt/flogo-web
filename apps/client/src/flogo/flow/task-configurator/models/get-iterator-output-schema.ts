@@ -11,15 +11,15 @@ export function getIteratorOutputSchema() {
             type: 'object',
             properties: {
               key: {
-                type: 'string'
+                type: 'string',
               },
               value: {
-                type: 'any'
+                type: 'any',
               },
             },
           },
         },
       },
-    }
+    },
   };
 }

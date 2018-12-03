@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import {ActionBase} from '@flogo-web/client/core';
+import { ActionBase } from '@flogo-web/client/core';
 
 @Component({
   selector: 'flogo-flow-flows-list',
   templateUrl: 'flows-list.component.html',
-  styleUrls: ['flows-list.component.less']
+  styleUrls: ['flows-list.component.less'],
 })
 export class FlowsListComponent {
   @Input()
@@ -19,9 +19,11 @@ export class FlowsListComponent {
 
   get filteredFlows() {
     if (this.searchText && !_.isEmpty(this.searchText.trim())) {
-      return this.list.filter((flow) => {
-        return (flow.name || '').toLowerCase().includes(this.searchText.toLowerCase()) ||
-          (flow.description || '').toLowerCase().includes(this.searchText.toLowerCase());
+      return this.list.filter(flow => {
+        return (
+          (flow.name || '').toLowerCase().includes(this.searchText.toLowerCase()) ||
+          (flow.description || '').toLowerCase().includes(this.searchText.toLowerCase())
+        );
       });
     } else {
       return this.list;

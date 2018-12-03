@@ -14,11 +14,7 @@ import { ToggleButtonComponent } from './toggle-button/toggle-button.component';
 import { TogglerRefService } from './toggler-ref.service';
 
 @NgModule({
-  imports: [
-    NgCommonModule,
-    SharedModule,
-    DynamicFormModule
-  ],
+  imports: [NgCommonModule, SharedModule, DynamicFormModule],
   declarations: [
     PanelContentComponent,
     FieldsComponent,
@@ -29,12 +25,7 @@ import { TogglerRefService } from './toggler-ref.service';
     ToggleButtonComponent,
     DebugPanelComponent,
   ],
-  providers: [
-    TogglerRefService,
-  ],
-  exports: [
-    DebugPanelComponent,
-    ToggleButtonComponent,
-  ],
+  providers: [TogglerRefService],
+  exports: [DebugPanelComponent, ToggleButtonComponent],
 })
-export class DebugPanelModule { }
+export class DebugPanelModule {}

@@ -1,5 +1,5 @@
 import { forIn, cloneDeep } from 'lodash';
-import { ReplaySubject ,  Observable } from 'rxjs';
+import { ReplaySubject, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { MapperState, MapperTreeNode, Mappings, ParsedExpressionDetails, TreeState } from '../../models';
@@ -11,9 +11,8 @@ import { selectMapperStatus } from './select-mapper-status.operator';
 import { isSameEditingExpression } from './is-same-editing-expression';
 
 export class MapperController {
-
   state$: Observable<MapperState>;
-  status$: Observable<{ isDirty: boolean, isValid: boolean }>;
+  status$: Observable<{ isDirty: boolean; isValid: boolean }>;
   private stateSrc: ReplaySubject<MapperState>;
   private readonly initialFunctions: MapperTreeNode[];
   private pristineOutputs: MapperTreeNode[];
@@ -21,7 +20,7 @@ export class MapperController {
   constructor(
     initialState: MapperState,
     private nodeFactory: TreeNodeFactoryService,
-    private treeService: TreeService,
+    private treeService: TreeService
   ) {
     this.initialFunctions = cloneDeep(initialState.functions.nodes);
     this.pristineOutputs = cloneDeep(initialState.outputs.nodes);
@@ -48,19 +47,22 @@ export class MapperController {
   }
 
   filterOutputs(filterTerm: string) {
-    this.updateState({...this.getCurrentState(), outputs: this.applyTreeFilter(filterTerm, this.getCurrentState().outputs)});
+    this.updateState({
+      ...this.getCurrentState(),
+      outputs: this.applyTreeFilter(filterTerm, this.getCurrentState().outputs),
+    });
   }
 
   filterFunctions(filterTerm: string) {
     const state = this.getCurrentState();
     this.updateState({
       ...state,
-      functions: this.applyTreeFilter(filterTerm, state.functions)
+      functions: this.applyTreeFilter(filterTerm, state.functions),
     });
   }
 
   expressionChange(nodePath: string, expression: string) {
-    const state = this.applyExpressionChange(this.getCurrentState(), {nodePath, expression});
+    const state = this.applyExpressionChange(this.getCurrentState(), { nodePath, expression });
     this.updateState(state);
   }
 
@@ -69,29 +71,25 @@ export class MapperController {
     newOutputs.push(outputNode);
     this.pristineOutputs = cloneDeep(newOutputs);
     const currentState = this.getCurrentState();
-    this.updateState(
-      {
-        ...currentState,
-        outputs: {
-          ...currentState.outputs,
-          nodes: newOutputs,
-        },
-      }
-    );
+    this.updateState({
+      ...currentState,
+      outputs: {
+        ...currentState.outputs,
+        nodes: newOutputs,
+      },
+    });
   }
 
   removeOutputNode(path: string) {
     this.pristineOutputs = this.pristineOutputs.filter(node => node.path !== path);
     const currentState = this.getCurrentState();
-    this.updateState(
-      {
-        ...currentState,
-        outputs: {
-          ...currentState.outputs,
-          nodes: cloneDeep(this.pristineOutputs),
-        },
-      }
-    );
+    this.updateState({
+      ...currentState,
+      outputs: {
+        ...currentState.outputs,
+        nodes: cloneDeep(this.pristineOutputs),
+      },
+    });
   }
 
   resetStatus() {
@@ -104,9 +102,7 @@ export class MapperController {
 
   getCurrentState() {
     let currentState;
-    this.stateSrc
-      .pipe(take(1))
-      .subscribe(state => currentState = state);
+    this.stateSrc.pipe(take(1)).subscribe(state => (currentState = state));
     return currentState;
   }
 
@@ -124,13 +120,16 @@ export class MapperController {
     return {
       ...state,
       mappingKey: node.path,
-      functions: {filterTerm: '', nodes: cloneDeep(this.initialFunctions)},
-      outputs: {filterTerm: '', nodes: cloneDeep(this.pristineOutputs)},
+      functions: { filterTerm: '', nodes: cloneDeep(this.initialFunctions) },
+      outputs: { filterTerm: '', nodes: cloneDeep(this.pristineOutputs) },
     };
   }
 
-  private applyExpressionChange(state: MapperState, {nodePath, expression}: { nodePath: string, expression: string }): MapperState {
-    if (isSameEditingExpression(state.mappings[nodePath], {expression})) {
+  private applyExpressionChange(
+    state: MapperState,
+    { nodePath, expression }: { nodePath: string; expression: string }
+  ): MapperState {
+    if (isSameEditingExpression(state.mappings[nodePath], { expression })) {
       return state;
     }
     const mappings = this.updateMapping(state.mappings, nodePath, expression);
@@ -164,7 +163,7 @@ export class MapperController {
       return mappings;
     }
     if (existingMapping && isEmptyExpression) {
-      const {[path]: mappingToRemove, ...newMappings} = mappings;
+      const { [path]: mappingToRemove, ...newMappings } = mappings;
       return newMappings;
     }
     const subMappings = existingMapping ? existingMapping.mappings : {};
@@ -181,7 +180,6 @@ export class MapperController {
   private applyTreeFilter(filterTerm: string, treeState: TreeState, currentSelection?: MapperTreeNode) {
     const currentSelectionPath = currentSelection && currentSelection.data ? currentSelection.data.path : null;
     const nodes = this.treeService.applyFilter(treeState.nodes, filterTerm, currentSelectionPath);
-    return Object.assign({}, treeState, {filterTerm, nodes});
+    return Object.assign({}, treeState, { filterTerm, nodes });
   }
-
 }

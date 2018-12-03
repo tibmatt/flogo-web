@@ -1,4 +1,12 @@
-import { Component, HostBinding, ChangeDetectionStrategy, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+  HostListener,
+} from '@angular/core';
 
 @Component({
   selector: 'flogo-flow-debug-panel-header-toggler',
@@ -7,7 +15,6 @@ import { Component, HostBinding, ChangeDetectionStrategy, Input, Output, EventEm
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderTogglerComponent {
-
   @Input() isOpen: boolean;
   @Output() open = new EventEmitter();
   @Output() close = new EventEmitter();
@@ -28,5 +35,4 @@ export class HeaderTogglerComponent {
       this.close.emit();
     }
   }
-
 }

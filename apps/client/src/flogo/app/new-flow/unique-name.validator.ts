@@ -4,7 +4,6 @@ import { Observable, timer, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 export class UniqueNameValidator {
-
   static make(flowsService: APIFlowsService, appId: string): AsyncValidatorFn {
     return createUniqueNameValidator(flowsService, appId);
   }
@@ -25,7 +24,7 @@ function createUniqueNameValidator(flowsService: APIFlowsService, appId: string)
           validationResult = { uniqueInvalid: true };
         }
         return validationResult;
-      }),
+      })
     );
   };
 }

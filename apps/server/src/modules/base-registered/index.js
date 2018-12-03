@@ -1,29 +1,27 @@
 import _ from 'lodash';
 import { logger } from '../../common/logging';
 
-
 /**
  * Base class of registered
  */
-export class BaseRegistered{
+export class BaseRegistered {
   /**
    * constructor function
    * @param {DBService} dbService - db name or an instance of DBService. it can be local or remote db
    */
-  constructor(dbService){
-
-    if(!dbService){
-      throw "dbService is required";
+  constructor(dbService) {
+    if (!dbService) {
+      throw 'dbService is required';
     }
 
     this._dbService = dbService;
   }
 
-  get dbService(){
+  get dbService() {
     return this._dbService;
   }
 
-  static generateID(name, version){
+  static generateID(name, version) {
     // console.log("generateActivityID, arguments: ", arguments);
     name = _.kebabCase(name);
     // console.log("name: ", name);
@@ -36,24 +34,24 @@ export class BaseRegistered{
     return id;
   }
 
-  static constructItem( opts ) {
+  static constructItem(opts) {
     return {
-      _id : opts.id,
-      'ref' : opts.ref,
-      'name' : opts.name,
-      'version' : opts.version,
-      'description' : opts.description,
-      'keywords' : opts.keywords || [],
-      'author' : opts.author || 'Anonymous',
-      'schema' : opts.schema
-    }
+      _id: opts.id,
+      ref: opts.ref,
+      name: opts.name,
+      version: opts.version,
+      description: opts.description,
+      keywords: opts.keywords || [],
+      author: opts.author || 'Anonymous',
+      schema: opts.schema,
+    };
   }
 
-  static saveItems( dbService, items, updateOnly ) {
-    let _items = _.cloneDeep( items ); // in order to avoid the changes on the given items.
+  static saveItems(dbService, items, updateOnly) {
+    let _items = _.cloneDeep(items); // in order to avoid the changes on the given items.
     let toInsert = [];
 
-    for(let key in _items) {
+    for (let key in _items) {
       _items[key].createdAt = new Date().toISOString();
       _items[key].updatedAt = new Date().toISOString();
 
@@ -61,7 +59,6 @@ export class BaseRegistered{
     }
     return dbService.db.insertBulk(toInsert);
   }
-
 
   clean() {
     return this._dbService.db.removeAll();
@@ -91,17 +88,12 @@ export class BaseRegistered{
         author: info.author,
         schema: info,
       });
-
     });
 
     // console.log("!!!!!!!!activityDocs: ", activityDocs);
-    return BaseRegistered.saveItems(this.dbService, items)
-      .then((result) => {
-        logger.verbose('updateDB done.');
-        return result;
-      });
-
+    return BaseRegistered.saveItems(this.dbService, items).then(result => {
+      logger.verbose('updateDB done.');
+      return result;
+    });
   }
-
 }
-

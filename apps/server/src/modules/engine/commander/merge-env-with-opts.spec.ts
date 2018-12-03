@@ -7,8 +7,7 @@ describe('engine::commander::mergeEnvWithOpts()', () => {
   });
 
   it('Uses the default cgo value if not provided in the environment', () => {
-    const env = mergeEnvWithOpts({ compile: {} }, { });
+    const env = mergeEnvWithOpts({ compile: {} }, {});
     expect(env).toEqual({ CGO_ENABLED: '0' });
   });
-
 });

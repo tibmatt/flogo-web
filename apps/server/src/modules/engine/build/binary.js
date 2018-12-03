@@ -12,8 +12,7 @@ export function buildAndCopyBinary(enginePath, opts) {
     .then(binaryPath => {
       console.log('[build] Found binary file: ', binaryPath);
       if (copyFlogoDescriptor) {
-        return copyFile(join(enginePath, 'bin', 'flogo.json'), join(opts.target, 'flogo.json'))
-          .then(() => binaryPath);
+        return copyFile(join(enginePath, 'bin', 'flogo.json'), join(opts.target, 'flogo.json')).then(() => binaryPath);
       }
       return binaryPath;
     })
@@ -24,4 +23,3 @@ export function buildAndCopyBinary(enginePath, opts) {
       return { path: binaryPath };
     });
 }
-

@@ -6,7 +6,7 @@ import { DeleteEvent } from '../shared/delete-event';
 @Component({
   selector: 'flogo-apps-flows-flow-group',
   templateUrl: 'flow-group.component.html',
-  styleUrls: ['../shared/group.component.less', 'flow-group.component.less']
+  styleUrls: ['../shared/group.component.less', 'flow-group.component.less'],
 })
 export class FlowGroupComponent implements OnChanges {
   @Input() public flows: Array<FlowSummary> = [];
@@ -31,11 +31,10 @@ export class FlowGroupComponent implements OnChanges {
   }
 
   onDeleteFlow(flow: FlowSummary) {
-    this.deleteFlow.emit({ triggerId: (this.trigger ? this.trigger.id : null), flow: flow });
+    this.deleteFlow.emit({ triggerId: this.trigger ? this.trigger.id : null, flow: flow });
   }
 
   onAddFlow() {
     this.addFlow.emit(this.trigger);
   }
-
 }

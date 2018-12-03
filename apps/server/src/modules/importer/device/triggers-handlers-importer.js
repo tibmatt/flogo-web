@@ -3,7 +3,6 @@ import { getDefaultValueByType } from '../../../common/utils';
 import { AbstractTriggersHandlersImporter } from '../common';
 
 export class TriggersHandlersImporter extends AbstractTriggersHandlersImporter {
-
   constructor(triggerStorage, handlerStore, triggerSchemas) {
     super(triggerStorage, handlerStore);
     this.triggerSchemas = triggerSchemas;
@@ -14,8 +13,7 @@ export class TriggersHandlersImporter extends AbstractTriggersHandlersImporter {
   }
 
   extractTriggers(rawApp) {
-    return (rawApp.triggers || [])
-      .map(trigger => this.formatTrigger(trigger));
+    return (rawApp.triggers || []).map(trigger => this.formatTrigger(trigger));
   }
 
   formatTrigger(trigger) {
@@ -23,26 +21,25 @@ export class TriggersHandlersImporter extends AbstractTriggersHandlersImporter {
     return {
       ...trigger,
       settings: this.makeTriggerSettings(trigger),
-      handlers: [{
-        settings: {},
-        actionId: trigger.actionId,
-      }],
+      handlers: [
+        {
+          settings: {},
+          actionId: trigger.actionId,
+        },
+      ],
     };
   }
 
   makeTriggerSettings(trigger) {
-    return fromPairs(this
-      .getSettingsSchema(trigger.ref)
-      .map(setting => [
+    return fromPairs(
+      this.getSettingsSchema(trigger.ref).map(setting => [
         setting.name,
         trigger.settings[setting.name] || getDefaultValueByType(setting.type),
-      ]));
+      ])
+    );
   }
 
   getSettingsSchema(triggerRef) {
-    return this.triggerSchemas
-      .find(triggerSchema => triggerSchema.ref === triggerRef)
-      .settings || [];
+    return this.triggerSchemas.find(triggerSchema => triggerSchema.ref === triggerRef).settings || [];
   }
-
 }

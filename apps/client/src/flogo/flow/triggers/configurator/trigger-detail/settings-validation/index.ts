@@ -26,7 +26,9 @@ export function addRequiredValidation(isRequired: boolean, validators: Validator
 export function addIsAllowedValueValidation(allowedValues: any[], validators: ValidatorFn[]) {
   if (allowedValues && allowedValues.length > 0) {
     const allowedValueValidator = getAllowedValueValidator(allowedValues);
-    validators.push((control: AbstractControl) => !isResolverExpression(control.value.parsedValue) ? allowedValueValidator(control) : null);
+    validators.push((control: AbstractControl) =>
+      !isResolverExpression(control.value.parsedValue) ? allowedValueValidator(control) : null
+    );
   }
 }
 
@@ -36,15 +38,15 @@ export function addTypeOrResolverValidation(valueType: ValueType, validators: Va
   validators.push((control: AbstractControl) => validator(control.value));
 }
 
-function getComposedExpressionOrTypeValidator(strictTypeValidator: (value: any) => (ValidationErrors | null) | null ) {
+function getComposedExpressionOrTypeValidator(strictTypeValidator: (value: any) => (ValidationErrors | null) | null) {
   strictTypeValidator = strictTypeValidator ? strictTypeValidator : () => null;
   return (settingValue: SettingValue) => {
     if (!settingValue || !settingValue.viewValue) {
       return null;
     }
 
-    return isResolverExpression(settingValue.parsedValue) ?
-      validateExpression(settingValue)
+    return isResolverExpression(settingValue.parsedValue)
+      ? validateExpression(settingValue)
       : strictTypeValidator(settingValue.parsedValue);
   };
 }

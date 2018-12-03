@@ -6,15 +6,7 @@ import { ServiceStatusIndicatorComponent } from './service-status-indicator.comp
 import { ConfigRoutingModule } from './config-routing.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ConfigRoutingModule,
-  ],
-  declarations: [
-    FlogoConfigComponent,
-    ServiceStatusIndicatorComponent
-  ],
+  imports: [CommonModule, FormsModule, ConfigRoutingModule],
+  declarations: [FlogoConfigComponent, ServiceStatusIndicatorComponent],
 })
-export class ConfigModule {
-}
+export class ConfigModule {}

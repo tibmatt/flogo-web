@@ -3,8 +3,8 @@
  */
 
 export const PUB_EVENTS = {
-    closeLog : {
-        channel : 'flogo-logs',
-        topic : 'log-close'
-    }
+  closeLog: {
+    channel: 'flogo-logs',
+    topic: 'log-close',
+  },
 };

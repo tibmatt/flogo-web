@@ -22,7 +22,9 @@ export class SvgRefFixerService {
 
   constructor(private location: Location, @Inject(DOCUMENT) document: Document, windowRef: WindowRef) {
     const navigator = windowRef.nativeWindow.navigator;
-    this.browserRequiresFix = Boolean(document['documentMode'] || /(Edge)|(Version\/[\d\.]+.*Safari)/.test(navigator.userAgent));
+    this.browserRequiresFix = Boolean(
+      document['documentMode'] || /(Edge)|(Version\/[\d\.]+.*Safari)/.test(navigator.userAgent)
+    );
   }
 
   getFixedRef(value: string) {
@@ -32,5 +34,4 @@ export class SvgRefFixerService {
     const path = this.location.path(false);
     return fixRefIfNeeded(path, value);
   }
-
 }

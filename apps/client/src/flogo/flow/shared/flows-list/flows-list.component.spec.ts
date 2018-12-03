@@ -1,10 +1,10 @@
-import {FlowsListComponent} from '@flogo-web/client/flow/shared/flows-list/flows-list.component';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {DebugElement} from '@angular/core';
-import {SharedModule as FlogoSharedModule} from '@flogo-web/client/shared';
-import {FakeRootLanguageModule} from '@flogo-web/client/core/language/testing';
-import {FormsModule} from '@angular/forms';
-import {By} from '@angular/platform-browser';
+import { FlowsListComponent } from '@flogo-web/client/flow/shared/flows-list/flows-list.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DebugElement } from '@angular/core';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared';
+import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
+import { FormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { Action } from '@flogo-web/client/core';
 
 describe('Component: FlowsListComponent', () => {
@@ -14,14 +14,8 @@ describe('Component: FlowsListComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        FlogoSharedModule,
-        FakeRootLanguageModule
-      ],
-      declarations: [
-        FlowsListComponent
-      ]
+      imports: [FormsModule, FlogoSharedModule, FakeRootLanguageModule],
+      declarations: [FlowsListComponent],
     });
     fixture = TestBed.createComponent(FlowsListComponent);
     comp = fixture.componentInstance;
@@ -40,7 +34,7 @@ describe('Component: FlowsListComponent', () => {
     expect(de.queryAll(By.css('.flogo-list__card')).length).toEqual(3);
   });
 
-  it('Should filter 2 applications when filtered by term \'hello\'', () => {
+  it("Should filter 2 applications when filtered by term 'hello'", () => {
     comp.list = getFlowsList();
     comp.searchText = 'Hello';
     fixture.detectChanges();
@@ -54,9 +48,9 @@ describe('Component: FlowsListComponent', () => {
     expect(firstLink.getAttribute('href')).toEqual('/flows/flow_1');
   });
 
-  it('Should emit selected flow\'s details', (done) => {
+  it("Should emit selected flow's details", done => {
     comp.list = getFlowsList();
-    comp.flowSelected.subscribe((event) => {
+    comp.flowSelected.subscribe(event => {
       expect(event.id).toEqual('flow_1');
       done();
     });
@@ -68,32 +62,32 @@ describe('Component: FlowsListComponent', () => {
   function getFlowsList(): Action[] {
     return [
       {
-        'name': 'hello flow',
-        'description': '',
-        'id': 'flow_1',
-        'createdAt': '2018-01-25T09:50:29.664Z',
-        'updatedAt': '2018-01-25T09:55:11.088Z',
-        'tasks': [],
-        'links': []
+        name: 'hello flow',
+        description: '',
+        id: 'flow_1',
+        createdAt: '2018-01-25T09:50:29.664Z',
+        updatedAt: '2018-01-25T09:55:11.088Z',
+        tasks: [],
+        links: [],
       },
       {
-        'name': 'test flow',
-        'description': 'hello',
-        'id': 'flow_2',
-        'createdAt': '2018-01-25T09:50:29.664Z',
-        'updatedAt': '2018-01-25T09:55:11.088Z',
-        'tasks': [],
-        'links': []
+        name: 'test flow',
+        description: 'hello',
+        id: 'flow_2',
+        createdAt: '2018-01-25T09:50:29.664Z',
+        updatedAt: '2018-01-25T09:55:11.088Z',
+        tasks: [],
+        links: [],
       },
       {
-        'name': 'flow something',
-        'description': '',
-        'id': 'flow_3',
-        'createdAt': '2018-01-25T09:50:29.664Z',
-        'updatedAt': '2018-01-25T09:55:11.088Z',
-        'tasks': [],
-        'links': []
-      }
+        name: 'flow something',
+        description: '',
+        id: 'flow_3',
+        createdAt: '2018-01-25T09:50:29.664Z',
+        updatedAt: '2018-01-25T09:55:11.088Z',
+        tasks: [],
+        links: [],
+      },
     ];
   }
 });

@@ -6,8 +6,10 @@ export function appHasSubflowTasks(app) {
 }
 
 export function actionHasSubflowTasks(action) {
-  return !!safeGetTasksInHandler(action, TASK_HANDLER_NAME_ROOT).find(isSubflowTask)
-    || !!safeGetTasksInHandler(action, TASK_HANDLER_NAME_ERROR).find(isSubflowTask);
+  return (
+    !!safeGetTasksInHandler(action, TASK_HANDLER_NAME_ROOT).find(isSubflowTask) ||
+    !!safeGetTasksInHandler(action, TASK_HANDLER_NAME_ERROR).find(isSubflowTask)
+  );
 }
 
 export function isSubflowTask(task) {
@@ -24,4 +26,3 @@ export function forEachSubflowTaskInAction(action, onSubflowTask) {
   iterateOn(safeGetTasksInHandler(action, TASK_HANDLER_NAME_ROOT));
   iterateOn(safeGetTasksInHandler(action, TASK_HANDLER_NAME_ERROR));
 }
-

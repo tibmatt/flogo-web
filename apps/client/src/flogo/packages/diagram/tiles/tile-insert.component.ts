@@ -1,6 +1,15 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  HostBinding,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { DiagramSelection, InsertTile, DiagramSelectionType } from '../interfaces';
-import {BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS} from '@flogo-web/client/core';
+import { BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS } from '@flogo-web/client/core';
 
 @Component({
   selector: 'flogo-diagram-tile-insert',
@@ -36,8 +45,8 @@ export class TileInsertComponent implements OnChanges {
     if (!this.currentSelection) {
       return false;
     }
-    const {type, taskId, diagramId} = this.currentSelection;
+    const { type, taskId, diagramId } = this.currentSelection;
     const forRoot = this.isRootInsert;
-    return type === DiagramSelectionType.Insert && (taskId && taskId === this.tile.parentId || forRoot);
+    return type === DiagramSelectionType.Insert && ((taskId && taskId === this.tile.parentId) || forRoot);
   }
 }

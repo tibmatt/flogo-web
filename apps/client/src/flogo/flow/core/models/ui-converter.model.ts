@@ -10,10 +10,10 @@ import {
   ItemSubflow,
   TriggerSchema,
   FLOGO_CONTRIB_TYPE,
-  ActivitySchema
+  ActivitySchema,
 } from '@flogo-web/client/core';
 import { ErrorService } from '@flogo-web/client/core/services/error.service';
-import {RESTAPIContributionsService} from '@flogo-web/client/core/services/restapi/v2/contributions.service';
+import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
 import { flogoGenTriggerID, flogoGenNodeID, isSubflowTask } from '@flogo-web/client/shared/utils';
 
 import { ItemFactory } from './graph-and-items/item-factory';
@@ -46,16 +46,16 @@ export abstract class AbstractModelConverter {
 
   getTriggerSchema(trigger) {
     if (!trigger.ref) {
-      throw this.errorService.makeOperationalError('Trigger: Wrong input json file', 'Cannot get ref for trigger',
-        {
-          type: 'ValidationError',
-          title: 'Wrong input json file',
-          detail: 'Cannot get ref for trigger:',
-          property: 'trigger',
-          value: trigger
-        });
+      throw this.errorService.makeOperationalError('Trigger: Wrong input json file', 'Cannot get ref for trigger', {
+        type: 'ValidationError',
+        title: 'Wrong input json file',
+        detail: 'Cannot get ref for trigger:',
+        property: 'trigger',
+        value: trigger,
+      });
     } else {
-      return this.contribService.getContributionDetails(this.getProfileType(), trigger.ref)
+      return this.contribService
+        .getContributionDetails(this.getProfileType(), trigger.ref)
         .then((schema: TriggerSchema) => this.normalizeTriggerSchema(schema));
     }
   }
@@ -63,8 +63,7 @@ export abstract class AbstractModelConverter {
   convertToWebFlowModel(flowObj, subflowSchema: Dictionary<ActionBase>) {
     this.subflowSchemaRegistry = subflowSchema;
     this.hasProperTasks(flowObj);
-    return this.getAllActivitySchemas()
-      .then(installedActivities => this.processFlowObj(flowObj, installedActivities));
+    return this.getAllActivitySchemas().then(installedActivities => this.processFlowObj(flowObj, installedActivities));
   }
 
   hasProperTasks(flow: any) {
@@ -74,18 +73,20 @@ export abstract class AbstractModelConverter {
     // filter only tasks of type activity and ignore subflows
     tasks = tasks.filter(t => !isSubflowTask(t.type));
 
-    tasks.forEach((task) => {
+    tasks.forEach(task => {
       const ref = task.activityRef;
       if (!ref) {
-        throw this.errorService.makeOperationalError('Activity: Wrong input json file',
+        throw this.errorService.makeOperationalError(
+          'Activity: Wrong input json file',
           `Cannot get activityRef for task: ${task.name}`,
           {
             type: 'ValidationError',
             title: 'Wrong input json file',
             detail: 'Cannot get activityRef for task:',
             property: 'task',
-            value: task
-          });
+            value: task,
+          }
+        );
       }
     });
   }
@@ -95,14 +96,19 @@ export abstract class AbstractModelConverter {
 
     // const mainFlowParts = this.getFlowParts(installedContribs, tasks, links);
 
-    const tasks = (flowJSON && flowJSON.tasks) ||  [];
-    const links = (flowJSON && flowJSON.links) ||  [];
+    const tasks = (flowJSON && flowJSON.tasks) || [];
+    const links = (flowJSON && flowJSON.links) || [];
     const branchIdGenerator = () => uniqueId('::branch::');
 
     const mainComponents = makeGraphAndItems(tasks, links, installedContribs, branchIdGenerator);
     const errorHandlerTasks = (flowJSON && flowJSON.errorHandler && flowJSON.errorHandler.tasks) || [];
     const errorHandlerLinks = (flowJSON && flowJSON.errorHandler && flowJSON.errorHandler.links) || [];
-    const errorHandlerComponents = makeGraphAndItems(errorHandlerTasks, errorHandlerLinks, installedContribs, branchIdGenerator);
+    const errorHandlerComponents = makeGraphAndItems(
+      errorHandlerTasks,
+      errorHandlerLinks,
+      installedContribs,
+      branchIdGenerator
+    );
 
     return {
       ...this.makeFlow(flowInfo, installedContribs),
@@ -141,7 +147,7 @@ export abstract class AbstractModelConverter {
       node: nodeTrigger,
       cli: trigger,
       installed: installedTrigger,
-      handlerSetting: trigger.handler
+      handlerSetting: trigger.handler,
     });
     itemTrigger.name = trigger.name;
     itemTrigger.description = trigger.description;
@@ -155,7 +161,8 @@ export abstract class AbstractModelConverter {
   }
 
   private getAllActivitySchemas(): Promise<ActivitySchema[]> {
-    return this.contribService.listContribs<ActivitySchema>(this.getProfileType(), FLOGO_CONTRIB_TYPE.ACTIVITY)
+    return this.contribService
+      .listContribs<ActivitySchema>(this.getProfileType(), FLOGO_CONTRIB_TYPE.ACTIVITY)
       .then(activities => activities.map(this.normalizeActivitySchema));
   }
 
@@ -183,24 +190,25 @@ export abstract class AbstractModelConverter {
   private normalizeTriggerSchema(schema: TriggerSchema): TriggerSchema {
     if (!schema.handler) {
       schema.handler = {
-        settings: []
+        settings: [],
       };
     }
     return schema;
   }
-
 }
 
 class NodeFactory {
   static makeTrigger() {
     return Object.assign({}, this.getSharedProperties(), {
-      type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT, taskID: flogoGenTriggerID()
+      type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT,
+      taskID: flogoGenTriggerID(),
     });
   }
 
   static makeItem(item) {
     return Object.assign({}, this.getSharedProperties(), {
-      type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE, taskID: item.taskID
+      type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
+      taskID: item.taskID,
     });
   }
 
@@ -211,7 +219,8 @@ class NodeFactory {
 
   static makeBranch() {
     return Object.assign({}, this.getSharedProperties(), {
-      type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH, taskID: NodeFactory.flogoGenBranchID()
+      type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH,
+      taskID: NodeFactory.flogoGenBranchID(),
     });
   }
 

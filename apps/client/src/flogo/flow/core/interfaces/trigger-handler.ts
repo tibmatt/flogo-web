@@ -6,7 +6,7 @@ export interface TriggerHandler {
   settings: { [name: string]: any };
   outputs: { [name: string]: any };
   actionMappings?: {
-    input: flow.Mapping[],
-    output: flow.Mapping[],
+    input: flow.Mapping[];
+    output: flow.Mapping[];
   };
 }

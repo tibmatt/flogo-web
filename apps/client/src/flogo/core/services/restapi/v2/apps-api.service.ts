@@ -11,18 +11,15 @@ const UNTITLED_APP = 'Untitled App';
 
 @Injectable()
 export class AppsApiService {
-
   constructor(
     private httpUtils: HttpUtilsService,
     private httpClient: HttpClient,
     private restApi: RestApiService,
-    private downloadService: FileDownloaderService,
+    private downloadService: FileDownloaderService
   ) {}
 
   recentFlows() {
-    return this.restApi
-      .get('actions/recent')
-      .toPromise();
+    return this.restApi.get('actions/recent').toPromise();
   }
 
   createNewApp(profileDetails): Promise<any> {
@@ -31,7 +28,7 @@ export class AppsApiService {
         type: 'flogo:app',
         name: appName,
         version: '',
-        description: ''
+        description: '',
       };
       if (profileDetails.profileType === FLOGO_PROFILE_TYPE.DEVICE) {
         application.type = 'flogo:device';
@@ -40,22 +37,16 @@ export class AppsApiService {
         application.device.deviceType = profileDetails.deviceType;
         application.device.settings = profileDetails.settings || {};
       }
-      return this.restApi
-        .post('apps', application)
-        .toPromise();
+      return this.restApi.post('apps', application).toPromise();
     });
   }
 
   listApps(): Promise<App[]> {
-    return this.restApi
-      .get<App[]>('apps')
-      .toPromise();
+    return this.restApi.get<App[]>('apps').toPromise();
   }
 
   getApp(appId: string): Promise<App | null> {
-    return this.restApi
-      .get<App>(`apps/${appId}`)
-      .toPromise();
+    return this.restApi.get<App>(`apps/${appId}`).toPromise();
   }
 
   updateApp(appId: string, app: any) {
@@ -80,7 +71,7 @@ export class AppsApiService {
       requestOptions = {
         params: {
           appmodel: options.appModel,
-        }
+        },
       };
     }
     return this.restApi
@@ -99,7 +90,8 @@ export class AppsApiService {
     if (appModel) {
       requestParams = requestParams.set('appmodel', appModel);
     }
-    return this.restApi.get(`apps/${appId}:export`, { params: requestParams })
+    return this.restApi
+      .get(`apps/${appId}:export`, { params: requestParams })
       .toPromise()
       .catch(err => Promise.reject(err && err.error ? err.error : err));
   }
@@ -118,31 +110,30 @@ export class AppsApiService {
   buildAndDownload(appId: string, { os, arch }) {
     const url = this.downloadAppLink(appId);
     const params = new HttpParams({ fromObject: { os, arch } });
-    return this.httpClient.get(url, { params, responseType: 'blob', observe: 'response' })
+    return this.httpClient
+      .get(url, { params, responseType: 'blob', observe: 'response' })
       .pipe(this.downloadService.downloadResolver());
   }
 
   determineUniqueName(name: string) {
-    return this.listApps()
-      .then((apps: Array<App>) => {
-        const normalizedName = name.trim().toLowerCase();
-        const possibleMatches = apps
-          .map(app => app.name.trim().toLowerCase())
-          .filter(appName => appName.startsWith(normalizedName));
+    return this.listApps().then((apps: Array<App>) => {
+      const normalizedName = name.trim().toLowerCase();
+      const possibleMatches = apps
+        .map(app => app.name.trim().toLowerCase())
+        .filter(appName => appName.startsWith(normalizedName));
 
-        if (!possibleMatches.length) {
-          return name;
-        }
+      if (!possibleMatches.length) {
+        return name;
+      }
 
-        let found = true;
-        let index = 0;
-        while (found) {
-          index++;
-          found = possibleMatches.includes(`${normalizedName} (${index})`);
-        }
-        return `${name} (${index})`;
+      let found = true;
+      let index = 0;
+      while (found) {
+        index++;
+        found = possibleMatches.includes(`${normalizedName} (${index})`);
+      }
+      return `${name} (${index})`;
     });
-
   }
 
   private apiPrefix(path) {
@@ -157,5 +148,4 @@ export class AppsApiService {
       return body.errors || [body];
     }
   }
-
 }

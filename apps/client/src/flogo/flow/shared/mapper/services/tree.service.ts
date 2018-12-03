@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { MapperTreeNode } from '../models/mapper-treenode.model';
 
-const addClass = function (classes: string[], value: string) {
+const addClass = function(classes: string[], value: string) {
   if (classes.indexOf(value) === -1) {
     classes.unshift(value);
   }
 };
 
-const removeClass = function (classes: string[], value: string) {
+const removeClass = function(classes: string[], value: string) {
   const index = classes.indexOf(value);
   if (index > -1) {
     classes.splice(index, 1);
@@ -25,11 +25,9 @@ const CLASSES = {
 @Injectable()
 export class TreeService {
   selectNode(nodes: MapperTreeNode[], selectedPath: string): MapperTreeNode[] {
-
-    const Visitor = function () {
-
-      this.visitNode = function (node: MapperTreeNode) {
-        const classes = ((node.styleClass || '').trim()).split(' ');
+    const Visitor = function() {
+      this.visitNode = function(node: MapperTreeNode) {
+        const classes = (node.styleClass || '').trim().split(' ');
         const selectedClass = CLASSES.selected;
 
         if (node.path === selectedPath) {
@@ -56,9 +54,9 @@ export class TreeService {
   }
 
   applyFilter(nodes: MapperTreeNode[], searchText: string = null, selectedPath: string = null) {
-    const searchTextLower = searchText ?  searchText.toLowerCase() : '';
+    const searchTextLower = searchText ? searchText.toLowerCase() : '';
     const isMatch = (node: MapperTreeNode) => {
-      const nodeLabel = (node && node.label) ? node.label.toLowerCase() : node.label;
+      const nodeLabel = node && node.label ? node.label.toLowerCase() : node.label;
       return searchTextLower && nodeLabel.indexOf(searchTextLower) !== -1;
     };
     nodes.forEach(node => this.applyFilterToNode(node, isMatch, selectedPath));
@@ -80,8 +78,10 @@ export class TreeService {
 
     let hasMappedChild = false;
     if (node.children) {
-      hasMappedChild = node.children
-        .reduce((hasMappings, childNode) => this.updateTreeMappingStatus(childNode) || hasMappings, false);
+      hasMappedChild = node.children.reduce(
+        (hasMappings, childNode) => this.updateTreeMappingStatus(childNode) || hasMappings,
+        false
+      );
     }
 
     const hasMapping = hasExpression || hasMappedChild;
@@ -101,15 +101,19 @@ export class TreeService {
     }
   }
 
-  private applyFilterToNode(node: MapperTreeNode, matchDiscriminator: (node: MapperTreeNode) => boolean, selectedPath = null) {
+  private applyFilterToNode(
+    node: MapperTreeNode,
+    matchDiscriminator: (node: MapperTreeNode) => boolean,
+    selectedPath = null
+  ) {
     const isMatch = matchDiscriminator(node);
     let hasVisibleChild = false;
     if (node.children) {
-      hasVisibleChild = node.children
-        .reduce((foundVisibleChild: boolean, childNode) =>
+      hasVisibleChild = node.children.reduce(
+        (foundVisibleChild: boolean, childNode) =>
           this.applyFilterToNode(childNode, matchDiscriminator, selectedPath) || foundVisibleChild,
-          false
-        );
+        false
+      );
     }
 
     const isVisible = isMatch || hasVisibleChild || node.path === selectedPath;
@@ -128,7 +132,7 @@ export class TreeService {
   }
 
   private updateStyleClass(node: MapperTreeNode, classMap: { [className: string]: boolean }) {
-    const currentClasses: string[] = ((node.styleClass || '').trim()).split(' ');
+    const currentClasses: string[] = (node.styleClass || '').trim().split(' ');
     Object.keys(classMap).forEach(className => {
       if (classMap[className]) {
         addClass(currentClasses, className);
@@ -145,7 +149,7 @@ export class TreeService {
     }
 
     if (node.children && node.children.length) {
-      node.children.forEach((children) => {
+      node.children.forEach(children => {
         const childrenResult = this.visitChildren(children, visitor);
         if (visitor && visitor.visitNodeStack) {
           visitor.visitNodeStack({ stackNode: node, childrenResult });
@@ -156,7 +160,6 @@ export class TreeService {
     return node;
   }
 
-
   private traverseParents(node: MapperTreeNode, onParent: (node: MapperTreeNode) => void) {
     let parent = node ? node.parent : null;
     while (parent) {
@@ -164,8 +167,4 @@ export class TreeService {
       parent = parent.parent;
     }
   }
-
-
 }
-
-

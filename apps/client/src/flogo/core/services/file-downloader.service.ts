@@ -11,12 +11,12 @@ export class FileDownloaderService {
   private window: Window;
 
   constructor(@Inject(DOCUMENT) private document: Document, windowRef: WindowRef) {
-   this.window = windowRef.nativeWindow;
+    this.window = windowRef.nativeWindow;
   }
 
   downloadResolver() {
-    return (request: Observable<HttpResponse<Blob>>) => request
-      .pipe(
+    return (request: Observable<HttpResponse<Blob>>) =>
+      request.pipe(
         map(response => {
           const responseHeader = response.headers.get('content-disposition');
           const fileName = getFileName(responseHeader);

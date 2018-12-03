@@ -7,9 +7,9 @@ import { SettingsFormBuilder } from './settings-form-builder';
 import SpyObj = jasmine.SpyObj;
 
 describe('Serive: ConfigureDetailsService', function(this: {
-  testService: ConfigureDetailsService,
-  settingsFormBuilder: SpyObj<SettingsFormBuilder>,
-  mapperControllerFactory: SpyObj<MapperControllerFactory>,
+  testService: ConfigureDetailsService;
+  settingsFormBuilder: SpyObj<SettingsFormBuilder>;
+  mapperControllerFactory: SpyObj<MapperControllerFactory>;
 }) {
   const MockData: CurrentTriggerState = {
     appId: 'test_app',
@@ -17,7 +17,7 @@ describe('Serive: ConfigureDetailsService', function(this: {
     ...ConfigureTriggersMock[0],
     schema: ConfigureTriggerSchema,
     fields: {
-      settings: []
+      settings: [],
     },
     flowMetadata: {
       input: [],
@@ -26,22 +26,20 @@ describe('Serive: ConfigureDetailsService', function(this: {
           name: 'myOutput',
           type: ValueType.Any,
           value: null,
-        }
-      ]
-    }
+        },
+      ],
+    },
   };
 
   beforeEach(() => {
-    this.settingsFormBuilder = jasmine.createSpyObj<SettingsFormBuilder>('settingsFormBuilder', [
-      'build'
-    ]);
-    this.mapperControllerFactory = jasmine.createSpyObj('mapperControllerFactory', [
-      'createController'
-    ]);
-    const nameAsyncValidator = jasmine.createSpyObj('triggerNameValidatorService', [
-      'create'
-    ]);
-    this.testService = new ConfigureDetailsService(this.settingsFormBuilder, this.mapperControllerFactory, nameAsyncValidator);
+    this.settingsFormBuilder = jasmine.createSpyObj<SettingsFormBuilder>('settingsFormBuilder', ['build']);
+    this.mapperControllerFactory = jasmine.createSpyObj('mapperControllerFactory', ['createController']);
+    const nameAsyncValidator = jasmine.createSpyObj('triggerNameValidatorService', ['create']);
+    this.testService = new ConfigureDetailsService(
+      this.settingsFormBuilder,
+      this.mapperControllerFactory,
+      nameAsyncValidator
+    );
   });
 
   it('Should disable the common settings when the trigger has multiple handlers', () => {

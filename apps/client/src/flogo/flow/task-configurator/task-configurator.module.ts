@@ -7,24 +7,18 @@ import { MapperModule } from '../shared/mapper';
 import { TaskConfiguratorComponent } from './task-configurator.component';
 import { IteratorComponent } from './iterator/iterator.component';
 import { SubFlowComponent } from './subflow/subflow.component';
-import {FlowsListModule} from '../shared/flows-list';
+import { FlowsListModule } from '../shared/flows-list';
 
 @NgModule({
-  imports: [// module dependencies
+  imports: [
+    // module dependencies
     NgCommonModule,
     FlogoSharedModule,
     MapperModule,
-    FlowsListModule
+    FlowsListModule,
   ],
-  declarations: [
-    IteratorComponent,
-    SubFlowComponent,
-    TaskConfiguratorComponent,
-  ],
-  exports: [
-    TaskConfiguratorComponent,
-  ],
-  providers: []
+  declarations: [IteratorComponent, SubFlowComponent, TaskConfiguratorComponent],
+  exports: [TaskConfiguratorComponent],
+  providers: [],
 })
-export class TaskMapperModule {
-}
+export class TaskMapperModule {}

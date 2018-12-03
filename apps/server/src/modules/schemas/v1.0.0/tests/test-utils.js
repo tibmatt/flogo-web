@@ -49,7 +49,7 @@ class Asserter {
     expect(this.errors[0]).toMatchObject({
       dataPath: `.${propertyName}`,
       keyword: 'type',
-      params: {type: expectedType},
+      params: { type: expectedType },
     });
   }
 
@@ -57,7 +57,6 @@ class Asserter {
     expect(this.errors[0]).toMatchObject({
       keyword: 'pattern',
       dataPath: `.${propertyName}`,
-
     });
   }
 
@@ -65,13 +64,12 @@ class Asserter {
     expect(this.errors[0]).toMatchObject({
       dataPath: `.${propertyName}`,
       keyword: 'enum',
-      params: {allowedValues: expectedType},
+      params: { allowedValues: expectedType },
     });
   }
 }
 
 class Validator {
-
   constructor(validateFn, errorsHolder) {
     this.validateFn = validateFn;
     this.errorsHolder = errorsHolder;
@@ -102,7 +100,6 @@ class Validator {
     this.validate(value);
     return this.createAsserter();
   }
-
 }
 
 class AjvTestContext {
@@ -181,4 +178,3 @@ export function makeAjvContext(mainSchemaName, schemas, additionalAjvOptions) {
     ajvOptions: { ...additionalAjvOptions, schemas },
   });
 }
-

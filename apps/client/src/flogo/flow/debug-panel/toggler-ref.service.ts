@@ -5,8 +5,7 @@ import { WindowRef } from '@flogo-web/client/core/services';
 export class TogglerRefService {
   private elementRef: ElementRef;
 
-  constructor(private windowRef: WindowRef) {
-  }
+  constructor(private windowRef: WindowRef) {}
 
   getRef(): ElementRef | null {
     return this.elementRef;
@@ -27,5 +26,4 @@ export class TogglerRefService {
     const element: Element = this.elementRef.nativeElement;
     return this.windowRef.nativeWindow.innerHeight - element.getBoundingClientRect().top;
   }
-
 }

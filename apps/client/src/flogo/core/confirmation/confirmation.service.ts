@@ -6,15 +6,21 @@ import { ConfirmationContent } from './confirmation-content';
 
 @Injectable()
 export class ConfirmationService {
+  constructor(private injector: Injector, private overlay: Overlay) {}
 
-  constructor(private injector: Injector, private overlay: Overlay) { }
-
-  openModal<T extends ConfirmationContent>(contentComponent: ComponentType<T>, customTokens?: WeakMap<any, any>): ConfirmationControl {
+  openModal<T extends ConfirmationContent>(
+    contentComponent: ComponentType<T>,
+    customTokens?: WeakMap<any, any>
+  ): ConfirmationControl {
     const overlayRef = this.createModalOverlay();
     return this.buildAndAttach(overlayRef, contentComponent, customTokens);
   }
 
-  openPopover<T>(connectedToRef: ElementRef, contentComponent: ComponentType<T>, customTokens?: WeakMap<any, any>): ConfirmationControl {
+  openPopover<T>(
+    connectedToRef: ElementRef,
+    contentComponent: ComponentType<T>,
+    customTokens?: WeakMap<any, any>
+  ): ConfirmationControl {
     const overlayRef = this.createPopoverOverlay(connectedToRef);
     return this.buildAndAttach(overlayRef, contentComponent, customTokens);
   }
@@ -31,7 +37,11 @@ export class ConfirmationService {
     return control;
   }
 
-  private createPortal<T>(componentType: ComponentType<T>, customTokens: WeakMap<any, any>, control: ConfirmationControl) {
+  private createPortal<T>(
+    componentType: ComponentType<T>,
+    customTokens: WeakMap<any, any>,
+    control: ConfirmationControl
+  ) {
     const injector = this.createInjector(customTokens, control);
     return new ComponentPortal(componentType, null, injector);
   }
@@ -57,9 +67,7 @@ export class ConfirmationService {
   }
 
   private getPopoverScrollStrategy() {
-    return this.overlay
-      .scrollStrategies
-      .close();
+    return this.overlay.scrollStrategies.close();
   }
 
   private getPopoverPositionStrategy(connectedToRef: ElementRef) {
@@ -78,7 +86,7 @@ export class ConfirmationService {
           originY: 'top',
           overlayX: 'start',
           overlayY: 'bottom',
-        }
+        },
       ]);
   }
 
@@ -86,11 +94,11 @@ export class ConfirmationService {
     return new OverlayConfig({
       hasBackdrop: true,
       scrollStrategy: this.overlay.scrollStrategies.block(),
-      positionStrategy: this.overlay.position()
+      positionStrategy: this.overlay
+        .position()
         .global()
         .centerHorizontally()
-        .centerVertically()
+        .centerVertically(),
     });
   }
-
 }

@@ -2,7 +2,6 @@ import isEmpty from 'lodash/isEmpty';
 import intersection from 'lodash/intersection';
 
 export class DanglingSubflowReferencesCleaner {
-
   static create() {
     return new DanglingSubflowReferencesCleaner();
   }
@@ -26,5 +25,4 @@ export class DanglingSubflowReferencesCleaner {
     }
     return null;
   }
-
 }

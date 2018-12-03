@@ -1,12 +1,10 @@
 import { IReferenceCollector, MemberAccess } from './validator';
 
 export class ReferenceCollector implements IReferenceCollector {
-
   functions = [];
   memberAccess = [];
 
-  constructor(public replaceRelativePathsWith?: string) {
-  }
+  constructor(public replaceRelativePathsWith?: string) {}
 
   addFunctionReference(func: MemberAccess[]) {
     this.functions.push(this.processPath(func));

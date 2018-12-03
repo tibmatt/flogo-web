@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs';
 
 export abstract class LanguageService {
-
   /**
    * Gets the translated value of a key (or an array of keys)
    * @param key

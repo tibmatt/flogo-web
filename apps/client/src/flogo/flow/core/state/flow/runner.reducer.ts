@@ -8,48 +8,54 @@ export function runnerReducer(state: FlowState = INITIAL_STATE, action: actions.
     case ActionType.CreateBranch:
     case ActionType.TaskItemCreated:
     case ActionType.ItemUpdated:
-    case ActionType.CommitItemConfiguration: {
-      state = markAsConfigChanged(state);
-    }
-    break;
+    case ActionType.CommitItemConfiguration:
+      {
+        state = markAsConfigChanged(state);
+      }
+      break;
     case ActionType.RemoveItem:
       state = markAsConfigChanged(state);
       state = markAsStructureChanged(state);
       state = removeExecutionDataForItem(state, action.payload.itemId);
       break;
-    case ActionType.NewExecutionRegistered: {
-      state = {
-        ...state,
-        configChangedSinceLastExecution: false,
-      };
-    }
-    break;
-    case ActionType.NewProcessRanFromStart: {
-      state = {
-        ...state,
-        lastFullExecution: { ...action.payload },
-      };
-    }
-    break;
-    case ActionType.RunFromStart: {
-      state = resetExecutionResult(state);
-      state = {
-        ...state,
-        structureChangedSinceLastFullExecution: false,
-      };
-    }
-    break;
-    case ActionType.RunFromTask: {
-      state = resetExecutionResult(state);
-    }
-    break;
-    case ActionType.ExecutionStepsUpdate: {
-      state = {
-        ...state,
-        lastExecutionResult: { ...state.lastExecutionResult, ...action.payload.steps },
-      };
-    }
-    break;
+    case ActionType.NewExecutionRegistered:
+      {
+        state = {
+          ...state,
+          configChangedSinceLastExecution: false,
+        };
+      }
+      break;
+    case ActionType.NewProcessRanFromStart:
+      {
+        state = {
+          ...state,
+          lastFullExecution: { ...action.payload },
+        };
+      }
+      break;
+    case ActionType.RunFromStart:
+      {
+        state = resetExecutionResult(state);
+        state = {
+          ...state,
+          structureChangedSinceLastFullExecution: false,
+        };
+      }
+      break;
+    case ActionType.RunFromTask:
+      {
+        state = resetExecutionResult(state);
+      }
+      break;
+    case ActionType.ExecutionStepsUpdate:
+      {
+        state = {
+          ...state,
+          lastExecutionResult: { ...state.lastExecutionResult, ...action.payload.steps },
+        };
+      }
+      break;
   }
   return state;
 }
@@ -83,7 +89,7 @@ function removeExecutionDataForItem(flowState: FlowState, itemId: string): FlowS
 }
 
 function resetExecutionResult(state: FlowState) {
-  return  {
+  return {
     ...state,
     lastExecutionResult: {},
   };

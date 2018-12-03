@@ -9,21 +9,9 @@ import { TileTaskComponent } from './tiles/tile-task.component';
 import { TileBranchComponent } from '@flogo-web/client/packages/diagram/tiles/tile-branch.component';
 
 @NgModule({
-  imports: [
-    SharedModule,
-    CoreModule,
-  ],
-  exports: [
-    DiagramComponent,
-  ],
-  declarations: [
-    DiagramComponent,
-    DiagramRowComponent,
-    TileInsertComponent,
-    TileBranchComponent,
-    TileTaskComponent,
-  ],
+  imports: [SharedModule, CoreModule],
+  exports: [DiagramComponent],
+  declarations: [DiagramComponent, DiagramRowComponent, TileInsertComponent, TileBranchComponent, TileTaskComponent],
   providers: [],
 })
-export class DiagramModule {
-}
+export class DiagramModule {}

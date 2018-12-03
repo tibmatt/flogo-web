@@ -1,5 +1,5 @@
-import {Observable} from 'rxjs';
-import {ActionBase, ActivitySchema, FLOGO_PROFILE_TYPE} from '../../../core/index';
+import { Observable } from 'rxjs';
+import { ActionBase, ActivitySchema, FLOGO_PROFILE_TYPE } from '../../../core/index';
 
 export interface TaskAddOptions {
   activities$: Observable<Activity[]>;

@@ -1,7 +1,7 @@
 import { Item } from '@flogo-web/client/core';
 import { HandlerType } from '@flogo-web/client/flow/core/models';
 import { FlowState } from './flow/flow.state';
-import {NodeDictionary} from '@flogo-web/client/core/interfaces/graph/graph';
+import { NodeDictionary } from '@flogo-web/client/core/interfaces/graph/graph';
 
 export const getItemsDictionaryName = (handlerType: HandlerType) => `${handlerType}Items`;
 

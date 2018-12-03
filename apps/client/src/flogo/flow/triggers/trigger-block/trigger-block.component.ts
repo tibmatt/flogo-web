@@ -1,9 +1,19 @@
-import {Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
-import {SingleEmissionSubject} from '@flogo-web/client/core/models/single-emission-subject';
-import {TriggerMenuSelectionEvent} from '@flogo-web/client/flow/triggers/trigger-block/models';
-import {TRIGGER_MENU_OPERATION} from '@flogo-web/client/core/constants';
-import {Trigger} from '../../core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { SingleEmissionSubject } from '@flogo-web/client/core/models/single-emission-subject';
+import { TriggerMenuSelectionEvent } from '@flogo-web/client/flow/triggers/trigger-block/models';
+import { TRIGGER_MENU_OPERATION } from '@flogo-web/client/core/constants';
+import { Trigger } from '../../core';
 
 export interface TriggerMenuSelectionEvent {
   operation: string;
@@ -13,9 +23,8 @@ export interface TriggerMenuSelectionEvent {
 @Component({
   selector: 'flogo-flow-triggers-trigger-block',
   templateUrl: './trigger-block.component.html',
-  styleUrls: ['./trigger-block.component.less']
+  styleUrls: ['./trigger-block.component.less'],
 })
-
 export class TriggerBlockComponent {
   @Input()
   trigger: Trigger;
@@ -34,7 +43,7 @@ export class TriggerBlockComponent {
   }
 
   handleTriggerSelection() {
-    this.menuItemSelected.emit({operation: TRIGGER_MENU_OPERATION.SHOW_SETTINGS, trigger: this.trigger});
+    this.menuItemSelected.emit({ operation: TRIGGER_MENU_OPERATION.SHOW_SETTINGS, trigger: this.trigger });
   }
 
   handleTriggerMenuShow() {
@@ -49,6 +58,6 @@ export class TriggerBlockComponent {
 
   selectedMenuItem(item: string) {
     this.isShowingMenu = false;
-    this.menuItemSelected.emit({operation: item, trigger: this.trigger});
+    this.menuItemSelected.emit({ operation: item, trigger: this.trigger });
   }
 }

@@ -22,11 +22,11 @@ export function getStrictTypeValidator(schemaType: ValueType): (value: any) => (
 }
 
 function makeMismatchError(expectedType: ValueType): { [type: string]: ErrorTypeMismatch } {
-  return {[ErrorTypes.TypeMismatch]: { expectedType }};
+  return { [ErrorTypes.TypeMismatch]: { expectedType } };
 }
 
 export function getNumberValidator(expectedType: ValueType) {
-  return value => isNotaNumber(value) || !isNumber(value) ? makeMismatchError(expectedType) : null;
+  return value => (isNotaNumber(value) || !isNumber(value) ? makeMismatchError(expectedType) : null);
 }
 
 export function booleanValidator(value: any) {
@@ -34,7 +34,7 @@ export function booleanValidator(value: any) {
 }
 
 export function getObjectValidator(expectedType: ValueType) {
-  return value => !isPlainObject(value) ? makeMismatchError(expectedType) : null;
+  return value => (!isPlainObject(value) ? makeMismatchError(expectedType) : null);
 }
 
 export function arrayValidator(value: any) {

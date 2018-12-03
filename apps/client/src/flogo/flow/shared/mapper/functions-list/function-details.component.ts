@@ -9,7 +9,7 @@ interface FunctionHelp {
 @Component({
   selector: 'flogo-mapper-function-details',
   templateUrl: 'function-details.component.html',
-  styleUrls: ['function-details.component.css']
+  styleUrls: ['function-details.component.css'],
 })
 export class FunctionDetailsComponent implements OnChanges {
   @Input() name: string;
@@ -39,4 +39,3 @@ export class FunctionDetailsComponent implements OnChanges {
     }, 0);
   }
 }
-

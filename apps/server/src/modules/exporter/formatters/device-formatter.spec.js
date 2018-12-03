@@ -10,21 +10,16 @@ describe('exporter.formatters.DeviceFormatter', () => {
       triggers: [
         {
           name: 'triggerX',
-          handlers: [
-            { actionId: 'handlerX1' },
-            { actionId: 'handlerX2' },
-          ],
+          handlers: [{ actionId: 'handlerX1' }, { actionId: 'handlerX2' }],
         },
         {
           name: 'triggerY',
-          handlers: [
-            { actionId: 'handlerY1' },
-          ],
+          handlers: [{ actionId: 'handlerY1' }],
         },
       ],
     });
 
-    const infoForTriggerWithNameThatStartsWith = (triggerName) => {
+    const infoForTriggerWithNameThatStartsWith = triggerName => {
       const triggers = appResult.triggers.filter(t => t.name.startsWith(triggerName));
       const handlers = triggers.reduce((allHandlers, trigger) => {
         allHandlers.push(...trigger.handlers.map(h => h.actionId));
@@ -34,7 +29,7 @@ describe('exporter.formatters.DeviceFormatter', () => {
     };
 
     const triggers = appResult.triggers;
-    expect(Array.isArray(triggers)).toBe(true)
+    expect(Array.isArray(triggers)).toBe(true);
     expect(triggers).toHaveLength(3);
     triggers.forEach(trigger => expect(trigger.handlers).toHaveLength(1));
 

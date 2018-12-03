@@ -26,10 +26,12 @@ export async function buildPalette() {
 
   const contribs = [...activities, ...triggers]
     .filter(contrib => !ignoreRefs.includes(contrib.ref))
-    .concat([{
-      type: 'action',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow'
-    }]);
+    .concat([
+      {
+        type: 'action',
+        ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow',
+      },
+    ]);
 
   const palette = makePalette(contribs);
   console.log('** Generated new default palette **');
@@ -43,33 +45,30 @@ function makePalette(extensions) {
     version: '0.0.1',
     title: 'Default Palette',
     description: 'Default flogo palette',
-    extensions
+    extensions,
   };
 }
 
 async function getAll(type) {
   const dirPath = path.join(pathToContrib, type);
   const files = await getFiles(dirPath);
-  let descriptorPaths = files
-    .filter(file => file.isDir)
-    .map(file => path.join(file.path, `${type}.json`));
-  const descriptors = await Promise.all(descriptorPaths.map(contribDescriptorPath => readContribDescriptor(contribDescriptorPath)));
-  return descriptors
-    .filter(descriptor => !!descriptor)
-    .map(({ ref }) => ({ type, ref }));
+  let descriptorPaths = files.filter(file => file.isDir).map(file => path.join(file.path, `${type}.json`));
+  const descriptors = await Promise.all(
+    descriptorPaths.map(contribDescriptorPath => readContribDescriptor(contribDescriptorPath))
+  );
+  return descriptors.filter(descriptor => !!descriptor).map(({ ref }) => ({ type, ref }));
 }
 
 async function getFiles(dirPath) {
   const getFileStats = name => {
     const filePath = path.join(dirPath, name);
-    return fileStat(filePath)
-      .then(fileInfo => {
-        return {
-          name,
-          path: filePath,
-          isDir: fileInfo.isDirectory(),
-        };
-      })
+    return fileStat(filePath).then(fileInfo => {
+      return {
+        name,
+        path: filePath,
+        isDir: fileInfo.isDirectory(),
+      };
+    });
   };
   const fileNames = await readDir(dirPath);
   return Promise.all(fileNames.map(getFileStats));
@@ -84,10 +83,9 @@ function readContribDescriptor(path) {
     .then(fileContents => {
       return JSON.parse(fileContents);
     })
-    .catch((err) => {
+    .catch(err => {
       console.warn(`Could not read descriptor for ${path}`);
       console.warn(err);
       return Promise.resolve(null);
-    })
+    });
 }
-

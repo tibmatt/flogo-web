@@ -6,7 +6,7 @@ import { addNewNode } from '../../../models/flow/add-new-node';
 import { makeTaskSelection } from '../../../models/flow/selection';
 
 export function taskItemCreated(state: FlowState, payload: PayloadOf<TaskItemCreated>): FlowState {
-  const {handlerType, item, node} = payload;
+  const { handlerType, item, node } = payload;
   const graphName = getGraphName(handlerType);
   const itemsDictionaryName = getItemsDictionaryName(handlerType);
   const itemsDictionary = state[itemsDictionaryName];
@@ -16,20 +16,20 @@ export function taskItemCreated(state: FlowState, payload: PayloadOf<TaskItemCre
     [graphName]: addNewNode(state[graphName], node),
     [itemsDictionaryName]: {
       ...itemsDictionary,
-      [item.id]: {...item}
+      [item.id]: { ...item },
     },
   };
   state = registerSubflowSchema(state, payload.subflowSchema);
   return state;
 }
 
-function registerSubflowSchema(state: FlowState,  subflowSchema?: ActionSchema): FlowState {
+function registerSubflowSchema(state: FlowState, subflowSchema?: ActionSchema): FlowState {
   if (subflowSchema) {
     state = {
       ...state,
       linkedSubflows: {
         ...state.linkedSubflows,
-        [subflowSchema.id]: { ...subflowSchema }
+        [subflowSchema.id]: { ...subflowSchema },
       },
     };
   }

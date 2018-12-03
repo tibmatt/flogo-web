@@ -22,17 +22,21 @@ import { TAB } from '@angular/cdk/keycodes';
 import { Observable, ReplaySubject, of as observableOf, concat, combineLatest, merge } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 
-import { AUTOCOMPLETE_OPTIONS, AutoCompleteContentComponent, AutocompleteOptions } from './auto-complete-content.component';
+import {
+  AUTOCOMPLETE_OPTIONS,
+  AutoCompleteContentComponent,
+  AutocompleteOptions,
+} from './auto-complete-content.component';
 import { SingleEmissionSubject } from '@flogo-web/client/core/models';
 import { SettingValue } from '@flogo-web/client/flow/triggers/configurator/trigger-detail/settings-value';
 import { FieldValueAccesorDirective } from '@flogo-web/client/flow/triggers/configurator/trigger-detail/settings/form-field/field.directive';
-import {filterSourceBy} from './filter-source-by';
+import { filterSourceBy } from './filter-source-by';
 
 const POPOVER_WIDTH = '344px';
 const POPOVER_MAX_HEIGHT = '250px';
 const DISTANCE_TO_VIEWPORT_MARGIN = 10;
 
-const ensureObservable = (value) => {
+const ensureObservable = value => {
   if (!value) {
     return observableOf([]);
   } else if (isArray(value)) {
@@ -41,15 +45,13 @@ const ensureObservable = (value) => {
   return value;
 };
 
-const coerceSettingValueToString = (settingValue: SettingValue) => isString(settingValue.viewValue)
-  ? settingValue.viewValue
-  : JSON.stringify(settingValue.viewValue);
+const coerceSettingValueToString = (settingValue: SettingValue) =>
+  isString(settingValue.viewValue) ? settingValue.viewValue : JSON.stringify(settingValue.viewValue);
 
 @Directive({
-  selector: '[fgTriggersConfigAutoComplete]'
+  selector: '[fgTriggersConfigAutoComplete]',
 })
 export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
-
   @Input() formControl: AbstractControl;
   @Input() autoCompleteAllowedSource: Observable<string[]> | string[];
   @Input() autoCompleteVariablesSource: Observable<string[]> | string[];
@@ -74,14 +76,13 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
     private parentInjector: Injector,
     private overlay: Overlay,
     @Inject(DOCUMENT) private document: Document,
-    @Optional() private valueAccessor: FieldValueAccesorDirective,
-  ) {
-  }
+    @Optional() private valueAccessor: FieldValueAccesorDirective
+  ) {}
 
   ngOnInit() {
     this.filterTerm$ = this.valueSources.pipe(
       switchMap<Observable<any>, any>(newValueSource => newValueSource),
-      map((value: string | SettingValue) => !isString(value) ? coerceSettingValueToString(value) : value),
+      map((value: string | SettingValue) => (!isString(value) ? coerceSettingValueToString(value) : value)),
       shareReplay()
     );
     this.filteredAllowedValues$ = filterSourceBy(this.allowedValuesSources, this.filterTerm$).pipe(
@@ -102,9 +103,12 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
     if (!this.popoverRef || !this.popoverRef.hasAttached) {
       return;
     }
-    const clickTarget = <HTMLElement> event.target;
+    const clickTarget = <HTMLElement>event.target;
     const autocompleteTrigger = this.containerRef.nativeElement;
-    if (clickTarget !== autocompleteTrigger && (this.popoverRef && !this.popoverRef.overlayElement.contains(clickTarget))) {
+    if (
+      clickTarget !== autocompleteTrigger &&
+      (this.popoverRef && !this.popoverRef.overlayElement.contains(clickTarget))
+    ) {
       this.close();
     }
   }
@@ -122,10 +126,7 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
 
   ngOnChanges(changes: { [P in keyof this]?: SimpleChange }) {
     if (changes.formControl) {
-      this.valueSources.next(concat(
-        observableOf(this.formControl.value),
-        this.formControl.valueChanges,
-      ));
+      this.valueSources.next(concat(observableOf(this.formControl.value), this.formControl.valueChanges));
     }
     if (changes.autoCompleteAllowedSource) {
       this.allowedValuesSources.next(ensureObservable(this.autoCompleteAllowedSource));
@@ -173,39 +174,32 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
       // we need to manually trigger a position recalculation anytime the help section appears or dissapears because
       // it forces a change in the distribution of the container potentially clipping the autosuggestion list outside the view
       const reposition = () => setTimeout(() => this.popoverRef.updatePosition());
-      merge(
-        this.helpVisibilityChanges(),
-        this.resultsContainerVisibilityChanges()
-      )
-      .pipe(takeUntil(this.popoverRef.detachments()))
-      .subscribe(reposition);
+      merge(this.helpVisibilityChanges(), this.resultsContainerVisibilityChanges())
+        .pipe(takeUntil(this.popoverRef.detachments()))
+        .subscribe(reposition);
     }
   }
 
   private helpVisibilityChanges() {
-    return this.filterTerm$
-      .pipe(
-        map((term) => isEmpty(term)),
-        distinctUntilChanged(),
-      );
+    return this.filterTerm$.pipe(
+      map(term => isEmpty(term)),
+      distinctUntilChanged()
+    );
   }
 
   private resultsContainerVisibilityChanges(): Observable<boolean> {
-    const countResults = map((results: any[] | null) => results ? results.length : 0);
+    const countResults = map((results: any[] | null) => (results ? results.length : 0));
     return combineLatest(
       this.filteredAllowedValues$.pipe(countResults),
-      this.filteredVariableOptions$.pipe(countResults),
-    )
-    .pipe(
+      this.filteredVariableOptions$.pipe(countResults)
+    ).pipe(
       map(([count1, count2]) => count1 + count2 === 0),
-      distinctUntilChanged(),
+      distinctUntilChanged()
     );
   }
 
   private getScrollStrategy() {
-    return this.overlay
-      .scrollStrategies
-      .reposition();
+    return this.overlay.scrollStrategies.reposition();
   }
 
   private getPositionStrategy() {
@@ -236,10 +230,9 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
       filterTerm: this.filterTerm$,
       allowedValues: this.filteredAllowedValues$,
       appVariables: this.filteredVariableOptions$,
-      onOptionSelected: (option) => this.optionSelected(option)
+      onOptionSelected: option => this.optionSelected(option),
     };
-    const injector = new PortalInjector(this.parentInjector, new WeakMap<any, any>([ [AUTOCOMPLETE_OPTIONS, sources] ]));
+    const injector = new PortalInjector(this.parentInjector, new WeakMap<any, any>([[AUTOCOMPLETE_OPTIONS, sources]]));
     return new ComponentPortal(AutoCompleteContentComponent, null, injector);
   }
-
 }

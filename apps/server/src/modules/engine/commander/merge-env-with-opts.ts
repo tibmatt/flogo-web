@@ -1,6 +1,8 @@
 const DEFAULT_CGO_ENABLED = '0';
 
-interface Dictionary<T=any> { [key: string]: T | undefined }
+interface Dictionary<T = any> {
+  [key: string]: T | undefined;
+}
 export function mergeEnvWithOpts(opts: Dictionary, processEnv: Dictionary<string>) {
   let customEnv: Dictionary = {};
   if (processEnv.CGO_ENABLED === undefined) {
@@ -16,7 +18,7 @@ export function mergeEnvWithOpts(opts: Dictionary, processEnv: Dictionary<string
 
 function appendCompilationOptions(compile: Dictionary, customEnv: Dictionary<string>) {
   if (compile.os) {
-    customEnv.GOOS =compile.os;
+    customEnv.GOOS = compile.os;
   }
 
   if (compile.arch) {

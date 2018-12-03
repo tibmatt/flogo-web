@@ -3,14 +3,7 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 
-import {
-  Action,
-  ActionBase,
-  ItemActivityTask,
-  ItemBranch,
-  ItemSubflow,
-  ItemTask
-} from '@flogo-web/client/core';
+import { Action, ActionBase, ItemActivityTask, ItemBranch, ItemSubflow, ItemTask } from '@flogo-web/client/core';
 import { isMapperActivity } from '@flogo-web/client/shared/utils';
 
 import { AppState } from '@flogo-web/client/flow/core/state/app.state';
@@ -39,26 +32,27 @@ export function createSaveAction(
   store: Store<AppState>,
   saveData: SaveTaskConfigEventData
 ): Observable<FlowActions.CommitItemConfiguration> {
-  return store.
-    pipe(
-      select(FlowSelectors.selectFlowState),
-      take(1),
-      map(flowState => new FlowActions.CommitItemConfiguration(getChanges(flowState, saveData))),
+  return store.pipe(
+    select(FlowSelectors.selectFlowState),
+    take(1),
+    map(flowState => new FlowActions.CommitItemConfiguration(getChanges(flowState, saveData)))
   );
 }
 export function createSaveBranchAction(
   store: Store<AppState>,
   saveData: SaveBranchConfigEventData
 ): Observable<FlowActions.ItemUpdated> {
-  return store.
-  pipe(
+  return store.pipe(
     select(FlowSelectors.selectFlowState),
     take(1),
-    map(flowState => new FlowActions.ItemUpdated(getBranchChanges(flowState, saveData))),
+    map(flowState => new FlowActions.ItemUpdated(getBranchChanges(flowState, saveData)))
   );
 }
 
-function getChanges(flowState: FlowState, saveData: SaveTaskConfigEventData): FlowActions.CommitItemConfiguration['payload'] {
+function getChanges(
+  flowState: FlowState,
+  saveData: SaveTaskConfigEventData
+): FlowActions.CommitItemConfiguration['payload'] {
   let handlerType: HandlerType;
   let tile: ItemTask;
   const tileId = saveData.tileId;
@@ -70,8 +64,8 @@ function getChanges(flowState: FlowState, saveData: SaveTaskConfigEventData): Fl
     tile = flowState.errorItems[tileId] as ItemTask;
   }
   const changedSubflowSchema = saveData.changedSubflowSchema;
-  const tileAsSubflow = <ItemSubflow> tile;
-  const itemChanges: {id: string} & Partial<ItemActivityTask & ItemSubflow> = {
+  const tileAsSubflow = <ItemSubflow>tile;
+  const itemChanges: { id: string } & Partial<ItemActivityTask & ItemSubflow> = {
     id: tile.id,
     description: saveData.description,
     name: saveData.name,
@@ -103,7 +97,10 @@ function getChanges(flowState: FlowState, saveData: SaveTaskConfigEventData): Fl
   return { handlerType, item: itemChanges, newSubflowSchema: changedSubflowSchema as Action };
 }
 
-function getBranchChanges(flowState: FlowState, saveData: SaveBranchConfigEventData): FlowActions.ItemUpdated['payload'] {
+function getBranchChanges(
+  flowState: FlowState,
+  saveData: SaveBranchConfigEventData
+): FlowActions.ItemUpdated['payload'] {
   let handlerType: HandlerType;
   const tileId = saveData.id;
   if (flowState.mainItems[tileId]) {
@@ -112,9 +109,9 @@ function getBranchChanges(flowState: FlowState, saveData: SaveBranchConfigEventD
     handlerType = HandlerType.Error;
   }
 
-  const itemChanges: {id: string} & Partial<ItemBranch> = {
+  const itemChanges: { id: string } & Partial<ItemBranch> = {
     id: saveData.id,
     condition: saveData.condition,
   };
-  return { handlerType, item: itemChanges};
+  return { handlerType, item: itemChanges };
 }

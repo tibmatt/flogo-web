@@ -7,16 +7,22 @@ import { ArrayMappingInfo } from '../models/array-mapping';
 
 @Injectable()
 export class TreeNodeFactoryService {
-
-  fromJsonSchema(schema: any,
-                 visitor?: (treeNode: TreeNode, level: number, path: string, parents: MapperTreeNode[]) => any): MapperTreeNode[] {
+  fromJsonSchema(
+    schema: any,
+    visitor?: (treeNode: TreeNode, level: number, path: string, parents: MapperTreeNode[]) => any
+  ): MapperTreeNode[] {
     if (!schema) {
       return [];
     }
     return this.makeTreeNodes(schema, visitor, { level: 0, path: null, parents: [] });
   }
 
-  applyArrayFilterToJsonSchema(schema: any, mappedArrayChain: ArrayMappingInfo[], path?: string, isInFilterPath = false) {
+  applyArrayFilterToJsonSchema(
+    schema: any,
+    mappedArrayChain: ArrayMappingInfo[],
+    path?: string,
+    isInFilterPath = false
+  ) {
     // let properties = {};
     // const { level, path } = params;
     // const nodeLevel = level + 1;
@@ -44,16 +50,22 @@ export class TreeNodeFactoryService {
 
     if (this.isObject(properties)) {
       const filteredName = null;
-      result.properties = Object.keys(properties).map(propName => {
-        const propPath = (path ? `${path}.` : '') + propName;
-        const propertyDescriptor = this.applyArrayFilterToJsonSchema(properties[propName], mappedArrayChain, propPath, isInFilterPath);
+      result.properties = Object.keys(properties)
+        .map(propName => {
+          const propPath = (path ? `${path}.` : '') + propName;
+          const propertyDescriptor = this.applyArrayFilterToJsonSchema(
+            properties[propName],
+            mappedArrayChain,
+            propPath,
+            isInFilterPath
+          );
 
-        if (propertyDescriptor) {
-          return [propName, propertyDescriptor];
-          // allowedProperties[propName] = propertyDescriptor;
-        }
-        return null;
-      })
+          if (propertyDescriptor) {
+            return [propName, propertyDescriptor];
+            // allowedProperties[propName] = propertyDescriptor;
+          }
+          return null;
+        })
         .filter(prop => {
           if (!prop) {
             return false;
@@ -83,7 +95,7 @@ export class TreeNodeFactoryService {
     const pushToCategory = (categoryId, value) => {
       let category = categoryMap.get(categoryId);
       if (!category) {
-        category = {label: categoryId, children: [], styleClass: 'node--has-children'};
+        category = { label: categoryId, children: [], styleClass: 'node--has-children' };
         categoryMap.set(categoryId, category);
       }
       category.children.push(value);
@@ -108,7 +120,7 @@ export class TreeNodeFactoryService {
       }
     });
 
-    const sort = (sortNodes) => lodash.sortBy(sortNodes, 'label');
+    const sort = sortNodes => lodash.sortBy(sortNodes, 'label');
     const allNodes = nodes.concat(Array.from(categoryMap.values())).map(currNode => {
       if (currNode.children) {
         currNode.children = sort(currNode.children);
@@ -124,16 +136,15 @@ export class TreeNodeFactoryService {
   private createFromFunctionsNode(currentFunction, namespace?) {
     const functionName = currentFunction.name;
     const help = currentFunction.help;
-    const args = currentFunction.args
-      .reduce((allArgs, current) => {
-        // is var args?
-        if (/\.\.\.(.+)/g.test(current.type)) {
-          allArgs.push(`${current.name}1`, `${current.name}2`);
-        } else {
-          allArgs.push(current.name);
-        }
-        return allArgs;
-      }, []);
+    const args = currentFunction.args.reduce((allArgs, current) => {
+      // is var args?
+      if (/\.\.\.(.+)/g.test(current.type)) {
+        allArgs.push(`${current.name}1`, `${current.name}2`);
+      } else {
+        allArgs.push(current.name);
+      }
+      return allArgs;
+    }, []);
     let snippet = '';
     if (namespace) {
       snippet = `${namespace}.${functionName}(${args.join(', ')})`;
@@ -144,7 +155,7 @@ export class TreeNodeFactoryService {
       label: functionName,
       isSelectable: true,
       styleClass: 'node--selectable node--has-no-children',
-      data: {help, snippet}
+      data: { help, snippet },
     };
     return node;
   }
@@ -164,9 +175,9 @@ export class TreeNodeFactoryService {
 
     return Object.keys(properties).reduce((nodes, propName) => {
       const property = properties[propName];
-      const node: { name: string, type: string, children?: any, memberType?: string } = {
+      const node: { name: string; type: string; children?: any; memberType?: string } = {
         name: propName,
-        type: property.type
+        type: property.type,
       };
 
       if (property.type === 'object' || property.type === 'array') {
@@ -192,12 +203,12 @@ export class TreeNodeFactoryService {
       return {};
     }
 
-    const categoryMap = new Map<any, { name: string, type: string, children?: any }>();
+    const categoryMap = new Map<any, { name: string; type: string; children?: any }>();
 
     const pushToCategory = (categoryId, value) => {
       let category = categoryMap.get(categoryId);
       if (!category) {
-        category = {name: categoryId, type: 'namespace', children: {}};
+        category = { name: categoryId, type: 'namespace', children: {} };
         categoryMap.set(categoryId, category);
       }
       category.children[value.name] = value;
@@ -210,11 +221,11 @@ export class TreeNodeFactoryService {
       if (currentFunction.type === 'namespace') {
         Object.keys(currentFunction.functions).forEach(subFunc => {
           const currentChildFunction = currentFunction.functions[subFunc];
-          const node = Object.assign({}, currentChildFunction, {name, type: 'function'});
+          const node = Object.assign({}, currentChildFunction, { name, type: 'function' });
           pushToCategory(func, node);
         });
       } else if (currentFunction.type === 'function') {
-        const node = Object.assign({}, currentFunction.function, {name, type: 'function'});
+        const node = Object.assign({}, currentFunction.function, { name, type: 'function' });
         nodes.push(node);
       } else {
         console.error(`Not a recognized type of function: ${currentFunction.type}`);
@@ -229,7 +240,6 @@ export class TreeNodeFactoryService {
       // const snippetArgs = args.map((argName, i) => `\${${i}:${argName}`).join(", ");
       // const snippet = `${name}(${snippetArgs})`;
       // const snippet = nameParts.concat(functionName).join(".");
-
     });
 
     return Array.from(categoryMap.values()).reduce((all, c) => {
@@ -238,9 +248,10 @@ export class TreeNodeFactoryService {
     }, {});
   }
 
-  private makeTreeNodes(from: any,
-                        visitor: (node: MapperTreeNode, level, path, parents: MapperTreeNode[]) => MapperTreeNode,
-                        params: { level, path, parents }
+  private makeTreeNodes(
+    from: any,
+    visitor: (node: MapperTreeNode, level, path, parents: MapperTreeNode[]) => MapperTreeNode,
+    params: { level; path; parents }
   ): MapperTreeNode[] {
     let properties = {};
     // let memberType = null;
@@ -290,12 +301,16 @@ export class TreeNodeFactoryService {
           nodeName: propName,
           // specifies the type for generating namespaced expression in flogo.
           // ex: activity, trigger, flow, etc
-          rootType: property.rootType
-        }
+          rootType: property.rootType,
+        },
       };
 
       if (property.type === 'object' || property.type === 'array') {
-        node.children = this.makeTreeNodes(property, visitor, { path: nodePath, level: nodeLevel, parents: params.parents.concat(node) });
+        node.children = this.makeTreeNodes(property, visitor, {
+          path: nodePath,
+          level: nodeLevel,
+          parents: params.parents.concat(node),
+        });
 
         // if is an array of primitives
         const nodeProperties = lodash.get(property, 'items.properties', null);
@@ -304,9 +319,9 @@ export class TreeNodeFactoryService {
           node.memberType = property.items.type;
         }
 
-        const hasChildren = (node.children && node.children.length);
+        const hasChildren = node.children && node.children.length;
         node.isSelectable = true;
-        node.styleClass = node.styleClass + ' ' + ( hasChildren ? 'node--has-children' : 'node--has-no-children');
+        node.styleClass = node.styleClass + ' ' + (hasChildren ? 'node--has-children' : 'node--has-no-children');
       } else {
         node.styleClass = node.styleClass + ' node--has-no-children';
       }
@@ -363,6 +378,4 @@ export class TreeNodeFactoryService {
   private isObject(value: any) {
     return value && value === Object(value);
   }
-
-
 }

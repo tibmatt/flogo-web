@@ -1,10 +1,13 @@
 <div [class]="'flogo-common-modal shim-trigger__modal'" #shimTriggersModal>
   <i class="flogo-icon-close shim-trigger__modal-close" (click)="control.close()"></i>
   <div *ngIf="!isTriggerSelected">
-    <div class="shim-trigger__modal-header">{{'TRIGGER-SHIM:MULTIPLE-TRIGGERS' | translate}}</div>
+    <div class="shim-trigger__modal-header">{{ 'TRIGGER-SHIM:MULTIPLE-TRIGGERS' | translate }}</div>
     <ul class="shim-triggers-list">
-      <li class="shim-trigger-list__element" *ngFor="let shimTrigger of shimTriggerData.shimTriggersList"
-           (click)="onTriggerSelectionFinish(shimTrigger)">
+      <li
+        class="shim-trigger-list__element"
+        *ngFor="let shimTrigger of shimTriggerData.shimTriggersList"
+        (click)="onTriggerSelectionFinish(shimTrigger)"
+      >
         <div class="shim-trigger-item">
           <i class="flogo-icon-trigger shim-trigger-icon"></i>
           <span class="shim-trigger-item__name">{{ shimTrigger.configuredTrigger.name }}</span>
@@ -24,14 +27,15 @@
       </div>
       <div class="shim-trigger-flow">
         <span class="shim-trigger-flow__label">{{ 'TRIGGER-SHIM:CONNECTED-FLOW' | translate }}</span>
-        <span class="shim-trigger-flow__name">{{displayOptions.flowName}}</span>
+        <span class="shim-trigger-flow__name">{{ displayOptions.flowName }}</span>
       </div>
     </div>
     <div class="select-environment">{{ 'TRIGGER-SHIM:SELECT-ENVIRONMENT' | translate }}</div>
     <ul class="list-unstyled trigger-build-options">
       <li *ngFor="let opt of shimTriggerData.buildOptions" class="build-environment-list-item">
         <a class="build-environment-link" (click)="onBuildEnvSelection(opt, displayOptions.triggerId)">
-          <span>{{ opt.label }}</span></a>
+          <span>{{ opt.label }}</span></a
+        >
       </li>
     </ul>
   </div>

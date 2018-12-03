@@ -12,7 +12,6 @@ const EMPTY_ERROR = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ErrorComponent implements OnChanges {
-
   @Input() errors: Array<string>;
   renderableError: {
     msg: string;
@@ -34,5 +33,4 @@ export class ErrorComponent implements OnChanges {
       this.renderableError = EMPTY_ERROR;
     }
   }
-
 }

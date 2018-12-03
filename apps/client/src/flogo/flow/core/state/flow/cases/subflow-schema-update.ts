@@ -11,7 +11,7 @@ export function subflowSchemaUpdate(state: FlowState, payload: { newSubflowSchem
     linkedSubflows: {
       ...state.linkedSubflows,
       [newSubflowSchema.id]: { ...newSubflowSchema },
-    }
+    },
   };
   return state;
 }

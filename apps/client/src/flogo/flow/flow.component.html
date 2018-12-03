@@ -1,50 +1,71 @@
 <div class="canvas-flow" *ngIf="flowState && !loading">
-
-  <div class="header"
-       [ngClass]="{'header--device': profileType === PROFILE_TYPES.DEVICE,
-                       'header--microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}">
+  <div
+    class="header"
+    [ngClass]="{
+      'header--device': profileType === PROFILE_TYPES.DEVICE,
+      'header--microservice': profileType === PROFILE_TYPES.MICRO_SERVICE
+    }"
+  >
     <section class="flogo-flow-detail">
-
-      <header class="flogo-flow-detail-header" [ngClass]="{'--hover':backToAppHover}">
-        <i class="flogo-icon flogo-icon-back flogo-flow-detail-header-back-icon"
-           (click)="navigateToApp()"
-           (mouseover)="onMouseOverBackControl()"
-           (mouseout)="onMouseOutBackControl()"></i>
-        <div class="flogo-profile__tile flogo-profile-detail__thumb"
-             [ngClass]="{'flogo-profile__device': profileType === PROFILE_TYPES.DEVICE,
-                         'flogo-profile__microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}"></div>
+      <header class="flogo-flow-detail-header" [ngClass]="{ '--hover': backToAppHover }">
+        <i
+          class="flogo-icon flogo-icon-back flogo-flow-detail-header-back-icon"
+          (click)="navigateToApp()"
+          (mouseover)="onMouseOverBackControl()"
+          (mouseout)="onMouseOutBackControl()"
+        ></i>
+        <div
+          class="flogo-profile__tile flogo-profile-detail__thumb"
+          [ngClass]="{
+            'flogo-profile__device': profileType === PROFILE_TYPES.DEVICE,
+            'flogo-profile__microservice': profileType === PROFILE_TYPES.MICRO_SERVICE
+          }"
+        ></div>
         <div class="header-content">
           <div class="flow-detail-name">
-            <h3 class="flogo-flow-detail-name" [(fgContentEditable)]="flowState.name"
-                (fgContentEditableChange)="changeFlowDetailName($event, 'name')"></h3>
-            <span *ngIf="profileType === PROFILE_TYPES.DEVICE" class="flogo-profile__device-type">{{flowState.app.device.deviceType}}</span>
-            <span>in</span> <span (click)="navigateToApp()"
-                                  class="flogo-flow-detail-header-back-app-name"
-                                  (mouseover)="onMouseOverBackControl()"
-                                  (mouseout)="onMouseOutBackControl()">{{flowState?.app?.name}}</span>
+            <h3
+              class="flogo-flow-detail-name"
+              [(fgContentEditable)]="flowState.name"
+              (fgContentEditableChange)="changeFlowDetailName($event, 'name')"
+            ></h3>
+            <span *ngIf="profileType === PROFILE_TYPES.DEVICE" class="flogo-profile__device-type">{{
+              flowState.app.device.deviceType
+            }}</span>
+            <span>in</span>
+            <span
+              (click)="navigateToApp()"
+              class="flogo-flow-detail-header-back-app-name"
+              (mouseover)="onMouseOverBackControl()"
+              (mouseout)="onMouseOutBackControl()"
+              >{{ flowState?.app?.name }}</span
+            >
           </div>
-          <p class="flow-detail-description" [(fgContentEditable)]="flowState.description"
-             [allowNewLines]="true"
-             placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
-             (fgContentEditableChange)="changeFlowDetail($event, 'descrption')"></p>
+          <p
+            class="flow-detail-description"
+            [(fgContentEditable)]="flowState.description"
+            [allowNewLines]="true"
+            placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
+            (fgContentEditableChange)="changeFlowDetail($event, 'descrption')"
+          ></p>
         </div>
       </header>
 
-
       <div class="flogo-flow-detail-menu-container">
-        <flogo-run-flow *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
-                        [disableRun]="runnableInfo?.disabled"
-                        disableReason="{{ runnableInfo?.disableReason | translate }}"
-                        [flowInputs]="flowState?.metadata?.input"
-                        (submit)="onRunFlow($event)"></flogo-run-flow>
-        <div class="flogo-flow-detail-log-button-container">
-          <flogo-logs></flogo-logs>
-        </div>
+        <flogo-run-flow
+          *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
+          [disableRun]="runnableInfo?.disabled"
+          disableReason="{{ runnableInfo?.disableReason | translate }}"
+          [flowInputs]="flowState?.metadata?.input"
+          (submit)="onRunFlow($event)"
+        ></flogo-run-flow>
+        <div class="flogo-flow-detail-log-button-container"><flogo-logs></flogo-logs></div>
         <div class="flogo-flow-detail-menu" [class.--active]="isflowMenuOpen" (fgClickOutside)="closeFlowMenu()">
           <i class="flogo-icon-kebabmenu kebabmenu-icon" (click)="toggleFlowMenu()"></i>
           <div class="flogo-flow-detail-menu-list-wrapper">
             <ul class="flogo-flow-detail-menu-list">
-              <!--<li class="flogo-flow-detail-menu-item"><a disabled href="javascript:void(0);"><i class="fa fa-clone fa-fw"></i>{{ 'CANVAS:COPY' | translate }}</a></li>-->
+              <!--
+                <li class="flogo-flow-detail-menu-item"><a disabled href="javascript:void(0);"><i class="fa fa-clone fa-fw"></i>{{ 'CANVAS:COPY' | translate }}</a></li>
+              -->
               <li class="flogo-flow-detail-menu-item">
                 <a (click)="deleteFlow()" href="javascript:void(0);" class="flogo-flow-detail-menu-anchor">
                   <i class="flogo-icon flogo-icon-delete"></i>{{ 'CANVAS:DELETE' | translate }}
@@ -53,37 +74,45 @@
             </ul>
           </div>
         </div>
-
       </div>
     </section>
     <flogo-flow-tabs class="tabs"></flogo-flow-tabs>
   </div>
 
-    <flogo-flow-debug-panel *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE; else deviceDiagram"
-                            class="debug-panel-container">
-      <ng-container *ngTemplateOutlet="flowContent"></ng-container>
-    </flogo-flow-debug-panel>
+  <flogo-flow-debug-panel
+    *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE; else: deviceDiagram"
+    class="debug-panel-container"
+  >
+    <ng-container *ngTemplateOutlet="flowContent"></ng-container>
+  </flogo-flow-debug-panel>
 
-    <ng-template #deviceDiagram>
-      <div class="diagram-container--device">
-        <ng-container *ngTemplateOutlet="flowContent"></ng-container>
-      </div>
-    </ng-template>
+  <ng-template #deviceDiagram>
+    <div class="diagram-container--device"><ng-container *ngTemplateOutlet="flowContent"></ng-container></div>
+  </ng-template>
 
-    <ng-template #flowContent>
-      <flogo-flow-triggers></flogo-flow-triggers>
-      <flogo-flow-params-schema-button role="button"
-                                       *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
-                                       [flowMetadata]="flowState?.metadata"
-                                       (click)="openInputSchemaModal()"></flogo-flow-params-schema-button>
-      <div class="diagram-container">
-        <flogo-flow-diagram class="diagram" (deleteTask)="onDeleteTask($event)"></flogo-flow-diagram>
-        <flogo-debug-panel-toggle-button *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE" class="debug-panel-toggler"></flogo-debug-panel-toggle-button>
-      </div>
-    </ng-template>
+  <ng-template #flowContent>
+    <flogo-flow-triggers></flogo-flow-triggers>
+    <flogo-flow-params-schema-button
+      role="button"
+      *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
+      [flowMetadata]="flowState?.metadata"
+      (click)="openInputSchemaModal()"
+    ></flogo-flow-params-schema-button>
+    <div class="diagram-container">
+      <flogo-flow-diagram class="diagram" (deleteTask)="onDeleteTask($event)"></flogo-flow-diagram>
+      <flogo-debug-panel-toggle-button
+        *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
+        class="debug-panel-toggler"
+      ></flogo-debug-panel-toggle-button>
+    </div>
+  </ng-template>
 
   <flogo-flow-task-configurator></flogo-flow-task-configurator>
   <flogo-flow-branch-configurator></flogo-flow-branch-configurator>
 </div>
 
-<flogo-flow-params-schema #inputSchemaModal [flow]="flowState" (save)="onFlowSchemaSave($event)"></flogo-flow-params-schema>
+<flogo-flow-params-schema
+  #inputSchemaModal
+  [flow]="flowState"
+  (save)="onFlowSchemaSave($event)"
+></flogo-flow-params-schema>

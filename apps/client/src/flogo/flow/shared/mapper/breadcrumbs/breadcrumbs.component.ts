@@ -11,8 +11,7 @@ export class BreadcrumbsComponent implements OnChanges {
   @Input() inputNode: MapperTreeNode;
   branch: MapperTreeNode[];
 
-  constructor(private iconsService: IconsService) {
-  }
+  constructor(private iconsService: IconsService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     const inputNodeChange = changes['inputNode'];
@@ -33,5 +32,4 @@ export class BreadcrumbsComponent implements OnChanges {
     }
     return branch;
   }
-
 }

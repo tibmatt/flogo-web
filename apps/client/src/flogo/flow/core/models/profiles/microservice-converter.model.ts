@@ -1,10 +1,9 @@
 import { FlowMetadata, MetadataAttribute } from '@flogo-web/client/core/interfaces';
 import { ValueType } from '@flogo-web/client/core/constants';
 import { AbstractModelConverter } from '../ui-converter.model';
-import {ActivitySchema, FLOGO_PROFILE_TYPE} from '@flogo-web/client/core';
+import { ActivitySchema, FLOGO_PROFILE_TYPE } from '@flogo-web/client/core';
 
 export class MicroServiceModelConverter extends AbstractModelConverter {
-
   getProfileType(): FLOGO_PROFILE_TYPE {
     return FLOGO_PROFILE_TYPE.MICRO_SERVICE;
   }
@@ -18,7 +17,7 @@ export class MicroServiceModelConverter extends AbstractModelConverter {
     const flowOutputs = (flowJSON.metadata && flowJSON.metadata.output) || [];
     const metadata: FlowMetadata = {
       input: [],
-      output: []
+      output: [],
     };
 
     metadata.input = flowInputs.map(input => {
@@ -32,7 +31,8 @@ export class MicroServiceModelConverter extends AbstractModelConverter {
       return inputMetadata;
     });
     metadata.output = flowOutputs.map(input => ({
-      name: input.name, type: input.type || ValueType.String,
+      name: input.name,
+      type: input.type || ValueType.String,
     }));
 
     return {
@@ -41,7 +41,7 @@ export class MicroServiceModelConverter extends AbstractModelConverter {
       name: flowJSON.name || flowJSON.id,
       description: flowJSON.description || '',
       app: flowJSON.app,
-      metadata
+      metadata,
     };
   }
 }

@@ -4,7 +4,16 @@
  *  - https://golang.org/ref/spec
  *  - https://github.com/antlr/grammars-v4/tree/master/golang
  */
-import { IToken, TokenType, Lexer, Parser, tokenMatcher, createToken, IMultiModeLexerDefinition, TokenVocabulary } from 'chevrotain';
+import {
+  IToken,
+  TokenType,
+  Lexer,
+  Parser,
+  tokenMatcher,
+  createToken,
+  IMultiModeLexerDefinition,
+  TokenVocabulary,
+} from 'chevrotain';
 import { Identifier } from '../ast/expr-nodes';
 import { UnicodeCategory } from './unicode';
 
@@ -167,7 +176,7 @@ const StringTemplateOpen = createToken({
   label: 'Open String template ("{{)',
   pattern: { exec: matchStringTemplateOpen },
   line_breaks: false,
-  push_mode: 'string_template'
+  push_mode: 'string_template',
 });
 
 const StringTemplateClose = createToken({
@@ -197,15 +206,18 @@ const Lookup = createToken({
   pattern: /\$/,
 });
 
-const RESOLVER_PATTERN = new RegExp(`[_${UnicodeCategory.Letter}][_\.${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`);
+const RESOLVER_PATTERN = new RegExp(
+  `[_${UnicodeCategory.Letter}][_\.${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`
+);
 function matchResolverIdentifier(text: string, startOffset?: number, tokens?: IToken[]) {
   if (tokens.length < 3) {
     return null;
   }
   const lastTokenIdx = tokens.length - 1;
-  const isLexingResolver = tokenMatcher(tokens[lastTokenIdx], LSquare)
-    && tokenMatcher(tokens[lastTokenIdx - 1], IdentifierName)
-    &&  tokenMatcher(tokens[lastTokenIdx - 2], Lookup);
+  const isLexingResolver =
+    tokenMatcher(tokens[lastTokenIdx], LSquare) &&
+    tokenMatcher(tokens[lastTokenIdx - 1], IdentifierName) &&
+    tokenMatcher(tokens[lastTokenIdx - 2], Lookup);
   if (isLexingResolver) {
     return RESOLVER_PATTERN.exec(text.substr(startOffset));
   }
@@ -376,7 +388,6 @@ export const allTokens: TokenType[] = [...Object.values(Token)];
 // instead of functions, so all the functions are properties
 // tslint:disable:member-ordering
 export class MappingParser extends Parser {
-
   constructor(input: IToken[]) {
     super(input, lexerDefinition, {
       recoveryEnabled: true,
@@ -386,10 +397,7 @@ export class MappingParser extends Parser {
   }
 
   public mappingExpression = this.RULE('mappingExpression', () => {
-    this.OR([
-      {ALT: () => this.SUBRULE(this.expression)},
-      {ALT: () => this.SUBRULE(this.json)}
-    ]);
+    this.OR([{ ALT: () => this.SUBRULE(this.expression) }, { ALT: () => this.SUBRULE(this.json) }]);
   });
 
   public attrAccess = this.RULE('attrAccess', () => {
@@ -399,19 +407,16 @@ export class MappingParser extends Parser {
 
   public literal = this.RULE('literal', () => {
     this.OR([
-      {ALT: () => this.CONSUME(Token.StringLiteral)},
-      {ALT: () => this.CONSUME(Token.NumberLiteral)},
-      {ALT: () => this.CONSUME(Token.True)},
-      {ALT: () => this.CONSUME(Token.False)},
-      {ALT: () => this.CONSUME(Token.Nullable)}
+      { ALT: () => this.CONSUME(Token.StringLiteral) },
+      { ALT: () => this.CONSUME(Token.NumberLiteral) },
+      { ALT: () => this.CONSUME(Token.True) },
+      { ALT: () => this.CONSUME(Token.False) },
+      { ALT: () => this.CONSUME(Token.Nullable) },
     ]);
   });
 
   public json = this.RULE('json', () => {
-    this.OR([
-      {ALT: () => this.SUBRULE(this.object)},
-      {ALT: () => this.SUBRULE(this.array)}
-    ]);
+    this.OR([{ ALT: () => this.SUBRULE(this.object) }, { ALT: () => this.SUBRULE(this.array) }]);
   });
 
   public expression = this.RULE('expression', () => {
@@ -420,10 +425,7 @@ export class MappingParser extends Parser {
   });
 
   public baseExpr = this.RULE('baseExpr', () => {
-    this.OR([
-      { ALT: () => this.SUBRULE(this.parenExpr) },
-      { ALT: () => this.SUBRULE(this.unaryExpr) }
-    ]);
+    this.OR([{ ALT: () => this.SUBRULE(this.parenExpr) }, { ALT: () => this.SUBRULE(this.unaryExpr) }]);
     this.MANY(() => this.SUBRULE1(this.binaryExprSide));
   });
 
@@ -454,24 +456,18 @@ export class MappingParser extends Parser {
 
   private primaryExprTail = this.RULE('primaryExprTail', () => {
     this.OR([
-      {ALT: () => this.SUBRULE(this.selector)},
-      {ALT: () => this.SUBRULE(this.index)},
-      {ALT: () => this.SUBRULE(this.argumentList)}
+      { ALT: () => this.SUBRULE(this.selector) },
+      { ALT: () => this.SUBRULE(this.index) },
+      { ALT: () => this.SUBRULE(this.argumentList) },
     ]);
   });
 
   private operand = this.RULE('operand', () => {
-    this.OR([
-      {ALT: () => this.SUBRULE(this.literal)},
-      {ALT: () => this.SUBRULE(this.operandHead)}
-    ]);
+    this.OR([{ ALT: () => this.SUBRULE(this.literal) }, { ALT: () => this.SUBRULE(this.operandHead) }]);
   });
 
   private operandHead = this.RULE('operandHead', () => {
-    this.OR([
-      {ALT: () => this.CONSUME(Token.IdentifierName)},
-      {ALT: () => this.SUBRULE(this.resolver)},
-    ]);
+    this.OR([{ ALT: () => this.CONSUME(Token.IdentifierName) }, { ALT: () => this.SUBRULE(this.resolver) }]);
   });
 
   private resolverSelector = this.RULE('resolverSelector', () => {
@@ -522,7 +518,7 @@ export class MappingParser extends Parser {
       SEP: Token.Comma,
       DEF: () => {
         this.SUBRULE(this.objectItem);
-      }
+      },
     });
     this.CONSUME(Token.RCurly);
   });
@@ -539,21 +535,21 @@ export class MappingParser extends Parser {
       SEP: Token.Comma,
       DEF: () => {
         this.SUBRULE(this.jsonValue);
-      }
+      },
     });
     this.CONSUME(Token.RSquare);
   });
 
   protected jsonValue = this.RULE('jsonValue', () => {
     this.OR([
-      {ALT: () => this.SUBRULE(this.stringTemplate)},
-      {ALT: () => this.CONSUME(Token.DblQuoteStringLiteral)},
-      {ALT: () => this.CONSUME(Token.NumberLiteral)},
-      {ALT: () => this.SUBRULE(this.object)},
-      {ALT: () => this.SUBRULE(this.array)},
-      {ALT: () => this.CONSUME(Token.True)},
-      {ALT: () => this.CONSUME(Token.False)},
-      {ALT: () => this.CONSUME(Token.Null)}
+      { ALT: () => this.SUBRULE(this.stringTemplate) },
+      { ALT: () => this.CONSUME(Token.DblQuoteStringLiteral) },
+      { ALT: () => this.CONSUME(Token.NumberLiteral) },
+      { ALT: () => this.SUBRULE(this.object) },
+      { ALT: () => this.SUBRULE(this.array) },
+      { ALT: () => this.CONSUME(Token.True) },
+      { ALT: () => this.CONSUME(Token.False) },
+      { ALT: () => this.CONSUME(Token.Null) },
     ]);
   });
 
@@ -562,5 +558,4 @@ export class MappingParser extends Parser {
     this.SUBRULE(this.expression);
     this.CONSUME(Token.StringTemplateClose);
   });
-
 }

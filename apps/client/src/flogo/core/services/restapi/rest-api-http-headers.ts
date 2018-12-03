@@ -5,6 +5,6 @@ export const DEFAULT_REST_HEADERS = new InjectionToken<HttpHeaders>('core.servic
 
 export function createDefaultRestApiHttpHeaders() {
   return new HttpHeaders({
-    'Accept': 'application/json'
+    Accept: 'application/json',
   });
 }

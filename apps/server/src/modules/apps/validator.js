@@ -18,9 +18,8 @@ function validate(schema, data, options = {}, customValidations) {
   const ajv = new Ajv(options);
 
   if (customValidations) {
-    customValidations.forEach(validator => ajv.addKeyword(
-      validator.keyword,
-      { validate: validator.validate, errors: true }),
+    customValidations.forEach(validator =>
+      ajv.addKeyword(validator.keyword, { validate: validator.validate, errors: true })
     );
   }
 
@@ -28,9 +27,7 @@ function validate(schema, data, options = {}, customValidations) {
   return valid ? null : ajv.errors;
 }
 
-
 export class Validator {
-
   static validateSimpleApp(data, isDeviceType) {
     let validationSchema;
     if (isDeviceType) {
@@ -65,17 +62,24 @@ export class Validator {
     options = defaults({}, options, { removeAdditional: false, useDefaults: false, allErrors: true, verbose: true });
     let customValidations;
     if (contribVerify) {
-      const makeInstalledValidator = (keyword, collection, type) => function validator(schema, vData) {
-        const isInstalled = collection.includes(vData);
-        if (!isInstalled) {
-          validator.errors = [{ keyword, message: `${type} "${vData}" is not installed`, data }];
-        }
-        return isInstalled;
-      };
+      const makeInstalledValidator = (keyword, collection, type) =>
+        function validator(schema, vData) {
+          const isInstalled = collection.includes(vData);
+          if (!isInstalled) {
+            validator.errors = [{ keyword, message: `${type} "${vData}" is not installed`, data }];
+          }
+          return isInstalled;
+        };
 
       customValidations = [
-        { keyword: 'trigger-installed', validate: makeInstalledValidator('trigger-installed', contribVerify.triggers || [], 'Trigger') },
-        { keyword: 'activity-installed', validate: makeInstalledValidator('activity-installed', contribVerify.activities || [], 'Activity') },
+        {
+          keyword: 'trigger-installed',
+          validate: makeInstalledValidator('trigger-installed', contribVerify.triggers || [], 'Trigger'),
+        },
+        {
+          keyword: 'activity-installed',
+          validate: makeInstalledValidator('activity-installed', contribVerify.activities || [], 'Activity'),
+        },
       ];
     }
 
@@ -97,5 +101,4 @@ export class Validator {
     }
     return errors;
   }
-
 }

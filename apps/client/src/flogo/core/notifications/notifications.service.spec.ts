@@ -17,24 +17,23 @@ describe('NotificationsService', () => {
 
   it('Adds success notifications', async(() => {
     notificationsService.success('this was successful', 0);
-    takeOneEmission()
-      .subscribe(n => expect(n).toEqual([{ type: 'success', message: 'this was successful' }]));
+    takeOneEmission().subscribe(n => expect(n).toEqual([{ type: 'success', message: 'this was successful' }]));
   }));
 
   it('Adds error notifications', async(() => {
     notificationsService.error('this was an error', 0);
-    takeOneEmission()
-      .subscribe(n => expect(n).toEqual([{ type: 'error', message: 'this was an error' }]));
+    takeOneEmission().subscribe(n => expect(n).toEqual([{ type: 'error', message: 'this was an error' }]));
   }));
 
   it('New notifications are prepended', async(() => {
     notificationsService.success('first notification', 0);
     notificationsService.success('second notification', 0);
-    takeOneEmission()
-      .subscribe(n => expect(n).toEqual([
+    takeOneEmission().subscribe(n =>
+      expect(n).toEqual([
         { type: 'success', message: 'second notification' },
         { type: 'success', message: 'first notification' },
-      ]));
+      ])
+    );
   }));
 
   it('Automatically removes notifications when time specified', fakeAsync(() => {
@@ -51,12 +50,14 @@ describe('NotificationsService', () => {
           ]);
           tick(30);
         }),
-        switchMap(() => takeOneEmission()),
+        switchMap(() => takeOneEmission())
       )
-      .subscribe(n => expect(n).toEqual([
-        { type: 'success', message: 'third notification' },
-        { type: 'success', message: 'first notification' }
-      ]));
+      .subscribe(n =>
+        expect(n).toEqual([
+          { type: 'success', message: 'third notification' },
+          { type: 'success', message: 'first notification' },
+        ])
+      );
   }));
 
   it('Allows to manually remove notifications', async(() => {
@@ -68,10 +69,12 @@ describe('NotificationsService', () => {
         tap(notifications => notificationsService.removeNotification(notifications[1])),
         switchMap(() => takeOneEmission())
       )
-      .subscribe(n => expect(n).toEqual([
-        { type: 'error', message: 'another notification' },
-        { type: 'success', message: 'first notification' },
-      ]));
+      .subscribe(n =>
+        expect(n).toEqual([
+          { type: 'error', message: 'another notification' },
+          { type: 'success', message: 'first notification' },
+        ])
+      );
   }));
 
   it('Automatically removes notifications on route change', fakeAsync(() => {
@@ -89,5 +92,4 @@ describe('NotificationsService', () => {
       )
       .subscribe(n => expect(n).toEqual([]));
   }));
-
 });

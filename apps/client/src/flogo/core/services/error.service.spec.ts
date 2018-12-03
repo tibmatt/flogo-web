@@ -1,16 +1,11 @@
 import { ErrorService, OperationalError } from './error.service';
 
-
-describe('Service: ErrorService', function (this: {
-  errorService: ErrorService
-}) {
-
+describe('Service: ErrorService', function(this: { errorService: ErrorService }) {
   beforeAll(() => {
     this.errorService = new ErrorService();
   });
 
   describe('should create an operational error', () => {
-
     it('with the correct type', () => {
       const error = this.errorService.makeOperationalError('MyError', 'My custom message');
       expect(error instanceof Error).toBe(true);
@@ -20,15 +15,14 @@ describe('Service: ErrorService', function (this: {
     });
 
     it('with attached properties', () => {
-
       interface CustomError extends OperationalError {
         myProp: string;
         anotherProp: any[];
       }
 
-      const error = <CustomError> this.errorService.makeOperationalError('MyError', 'My custom message', {
+      const error = <CustomError>this.errorService.makeOperationalError('MyError', 'My custom message', {
         myProp: 'a value',
-        anotherProp: [1, 2, 3]
+        anotherProp: [1, 2, 3],
       });
       expect(error instanceof Error).toBe(true);
       expect(error.myProp).toEqual('a value');
@@ -39,8 +33,5 @@ describe('Service: ErrorService', function (this: {
       const error = this.errorService.makeOperationalError('MyError', 'My custom message', { name: 'DifferentName' });
       expect(error.name).not.toEqual('DifferentName');
     });
-
   });
-
-
 });

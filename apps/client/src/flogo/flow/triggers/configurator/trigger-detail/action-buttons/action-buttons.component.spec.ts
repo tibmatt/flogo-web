@@ -1,8 +1,8 @@
-import {ActionButtonsComponent} from './action-buttons.component';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {DebugElement} from '@angular/core';
-import {By} from '@angular/platform-browser';
-import {NoDependenciesFakeLanguageModule} from '@flogo-web/client/core/language/testing';
+import { ActionButtonsComponent } from './action-buttons.component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
+import { NoDependenciesFakeLanguageModule } from '@flogo-web/client/core/language/testing';
 
 describe('Component: ActionButtonsComponent', () => {
   let component: ActionButtonsComponent;
@@ -12,7 +12,7 @@ describe('Component: ActionButtonsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [NoDependenciesFakeLanguageModule],
-      declarations: [ActionButtonsComponent]
+      declarations: [ActionButtonsComponent],
     }).compileComponents();
     fixture = TestBed.createComponent(ActionButtonsComponent);
     component = fixture.componentInstance;
@@ -20,7 +20,7 @@ describe('Component: ActionButtonsComponent', () => {
     component.status = {
       isDirty: false,
       isPending: false,
-      isValid: true
+      isValid: true,
     };
     component.isSaving = false;
   }));

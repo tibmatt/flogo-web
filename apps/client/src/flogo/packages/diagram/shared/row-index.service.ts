@@ -14,7 +14,7 @@ export class RowIndexService {
         indexMap.set(tile.task.id, rowIndex);
       }
     };
-    const accumulateAllTasks = (row: Tile[], rowIndex: number) => row.forEach((tile) => addTask(tile, rowIndex));
+    const accumulateAllTasks = (row: Tile[], rowIndex: number) => row.forEach(tile => addTask(tile, rowIndex));
     tileMatrix.forEach(accumulateAllTasks);
     this.rowIndexes = indexMap;
   }
@@ -28,5 +28,4 @@ export class RowIndexService {
       this.rowIndexes.clear();
     }
   }
-
 }

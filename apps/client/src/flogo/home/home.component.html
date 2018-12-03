@@ -2,19 +2,28 @@
   <div class="header__content">
     <p class="welcome-message">{{ 'FLOWS:WELCOME-BACK' | translate }}</p>
     <p class="description-message">{{ 'FLOWS:NEW-INSTRUCTIONS' | translate }}</p>
-    <a class="flogo-link" href="https://www.youtube.com/watch?v=OHX4kKVdI28&amp;feature=youtu.be"
-       target="_blank">
+    <a class="flogo-link" href="https://www.youtube.com/watch?v=OHX4kKVdI28&amp;feature=youtu.be" target="_blank">
       <span><i class="flogo-icon flogo-icon-video"></i>{{ 'FLOWS:FEATURED-VIDEO-TUTORIAL' | translate }}</span>
     </a>
   </div>
   <div class="header__flynn" [class.is-flying]="isFlying">
-    <object (load)="onFlynnLoaded($event)" #flynn class="flogo-flows-mascotImg" data="/assets/svg/flogo-flynn.svg" type="image/svg+xml">
-      <img src="/assets/svg/flogo-flynn.svg"/>
+    <object
+      (load)="onFlynnLoaded($event)"
+      #flynn
+      class="flogo-flows-mascotImg"
+      data="/assets/svg/flogo-flynn.svg"
+      type="image/svg+xml"
+    >
+      <img src="/assets/svg/flogo-flynn.svg" />
     </object>
   </div>
 </div>
 <section class="flogo-apps-section">
-  <flogo-home-apps-list class="flogo-apps-section__apps" #appList (appSelected)="onSelectedApp($event)"></flogo-home-apps-list>
+  <flogo-home-apps-list
+    class="flogo-apps-section__apps"
+    #appList
+    (appSelected)="onSelectedApp($event)"
+  ></flogo-home-apps-list>
   <aside class="flogo-apps-section__aside">
     <h3 class="flogo-main__subtitle">{{ 'FLOWS:RECENTLY-MODIFIED' | translate }}</h3>
     <div class="recent-flows">
@@ -25,14 +34,17 @@
 
       <ul class="recent-flows__list">
         <li *ngFor="let item of recent" class="recent-flows__list__item">
-          <span class="recent-flows__flow__name"><a [routerLink]="['/flows', item.id]" class="flogo-link">{{item.name}}</a></span>
-          <span>in <a [routerLink]="['/apps', item.appId]" class="flogo-link recent-flows__list__app">{{item.app ? item.app.name
-                  : item.appId}}</a></span>
+          <span class="recent-flows__flow__name"
+            ><a [routerLink]="['/flows', item.id]" class="flogo-link">{{ item.name }}</a></span
+          >
+          <span
+            >in
+            <a [routerLink]="['/apps', item.appId]" class="flogo-link recent-flows__list__app">{{
+              item.app ? item.app.name : item.appId
+            }}</a></span
+          >
         </li>
       </ul>
     </div>
-
-
   </aside>
-
 </section>

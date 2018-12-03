@@ -19,7 +19,7 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
     this.displayMenuOptions = false;
   }
 
-  ngOnChanges({currentSelection: currentSelectionChange}: SimpleChanges) {
+  ngOnChanges({ currentSelection: currentSelectionChange }: SimpleChanges) {
     if (currentSelectionChange) {
       this.checkIsSelected();
     }
@@ -44,7 +44,7 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
   }
 
   onSelect(event) {
-    if ((event.target.className.indexOf('js-menu-option') > -1) && !this.isReadOnly) {
+    if (event.target.className.indexOf('js-menu-option') > -1 && !this.isReadOnly) {
       event.preventDefault();
     } else if (!this.isReadOnly) {
       this.select.emit(this.tile);
@@ -78,9 +78,8 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
   private checkIsSelected() {
     this.isSelected = false;
     if (this.currentSelection) {
-      const {type, taskId} = this.currentSelection;
+      const { type, taskId } = this.currentSelection;
       this.isSelected = type === DiagramSelectionType.Node && taskId === this.tile.task.id;
     }
   }
-
 }

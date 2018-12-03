@@ -7,17 +7,18 @@ import { buildApp } from './apps/build';
 
 export function apps(router) {
   const apps = new Router();
-  apps.get('/', listApps)
-      .post('/', createApp)
-      .post('\\:import', importApp)
-      // ex. /apps/zA45E:export
-      // needs to be registered before .get('/:appId')
-      .get('/:appId\\:export', exportApp)
-      .get('/:appId', getApp)
-      .get('/:appId/build', buildApp)
-      .patch('/:appId', updateApp)
-      .del('/:appId', deleteApp)
-      .post('\\:validate', validateApp);
+  apps
+    .get('/', listApps)
+    .post('/', createApp)
+    .post('\\:import', importApp)
+    // ex. /apps/zA45E:export
+    // needs to be registered before .get('/:appId')
+    .get('/:appId\\:export', exportApp)
+    .get('/:appId', getApp)
+    .get('/:appId/build', buildApp)
+    .patch('/:appId', updateApp)
+    .del('/:appId', deleteApp)
+    .post('\\:validate', validateApp);
   router.use('/apps', apps.routes(), apps.allowedMethods());
 }
 
@@ -100,7 +101,6 @@ async function updateApp(ctx, next) {
     throw error;
   }
 }
-
 
 async function deleteApp(ctx, next) {
   const appId = ctx.params.appId;

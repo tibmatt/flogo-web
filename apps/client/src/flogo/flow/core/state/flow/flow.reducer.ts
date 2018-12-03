@@ -1,9 +1,9 @@
 import * as selectionFactory from '../../models/flow/selection';
-import {SelectionType} from '../../models/selection';
-import {cleanGraphRunState} from '../../models/flow/clean-run-state';
+import { SelectionType } from '../../models/selection';
+import { cleanGraphRunState } from '../../models/flow/clean-run-state';
 
 import * as actions from './flow.actions';
-import {FlowState, INITIAL_STATE} from './flow.state';
+import { FlowState, INITIAL_STATE } from './flow.state';
 
 import { createBranch } from './cases/create-branch';
 import { taskItemCreated } from './cases/task-item-created';
@@ -56,7 +56,7 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
       state = nodeUpdate(state, action.payload);
       return {
         ...state,
-        taskConfigure : null
+        taskConfigure: null,
       };
     }
     case ActionType.ConfigureItem: {
@@ -80,7 +80,7 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
     }
     case ActionType.RunFromStart:
     case ActionType.RunFromTask: {
-      return  {
+      return {
         ...state,
         isErrorPanelOpen: false,
         mainGraph: cleanGraphRunState(state.mainGraph),
@@ -94,19 +94,19 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
       return {
         ...state,
         isErrorPanelOpen: action.payload.isOpen,
-        currentSelection : null
+        currentSelection: null,
       };
     }
     case ActionType.DebugPanelStatusChange: {
       return {
         ...state,
-        isDebugPanelOpen: action.payload.isOpen
+        isDebugPanelOpen: action.payload.isOpen,
       };
     }
     case ActionType.ActivityInstalled: {
       return {
         ...state,
-        schemas: {...state.schemas, [action.payload.ref]: action.payload}
+        schemas: { ...state.schemas, [action.payload.ref]: action.payload },
       };
     }
     case ActionType.CancelCreateItem: {
@@ -114,11 +114,10 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
       if (selection && selection.type === SelectionType.InsertTask && selection.parentId === action.payload.parentId) {
         return {
           ...state,
-          currentSelection: null
+          currentSelection: null,
         };
       }
     }
   }
   return state;
 }
-

@@ -7,7 +7,7 @@ import {
   TriggerConfigureState,
   TriggerConfigureTab,
   TriggerConfigureTabType,
-  TriggerConfigureTrigger
+  TriggerConfigureTrigger,
 } from '@flogo-web/client/flow/core/interfaces';
 import { getDeviceTabs, getMicroServiceTabs } from './tab-base-by-profile';
 import { setEnabledStatusToTabs } from './set-enabled-status-to-tabs';
@@ -36,17 +36,16 @@ function initTriggerConfigureState(
   baseState: TriggerConfigureState,
   appTriggers: Trigger[],
   triggersSchemas: Dictionary<TriggerSchema>,
-  appProfileType: FLOGO_PROFILE_TYPE,
+  appProfileType: FLOGO_PROFILE_TYPE
 ): TriggerConfigureState {
   const triggersForConfigure: Dictionary<TriggerConfigureTrigger> = {};
   let allTabs: Dictionary<TriggerConfigureTab> = {};
   const fields = {};
-  appTriggers
-    .forEach(trigger => {
-      const tabsForTrigger = createTabsForTrigger(trigger.id, appProfileType);
-      allTabs = { ...allTabs, ...tabsForTrigger };
-      triggersForConfigure[trigger.id] = createTriggerState(trigger, [...Object.keys(tabsForTrigger)]);
-    });
+  appTriggers.forEach(trigger => {
+    const tabsForTrigger = createTabsForTrigger(trigger.id, appProfileType);
+    allTabs = { ...allTabs, ...tabsForTrigger };
+    triggersForConfigure[trigger.id] = createTriggerState(trigger, [...Object.keys(tabsForTrigger)]);
+  });
   return {
     ...baseState,
     triggers: triggersForConfigure,
@@ -80,4 +79,3 @@ function createTriggerState(trigger: Trigger, tabIds: string[]): TriggerConfigur
     isSaving: false,
   };
 }
-

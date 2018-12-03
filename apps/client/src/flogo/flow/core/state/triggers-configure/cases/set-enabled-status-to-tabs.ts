@@ -9,14 +9,14 @@ export function setEnabledStatusToTabs(state: TriggerConfigureState): TriggerCon
         return tab;
       }
       return setEnabledStatusToTab(tab, state.fields[tabId]);
-    })
+    }),
   };
 }
 
 export function setEnabledStatusToTab(tab: TriggerConfigureTab, fields) {
   const isEnabled = !isEmpty(fields);
   if (isEnabled !== tab.isEnabled) {
-    tab = {...tab, isEnabled};
+    tab = { ...tab, isEnabled };
   }
   return tab;
 }

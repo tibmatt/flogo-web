@@ -3,12 +3,9 @@ import { RestApiService } from '../rest-api.service';
 
 @Injectable()
 export class ProfilesAPIService {
-  constructor(private restApiService: RestApiService) {
-  }
+  constructor(private restApiService: RestApiService) {}
 
   getProfilesList() {
-    return this.restApiService
-      .get<{ type: string, id: string }[]>('profiles')
-      .toPromise();
+    return this.restApiService.get<{ type: string; id: string }[]>('profiles').toPromise();
   }
 }

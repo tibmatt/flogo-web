@@ -1,4 +1,4 @@
-import {LanguageService, ValidationDetail} from '@flogo-web/client/core';
+import { LanguageService, ValidationDetail } from '@flogo-web/client/core';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -21,8 +21,8 @@ export class ImportErrorFormatterService {
       case 'minLength':
       case 'const':
       case 'app-empty':
-      messageHeader = this._translate.instant('IMPORT-ERROR:DATA_MISMATCH');
-      break;
+        messageHeader = this._translate.instant('IMPORT-ERROR:DATA_MISMATCH');
+        break;
       case 'cannot-identify-app-type':
         messageHeader = this._translate.instant('IMPORT-ERROR:UNKNOWN_APP_TYPE');
         break;
@@ -49,12 +49,16 @@ export class ImportErrorFormatterService {
         errorMessage = this.getErrorContext(detail.dataPath, detail.keyword) + detail.message;
         break;
       case 'enum':
-        errorMessage = this.getErrorContext(detail.dataPath, detail.keyword)
-          + this._translate.instant('IMPORT-ERROR:ONE_AMONG_CONTENT', { allowedValues: detail.params.allowedValues.join(',') });
+        errorMessage =
+          this.getErrorContext(detail.dataPath, detail.keyword) +
+          this._translate.instant('IMPORT-ERROR:ONE_AMONG_CONTENT', {
+            allowedValues: detail.params.allowedValues.join(','),
+          });
         break;
       case 'const':
-        errorMessage = this.getErrorContext(detail.dataPath, detail.keyword)
-          + this._translate.instant('IMPORT-ERROR:CONSTANT_CONTENT', { val: detail.params.allowedValue });
+        errorMessage =
+          this.getErrorContext(detail.dataPath, detail.keyword) +
+          this._translate.instant('IMPORT-ERROR:CONSTANT_CONTENT', { val: detail.params.allowedValue });
         break;
       case 'app-empty':
         errorMessage = detail.message;
@@ -83,8 +87,10 @@ export class ImportErrorFormatterService {
       propName = pathArray.pop();
     }
     if (keyword === 'type') {
-      return this._translate
-        .instant('IMPORT-ERROR:TYPE_MISMATCH_CONTENT', { property: propName, JSONPath: '.' + pathArray.join('.') });
+      return this._translate.instant('IMPORT-ERROR:TYPE_MISMATCH_CONTENT', {
+        property: propName,
+        JSONPath: '.' + pathArray.join('.'),
+      });
     } else {
       return `.${pathArray.join('.')} `;
     }

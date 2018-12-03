@@ -124,4 +124,3 @@ export function changePermissions(filePath, permissions) {
     });
   });
 }
-

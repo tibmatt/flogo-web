@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, tick, fakeAsync, async } from '@angular/core
 import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
 import { BsModalModule } from 'ng2-bs3-modal';
-import {FLOGO_PROFILE_TYPE} from '@flogo-web/client/core';
+import { FLOGO_PROFILE_TYPE } from '@flogo-web/client/core';
 import { NotificationsServiceMock } from '@flogo-web/client/core/notifications/testing';
 import { NotificationsService } from '@flogo-web/client/core/notifications/notifications.service';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared/shared.module';
@@ -12,28 +12,25 @@ import { AppDetailService, ApplicationDetail } from '../core';
 import { FlogoProfileService } from '../../core/services/profile.service';
 import { FlogoAppSettingsComponent } from '../settings/settings.component';
 import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
-import {FlowTriggerGroupComponent} from '../trigger-group/trigger-group.component';
+import { FlowTriggerGroupComponent } from '../trigger-group/trigger-group.component';
 import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
-import {FlogoApplicationFlowsComponent} from '@flogo-web/client/app/shared/flows/flows.component';
-import {FlowGroupComponent} from '@flogo-web/client/app/flow-group/flow-group.component';
-import {FlogoNewFlowComponent} from '@flogo-web/client/app/new-flow/new-flow.component';
-import {TriggerShimBuildComponent} from '@flogo-web/client/app/shim-trigger/shim-trigger.component';
-import {RESTAPIContributionsService} from '@flogo-web/client/core/services/restapi/v2/contributions.service';
-
-
+import { FlogoApplicationFlowsComponent } from '@flogo-web/client/app/shared/flows/flows.component';
+import { FlowGroupComponent } from '@flogo-web/client/app/flow-group/flow-group.component';
+import { FlogoNewFlowComponent } from '@flogo-web/client/app/new-flow/new-flow.component';
+import { TriggerShimBuildComponent } from '@flogo-web/client/app/shim-trigger/shim-trigger.component';
+import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
 
 @Component({
   selector: 'flogo-container',
   template: `
-            <flogo-apps-details-application [appDetail]="appDetail"></flogo-apps-details-application>
-            `
+    <flogo-apps-details-application [appDetail]="appDetail"></flogo-apps-details-application>
+  `,
 })
 class ContainerComponent {
   appDetail: ApplicationDetail = makeMockAppDetail();
 }
 
 class MockAppDetailService extends AppDetailService {
-
   public reload(): any {
     return null;
   }
@@ -49,7 +46,6 @@ class MockAppDetailService extends AppDetailService {
   public getDownloadLink(appId: string) {
     return appId;
   }
-
 }
 
 class MockRESTAPIContributionsService {
@@ -58,19 +54,13 @@ class MockRESTAPIContributionsService {
   }
 }
 
-
 describe('FlogoApplicationDetailComponent component', () => {
   let comp: ContainerComponent;
   let fixture: ComponentFixture<ContainerComponent>;
 
   beforeEach(done => {
     TestBed.configureTestingModule({
-      imports: [
-        BsModalModule,
-        FakeRootLanguageModule,
-        FlogoCoreModule,
-        FlogoSharedModule
-      ],
+      imports: [BsModalModule, FakeRootLanguageModule, FlogoCoreModule, FlogoSharedModule],
       declarations: [
         FlogoAppSettingsComponent,
         FlogoApplicationFlowsComponent,
@@ -80,13 +70,13 @@ describe('FlogoApplicationDetailComponent component', () => {
         FlogoExportFlowsComponent,
         FlowTriggerGroupComponent,
         FlogoNewFlowComponent,
-        TriggerShimBuildComponent
+        TriggerShimBuildComponent,
       ], // declare the test component
       providers: [
         { provide: AppDetailService, useClass: MockAppDetailService },
         { provide: RESTAPIContributionsService, useClass: MockRESTAPIContributionsService },
         { provide: NotificationsService, useValue: new NotificationsServiceMock() },
-        FlogoProfileService
+        FlogoProfileService,
       ],
     })
       .compileComponents()
@@ -120,7 +110,6 @@ describe('FlogoApplicationDetailComponent component', () => {
     const creation = fixture.debugElement.query(By.css('.flogo-app-header__date--creation span'));
     expect(creation.nativeElement.innerText).toEqual('less than a minute ago.');
   });
-
 
   it('Click on Add description should show description input field', () => {
     let inputDescription;
@@ -185,7 +174,6 @@ describe('FlogoApplicationDetailComponent component', () => {
 
     const labelName = fixture.debugElement.query(By.css('.qa-app-name'));
     expect(labelName.nativeElement.innerText).toEqual(newName);
-
   }));
 
   it('When the application has a description the add description link should not be visible', () => {
@@ -206,14 +194,13 @@ describe('FlogoApplicationDetailComponent component', () => {
     comp.appDetail = nextApp;
     // tick(1000);
     fixture.detectChanges();
-    fixture.whenStable()
-      .then(() => {
-        const labelName = fixture.debugElement.query(By.css('.flogo-app-header__name'));
-        expect(labelName).toBeNull();
+    fixture.whenStable().then(() => {
+      const labelName = fixture.debugElement.query(By.css('.flogo-app-header__name'));
+      expect(labelName).toBeNull();
 
-        const nameInput = fixture.debugElement.query(By.css('#appName'));
-        expect(nameInput).not.toBeNull('Name input is not present');
-      });
+      const nameInput = fixture.debugElement.query(By.css('#appName'));
+      expect(nameInput).not.toBeNull('Name input is not present');
+    });
   }));
 
   it('If it is not a new application, its name should be displayed as a label', () => {
@@ -228,7 +215,6 @@ describe('FlogoApplicationDetailComponent component', () => {
     const labelElement = labelName.nativeElement;
     expect(labelElement.innerText).toEqual('Untitled Application');
   });
-
 });
 
 function makeMockAppDetail() {
@@ -238,47 +224,49 @@ function makeMockAppDetail() {
       id: '1',
       name: 'Sample Application 1',
       version: '0.0.1',
-      description: null, /* should be null for test */
+      description: null /* should be null for test */,
       createdAt: new Date(),
-      updatedAt: null, /* should be null for test */
+      updatedAt: null /* should be null for test */,
       flows: [
         {
           id: '897',
           name: 'Manually adjust temperature',
           // tslint:disable-next-line max-line-length
-          description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Luptas oilsksd as asdfwo',
-          createdAt: new Date()
+          description:
+            'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Luptas oilsksd as asdfwo',
+          createdAt: new Date(),
         },
         {
           id: '987',
           name: 'Raise temperature & notifiy operator',
           // tslint:disable-next-line max-line-length
-          description: 'A basic flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
-          createdAt: new Date()
+          description:
+            'A basic flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
+          createdAt: new Date(),
         },
         {
           id: '879',
           name: 'Log temperature',
           // tslint:disable-next-line max-line-length
-          description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
-          createdAt: new Date()
-        }
+          description:
+            'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
+          createdAt: new Date(),
+        },
       ],
       flowGroups: [],
-      triggerGroups: []
+      triggerGroups: [],
     },
     state: {
       name: {
         pendingSave: false,
         errors: {},
-        hasErrors: false
+        hasErrors: false,
       },
       description: {
         pendingSave: false,
         errors: {},
-        hasErrors: false
-      }
-    }
+        hasErrors: false,
+      },
+    },
   };
 }
-

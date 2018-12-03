@@ -8,15 +8,13 @@ import { EditableInputDirective } from './editable-input.directive';
 @Component({
   selector: 'flogo-test-container',
   template: `
-      <input fgEditableInput (editableInputSave)="onSave()" (editableInputCancel)="onCancel()" >
-   `
+    <input fgEditableInput (editableInputSave)="onSave()" (editableInputCancel)="onCancel()" />
+  `,
 })
 class ContainerComponent {
-  public onCancel() {
-  }
+  public onCancel() {}
 
-  public onSave() {
-  }
+  public onSave() {}
 }
 
 describe('Directive: EditableInput', () => {
@@ -27,7 +25,7 @@ describe('Directive: EditableInput', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [CommonModule, BrowserModule],
-      declarations: [EditableInputDirective, ContainerComponent]
+      declarations: [EditableInputDirective, ContainerComponent],
     });
     fixture = TestBed.createComponent(ContainerComponent);
     container = fixture.componentInstance;
@@ -40,7 +38,6 @@ describe('Directive: EditableInput', () => {
     fixture.detectChanges();
 
     expect(container.onSave).toHaveBeenCalled();
-
   });
 
   it('Should emit one save event when "enter" is pressed', fakeAsync(() => {
@@ -60,5 +57,4 @@ describe('Directive: EditableInput', () => {
     fixture.detectChanges();
     expect(container.onCancel).toHaveBeenCalled();
   });
-
 });

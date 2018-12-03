@@ -2,7 +2,7 @@ export enum EnumMapperErrorCodes {
   M_INVALID_IDENTIFIER = 4000,
   M_INVALID_FUNCTION,
   M_INVALID_TYPE,
-  M_INVALID_SYNTAX
+  M_INVALID_SYNTAX,
 }
 
 /**

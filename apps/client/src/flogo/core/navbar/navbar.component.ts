@@ -1,15 +1,13 @@
 import { isEmpty } from 'lodash';
-import {Component, OnInit} from '@angular/core';
-import {environment} from '../../../environments/environment';
-
+import { Component, OnInit } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'flogo-navbar',
   // moduleId: module.id,
   templateUrl: 'navbar.tpl.html',
-  styleUrls: ['navbar.component.less']
+  styleUrls: ['navbar.component.less'],
 })
-
 export class FlogoNavbarComponent implements OnInit {
   public currentYear: number;
   public isWalkthroughActivated = false;
@@ -17,7 +15,7 @@ export class FlogoNavbarComponent implements OnInit {
   isOpenMenu = false;
 
   constructor() {
-    this.currentYear = (new Date).getFullYear();
+    this.currentYear = new Date().getFullYear();
     this.version = environment.version;
   }
 
@@ -53,5 +51,4 @@ export class FlogoNavbarComponent implements OnInit {
   closeNavMenu() {
     this.isOpenMenu = false;
   }
-
 }

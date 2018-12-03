@@ -10,7 +10,6 @@ import { TriggerNameValidatorService } from './trigger-name-validator.service';
 
 @Injectable()
 export class ConfigureDetailsService {
-
   constructor(
     private settingsFormBuilder: SettingsFormBuilder,
     private mapperControllerFactory: MapperControllerFactory,
@@ -18,16 +17,27 @@ export class ConfigureDetailsService {
   ) {}
 
   build(state: CurrentTriggerState) {
-    const { flowMetadata, schema: triggerSchema, handler: { actionMappings }, fields, trigger: {handlers} } = state;
-    const { input, output } = actionMappings || { input: [], output: []};
+    const {
+      flowMetadata,
+      schema: triggerSchema,
+      handler: { actionMappings },
+      fields,
+      trigger: { handlers },
+    } = state;
+    const { input, output } = actionMappings || { input: [], output: [] };
     const disableCommonSettings = handlers.length > 1;
     const triggerInformation = this.getTriggerInformation(handlers, triggerSchema);
     const nameValidator = this.nameValidator.create(state.appId, state.trigger.id);
     return {
-      settings: this.settingsFormBuilder.build(fields.settings, triggerInformation.settingsControls, disableCommonSettings, nameValidator),
+      settings: this.settingsFormBuilder.build(
+        fields.settings,
+        triggerInformation.settingsControls,
+        disableCommonSettings,
+        nameValidator
+      ),
       flowInputMapper: this.createInputMapperController(flowMetadata, triggerSchema, input),
       replyMapper: this.createReplyMapperController(flowMetadata, triggerSchema, output),
-      triggerInformation
+      triggerInformation,
     };
   }
 
@@ -37,17 +47,17 @@ export class ConfigureDetailsService {
       trigger: {
         handlersCount: handlers.length,
         homePage: triggerSchema.homepage,
-        readme: triggerSchema.homepage
-      }
+        readme: triggerSchema.homepage,
+      },
     };
   }
 
   private getAllSettingsControls(schema: TriggerSchema): TriggerInformation['settingsControls'] {
-    const {settings: triggerSettings, handler} = schema;
-    const {settings: handlerSettings} = handler;
+    const { settings: triggerSettings, handler } = schema;
+    const { settings: handlerSettings } = handler;
     return {
       triggerSettings: this.reduceSettingsAndGetInfo(triggerSettings),
-      handlerSettings: this.reduceSettingsAndGetInfo(handlerSettings)
+      handlerSettings: this.reduceSettingsAndGetInfo(handlerSettings),
     };
   }
 
@@ -59,7 +69,7 @@ export class ConfigureDetailsService {
     return this.mapperControllerFactory.createController(
       triggerSchema.reply || [],
       flowMetadata && flowMetadata.output ? flowMetadata.output : [],
-      output,
+      output
     );
   }
 
@@ -68,11 +78,7 @@ export class ConfigureDetailsService {
     if (isEmpty(flowInput) || isEmpty(triggerSchema.outputs)) {
       return null;
     }
-    return this.mapperControllerFactory.createController(
-      flowInput,
-      triggerSchema.outputs || [],
-      input
-    );
+    return this.mapperControllerFactory.createController(flowInput, triggerSchema.outputs || [], input);
   }
 
   private reduceSettingsAndGetInfo(settings: SchemaAttribute[]): Dictionary<SettingControlInfo> {
@@ -80,10 +86,9 @@ export class ConfigureDetailsService {
       allSettings[setting.name] = {
         ...setting,
         propsAllowed: [],
-        validations: createValidatorsForSchema(setting)
+        validations: createValidatorsForSchema(setting),
       };
       return allSettings;
     }, {});
   }
-
 }

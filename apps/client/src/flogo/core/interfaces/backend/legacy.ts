@@ -34,7 +34,7 @@ export interface flowToJSON_Task {
   description?: string;
   attributes: flowToJSON_Attribute[];
   settings?: flowToJSON_Settings;
-  inputMappings: flowToJSON_Mapping [];
+  inputMappings: flowToJSON_Mapping[];
   ouputMappings: flowToJSON_Mapping[];
 }
 
@@ -93,4 +93,3 @@ export interface flowToJSON_RootTask {
   tasks: flowToJSON_Task[];
   links: flowToJSON_Link[];
 }
-

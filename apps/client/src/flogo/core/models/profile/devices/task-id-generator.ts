@@ -1,4 +1,4 @@
-import {calculateNextId} from '../calculate-next-id';
+import { calculateNextId } from '../calculate-next-id';
 
 export function deviceTaskIdGenerator(items?: any) {
   let taskID: string;
@@ -6,7 +6,6 @@ export function deviceTaskIdGenerator(items?: any) {
   //  generate a more meaningful task ID in string format
   if (items) {
     taskID = calculateNextId(items);
-
   } else {
     // shift the timestamp for avoiding overflow 32 bit system
     /* tslint:disable-next-line:no-bitwise */

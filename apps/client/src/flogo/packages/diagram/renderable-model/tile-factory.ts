@@ -6,7 +6,7 @@ const PaddingTile = {
 };
 
 const PlaceholderTile = {
-  type: TileType.Placeholder
+  type: TileType.Placeholder,
 };
 
 export function makeInsertTile(parentId: string): InsertTile {

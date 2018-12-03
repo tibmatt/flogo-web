@@ -8,9 +8,15 @@
         <use xlink:href="/assets/svg/trigger-icon.svg#addTrigger" class="trigger__shape trigger__shape--empty"></use>
       </ng-container>
     </svg>
-    <div class="flogo-trigger__count" *ngIf="triggerCountDisplay"><span>{{triggerCountDisplay}}</span></div>
+    <div class="flogo-trigger__count" *ngIf="triggerCountDisplay">
+      <span>{{ triggerCountDisplay }}</span>
+    </div>
   </div>
   <i class="flogo-icon-trigger" [class.flogo-icon-trigger--empty]="!triggers"></i>
 </div>
-<flogo-apps-flows class="flogo-group__flows"
-                  [flows]="flows" (flowSelected)="onSelect($event)" (deleteFlow)="onDeleteFlow($event)"></flogo-apps-flows>
+<flogo-apps-flows
+  class="flogo-group__flows"
+  [flows]="flows"
+  (flowSelected)="onSelect($event)"
+  (deleteFlow)="onDeleteFlow($event)"
+></flogo-apps-flows>

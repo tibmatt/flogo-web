@@ -1,61 +1,66 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {TASKADD_OPTIONS, TaskAddComponent} from './task-add.component';
-import {TaskAddModule} from './task-add.module';
-import {FakeRootLanguageModule} from '@flogo-web/client/core/language/testing';
-import {of} from 'rxjs';
-import {FLOGO_PROFILE_TYPE} from '@flogo-web/client/core';
-import {By} from '@angular/platform-browser';
-import {FlogoFlowService} from '@flogo-web/client/flow/core';
-import {RESTAPIContributionsService} from '@flogo-web/client/core/services/restapi/v2/contributions.service';
-import {TaskAddOptions} from './core/task-add-options';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TASKADD_OPTIONS, TaskAddComponent } from './task-add.component';
+import { TaskAddModule } from './task-add.module';
+import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
+import { of } from 'rxjs';
+import { FLOGO_PROFILE_TYPE } from '@flogo-web/client/core';
+import { By } from '@angular/platform-browser';
+import { FlogoFlowService } from '@flogo-web/client/flow/core';
+import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
+import { TaskAddOptions } from './core/task-add-options';
 
 describe('Component: TaskAddComponent', () => {
   let component: TaskAddComponent;
   let fixture: ComponentFixture<TaskAddComponent>;
   const mockOptions: TaskAddOptions = {
-    activities$: of([{
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      title: 'Log message'
-    }, {
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-      title: 'Counter'
-    }, {
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow',
-      title: 'Start a subflow'
-    }]),
+    activities$: of([
+      {
+        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        title: 'Log message',
+      },
+      {
+        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
+        title: 'Counter',
+      },
+      {
+        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow',
+        title: 'Start a subflow',
+      },
+    ]),
     appAndFlowInfo$: of({
       appId: 'some_app',
       appProfileType: FLOGO_PROFILE_TYPE.MICRO_SERVICE,
-      actionId: 'some_action'
+      actionId: 'some_action',
     }),
     selectActivity: () => {},
     installedActivity: () => {},
-    updateActiveState: () => {}
+    updateActiveState: () => {},
   };
   const mockFlowService = {
-    listFlowsForApp: () => Promise.resolve([])
+    listFlowsForApp: () => Promise.resolve([]),
   };
   const mockContribsAPIService = {
     installContributions: () => Promise.resolve({}),
-    getContributionDetails: () => Promise.resolve({})
+    getContributionDetails: () => Promise.resolve({}),
   };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        FakeRootLanguageModule,
-        TaskAddModule
+      imports: [FakeRootLanguageModule, TaskAddModule],
+      providers: [
+        {
+          provide: TASKADD_OPTIONS,
+          useValue: mockOptions,
+        },
+        {
+          provide: FlogoFlowService,
+          useValue: mockFlowService,
+        },
+        {
+          provide: RESTAPIContributionsService,
+          useValue: mockContribsAPIService,
+        },
       ],
-      providers: [{
-        provide: TASKADD_OPTIONS,
-        useValue: mockOptions
-      }, {
-        provide: FlogoFlowService,
-        useValue: mockFlowService
-      }, {
-        provide: RESTAPIContributionsService,
-        useValue: mockContribsAPIService
-      }]
     }).compileComponents();
   }));
 

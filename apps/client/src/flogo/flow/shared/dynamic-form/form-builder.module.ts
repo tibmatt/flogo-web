@@ -15,11 +15,7 @@ import { FieldErrorComponent } from './field-error/field-error.component';
 import { LabelComponent } from './label/label.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MonacoEditorModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, MonacoEditorModule],
   declarations: [
     FormBuilderComponent,
     TextBoxComponent,
@@ -31,14 +27,7 @@ import { LabelComponent } from './label/label.component';
     FieldErrorComponent,
     LabelComponent,
   ],
-  providers: [
-    FormBuilderService,
-    FormFieldService
-  ],
-  exports: [
-    FormBuilderComponent,
-    DynamicFieldGroupComponent,
-  ]
+  providers: [FormBuilderService, FormFieldService],
+  exports: [FormBuilderComponent, DynamicFieldGroupComponent],
 })
-export class FormBuilderModule {
-}
+export class FormBuilderModule {}

@@ -1,14 +1,14 @@
 import _ from 'lodash';
-import {inspect} from 'util';
+import { inspect } from 'util';
 
-import {FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE} from '../constants';
-import {runShellCMD} from "./process";
+import { FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../constants';
+import { runShellCMD } from './process';
 
 export * from './file';
 export * from './json';
 
-export function atob( str ) {
-  return new Buffer( str, 'base64' ).toString( 'binary' );
+export function atob(str) {
+  return new Buffer(str, 'base64').toString('binary');
 }
 
 /** *******
@@ -20,37 +20,37 @@ export function atob( str ) {
 //    https://github.com/:username/:projectname.git
 //    https://github.com/:username/:projectname
 const GITHUB_URL_PATTERN = /^(?:https\:\/\/)?github\.com\/(?:([\w\-]+)\/)(?:([\w\-]+)(?:\.git)?)$/.source;
-const GITHUB_URL_SUBFOLDER_PATTERN = /^(?:https\:\/\/)?github\.com\/(?:([\w\-]+)\/)(?:([\w\-]+))\/(?:([\w\-/]+))$/.source;
+const GITHUB_URL_SUBFOLDER_PATTERN = /^(?:https\:\/\/)?github\.com\/(?:([\w\-]+)\/)(?:([\w\-]+))\/(?:([\w\-/]+))$/
+  .source;
 
-export function parseGitHubURL( url ) {
-  let simplePattern = new RegExp( GITHUB_URL_PATTERN );
-  let subfolderPattern = new RegExp( GITHUB_URL_SUBFOLDER_PATTERN );
+export function parseGitHubURL(url) {
+  let simplePattern = new RegExp(GITHUB_URL_PATTERN);
+  let subfolderPattern = new RegExp(GITHUB_URL_SUBFOLDER_PATTERN);
   let result = null;
 
-  let parsed = url.match( simplePattern );
+  let parsed = url.match(simplePattern);
 
-  if ( parsed ) {
+  if (parsed) {
     result = {
-      url : url,
-      username : parsed[ 1 ],
-      repoName : parsed[ 2 ]
-    }
+      url: url,
+      username: parsed[1],
+      repoName: parsed[2],
+    };
   } else {
-    parsed = url.match( subfolderPattern );
+    parsed = url.match(subfolderPattern);
 
-    if ( parsed ) {
+    if (parsed) {
       result = {
-        url : url,
-        username : parsed[ 1 ],
-        repoName : parsed[ 2 ],
-        extraPath : parsed[ 3 ]
-      }
+        url: url,
+        username: parsed[1],
+        repoName: parsed[2],
+        extraPath: parsed[3],
+      };
     }
   }
 
   return result;
 }
-
 
 /** *******
  * CMD related utility functions
@@ -63,16 +63,16 @@ export function parseGitHubURL( url ) {
  * @param folderPath
  * @returns {Promise}
  */
-export function gitClone( repoURL, folderPath ) {
-  return new Promise( ( resolve, reject )=> {
-    runShellCMD( 'git', [ 'clone', '--recursive', repoURL, folderPath ] )
-      .then( ()=> {
-        resolve( true );
-      } )
-      .catch( ( err )=> {
-        reject( err );
-      } );
-  } );
+export function gitClone(repoURL, folderPath) {
+  return new Promise((resolve, reject) => {
+    runShellCMD('git', ['clone', '--recursive', repoURL, folderPath])
+      .then(() => {
+        resolve(true);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
 }
 
 /**
@@ -81,16 +81,16 @@ export function gitClone( repoURL, folderPath ) {
  * @param folderPath
  * @returns {Promise}
  */
-export function gitUpdate( folderPath ) {
-  return new Promise( ( resolve, reject )=> {
-    runShellCMD( 'git', [ 'pull', '--rebase' ], { cwd : folderPath } )
-      .then( ()=> {
-        resolve( true );
-      } )
-      .catch( ( err )=> {
-        reject( err );
-      } );
-  } );
+export function gitUpdate(folderPath) {
+  return new Promise((resolve, reject) => {
+    runShellCMD('git', ['pull', '--rebase'], { cwd: folderPath })
+      .then(() => {
+        resolve(true);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
 }
 
 /** *******
@@ -103,8 +103,8 @@ export function gitUpdate( folderPath ) {
  *
  * @param obj
  */
-export function inspectObj( obj ) {
-  console.log( inspect( obj, { depth : 7, color : true } ) );
+export function inspectObj(obj) {
+  console.log(inspect(obj, { depth: 7, color: true }));
 }
 
 /**
@@ -113,20 +113,18 @@ export function inspectObj( obj ) {
  * @returns {Promise|Promise<T>}
  */
 export function getRemoteFileContent(url) {
-
   return new Promise((resolve, reject) => {
     const lib = url.startsWith('https') ? require('https') : require('http');
-    const request = lib.get(url, (response) => {
+    const request = lib.get(url, response => {
       if (response.statusCode < 200 || response.statusCode > 299) {
         reject(new Error('Failed to load file, status: ' + response.statusCode));
       }
       const body = [];
-      response.on('data', (chunk) => body.push(chunk));
+      response.on('data', chunk => body.push(chunk));
       response.on('end', () => resolve(body.join('')));
     });
-    request.on('error', (err) => reject(err))
+    request.on('error', err => reject(err));
   });
-
 }
 
 export function getDefaultValueByType(type) {

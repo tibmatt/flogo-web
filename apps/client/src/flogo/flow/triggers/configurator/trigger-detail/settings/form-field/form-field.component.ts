@@ -6,12 +6,12 @@ import { SettingValue } from '../../settings-value';
 import { SettingControlInfo } from '../../../interfaces';
 import { parseValue } from '../parse-value';
 
-const COMPLEX_TYPES = [ ValueType.Array, ValueType.Any, ValueType.ComplexObject, ValueType.Object, ValueType.Params ];
+const COMPLEX_TYPES = [ValueType.Array, ValueType.Any, ValueType.ComplexObject, ValueType.Object, ValueType.Params];
 
 @Component({
   selector: 'flogo-configuration-settings-field',
   templateUrl: 'form-field.component.html',
-  styleUrls: ['../shared/form-common-styles.less']
+  styleUrls: ['../shared/form-common-styles.less'],
 })
 export class SettingsFormFieldComponent implements OnChanges {
   @Input() settingInformation: SettingControlInfo;

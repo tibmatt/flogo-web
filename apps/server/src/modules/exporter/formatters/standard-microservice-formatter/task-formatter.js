@@ -11,7 +11,6 @@ import { portAndFormatMappings } from './port-and-format-mappings';
 import { createFlowUri } from './create-flow-uri';
 
 export class TaskFormatter {
-
   setSourceTask(sourceTask) {
     this.sourceTask = sourceTask;
     return this;

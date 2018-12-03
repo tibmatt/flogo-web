@@ -1,15 +1,15 @@
-import {select, Store} from '@ngrx/store';
-import {FlowState, FlowActions, FlowSelectors} from '../../core/state/index';
-import {Observable} from 'rxjs';
-import {map, take} from 'rxjs/operators';
-import {PayloadOf} from '../../core/state/utils';
-import {activitySchemaToTask, createSubFlowTask, getProfileType, isSubflowTask} from '@flogo-web/client/shared/utils';
-import {CONTRIB_REF_PLACEHOLDER, ItemActivityTask, ItemSubflow, NodeType, Task} from '@flogo-web/client/core';
-import {assign} from 'lodash';
-import {uniqueTaskName} from '@flogo-web/client/flow/core/models/unique-task-name';
-import {extractItemInputsFromTask, taskIdGenerator} from '@flogo-web/client/core/models';
-import {makeNode} from '@flogo-web/client/flow/core/models/graph-and-items/graph-creator';
-import {HandlerType, InsertTaskSelection} from '@flogo-web/client/flow/core/models';
+import { select, Store } from '@ngrx/store';
+import { FlowState, FlowActions, FlowSelectors } from '../../core/state/index';
+import { Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { PayloadOf } from '../../core/state/utils';
+import { activitySchemaToTask, createSubFlowTask, getProfileType, isSubflowTask } from '@flogo-web/client/shared/utils';
+import { CONTRIB_REF_PLACEHOLDER, ItemActivityTask, ItemSubflow, NodeType, Task } from '@flogo-web/client/core';
+import { assign } from 'lodash';
+import { uniqueTaskName } from '@flogo-web/client/flow/core/models/unique-task-name';
+import { extractItemInputsFromTask, taskIdGenerator } from '@flogo-web/client/core/models';
+import { makeNode } from '@flogo-web/client/flow/core/models/graph-and-items/graph-creator';
+import { HandlerType, InsertTaskSelection } from '@flogo-web/client/flow/core/models';
 
 interface TaskAddData {
   ref: string;
@@ -32,8 +32,8 @@ function createNewTask(flowState: FlowState, activityData: TaskAddData): Payload
   const handlerType = selection.handlerType === HandlerType.Main ? HandlerType.Main : HandlerType.Error;
   const schema = flowState.schemas[activityData.ref];
   const profileType = getProfileType(flowState.app);
-  const {errorItems, mainItems} = flowState;
-  const task = createTask({profileType, activitySchema: schema, data: activityData, errorItems, mainItems});
+  const { errorItems, mainItems } = flowState;
+  const task = createTask({ profileType, activitySchema: schema, data: activityData, errorItems, mainItems });
   const isFinal = !!task.return;
   const isSubflow = isSubflowTask(task.type);
   const item: ItemActivityTask | ItemSubflow = createItem(task, isSubflow);
@@ -46,25 +46,27 @@ function createNewTask(flowState: FlowState, activityData: TaskAddData): Payload
     features: {
       subflow: isSubflow,
       final: isFinal,
-      canHaveChildren: !isFinal
-    }
+      canHaveChildren: !isFinal,
+    },
   });
   return {
     handlerType,
     item,
     node,
-    subflowSchema: activityData.flowData
+    subflowSchema: activityData.flowData,
   };
 }
 
-function createTask({profileType, data, activitySchema, mainItems, errorItems}) {
+function createTask({ profileType, data, activitySchema, mainItems, errorItems }) {
   let task;
   if (data.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
-    const {flowData: {name, description, id: actionId}} = data;
+    const {
+      flowData: { name, description, id: actionId },
+    } = data;
     task = {
       ...createSubFlowTask(activitySchema),
       name,
-      description
+      description,
     };
     task.settings = task.settings || {};
     task.settings.flowPath = actionId;
@@ -72,9 +74,9 @@ function createTask({profileType, data, activitySchema, mainItems, errorItems}) 
     task = activitySchemaToTask(activitySchema);
   }
   const taskName = uniqueTaskName(task.name, mainItems, errorItems);
-  task = <Task> assign({}, task, {
-    id: taskIdGenerator(profileType, {...mainItems, ...errorItems}, task),
-    name: taskName
+  task = <Task>assign({}, task, {
+    id: taskIdGenerator(profileType, { ...mainItems, ...errorItems }, task),
+    name: taskName,
   });
   return task;
 }

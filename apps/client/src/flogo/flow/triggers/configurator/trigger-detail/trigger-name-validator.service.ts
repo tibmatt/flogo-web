@@ -9,21 +9,19 @@ const isSameTrigger = (triggers, currentTriggerId) => triggers.length === 1 && t
 
 @Injectable()
 export class TriggerNameValidatorService {
-  constructor(private triggersService: TriggersApiService) {
-  }
+  constructor(private triggersService: TriggersApiService) {}
 
   create(appId: string, triggerId: string): AsyncValidatorFn {
     return (control: AbstractControl): Observable<any> | Promise<any> => {
-      return timer(DEBOUNCE_MS)
-        .pipe(
-          filter(() => control.value && control.value.trim()),
-          switchMap(() => this.triggersService.listTriggersForApp(appId, { name: control.value })),
-          map(foundTriggers => {
-            if (foundTriggers && foundTriggers.length && !isSameTrigger(foundTriggers, triggerId)) {
-              return { nameNotUnique: true };
-            }
-            return null;
-          }),
+      return timer(DEBOUNCE_MS).pipe(
+        filter(() => control.value && control.value.trim()),
+        switchMap(() => this.triggersService.listTriggersForApp(appId, { name: control.value })),
+        map(foundTriggers => {
+          if (foundTriggers && foundTriggers.length && !isSameTrigger(foundTriggers, triggerId)) {
+            return { nameNotUnique: true };
+          }
+          return null;
+        })
       );
     };
   }

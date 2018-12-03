@@ -25,8 +25,7 @@ export class InlineHrefDirective implements OnInit {
   // tslint:disable-next-line:no-input-rename
   @Input('fgMapperInlineHref') inlineHref: string;
 
-  constructor(private element: ElementRef) {
-  }
+  constructor(private element: ElementRef) {}
 
   /**
    * Takes the relative href that has been provided and converts it to an absolute URL. The URL is applied to either the

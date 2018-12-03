@@ -2,7 +2,7 @@ import { IMapperResult } from './imapper-result';
 import { IMappingError } from './imapping-error';
 
 // tslint:disable-next-line:interface-over-type-literal
-export type STRING_MAP<T> = {[key: string]: T};
+export type STRING_MAP<T> = { [key: string]: T };
 
 /**
  * Details of a parsed expression string
@@ -40,7 +40,6 @@ export interface MapExpression {
   mappingType?: number;
 }
 
-
 /**
  * Parse location
  */
@@ -69,7 +68,6 @@ export interface ITokenLocation {
 export interface IParseError extends IMappingError {
   getLocation(): ITokenLocation;
 }
-
 
 /**
  * Provides different contextual schemas
@@ -111,7 +109,6 @@ export interface IParseToken {
  * Provides Tree lookup facility
  */
 export interface IParseTree {
-
   getToken(char_pos: number): IParseToken;
 
   getTree(): any;

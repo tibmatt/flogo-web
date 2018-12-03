@@ -11,7 +11,7 @@ import {
   ContenteditableDirective,
   DraggableDirective,
   EditableInputDirective,
-  JsonDownloaderDirective
+  JsonDownloaderDirective,
 } from './directives';
 import { LoadingIndicatorComponent } from './components/loading-indicator.component';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
@@ -29,14 +29,12 @@ const ALL_MODULE_DECLARABLES = [
   TimeFromNowPipe,
   ClickOutsideDirective,
   FlogoDeletePopupComponent,
-  ObjectPropertiesPipe
+  ObjectPropertiesPipe,
 ];
 
-@NgModule({ // module dependencies
-  imports: [
-    NgCommonModule,
-    TranslateModule,
-  ],
+@NgModule({
+  // module dependencies
+  imports: [NgCommonModule, TranslateModule],
   declarations: ALL_MODULE_DECLARABLES,
   exports: [
     NgCommonModule,
@@ -47,7 +45,6 @@ const ALL_MODULE_DECLARABLES = [
     BsModalModule,
     TranslateModule,
     ...ALL_MODULE_DECLARABLES,
-  ]
+  ],
 })
-export class SharedModule {
-}
+export class SharedModule {}

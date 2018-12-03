@@ -16,16 +16,13 @@ export function load() {
   });
   monaco.languages.setMonarchTokensProvider(languageId, <any>loadTokenizer());
   monaco.languages.setLanguageConfiguration(languageId, {
-    brackets: [
-      ['{', '}'],
-      ['[', ']']
-    ],
+    brackets: [['{', '}'], ['[', ']']],
 
     autoClosingPairs: [
       { open: '{', close: '}', notIn: [] },
       { open: '[', close: ']', notIn: ['string'] },
-      { open: '"', close: '"', notIn: ['string'] }
-    ]
+      { open: '"', close: '"', notIn: ['string'] },
+    ],
   });
 
   monaco.editor.defineTheme(languageId, {
@@ -46,11 +43,10 @@ export function load() {
       { token: 'json.string', foreground: 'bd4400' },
       { token: 'resolver.symbol', foreground: '1a7d7b' },
       { token: 'resolver.name', foreground: '1a7d7b' },
-      { token: 'resolver.selector', foreground: '24292e' }
+      { token: 'resolver.selector', foreground: '24292e' },
     ],
     colors: {
       'editorLineNumber.foreground': '#cad3df',
     },
   });
-
 }

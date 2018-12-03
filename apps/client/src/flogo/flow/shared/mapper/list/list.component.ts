@@ -8,7 +8,7 @@ import {
   Output,
   QueryList,
   SimpleChanges,
-  ViewChildren
+  ViewChildren,
 } from '@angular/core';
 
 import { PerfectScrollbarDirective as ScrollbarDirective } from 'ngx-perfect-scrollbar';
@@ -37,15 +37,13 @@ export class ListComponent implements OnChanges, AfterViewInit {
 
   @ViewChildren(ScrollbarDirective) scrollbars: QueryList<ScrollbarDirective>;
 
-  constructor(private draggingService: DraggingService, private iconsService: IconsService) {
-  }
+  constructor(private draggingService: DraggingService, private iconsService: IconsService) {}
 
   trackNodeByFn(index, node: MapperTreeNode) {
     return node.path;
   }
 
   ngOnChanges(changes: SimpleChanges) {
-
     if (changes['searchTerm']) {
       this.searchTerm = this.searchTerm || '';
     }
@@ -53,7 +51,6 @@ export class ListComponent implements OnChanges, AfterViewInit {
     if (changes['treeNodes']) {
       this.updateScrollbars();
     }
-
   }
 
   ngAfterViewInit() {
@@ -98,5 +95,4 @@ export class ListComponent implements OnChanges, AfterViewInit {
       }
     }, 0);
   }
-
 }

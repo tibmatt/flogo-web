@@ -99,7 +99,6 @@ async function updateTrigger(ctx, next) {
   }
 }
 
-
 async function deleteTrigger(ctx, next) {
   const triggerId = ctx.params.triggerId;
   const removed = await AppsTriggersManager.remove(triggerId);

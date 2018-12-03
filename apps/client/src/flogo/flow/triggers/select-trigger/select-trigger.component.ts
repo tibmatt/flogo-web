@@ -1,12 +1,12 @@
-import {Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, ViewChild, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, ViewChild, Output } from '@angular/core';
 import { TriggersApiService } from '@flogo-web/client/core/services';
 import { FlogoProfileService } from '@flogo-web/client/core/services/profile.service';
-import {BsModalComponent} from 'ng2-bs3-modal';
+import { BsModalComponent } from 'ng2-bs3-modal';
 
 @Component({
   selector: 'flogo-flow-select-trigger',
   templateUrl: 'select-trigger.component.html',
-  styleUrls: ['select-trigger.component.less']
+  styleUrls: ['select-trigger.component.less'],
 })
 export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   @ViewChild('addTriggerModal') modal: BsModalComponent;
@@ -21,14 +21,11 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   public existingTriggers = [];
   private _isActivated = false;
 
-
-  constructor(private profileService: FlogoProfileService,
-              private triggersApiService: TriggersApiService) {
+  constructor(private profileService: FlogoProfileService, private triggersApiService: TriggersApiService) {
     this.displayExisting = true;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onModalCloseOrDismiss() {
     this._isActivated = false;
@@ -48,51 +45,44 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   }
 
   loadInstalledTriggers() {
+    return this.profileService
+      .getTriggers(this.appDetails.appProfileType)
+      .then((triggers: any) => {
+        this.installedTriggers = triggers;
+        return triggers;
+      })
+      .then(installed => {
+        this.getExistingTriggers().then(triggers => {
+          if (!triggers.length) {
+            this.displayExisting = false;
+          } else if (triggers.length > 0) {
+            this.displayExisting = true;
+          }
 
-    return this.profileService.getTriggers(this.appDetails.appProfileType)
-      .then(
-        (triggers: any) => {
-          this.installedTriggers = triggers;
-          return triggers;
-        }
-      )
-      .then((installed) => {
-        this.getExistingTriggers()
-          .then((triggers) => {
-            if (!triggers.length) {
-              this.displayExisting = false;
-            } else if (triggers.length > 0) {
-              this.displayExisting = true;
-            }
+          const allInstalled = {};
 
-            const allInstalled = {};
-
-            installed.forEach((item) => {
-              allInstalled[item.ref] = Object.assign({}, item);
-            });
-
-            this.existingTriggers = [];
-            triggers.forEach((existing) => {
-              const found = Object.assign({}, allInstalled[existing.ref]);
-              if (found) {
-                found.id = existing.id;
-                found.name = existing.name;
-                found.description = existing.description;
-                this.existingTriggers.push(found);
-              }
-            });
-
+          installed.forEach(item => {
+            allInstalled[item.ref] = Object.assign({}, item);
           });
 
+          this.existingTriggers = [];
+          triggers.forEach(existing => {
+            const found = Object.assign({}, allInstalled[existing.ref]);
+            if (found) {
+              found.id = existing.id;
+              found.name = existing.name;
+              found.description = existing.description;
+              this.existingTriggers.push(found);
+            }
+          });
+        });
       })
       .then(() => {
         return this.existingTriggers;
       })
-      .catch(
-        (err: any) => {
-          console.error(err);
-        }
-      );
+      .catch((err: any) => {
+        console.error(err);
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -115,7 +105,7 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
 
   sendAddTriggerMsg(trigger: any, installType: string) {
     this.closeModal();
-    this.addTriggerToAction.emit({triggerData: trigger, installType});
+    this.addTriggerToAction.emit({ triggerData: trigger, installType });
   }
 
   openInstallTriggerDialog() {

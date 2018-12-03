@@ -1,6 +1,6 @@
 export enum DiagramSelectionType {
   Node = 'node',
-  Insert = 'insert'
+  Insert = 'insert',
 }
 
 export interface DiagramSelection {

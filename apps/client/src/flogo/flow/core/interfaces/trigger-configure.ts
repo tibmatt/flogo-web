@@ -18,7 +18,7 @@ export interface TriggerConfigureMappings {
   mappings: { [field: string]: string };
 }
 
-export interface  TriggerConfigureGroup {
+export interface TriggerConfigureGroup {
   id: string;
   settings?: TriggerConfigureSettings;
   inputMappings?: TriggerConfigureMappings;

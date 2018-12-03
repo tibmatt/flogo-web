@@ -2,7 +2,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
 import { appHasSubflowTasks } from '../../../common/utils/subflow';
 import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
-import {mappingsToAttributes} from "../mappings-to-attributes";
+import { mappingsToAttributes } from '../mappings-to-attributes';
 
 const DEVICE_ACTION_REF = 'github.com/TIBCOSoftware/flogo-contrib/device/action/flow';
 
@@ -31,10 +31,12 @@ export class DeviceFormatter {
     triggers.forEach(t => {
       t.handlers.forEach((handler, ind) => {
         const triggerName = t.name + (ind ? `(${ind})` : '');
-        allTriggers.push(Object.assign({}, t, {
-          name: triggerName,
-          handlers: [handler],
-        }));
+        allTriggers.push(
+          Object.assign({}, t, {
+            name: triggerName,
+            handlers: [handler],
+          })
+        );
       });
     });
     return allTriggers;
@@ -51,7 +53,7 @@ export class DeviceFormatter {
   formatAction(action) {
     action.ref = DEVICE_ACTION_REF;
     action.data = {
-      flow: this.makeFlow(action)
+      flow: this.makeFlow(action),
     };
     delete action.name;
     return action;
@@ -84,7 +86,7 @@ export class DeviceFormatter {
     const flowData = {
       name: action.name,
     };
-    const {tasks, links} = action;
+    const { tasks, links } = action;
     if (isEmpty(tasks)) {
       return flowData;
     }
@@ -92,5 +94,4 @@ export class DeviceFormatter {
     flowData.tasks = this.formatTasks(cloneDeep(tasks));
     return flowData;
   }
-
 }

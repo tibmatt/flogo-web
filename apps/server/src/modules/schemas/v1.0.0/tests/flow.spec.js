@@ -16,11 +16,9 @@ describe('JSONSchema: Flow', () => {
   const validSchemas = generateValidSchemas();
 
   beforeEach(() => {
-    testContext.ajvContext = makeAjvContext(
-      'flow',
-      [commonSchema, triggerSchema, flowSchema],
-      { removeAdditional: true },
-    );
+    testContext.ajvContext = makeAjvContext('flow', [commonSchema, triggerSchema, flowSchema], {
+      removeAdditional: true,
+    });
     testContext.validator = testContext.ajvContext.createValidator();
   });
 
@@ -50,25 +48,26 @@ describe('JSONSchema: Flow', () => {
       });
 
       test('should allow correct metadata items', () => {
-        metadataItemValidator
-          .validateAndCreateAsserter({ ...validSchemas.metadataItem })
-          .assertIsValid();
+        metadataItemValidator.validateAndCreateAsserter({ ...validSchemas.metadataItem }).assertIsValid();
       });
 
       test('should require name', () => {
-        metadataItemValidator.validateAndCreateAsserter({ type: 'number' })
+        metadataItemValidator
+          .validateAndCreateAsserter({ type: 'number' })
           .assertIsInvalid()
           .assertHasErrorForRequiredProp('name');
       });
 
       test('should not allow empty name', () => {
-        metadataItemValidator.validateAndCreateAsserter({ name: '', type: 'number' })
+        metadataItemValidator
+          .validateAndCreateAsserter({ name: '', type: 'number' })
           .assertIsInvalid()
           .assertHasErrorForEmptyProp('name');
       });
 
       test('should require type', () => {
-        metadataItemValidator.validateAndCreateAsserter({ name: 'myProp' })
+        metadataItemValidator
+          .validateAndCreateAsserter({ name: 'myProp' })
           .assertIsInvalid()
           .assertHasErrorForRequiredProp('type');
       });
@@ -81,17 +80,17 @@ describe('JSONSchema: Flow', () => {
       });
 
       test('should accept input mappings', () => {
-        const action = {input: [{...validSchemas.metadataItem}]};
+        const action = { input: [{ ...validSchemas.metadataItem }] };
         expect(metadataValidator.validate(action)).toBe(true);
       });
 
       test('should accept output mappings', () => {
-        const action = {output: [{...validSchemas.metadataItem}]};
+        const action = { output: [{ ...validSchemas.metadataItem }] };
         expect(metadataValidator.validate(action)).toBe(true);
       });
 
       test('should accept both input and output mappings', () => {
-        const action = {...validSchemas.metadata};
+        const action = { ...validSchemas.metadata };
         expect(metadataValidator.validate(action)).toBe(true);
       });
     });
@@ -102,30 +101,31 @@ describe('JSONSchema: Flow', () => {
         activityValidator = testContext.ajvContext.createValidatorForSubschema('activity');
       });
       test('should allow correct activities', () => {
-        activityValidator
-          .validateAndCreateAsserter({...validSchemas.activity})
-          .assertIsValid();
+        activityValidator.validateAndCreateAsserter({ ...validSchemas.activity }).assertIsValid();
       });
       test('should require ref', () => {
-        activityValidator.validateAndCreateAsserter({type: 'number'})
+        activityValidator
+          .validateAndCreateAsserter({ type: 'number' })
           .assertIsInvalid()
           .assertHasErrorForRequiredProp('ref');
       });
 
       test('should require settings when activity is subflow', () => {
-        const activityUnderTest = {...validSchemas.activity};
+        const activityUnderTest = { ...validSchemas.activity };
         activityUnderTest.ref = 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow';
         activityUnderTest.settings = {};
-        activityValidator.validateAndCreateAsserter(activityUnderTest)
+        activityValidator
+          .validateAndCreateAsserter(activityUnderTest)
           .assertIsInvalid()
           .assertHasErrorForRequiredProp('.flowURI');
       });
 
       test('should have valid flowURI in case of subflow', () => {
-        const activityUnderTest = {...validSchemas.activity};
+        const activityUnderTest = { ...validSchemas.activity };
         activityUnderTest.ref = 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow';
-        activityUnderTest.settings = {'flowURI': 'flowUri'};
-        activityValidator.validateAndCreateAsserter(activityUnderTest)
+        activityUnderTest.settings = { flowURI: 'flowUri' };
+        activityValidator
+          .validateAndCreateAsserter(activityUnderTest)
           .assertIsInvalid()
           .assertHasErrorForMismatchingPattern('settings.flowURI');
       });
@@ -142,7 +142,7 @@ describe('JSONSchema: Flow', () => {
           iterate: '$someref',
           customSettings: 'foobar',
         };
-        const originalTask = {...validSchemas.task, settings};
+        const originalTask = { ...validSchemas.task, settings };
         const taskUnderTest = cloneDeep(originalTask);
         taskValidator.validate(taskUnderTest);
         expect(taskUnderTest).toMatchObject(originalTask);
@@ -150,16 +150,18 @@ describe('JSONSchema: Flow', () => {
 
       ['id', 'activity'].forEach(requiredProp => {
         test(`should require ${requiredProp}`, () => {
-          const taskUnderTest = {...validSchemas.task};
+          const taskUnderTest = { ...validSchemas.task };
           delete taskUnderTest[requiredProp];
-          taskValidator.validateAndCreateAsserter(taskUnderTest)
+          taskValidator
+            .validateAndCreateAsserter(taskUnderTest)
             .assertIsInvalid()
             .assertHasErrorForRequiredProp(requiredProp);
         });
       });
 
       test('should not allow empty id', () => {
-        taskValidator.validateAndCreateAsserter({...validSchemas.task, id: ''})
+        taskValidator
+          .validateAndCreateAsserter({ ...validSchemas.task, id: '' })
           .assertIsInvalid()
           .assertHasErrorForEmptyProp('id');
       });
@@ -171,35 +173,35 @@ describe('JSONSchema: Flow', () => {
         linkValidator = testContext.ajvContext.createValidatorForSubschema('link');
       });
       test('should allow correct links', () => {
-        linkValidator
-          .validateAndCreateAsserter({...validSchemas.link})
-          .assertIsValid();
+        linkValidator.validateAndCreateAsserter({ ...validSchemas.link }).assertIsValid();
       });
       ['from', 'to'].forEach(propName => {
         test(`should require "${propName}" property`, () => {
-          const linkUnderTest = {...validSchemas.link};
+          const linkUnderTest = { ...validSchemas.link };
           delete linkUnderTest[propName];
-          linkValidator.validateAndCreateAsserter(linkUnderTest)
+          linkValidator
+            .validateAndCreateAsserter(linkUnderTest)
             .assertIsInvalid()
             .assertHasErrorForRequiredProp(propName);
         });
       });
       test('should allow value when type expression', () => {
-        const linkUnderTest = {...validSchemas.link};
-        linkUnderTest.type = "expression";
-        linkValidator.validateAndCreateAsserter(linkUnderTest)
+        const linkUnderTest = { ...validSchemas.link };
+        linkUnderTest.type = 'expression';
+        linkValidator
+          .validateAndCreateAsserter(linkUnderTest)
           .assertIsInvalid()
           .assertHasErrorForRequiredProp('.value');
       });
 
       test('should not accept invalid type', () => {
-        const linkUnderTest = {...validSchemas.link};
-        const allowedValues = ["default", "dependency", "expression"];
-        linkUnderTest.type = "somethingElse";
-        linkValidator.validateAndCreateAsserter(linkUnderTest)
+        const linkUnderTest = { ...validSchemas.link };
+        const allowedValues = ['default', 'dependency', 'expression'];
+        linkUnderTest.type = 'somethingElse';
+        linkValidator
+          .validateAndCreateAsserter(linkUnderTest)
           .assertIsInvalid()
-          .assertHasErrorForMismatchingPropertyEnum('type', allowedValues)
-
+          .assertHasErrorForMismatchingPropertyEnum('type', allowedValues);
       });
     });
   });

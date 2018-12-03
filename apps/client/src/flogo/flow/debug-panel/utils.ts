@@ -11,14 +11,15 @@ export function mergeFormWithOutputs(form: FormGroup, lastExecutionResult: Dicti
 }
 
 export function matchFormWithExecutionResult(step: Dictionary<StepAttribute>, formValues: any[]) {
-  const outputs = new Map(Object.values(step)
-    .map<[string, string]>(attr => {
+  const outputs = new Map(
+    Object.values(step).map<[string, string]>(attr => {
       const [taskType, taskId, attribute] = attr.name.split('.');
       return [attribute, attr.value];
-    }));
+    })
+  );
   const newOutput = formValues.map(field => {
     const value = outputs.has(field.name) ? outputs.get(field.name) : null;
-    return {...field, value};
+    return { ...field, value };
   });
   outputs.clear();
   return newOutput;

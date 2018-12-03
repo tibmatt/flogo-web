@@ -9,7 +9,7 @@ import {
   flow as backendFlow,
   FlowGraph,
   GraphNode,
-  Item
+  Item,
 } from '@flogo-web/client/core';
 import { isSubflowTask } from '@flogo-web/client/shared/utils';
 
@@ -22,20 +22,23 @@ type Link = backendFlow.Link;
 export type BranchIdGenerator = () => string;
 
 export function makeGraphAndItems(
-  tasks: Task[], links: Link[], contribSchemas: ContribSchema[], getNewBranchId: BranchIdGenerator
-): { items: Dictionary<Item>, graph: FlowGraph } {
+  tasks: Task[],
+  links: Link[],
+  contribSchemas: ContribSchema[],
+  getNewBranchId: BranchIdGenerator
+): { items: Dictionary<Item>; graph: FlowGraph } {
   const getActivitySchema = activitySchemaFinder(contribSchemas);
   const taskItems = makeTaskItems(tasks, getActivitySchema);
   const taskNodes = makeTaskNodes(tasks, taskItems);
 
-  const {nodes, items} = createAndAppendBranches(links, getNewBranchId, taskItems, taskNodes);
+  const { nodes, items } = createAndAppendBranches(links, getNewBranchId, taskItems, taskNodes);
   const [rootTask] = tasks;
   return {
     items,
     graph: {
       rootId: rootTask ? rootTask.id : null,
       nodes,
-    }
+    },
   };
 }
 
@@ -63,7 +66,7 @@ function createAndAppendBranches(
       parentNode.children.push(childNode.id);
     }
   });
-  return { nodes,  items };
+  return { nodes, items };
 }
 
 function activitySchemaFinder(contribSchemas: ContribSchema[]) {
@@ -75,4 +78,3 @@ function activitySchemaFinder(contribSchemas: ContribSchema[]) {
     return schemaDictionary[task.activityRef] as ActivitySchema;
   };
 }
-

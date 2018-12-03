@@ -2,7 +2,6 @@ import { AbstractModelConverter } from '../ui-converter.model';
 import { ActivitySchema, FLOGO_PROFILE_TYPE } from '@flogo-web/client/core';
 
 export class DeviceModelConverter extends AbstractModelConverter {
-
   getProfileType(): FLOGO_PROFILE_TYPE {
     return FLOGO_PROFILE_TYPE.DEVICE;
   }
@@ -20,7 +19,7 @@ export class DeviceModelConverter extends AbstractModelConverter {
       appId: flowJSON.app.id,
       name: flowJSON.name || flowJSON.id,
       description: flowJSON.description || '',
-      app: flowJSON.app
+      app: flowJSON.app,
     };
   }
 }

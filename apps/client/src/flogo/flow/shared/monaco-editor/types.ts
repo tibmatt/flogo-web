@@ -35,8 +35,10 @@ export interface HoverProvider {
 }
 
 export interface CompletionProvider {
-  provideCompletionItems(position: Position, token: CancellationToken):
-    CompletionItem[] | Thenable<CompletionItem[]> | CompletionList | Thenable<CompletionList>;
+  provideCompletionItems(
+    position: Position,
+    token: CancellationToken
+  ): CompletionItem[] | Thenable<CompletionItem[]> | CompletionList | Thenable<CompletionList>;
 }
 
 export interface EditorError {

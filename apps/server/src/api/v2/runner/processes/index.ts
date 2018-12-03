@@ -8,14 +8,14 @@ export function createProcessesRouter(createRouter): Router {
 
   processes.post('/processes', findAndExportFlow, async (ctx: Context) => {
     const response = await Services.flowsServer.client.post('/flows', {
-      body: ctx.state.flow
+      body: ctx.state.flow,
     });
     ctx.body = response.body;
   });
 
   processes.post('/processes/restart', async (ctx: Context) => {
     const response = await Services.engine.client.post('/flow/restart', {
-      body: ctx.request.body
+      body: ctx.request.body,
     });
     ctx.body = response.body;
   });
@@ -39,8 +39,8 @@ async function startProcess(ctx: Context) {
       ...ctx.request.body,
       actionUri,
       // todo: legacy. still used?
-      flowUri: actionUri
-    }
+      flowUri: actionUri,
+    },
   });
   ctx.body = result.body;
 }

@@ -8,36 +8,38 @@ const UNTITLED_APP = 'Untitled App';
 
 @Injectable()
 export class AppsApiServiceMock extends AppsApiService {
-
   private mockApplications: Array<App> = [
     {
       id: '1',
       name: 'Sample Application 1',
       version: '0.0.1',
-      description: null, /* should be null for test */
+      description: null /* should be null for test */,
       createdAt: new Date(),
-      updatedAt: null, /* should be null for test */
+      updatedAt: null /* should be null for test */,
       /* tslint:disable:max-line-length */
       flows: [
         {
           id: '897',
           name: 'Manually adjust temperature',
-          description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Luptas oilsksd as asdfwo',
-          createdAt: new Date()
+          description:
+            'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Luptas oilsksd as asdfwo',
+          createdAt: new Date(),
         },
         {
           id: '987',
           name: 'Raise temperature & notifiy operator',
-          description: 'A basic flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
-          createdAt: new Date()
+          description:
+            'A basic flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
+          createdAt: new Date(),
         },
         {
           id: '879',
           name: 'Log temperature',
-          description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
-          createdAt: new Date()
-        }
-      ]
+          description:
+            'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
+          createdAt: new Date(),
+        },
+      ],
     },
     {
       id: '2',
@@ -45,8 +47,8 @@ export class AppsApiServiceMock extends AppsApiService {
       version: '0.0.1',
       description: 'My App',
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
+      updatedAt: new Date(),
+    },
   ];
   /* tslint:enable:max-line-length */
 
@@ -65,7 +67,7 @@ export class AppsApiServiceMock extends AppsApiService {
       version: '',
       description: '',
       createdAt: new Date(),
-      updatedAt: null
+      updatedAt: null,
     };
     this.mockApplications.unshift(application);
 
@@ -82,7 +84,7 @@ export class AppsApiServiceMock extends AppsApiService {
   }
 
   getApp(id: string): Promise<App> {
-    const application = this.mockApplications.find((item) => {
+    const application = this.mockApplications.find(item => {
       return item.id === id;
     });
     return Promise.resolve(application);
@@ -102,6 +104,4 @@ export class AppsApiServiceMock extends AppsApiService {
       return appName;
     }
   }
-
-
 }

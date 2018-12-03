@@ -1,6 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
 import set from 'lodash/set';
-import {getInternalTasksPath, safeGetTasksInHandler} from '../../../common/utils/flow';
+import { getInternalTasksPath, safeGetTasksInHandler } from '../../../common/utils/flow';
 import { TASK_HANDLER_NAME_ROOT, TASK_HANDLER_NAME_ERROR } from '../../../common/constants';
 import { normalizeValueType } from '../../../common/utils/value-type';
 

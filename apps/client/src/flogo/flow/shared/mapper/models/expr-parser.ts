@@ -5,7 +5,7 @@ import {
   IParseResult,
   IParseToken,
   IParseTree,
-  ITokenLocation
+  ITokenLocation,
 } from './map-model';
 import { EnumMapperErrorCodes, IMappingError } from './imapping-error';
 // import * as mapparser from 'wi-mapper-parser';
@@ -18,8 +18,7 @@ export class ParseLocation implements IParseLocation {
     return new ParseLocation(offset, line, column);
   }
 
-  constructor(private offset: number, private line: number, private column: number) {
-  }
+  constructor(private offset: number, private line: number, private column: number) {}
 
   getOffset(): number {
     return this.offset;
@@ -46,8 +45,7 @@ export class TokenLocation implements ITokenLocation {
     return new TokenLocation(start, end);
   }
 
-  constructor(private start: IParseLocation, private end: IParseLocation) {
-  }
+  constructor(private start: IParseLocation, private end: IParseLocation) {}
 
   getStart(): IParseLocation {
     return this.start;
@@ -56,7 +54,6 @@ export class TokenLocation implements ITokenLocation {
   getEnd(): IParseLocation {
     return this.end;
   }
-
 }
 
 /**
@@ -118,13 +115,11 @@ export class ParseError implements IParseError {
  * Parse Tree wrapper
  */
 export class ParseTree implements IParseTree {
-
   static newTree(pTree: any): IParseTree {
     return new ParseTree(pTree);
   }
 
-  constructor(private tree: any) {
-  }
+  constructor(private tree: any) {}
 
   getTree(): any {
     return this.tree;
@@ -162,7 +157,6 @@ export class ParseResult implements IParseResult {
   getParseTree(): IParseTree {
     return ParseTree.newTree(this.result);
   }
-
 }
 
 /**

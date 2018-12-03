@@ -37,17 +37,19 @@ export const TYPES = {
 export { TYPES as ERROR_TYPES };
 
 export class ErrorFactory {
-  static ArgumentTypeMismatch(position: Position, msgParams: { paramName, actualType, expectedType }, context?: any) {
+  static ArgumentTypeMismatch(position: Position, msgParams: { paramName; actualType; expectedType }, context?: any) {
     return {
       position,
       context,
       type: TYPES.ArgumentTypeMismatch,
       severity: ERROR,
-      message: `Expected type of parameter '${msgParams.paramName}' to be '${msgParams.expectedType}' but got '${msgParams.actualType}'.`,
+      message: `Expected type of parameter '${msgParams.paramName}' to be '${msgParams.expectedType}' but got '${
+        msgParams.actualType
+      }'.`,
     };
   }
 
-  static ArgumentCountMismatch(position: Position, msgParams: { actualCount, expectedCount }, context?: any) {
+  static ArgumentCountMismatch(position: Position, msgParams: { actualCount; expectedCount }, context?: any) {
     return {
       position,
       context,
@@ -57,7 +59,11 @@ export class ErrorFactory {
     };
   }
 
-  static MinimumArgumentCountMismatch(position: Position, msgParams: { actualCount, leastExpectedCount }, context?: any) {
+  static MinimumArgumentCountMismatch(
+    position: Position,
+    msgParams: { actualCount; leastExpectedCount },
+    context?: any
+  ) {
     return {
       position,
       context,
@@ -67,7 +73,7 @@ export class ErrorFactory {
     };
   }
 
-  static UnassignableType(position: Position, msgParams: { actual: string, expected: string }, context?: any) {
+  static UnassignableType(position: Position, msgParams: { actual: string; expected: string }, context?: any) {
     return {
       position,
       context,
@@ -87,7 +93,11 @@ export class ErrorFactory {
     };
   }
 
-  static InvalidPropertyReference(position: Position, msgParams: { propName: string, parentName: string }, context?: any) {
+  static InvalidPropertyReference(
+    position: Position,
+    msgParams: { propName: string; parentName: string },
+    context?: any
+  ) {
     return {
       position,
       context,
@@ -97,13 +107,19 @@ export class ErrorFactory {
     };
   }
 
-  static UnexpectedMemberAccess(position: Position, msgParams: { propName: string, parentType: string }, context?: any) {
+  static UnexpectedMemberAccess(
+    position: Position,
+    msgParams: { propName: string; parentType: string },
+    context?: any
+  ) {
     return {
       position,
       context,
       type: TYPES.UnexpectedMemberAccess,
       severity: ERROR,
-      message: `Unexpected access of property '${msgParams.propName}'. Cannot access a property of ${msgParams.parentType} type.`,
+      message: `Unexpected access of property '${msgParams.propName}'. Cannot access a property of ${
+        msgParams.parentType
+      } type.`,
     };
   }
 
@@ -133,7 +149,7 @@ export class ErrorFactory {
       context,
       type: TYPES.UnexpectedIndexType,
       severity: ERROR,
-      message: 'An index expression argument must be of type \'string\' or \'number\'.',
+      message: "An index expression argument must be of type 'string' or 'number'.",
     };
   }
 
@@ -153,7 +169,7 @@ export class ErrorFactory {
       context,
       type: TYPES.UnexpectedCallExpression,
       severity: ERROR,
-      message: `Value of '${msgParams.calleeName}' is not callable (not a function).`
+      message: `Value of '${msgParams.calleeName}' is not callable (not a function).`,
     };
   }
 
@@ -167,13 +183,13 @@ export class ErrorFactory {
     };
   }
 
-  static InvalidExpressionResult(position: Position, msgParams: { actual: string, expected: string }, context?: any) {
+  static InvalidExpressionResult(position: Position, msgParams: { actual: string; expected: string }, context?: any) {
     return {
       position,
       context,
       type: TYPES.InvalidExpressionResult,
       severity: ERROR,
-      message: `Invalid expression result, expected ${msgParams.expected} but got ${msgParams.actual}.`
+      message: `Invalid expression result, expected ${msgParams.expected} but got ${msgParams.actual}.`,
     };
   }
 }

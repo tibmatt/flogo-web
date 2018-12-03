@@ -21,10 +21,7 @@ export function validatorFactory(schema, contributionRefs, options = {}) {
  * @param refs
  */
 function addContributionRule(validator, keyword, type, refs) {
-  validator.addValidationRule(
-    keyword,
-    contributionRuleFactory(keyword, type, refs || []),
-  );
+  validator.addValidationRule(keyword, contributionRuleFactory(keyword, type, refs || []));
 }
 
 function contributionRuleFactory(keyword, type, refs) {
@@ -33,13 +30,15 @@ function contributionRuleFactory(keyword, type, refs) {
     validate: function validator(schema, contribRef) {
       const isInstalled = refs.includes(contribRef);
       if (!isInstalled) {
-        validator.errors = [{
-          keyword,
-          message: `${type} "${contribRef}" is not installed`,
-          params: {
-            ref: contribRef,
+        validator.errors = [
+          {
+            keyword,
+            message: `${type} "${contribRef}" is not installed`,
+            params: {
+              ref: contribRef,
+            },
           },
-        }];
+        ];
       }
       return isInstalled;
     },

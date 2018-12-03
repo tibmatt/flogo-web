@@ -10,10 +10,8 @@ export interface EditionData {
 @Component({
   selector: 'flogo-confirm-edition',
   templateUrl: './confirm-edition.component.html',
-  styleUrls: ['./confirm-edition.component.less']
+  styleUrls: ['./confirm-edition.component.less'],
 })
 export class ConfirmEditionComponent implements ConfirmationContent {
-
-  constructor(@Inject(EDITION_DATA_TOKEN) public data: EditionData, public control: ConfirmationControl) { }
-
+  constructor(@Inject(EDITION_DATA_TOKEN) public data: EditionData, public control: ConfirmationControl) {}
 }

@@ -1,6 +1,11 @@
 import { createSelector } from '@ngrx/store';
 import {
-  selectActionId, selectFlowMetadata, selectTriggers, selectHandlers, selectCurrentSelection, selectAppInfo
+  selectActionId,
+  selectFlowMetadata,
+  selectTriggers,
+  selectHandlers,
+  selectCurrentSelection,
+  selectAppInfo,
 } from '../flow/flow.selectors';
 import { TriggersState } from '../../../triggers/interfaces/triggers-state';
 import { triggersToRenderableTriggers } from '../../../triggers/models/triggers-to-renderable-triggers';
@@ -25,7 +30,7 @@ export const selectCurrentTrigger = createSelector(
       ...triggers[triggerId],
       handler: handlers[triggerId],
     };
-  },
+  }
 );
 
 export const getTriggersState = createSelector(
@@ -43,5 +48,5 @@ export const getTriggersState = createSelector(
       flowMetadata,
       currentTrigger,
     };
-  },
+  }
 );

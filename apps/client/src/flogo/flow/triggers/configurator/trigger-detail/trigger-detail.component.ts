@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
@@ -7,7 +7,10 @@ import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 import { SingleEmissionSubject } from '@flogo-web/client/core/models/single-emission-subject';
 import { MapperController } from '@flogo-web/client/flow/shared/mapper/services/mapper-controller/mapper-controller';
 
-import { TriggerConfigureSelectors, TriggerConfigureActions } from '@flogo-web/client/flow/core/state/triggers-configure';
+import {
+  TriggerConfigureSelectors,
+  TriggerConfigureActions,
+} from '@flogo-web/client/flow/core/state/triggers-configure';
 import { FlowState } from '@flogo-web/client/flow/core/state';
 import { TriggerConfigureTabType, TriggerConfigureTab } from '@flogo-web/client/flow/core/interfaces';
 
@@ -17,13 +20,12 @@ import { ConfiguratorService } from '../services/configurator.service';
 
 type MapperSubscriberFn = (controller: MapperController, groupType: TriggerConfigureTabType) => void;
 
-const isFieldValid = (form: FormGroup, controlName: string) => !form.contains(controlName) || form.get(controlName).valid;
+const isFieldValid = (form: FormGroup, controlName: string) =>
+  !form.contains(controlName) || form.get(controlName).valid;
 
 @Component({
   selector: 'flogo-flow-triggers-configurator-detail',
-  styleUrls: [
-    'trigger-detail.component.less'
-  ],
+  styleUrls: ['trigger-detail.component.less'],
   templateUrl: 'trigger-detail.component.html',
   providers: [],
 })
@@ -33,7 +35,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   selectedTriggerId: string;
 
   isSaving$: Observable<boolean>;
-  overallStatus$: Observable<{ isDirty: boolean, isValid: boolean }>;
+  overallStatus$: Observable<{ isDirty: boolean; isValid: boolean }>;
   tabs$: Observable<TriggerConfigureTab[]>;
   currentTabType: TriggerConfigureTabType;
 
@@ -50,7 +52,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<FlowState>,
     private detailsService: ConfigureDetailsService,
-    private configuratorService: ConfiguratorService,
+    private configuratorService: ConfiguratorService
   ) {}
 
   ngOnInit() {
@@ -66,13 +68,14 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
 
     this.isSaving$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTriggerIsSaving);
     this.getCurrentTriggerState = this.store.select(TriggerConfigureSelectors.getConfigureState).pipe(take(1));
-    this.store.select(TriggerConfigureSelectors.selectCurrentTriggerId)
+    this.store
+      .select(TriggerConfigureSelectors.selectCurrentTriggerId)
       .pipe(
         filter(currentTriggerId => !!currentTriggerId),
         switchMap(() => this.getCurrentTriggerState),
-        takeUntil(this.ngDestroy$),
+        takeUntil(this.ngDestroy$)
       )
-      .subscribe((state) => {
+      .subscribe(state => {
         this.previousState = state;
         this.reconfigure(state);
       });
@@ -86,16 +89,19 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   save() {
     const currentTriggerId = this.selectedTriggerId;
     const isUpdateStillApplicable = () => this.selectedTriggerId !== currentTriggerId || !this.ngDestroy$.closed;
-    this.configuratorService.save()
+    this.configuratorService
+      .save()
       .pipe(
         filter(() => isUpdateStillApplicable()),
         switchMap(() => this.getCurrentTriggerState)
-      ).subscribe((triggerState) => {
+      )
+      .subscribe(triggerState => {
         this.previousState = triggerState;
         this.settingsForm.reset(this.settingsForm.getRawValue());
         this.updateSettingsStatus({
           // TODO: replace manual valid check when async validation bug is fixed in ng forms -> github.com/angular/angular/issues/20424
-          isValid: isFieldValid(this.settingsForm, 'triggerSettings') && isFieldValid(this.settingsForm, 'handlerSettings'),
+          isValid:
+            isFieldValid(this.settingsForm, 'triggerSettings') && isFieldValid(this.settingsForm, 'handlerSettings'),
           isDirty: this.settingsForm.dirty,
           isPending: false,
         });
@@ -115,7 +121,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateSettingsStatus(settingsStatus: {isValid: boolean, isDirty: boolean, isPending?: boolean}) {
+  updateSettingsStatus(settingsStatus: { isValid: boolean; isDirty: boolean; isPending?: boolean }) {
     this.updateTabState(TriggerConfigureTabType.Settings, settingsStatus);
   }
 
@@ -143,13 +149,21 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
     const subscribeToUpdates = this.createMapperStatusUpdateSubscriber();
 
     this.flowInputMapperController = flowInputMapper;
-    this.reconfigureMapperController(this.flowInputMapperController, TriggerConfigureTabType.FlowInputMappings, subscribeToUpdates);
+    this.reconfigureMapperController(
+      this.flowInputMapperController,
+      TriggerConfigureTabType.FlowInputMappings,
+      subscribeToUpdates
+    );
 
     this.replyMapperController = replyMapper;
-    this.reconfigureMapperController(this.replyMapperController, TriggerConfigureTabType.FlowOutputMappings, subscribeToUpdates);
+    this.reconfigureMapperController(
+      this.replyMapperController,
+      TriggerConfigureTabType.FlowOutputMappings,
+      subscribeToUpdates
+    );
 
-    this.appProperties = state.appProperties ?
-      state.appProperties.map(prop => prop && prop.name ? `$property[${prop.name}]` : null).filter(Boolean)
+    this.appProperties = state.appProperties
+      ? state.appProperties.map(prop => (prop && prop.name ? `$property[${prop.name}]` : null)).filter(Boolean)
       : null;
 
     this.configuratorService.setParams({
@@ -173,19 +187,18 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   }
 
   private updateTabState(groupType: TriggerConfigureTabType, newStatus) {
-    this.store.dispatch(new TriggerConfigureActions.ConfigureStatusChanged({
-      triggerId: this.selectedTriggerId,
-      groupType,
-      newStatus,
-    }));
+    this.store.dispatch(
+      new TriggerConfigureActions.ConfigureStatusChanged({
+        triggerId: this.selectedTriggerId,
+        groupType,
+        newStatus,
+      })
+    );
   }
 
   private createMapperStatusUpdateSubscriber(): MapperSubscriberFn {
     return (controller: MapperController, groupType: TriggerConfigureTabType) => {
-      controller.status$
-        .pipe(takeUntil(this.ngDestroy$))
-        .subscribe(status => this.updateTabState(groupType, status));
+      controller.status$.pipe(takeUntil(this.ngDestroy$)).subscribe(status => this.updateTabState(groupType, status));
     };
   }
-
 }

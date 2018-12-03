@@ -9,8 +9,7 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
     },
   };
   const handlerStorage = {
-    save() {
-    },
+    save() {},
   };
   const importer = new class extends AbstractTriggersHandlersImporter {
     extractHandlers(trigger) {
@@ -40,18 +39,14 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
     let reconcileHandlerStub;
     beforeAll(() => {
       const mockHandlers = Array(4).fill('mockhandler');
-      const mockTriggers = [
-        { id: 'trigger1', handlers: mockHandlers },
-        { id: 'trigger2', handlers: mockHandlers },
-      ];
+      const mockTriggers = [{ id: 'trigger1', handlers: mockHandlers }, { id: 'trigger2', handlers: mockHandlers }];
       const responsesPerHandler = [
         { actionId: 'actionA', handler: {} },
         { handler: {} },
         { actionId: 'actionB', handler: {} },
         { actionId: null, handler: {} },
       ];
-      reconcileHandlerStub = sandbox
-        .stub(importer, 'reconcileHandlerWithAction');
+      reconcileHandlerStub = sandbox.stub(importer, 'reconcileHandlerWithAction');
       [...responsesPerHandler, ...responsesPerHandler].forEach((mockReturn, index) => {
         reconcileHandlerStub.onCall(index).returns(mockReturn);
       });
@@ -80,11 +75,7 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
 
   describe('#reconcileHandlerWithAction', () => {
     test('should correctly map old handler links to new actions', () => {
-      const linkedHandlers = [
-        { id: 'a-1', actionId: 'a' },
-        { id: 'b-1', actionId: 'b' },
-        { id: 'a-2', actionId: 'a' },
-      ];
+      const linkedHandlers = [{ id: 'a-1', actionId: 'a' }, { id: 'b-1', actionId: 'b' }, { id: 'a-2', actionId: 'a' }];
       linkedHandlers.forEach(handler => {
         const reconciledHandler = importer.reconcileHandlerWithAction(handler);
         expect(reconciledHandler).toBeTruthy();
@@ -110,12 +101,7 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
       const [triggerId, [handlerInfo]] = call.args;
       return [triggerId, handlerInfo.actionId];
     });
-    expect(callArgs).toEqual(
-      expect.arrayContaining([
-        ['trigger1', 'a-stored'],
-        ['trigger2', 'b-stored'],
-      ])
-    );
+    expect(callArgs).toEqual(expect.arrayContaining([['trigger1', 'a-stored'], ['trigger2', 'b-stored']]));
   });
 
   test('#storeHandlers', async () => {
@@ -130,10 +116,7 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
       return [triggerId, actionId, handlerId];
     });
     expect(callArgs).toEqual(
-      expect.arrayContaining([
-        ['triggerX', 'actionA', 'handlerA'],
-        ['triggerX', 'actionB', 'handlerB']
-      ])
+      expect.arrayContaining([['triggerX', 'actionA', 'handlerA'], ['triggerX', 'actionB', 'handlerB']])
     );
   });
 });

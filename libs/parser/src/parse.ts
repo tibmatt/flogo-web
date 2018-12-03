@@ -1,5 +1,5 @@
 import { Lexer } from 'chevrotain';
-import { lexerDefinition,  MappingParser } from './parser/parser';
+import { lexerDefinition, MappingParser } from './parser/parser';
 import { astCreatorFactory } from './ast/ast-creator';
 import { ParseResult } from './parser/parse-result';
 
@@ -22,10 +22,10 @@ export function parse(text, startingRule: StartingRuleName = 'mappingExpression'
     ast = astCreator.visit(cst);
   }
   return {
-      cst,
-      ast,
-      lexErrors: lexResult.errors,
-      parseErrors: parserInstance.errors
+    cst,
+    ast,
+    lexErrors: lexResult.errors,
+    parseErrors: parserInstance.errors,
   };
 }
 

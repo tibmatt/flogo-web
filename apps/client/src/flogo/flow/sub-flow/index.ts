@@ -1,1 +1,1 @@
-export {SubFlowModule} from './sub-flow.module';
+export { SubFlowModule } from './sub-flow.module';

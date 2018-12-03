@@ -15,12 +15,12 @@ const flowRoutes: Routes = [
   {
     path: '**',
     redirectTo: '/',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(flowRoutes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class FlowRoutingModule {}

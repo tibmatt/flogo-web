@@ -16,7 +16,6 @@ export class FlogoAppSettingsComponent {
   public hasChanges: boolean;
   public otherItem: KeyValue;
 
-
   public customSettings: KeyValue[] = [];
   public inputSettings: SettingGroup[];
 
@@ -32,7 +31,7 @@ export class FlogoAppSettingsComponent {
     const settings = this.settings || {};
 
     this.inputSettings = importSettings(settings);
-    const otherFound = this.inputSettings.find((item) => item.key === 'other');
+    const otherFound = this.inputSettings.find(item => item.key === 'other');
     const otherIndex = this.inputSettings.indexOf(otherFound);
     if (otherIndex !== -1) {
       if (otherIndex !== this.inputSettings.length - 1) {
@@ -41,15 +40,14 @@ export class FlogoAppSettingsComponent {
     }
 
     this.customSettings = [];
-    const other = this.inputSettings.find((input) => input.key === OTHER_CATEGORY);
-    this.customSettings = Object.keys((other.settings || {}))
-      .map(key => ({ key, value: other.settings[key] }));
+    const other = this.inputSettings.find(input => input.key === OTHER_CATEGORY);
+    this.customSettings = Object.keys(other.settings || {}).map(key => ({ key, value: other.settings[key] }));
   }
 
   public moveItemArray(elements, oldIndex, newIndex) {
     if (newIndex >= elements.length) {
       let k = newIndex - elements.length;
-      while ((k--) + 1) {
+      while (k-- + 1) {
         elements.push(undefined);
       }
     }
@@ -83,9 +81,9 @@ export class FlogoAppSettingsComponent {
 
   public saveChanges() {
     const otherSettings = {};
-    const unvaryingInputs = this.inputSettings.filter((input) => input.key !== OTHER_CATEGORY);
+    const unvaryingInputs = this.inputSettings.filter(input => input.key !== OTHER_CATEGORY);
     this.addCustom();
-    this.customSettings.forEach((setting) => otherSettings[setting.key] = setting.value);
+    this.customSettings.forEach(setting => (otherSettings[setting.key] = setting.value));
     const serialized = serializeSettings(unvaryingInputs.concat([{ key: OTHER_CATEGORY, settings: otherSettings }]));
     this.save.emit(serialized);
     this.closeModal();
@@ -102,5 +100,4 @@ export class FlogoAppSettingsComponent {
   public selectInput(input: SettingGroup) {
     this.selectedInput = input;
   }
-
 }

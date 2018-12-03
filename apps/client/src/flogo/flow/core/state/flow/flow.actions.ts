@@ -1,5 +1,13 @@
 import { Action } from '@ngrx/store';
-import { Action as ActionSchema, ActivitySchema, Dictionary, GraphNode, Item, ItemTask, StepAttribute } from '@flogo-web/client/core';
+import {
+  Action as ActionSchema,
+  ActivitySchema,
+  Dictionary,
+  GraphNode,
+  Item,
+  ItemTask,
+  StepAttribute,
+} from '@flogo-web/client/core';
 import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
 
@@ -39,12 +47,12 @@ export class Init implements BaseFlowAction {
 
 export class SelectItem implements BaseFlowAction {
   readonly type = ActionType.SelectItem;
-  constructor(public payload: { handlerType: HandlerType, itemId: string } | null) {}
+  constructor(public payload: { handlerType: HandlerType; itemId: string } | null) {}
 }
 
 export class SelectCreateItem implements BaseFlowAction {
   readonly type = ActionType.SelectCreateItem;
-  constructor(public payload: { handlerType: HandlerType, parentItemId: string }) {}
+  constructor(public payload: { handlerType: HandlerType; parentItemId: string }) {}
 }
 
 export class ClearSelection implements BaseFlowAction {
@@ -54,37 +62,47 @@ export class ClearSelection implements BaseFlowAction {
 
 export class CreateBranch implements BaseFlowAction {
   readonly type = ActionType.CreateBranch;
-  constructor(public payload: { handlerType: HandlerType, parentId: string, newBranchId: string }) {}
+  constructor(public payload: { handlerType: HandlerType; parentId: string; newBranchId: string }) {}
 }
 
 export class TaskItemCreated implements BaseFlowAction {
   readonly type = ActionType.TaskItemCreated;
-  constructor(public payload: {
-    handlerType: HandlerType,
-    item: ItemTask,
-    node: GraphNode,
-    subflowSchema?: ActionSchema
-  }) {}
+  constructor(
+    public payload: {
+      handlerType: HandlerType;
+      item: ItemTask;
+      node: GraphNode;
+      subflowSchema?: ActionSchema;
+    }
+  ) {}
 }
 
 export class RemoveItem implements BaseFlowAction {
   readonly type = ActionType.RemoveItem;
-  constructor(public payload: { handlerType: HandlerType, itemId: string }) {}
+  constructor(public payload: { handlerType: HandlerType; itemId: string }) {}
 }
 
 export class ItemUpdated implements BaseFlowAction {
   readonly type = ActionType.ItemUpdated;
-  constructor(public payload: { handlerType: HandlerType, item: {id: string} & Partial<Item>, node?: {id: string} & Partial<GraphNode> }) {}
+  constructor(
+    public payload: {
+      handlerType: HandlerType;
+      item: { id: string } & Partial<Item>;
+      node?: { id: string } & Partial<GraphNode>;
+    }
+  ) {}
 }
 
 export class ConfigureItem implements BaseFlowAction {
   readonly type = ActionType.ConfigureItem;
-  constructor(public payload: { itemId: string; }) {}
+  constructor(public payload: { itemId: string }) {}
 }
 
 export class CommitItemConfiguration implements BaseFlowAction {
   readonly type = ActionType.CommitItemConfiguration;
-  constructor(public payload: { handlerType: HandlerType, item: {id: string} & Partial<Item>, newSubflowSchema?: ActionSchema }) {}
+  constructor(
+    public payload: { handlerType: HandlerType; item: { id: string } & Partial<Item>; newSubflowSchema?: ActionSchema }
+  ) {}
 }
 
 export class CancelItemConfiguration implements BaseFlowAction {
@@ -105,17 +123,19 @@ export class NewExecutionRegistered implements BaseFlowAction {
 
 export class NewRunFromStartProcess implements BaseFlowAction {
   readonly type = ActionType.NewProcessRanFromStart;
-  constructor(public payload: { processId: string, instanceId: string }) {}
+  constructor(public payload: { processId: string; instanceId: string }) {}
 }
 
 export class ExecutionStateUpdated implements BaseFlowAction {
   readonly type = ActionType.ExecutionUpdated;
-  constructor(public payload: { changes: { mainGraphNodes?: Dictionary<GraphNode>, errorGraphNodes?: Dictionary<GraphNode> } }) {}
+  constructor(
+    public payload: { changes: { mainGraphNodes?: Dictionary<GraphNode>; errorGraphNodes?: Dictionary<GraphNode> } }
+  ) {}
 }
 
 export class ExecutionStepsUpdated implements BaseFlowAction {
   readonly type = ActionType.ExecutionStepsUpdate;
-  constructor(public payload: { steps: Dictionary<Dictionary<StepAttribute>> } ) {}
+  constructor(public payload: { steps: Dictionary<Dictionary<StepAttribute>> }) {}
 }
 
 export class ErrorPanelStatusChange implements BaseFlowAction {
@@ -139,7 +159,7 @@ export class ActivityInstalled implements BaseFlowAction {
 
 export class CancelCreateItem implements BaseFlowAction {
   readonly type = ActionType.CancelCreateItem;
-  constructor(public payload: {parentId: string}) {}
+  constructor(public payload: { parentId: string }) {}
 }
 
 export type ActionsUnion =

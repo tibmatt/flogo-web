@@ -6,9 +6,9 @@ import {
   NodeType,
   Dictionary,
   flow as backendFlow,
-  ItemActivityTask
+  ItemActivityTask,
 } from '@flogo-web/client/core';
-import {isBranchConfigured, isIterableTask, isSubflowTask} from '@flogo-web/client/shared/utils';
+import { isBranchConfigured, isIterableTask, isSubflowTask } from '@flogo-web/client/shared/utils';
 
 const defaultFeatures: NodeFeatures = {
   selectable: true,
@@ -23,15 +23,18 @@ const defaultStatus: NodeStatus = {
   invalid: false,
   executed: false,
   executionErrored: null,
-  iterable: false
+  iterable: false,
 };
 
 export function makeTaskNodes(tasks: backendFlow.Task[], items: Dictionary<Item>): Dictionary<GraphNode> {
-  return tasks.reduce((nodes, task) => {
-    const node = makeTask(task, items[task.id]);
-    nodes[node.id] = node;
-    return nodes;
-  }, {} as Dictionary<GraphNode>);
+  return tasks.reduce(
+    (nodes, task) => {
+      const node = makeTask(task, items[task.id]);
+      nodes[node.id] = node;
+      return nodes;
+    },
+    {} as Dictionary<GraphNode>
+  );
 }
 
 function makeTask(task: backendFlow.Task, item: Item): GraphNode {
@@ -49,7 +52,7 @@ function makeTask(task: backendFlow.Task, item: Item): GraphNode {
       final: isFinal,
     },
     status: {
-      iterable: isIterableTask(item)
+      iterable: isIterableTask(item),
     },
   });
 }
@@ -60,11 +63,11 @@ export function makeBranchNode(id: string, link: backendFlow.Link): GraphNode {
     type: NodeType.Branch,
     parents: [link.from],
     children: [link.to],
-    status: {isBranchConfigured: isBranchConfigured(link.value) }
+    status: { isBranchConfigured: isBranchConfigured(link.value) },
   });
 }
 
-export function makeNode(from: {id: string, type: NodeType} & Partial<GraphNode>): GraphNode {
+export function makeNode(from: { id: string; type: NodeType } & Partial<GraphNode>): GraphNode {
   return {
     ...from,
     children: from.children ? [...from.children] : [],

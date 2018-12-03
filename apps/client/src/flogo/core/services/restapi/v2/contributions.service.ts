@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ContribSchema } from '@flogo-web/client/core';
 import { map } from 'rxjs/operators';
-import {FLOGO_CONTRIB_TYPE, FLOGO_PROFILE_TYPE} from '@flogo-web/client/core/constants';
-import {RestApiService} from '../rest-api.service';
+import { FLOGO_CONTRIB_TYPE, FLOGO_PROFILE_TYPE } from '@flogo-web/client/core/constants';
+import { RestApiService } from '../rest-api.service';
 import { Observable } from 'rxjs';
 
 interface InstallationData {
@@ -12,17 +12,19 @@ interface InstallationData {
 
 @Injectable()
 export class RESTAPIContributionsService {
-
   contributionPathByProfileType = new Map<FLOGO_PROFILE_TYPE, string>([
     [FLOGO_PROFILE_TYPE.MICRO_SERVICE, 'contributions/microservices'],
-    [FLOGO_PROFILE_TYPE.DEVICE, 'contributions/devices']
+    [FLOGO_PROFILE_TYPE.DEVICE, 'contributions/devices'],
   ]);
 
-  constructor(private restApi: RestApiService) {
-  }
+  constructor(private restApi: RestApiService) {}
 
-  getContributionDetails<T extends ContribSchema = ContribSchema>(profileType: FLOGO_PROFILE_TYPE, ref: string): Promise<T> {
-    return this.restApi.get<Array<T>>(this.getApiPath(profileType) + '?filter[ref]=' + ref)
+  getContributionDetails<T extends ContribSchema = ContribSchema>(
+    profileType: FLOGO_PROFILE_TYPE,
+    ref: string
+  ): Promise<T> {
+    return this.restApi
+      .get<Array<T>>(this.getApiPath(profileType) + '?filter[ref]=' + ref)
       .pipe(map(([schema]) => schema))
       .toPromise();
   }
@@ -35,13 +37,17 @@ export class RESTAPIContributionsService {
     return this.restApi.get<T[]>(this.getApiPath(profileType) + '?filter[type]=' + type).toPromise();
   }
 
-  installContributions({profileType, installType, url}): Observable<{ details: string, ref: string, originalUrl: string }> {
+  installContributions({
+    profileType,
+    installType,
+    url,
+  }): Observable<{ details: string; ref: string; originalUrl: string }> {
     const body = this.prepareBodyData(profileType, installType, url);
     return this.restApi.post(this.getApiPath(profileType), body);
   }
 
   private prepareBodyData(profileType, type, url): InstallationData {
-    const data: InstallationData = {url};
+    const data: InstallationData = { url };
     if (profileType === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
       data.type = type;
     }

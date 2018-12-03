@@ -11,144 +11,144 @@ import { NodeMatrix } from './matrix';
 // └── B6⟶C6
 // |   └──C7
 // └──B8
-function makeTestData(): { root: GraphNode, nodeDictionary: GraphNodeDictionary } {
+function makeTestData(): { root: GraphNode; nodeDictionary: GraphNodeDictionary } {
   const nodes = [
     {
       id: 'root',
       type: NodeType.Task,
       parents: [],
       children: ['B1', 'L-root-B6', 'L-root-B8'],
-      features: []
+      features: [],
     },
     {
       id: 'B1',
       type: NodeType.Task,
       parents: ['root'],
       children: ['C1', 'L-B1-C5'],
-      features: []
+      features: [],
     },
     {
       id: 'C1',
       type: NodeType.Task,
       parents: ['B1'],
       children: ['L-C1-D2'],
-      features: []
+      features: [],
     },
     {
       id: 'D2',
       type: NodeType.Task,
       parents: ['L-C1-D2'],
       children: ['L-D2-E3', 'L-D2-E4'],
-      features: []
+      features: [],
     },
     {
       id: 'E3',
       type: NodeType.Task,
       parents: ['L-D2-E3'],
       children: [],
-      features: []
+      features: [],
     },
     {
       id: 'E4',
       type: NodeType.Task,
       parents: ['L-D2-E4'],
       children: [],
-      features: []
+      features: [],
     },
     {
       id: 'C5',
       type: NodeType.Task,
       parents: ['L-B1-C5'],
       children: [],
-      features: []
+      features: [],
     },
     {
       id: 'B6',
       type: NodeType.Task,
       parents: ['L-root-C6'],
       children: ['C6', 'L-B6-C7'],
-      features: []
+      features: [],
     },
     {
       id: 'C6',
       type: NodeType.Task,
       parents: ['B6'],
       children: [],
-      features: []
+      features: [],
     },
     {
       id: 'C7',
       type: NodeType.Task,
       parents: ['L-B6-C7'],
       children: [],
-      features: []
+      features: [],
     },
     {
       id: 'B8',
       type: NodeType.Task,
       parents: ['L-root-B8'],
       children: [],
-      features: []
+      features: [],
     },
     {
       id: 'L-root-B6',
       type: NodeType.Branch,
       parents: ['root'],
       children: ['B6'],
-      features: []
+      features: [],
     },
     {
       id: 'L-root-B8',
       type: NodeType.Branch,
       parents: ['root'],
       children: ['B8'],
-      features: []
+      features: [],
     },
     {
       id: 'L-B6-C7',
       type: NodeType.Branch,
       parents: ['B6'],
       children: ['C7'],
-      features: []
+      features: [],
     },
     {
       id: 'L-B1-C5',
       type: NodeType.Branch,
       parents: ['B1'],
       children: ['C5'],
-      features: []
+      features: [],
     },
     {
       id: 'L-C1-D2',
       type: NodeType.Branch,
       parents: ['C1'],
       children: ['D2'],
-      features: []
+      features: [],
     },
     {
       id: 'L-D2-E3',
       type: NodeType.Branch,
       parents: ['D2'],
       children: ['E3'],
-      features: []
+      features: [],
     },
     {
       id: 'L-D2-E4',
       type: NodeType.Branch,
       parents: ['D2'],
       children: ['E4'],
-      features: []
+      features: [],
     },
   ];
   const nodeDictionary: GraphNodeDictionary = fromPairs(
-    nodes.map(node => [node.id, { ...node, capabilities: {}, status: {} }]),
+    nodes.map(node => [node.id, { ...node, capabilities: {}, status: {} }])
   );
   const { root } = nodeDictionary;
   return { root, nodeDictionary };
 }
 
-describe('diagram.nodesToNodeMatrix', function () {
-  it('correctly generates a node matrix from nodes info', function () {
+describe('diagram.nodesToNodeMatrix', function() {
+  it('correctly generates a node matrix from nodes info', function() {
     const { root, nodeDictionary } = makeTestData();
     const result = nodesToNodeMatrix(root, nodeDictionary);
     const expectedMatrix = [
@@ -163,14 +163,14 @@ describe('diagram.nodesToNodeMatrix', function () {
     ];
     expect(result)['toMatchNodeMatrix'](expectedMatrix);
   });
-  beforeAll(function () {
+  beforeAll(function() {
     jasmine.addMatchers({
       toMatchNodeMatrix: (util: jasmine.MatchersUtil, customEqualityTesters: Array<jasmine.CustomEqualityTester>) => {
         return {
           compare: (actualMatrix: NodeMatrix, expectedMatrix: string[][]): jasmine.CustomMatcherResult => {
             const result: jasmine.CustomMatcherResult = {
               pass: false,
-              message: ''
+              message: '',
             };
 
             if (actualMatrix.length !== expectedMatrix.length) {
@@ -179,7 +179,7 @@ describe('diagram.nodesToNodeMatrix', function () {
               return result;
             }
 
-            const extractNodeId = node => node ? node.id : null;
+            const extractNodeId = node => (node ? node.id : null);
             for (let i = 0; i < actualMatrix.length; i++) {
               const actualValues = actualMatrix[i].map(extractNodeId);
               const expectedValues = expectedMatrix[i];
@@ -191,9 +191,9 @@ describe('diagram.nodesToNodeMatrix', function () {
             result.pass = true;
             result.message = 'Passed';
             return result;
-          }
+          },
         };
-      }
+      },
     });
   });
 });

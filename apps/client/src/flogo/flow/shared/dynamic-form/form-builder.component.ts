@@ -5,9 +5,8 @@ import { BaseField } from './field-base';
 
 @Component({
   selector: 'flogo-flow-dynamic-form',
-  templateUrl: 'form-builder.component.html'
+  templateUrl: 'form-builder.component.html',
 })
-
 export class FormBuilderComponent implements OnInit {
   @Input()
   fields: any;
@@ -16,8 +15,7 @@ export class FormBuilderComponent implements OnInit {
   fieldsWithControlType: BaseField<any>[];
   fbForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilderService) {
-  }
+  constructor(private formBuilder: FormBuilderService) {}
 
   get formFields() {
     return <FormArray>this.fbForm.get('formFields');

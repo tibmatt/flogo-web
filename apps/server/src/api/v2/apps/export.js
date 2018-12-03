@@ -38,11 +38,7 @@ function handleErrorAndRethrow(error) {
 }
 
 function extractOptions(queryParams) {
-  const {
-    appmodel,
-    type,
-    flowids: flowIdsCsv,
-  } = queryParams;
+  const { appmodel, type, flowids: flowIdsCsv } = queryParams;
   const flowIds = flowIdsCsv ? flowIdsCsv.split(',') : null;
   return {
     appModel: appmodel,

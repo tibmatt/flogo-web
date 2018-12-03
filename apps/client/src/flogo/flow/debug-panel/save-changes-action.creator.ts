@@ -6,13 +6,17 @@ import { Dictionary, Item, ItemActivityTask } from '@flogo-web/client/core';
 import { HandlerType } from '@flogo-web/client/flow/core/models';
 import { FlowSelectors, FlowActions, FlowState } from '@flogo-web/client/flow/core/state';
 
-export function createSaveChangesAction(store: Store<FlowState>, taskId, changes): Observable<null | FlowActions.ItemUpdated> {
+export function createSaveChangesAction(
+  store: Store<FlowState>,
+  taskId,
+  changes
+): Observable<null | FlowActions.ItemUpdated> {
   return store.pipe(
     select(FlowSelectors.selectFlowState),
     map(flowState => {
       const actionPayload = getChanges(flowState, taskId, changes);
       return actionPayload ? new FlowActions.ItemUpdated(actionPayload) : null;
-    }),
+    })
   );
 }
 
@@ -35,9 +39,9 @@ export function getChanges(flowState: FlowState, taskId, changedInputs) {
   if (isEqual(changedInputs, task.input)) {
     return null;
   }
-  const itemChanges: {id: string} & Partial<Item> = {
+  const itemChanges: { id: string } & Partial<Item> = {
     id: task.id,
-    input: { ...changedInputs  }
+    input: { ...changedInputs },
   };
   return {
     handlerType,

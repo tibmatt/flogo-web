@@ -1,23 +1,18 @@
-import {NgModule} from '@angular/core';
-import {CommonModule as NgCommonModule} from '@angular/common';
+import { NgModule } from '@angular/core';
+import { CommonModule as NgCommonModule } from '@angular/common';
 
-import {SharedModule as FlogoSharedModule} from '../../shared/shared.module';
+import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
 
-import {WalkthroughComponent} from './walkthrough.component';
+import { WalkthroughComponent } from './walkthrough.component';
 
 @NgModule({
-  imports: [// module dependencies
+  imports: [
+    // module dependencies
     NgCommonModule,
-    FlogoSharedModule
+    FlogoSharedModule,
   ],
-  declarations: [
-    WalkthroughComponent
-  ],
-  exports: [
-    WalkthroughComponent
-  ],
-  providers: [
-  ]
+  declarations: [WalkthroughComponent],
+  exports: [WalkthroughComponent],
+  providers: [],
 })
-export class WalkthroughModule {
-}
+export class WalkthroughModule {}

@@ -1,11 +1,14 @@
-import {BaseItemTask, GraphNode, Item, ItemBranch, NodeType} from '@flogo-web/client/core';
-import {isBranchConfigured, isIterableTask} from '@flogo-web/client/shared/utils';
-import {FlowState} from '../flow.state';
-import {getGraphName, getItemsDictionaryName} from '../../utils';
-import {HandlerType} from '@flogo-web/client/flow/core/models/handler-type';
+import { BaseItemTask, GraphNode, Item, ItemBranch, NodeType } from '@flogo-web/client/core';
+import { isBranchConfigured, isIterableTask } from '@flogo-web/client/shared/utils';
+import { FlowState } from '../flow.state';
+import { getGraphName, getItemsDictionaryName } from '../../utils';
+import { HandlerType } from '@flogo-web/client/flow/core/models/handler-type';
 
-export function nodeUpdate(state: FlowState, payload: { handlerType: HandlerType, item?: { id: string } & Partial<ItemBranch> }) {
-  const {handlerType, item} = payload;
+export function nodeUpdate(
+  state: FlowState,
+  payload: { handlerType: HandlerType; item?: { id: string } & Partial<ItemBranch> }
+) {
+  const { handlerType, item } = payload;
   if (!item) {
     return state;
   }
@@ -16,8 +19,8 @@ export function nodeUpdate(state: FlowState, payload: { handlerType: HandlerType
     ...currentNode,
     ...item,
     status: {
-      isBranchConfigured: isBranchConfigured(item.condition)
-    }
+      isBranchConfigured: isBranchConfigured(item.condition),
+    },
   };
   return {
     ...state,
@@ -25,20 +28,23 @@ export function nodeUpdate(state: FlowState, payload: { handlerType: HandlerType
       ...graph,
       nodes: {
         ...graph.nodes,
-        [item.id]: newNodeState
-      }
-    }
+        [item.id]: newNodeState,
+      },
+    },
   };
 }
 
-export function itemUpdate(state: FlowState, payload: { handlerType: HandlerType, item?: { id: string } & Partial<Item> }) {
-  const {handlerType, item} = payload;
+export function itemUpdate(
+  state: FlowState,
+  payload: { handlerType: HandlerType; item?: { id: string } & Partial<Item> }
+) {
+  const { handlerType, item } = payload;
   if (!item) {
     return state;
   }
   const itemsDictionaryName = getItemsDictionaryName(handlerType);
   const items = state[itemsDictionaryName];
-  const newItemState = {...items[item.id], ...item};
+  const newItemState = { ...items[item.id], ...item };
   return {
     ...state,
     [itemsDictionaryName]: {
@@ -48,8 +54,11 @@ export function itemUpdate(state: FlowState, payload: { handlerType: HandlerType
   };
 }
 
-export function graphUpdate(state: FlowState, payload: { handlerType: HandlerType, item?: { id: string } & Partial<BaseItemTask> }) {
-  const {handlerType, item} = payload;
+export function graphUpdate(
+  state: FlowState,
+  payload: { handlerType: HandlerType; item?: { id: string } & Partial<BaseItemTask> }
+) {
+  const { handlerType, item } = payload;
   if (!item) {
     return state;
   }
@@ -62,8 +71,8 @@ export function graphUpdate(state: FlowState, payload: { handlerType: HandlerTyp
     title: item.name,
     description: item.description,
     status: {
-      iterable: !!item.settings.iterate
-    }
+      iterable: !!item.settings.iterate,
+    },
   };
   return {
     ...state,
@@ -71,8 +80,8 @@ export function graphUpdate(state: FlowState, payload: { handlerType: HandlerTyp
       ...graph,
       nodes: {
         ...graph.nodes,
-        [item.id]: newNodeState
-      }
-    }
+        [item.id]: newNodeState,
+      },
+    },
   };
 }

@@ -1,324 +1,319 @@
-import {TriggerSchema, ValueType} from '@flogo-web/client/core';
+import { TriggerSchema, ValueType } from '@flogo-web/client/core';
 
 export const TriggersMock = [
   {
     id: 'trigger_1',
     isValid: true,
     isDirty: false,
-    name: 'Receive HTTP Message'
-  }, {
+    name: 'Receive HTTP Message',
+  },
+  {
     id: 'trigger_2',
     isValid: true,
     isDirty: false,
-    name: 'Receive HTTP Message (1) (1)'
-  }
+    name: 'Receive HTTP Message (1) (1)',
+  },
 ];
 
 export const ConfigureTriggersMock = [
   {
-    'trigger': {
-      'name': 'Receive HTTP Message',
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
-      'description': 'Simple REST Trigger',
-      'settings': {
-        'port': '8081'
+    trigger: {
+      name: 'Receive HTTP Message',
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+      description: 'Simple REST Trigger',
+      settings: {
+        port: '8081',
       },
-      'id': 'trigger_1',
-      'createdAt': 'datetime',
-      'updatedAt': 'datetime',
-      'handlers': [
+      id: 'trigger_1',
+      createdAt: 'datetime',
+      updatedAt: 'datetime',
+      handlers: [
         {
-          'actionMappings': {
-            'input': [
+          actionMappings: {
+            input: [
               {
-                'mapTo': 'in',
-                'type': 2,
-                'value': 200
+                mapTo: 'in',
+                type: 2,
+                value: 200,
               },
               {
-                'mapTo': 'in2',
-                'type': 2,
-                'value': 56565656
-              }
+                mapTo: 'in2',
+                type: 2,
+                value: 56565656,
+              },
             ],
-            'output': []
+            output: [],
           },
-          'settings': {
-            'method': null,
-            'path': null
+          settings: {
+            method: null,
+            path: null,
           },
-          'outputs': {
-            'params': null,
-            'pathParams': null,
-            'queryParams': null,
-            'header': null,
-            'content': null
+          outputs: {
+            params: null,
+            pathParams: null,
+            queryParams: null,
+            header: null,
+            content: null,
           },
-          'actionId': 'action_1',
-          'createdAt': 'datetime',
-          'updatedAt': 'datetime'
+          actionId: 'action_1',
+          createdAt: 'datetime',
+          updatedAt: 'datetime',
         },
         {
-          'actionMappings': {
-            'input': [
+          actionMappings: {
+            input: [
               {
-                'mapTo': 'in',
-                'type': 2,
-                'value': 200
+                mapTo: 'in',
+                type: 2,
+                value: 200,
               },
               {
-                'mapTo': 'in2',
-                'type': 2,
-                'value': 56565656
-              }
+                mapTo: 'in2',
+                type: 2,
+                value: 56565656,
+              },
             ],
-            'output': []
+            output: [],
           },
-          'settings': {
-            'method': null,
-            'path': null
+          settings: {
+            method: null,
+            path: null,
           },
-          'outputs': {
-            'params': null,
-            'pathParams': null,
-            'queryParams': null,
-            'header': null,
-            'content': null
+          outputs: {
+            params: null,
+            pathParams: null,
+            queryParams: null,
+            header: null,
+            content: null,
           },
-          'actionId': 'action_2',
-          'createdAt': 'datetime',
-          'updatedAt': 'datetime'
-        }
+          actionId: 'action_2',
+          createdAt: 'datetime',
+          updatedAt: 'datetime',
+        },
       ],
-      'appId': 'app_1',
-      'handler': {
-        'actionMappings': {
-          'input': [
+      appId: 'app_1',
+      handler: {
+        actionMappings: {
+          input: [
             {
-              'mapTo': 'in',
-              'type': 2,
-              'value': 200
+              mapTo: 'in',
+              type: 2,
+              value: 200,
             },
             {
-              'mapTo': 'in2',
-              'type': 2,
-              'value': 56565656
-            }
+              mapTo: 'in2',
+              type: 2,
+              value: 56565656,
+            },
           ],
-          'output': []
+          output: [],
         },
-        'settings': {
-          'method': null,
-          'path': null
+        settings: {
+          method: null,
+          path: null,
         },
-        'outputs': {
-          'params': null,
-          'pathParams': null,
-          'queryParams': null,
-          'header': null,
-          'content': null
+        outputs: {
+          params: null,
+          pathParams: null,
+          queryParams: null,
+          header: null,
+          content: null,
         },
-        'actionId': 'action_1',
-        'createdAt': 'datetime',
-        'updatedAt': 'datetime'
-      }
+        actionId: 'action_1',
+        createdAt: 'datetime',
+        updatedAt: 'datetime',
+      },
     },
-    'handler': {
-      'actionMappings': {
-        'input': [
+    handler: {
+      actionMappings: {
+        input: [
           {
-            'mapTo': 'in',
-            'type': 2,
-            'value': 200
+            mapTo: 'in',
+            type: 2,
+            value: 200,
           },
           {
-            'mapTo': 'in2',
-            'type': 2,
-            'value': 56565656
-          }
+            mapTo: 'in2',
+            type: 2,
+            value: 56565656,
+          },
         ],
-        'output': []
+        output: [],
       },
-      'settings': {
-        'method': null,
-        'path': null
+      settings: {
+        method: null,
+        path: null,
       },
-      'outputs': {
-        'params': null,
-        'pathParams': null,
-        'queryParams': null,
-        'header': null,
-        'content': null
+      outputs: {
+        params: null,
+        pathParams: null,
+        queryParams: null,
+        header: null,
+        content: null,
       },
-      'actionId': 'action_1',
-      'createdAt': 'datetime',
-      'updatedAt': 'datetime'
-    }
+      actionId: 'action_1',
+      createdAt: 'datetime',
+      updatedAt: 'datetime',
+    },
   },
   {
-    'trigger': {
-      'name': 'Receive HTTP Message (1) (1)',
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
-      'description': 'Simple REST Trigger',
-      'settings': {
-        'port': '8080'
+    trigger: {
+      name: 'Receive HTTP Message (1) (1)',
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+      description: 'Simple REST Trigger',
+      settings: {
+        port: '8080',
       },
-      'id': 'trigger_2',
-      'createdAt': 'datetime',
-      'updatedAt': 'datetime',
-      'handlers': [
+      id: 'trigger_2',
+      createdAt: 'datetime',
+      updatedAt: 'datetime',
+      handlers: [
         {
-          'actionMappings': {
-            'input': [
+          actionMappings: {
+            input: [
               {
-                'mapTo': 'in',
-                'type': 2,
-                'value': 20
-              }
+                mapTo: 'in',
+                type: 2,
+                value: 20,
+              },
             ],
-            'output': []
+            output: [],
           },
-          'settings': {
-            'method': 'GET',
-            'path': '/testing'
+          settings: {
+            method: 'GET',
+            path: '/testing',
           },
-          'outputs': {
-            'params': null,
-            'pathParams': null,
-            'queryParams': null,
-            'header': null,
-            'content': null
+          outputs: {
+            params: null,
+            pathParams: null,
+            queryParams: null,
+            header: null,
+            content: null,
           },
-          'actionId': 'action_1',
-          'createdAt': 'datetime',
-          'updatedAt': 'datetime'
-        }
+          actionId: 'action_1',
+          createdAt: 'datetime',
+          updatedAt: 'datetime',
+        },
       ],
-      'appId': 'app_1',
-      'handler': {
-        'actionMappings': {
-          'input': [
+      appId: 'app_1',
+      handler: {
+        actionMappings: {
+          input: [
             {
-              'mapTo': 'in',
-              'type': 2,
-              'value': 20
-            }
+              mapTo: 'in',
+              type: 2,
+              value: 20,
+            },
           ],
-          'output': []
+          output: [],
         },
-        'settings': {
-          'method': 'GET',
-          'path': '/testing'
+        settings: {
+          method: 'GET',
+          path: '/testing',
         },
-        'outputs': {
-          'params': null,
-          'pathParams': null,
-          'queryParams': null,
-          'header': null,
-          'content': null
+        outputs: {
+          params: null,
+          pathParams: null,
+          queryParams: null,
+          header: null,
+          content: null,
         },
-        'actionId': 'action_1',
-        'createdAt': 'datetime',
-        'updatedAt': 'datetime'
-      }
+        actionId: 'action_1',
+        createdAt: 'datetime',
+        updatedAt: 'datetime',
+      },
     },
-    'handler': {
-      'actionMappings': {
-        'input': [
+    handler: {
+      actionMappings: {
+        input: [
           {
-            'mapTo': 'in',
-            'type': 2,
-            'value': 20
-          }
+            mapTo: 'in',
+            type: 2,
+            value: 20,
+          },
         ],
-        'output': []
+        output: [],
       },
-      'settings': {
-        'method': 'GET',
-        'path': '/testing'
+      settings: {
+        method: 'GET',
+        path: '/testing',
       },
-      'outputs': {
-        'params': null,
-        'pathParams': null,
-        'queryParams': null,
-        'header': null,
-        'content': null
+      outputs: {
+        params: null,
+        pathParams: null,
+        queryParams: null,
+        header: null,
+        content: null,
       },
-      'actionId': 'action_1',
-      'createdAt': 'datetime',
-      'updatedAt': 'datetime'
-    }
-  }
+      actionId: 'action_1',
+      createdAt: 'datetime',
+      updatedAt: 'datetime',
+    },
+  },
 ];
 
 export const ConfigureTriggerSchema: TriggerSchema = {
-  'type': 'flogo:trigger',
-  'name': 'flogo-rest',
-  'version': '0.0.1',
-  'title': 'Receive HTTP Message',
-  'description': 'Simple REST Trigger',
-  'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
-  'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
-  'settings': [
+  type: 'flogo:trigger',
+  name: 'flogo-rest',
+  version: '0.0.1',
+  title: 'Receive HTTP Message',
+  description: 'Simple REST Trigger',
+  homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
+  ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+  settings: [
     {
-      'name': 'port',
-      'type': ValueType.Integer,
-      'required': true
-    }
+      name: 'port',
+      type: ValueType.Integer,
+      required: true,
+    },
   ],
-  'outputs': [
+  outputs: [
     {
-      'name': 'params',
-      'type': ValueType.Params
+      name: 'params',
+      type: ValueType.Params,
     },
     {
-      'name': 'pathParams',
-      'type': ValueType.Params
+      name: 'pathParams',
+      type: ValueType.Params,
     },
     {
-      'name': 'queryParams',
-      'type': ValueType.Params
+      name: 'queryParams',
+      type: ValueType.Params,
     },
     {
-      'name': 'header',
-      'type': ValueType.Params
+      name: 'header',
+      type: ValueType.Params,
     },
     {
-      'name': 'content',
-      'type': ValueType.Any
-    }
+      name: 'content',
+      type: ValueType.Any,
+    },
   ],
-  'handler': {
-    'settings': [
+  handler: {
+    settings: [
       {
-        'name': 'method',
-        'type': ValueType.String,
-        'required': true,
-        'allowed': [
-          'GET',
-          'POST',
-          'PUT',
-          'PATCH',
-          'DELETE'
-        ]
+        name: 'method',
+        type: ValueType.String,
+        required: true,
+        allowed: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
       },
       {
-        'name': 'path',
-        'type': ValueType.String,
-        'required': true
-      }
-    ]
+        name: 'path',
+        type: ValueType.String,
+        required: true,
+      },
+    ],
   },
-  'reply': [
+  reply: [
     {
-      'name': 'code',
-      'type': ValueType.Integer
+      name: 'code',
+      type: ValueType.Integer,
     },
     {
-      'name': 'data',
-      'type': ValueType.Any
-    }
-  ]
+      name: 'data',
+      type: ValueType.Any,
+    },
+  ],
 };
 
 /*export const InvalidConfigureTriggersMock = [

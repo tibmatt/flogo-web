@@ -1,7 +1,6 @@
 import { resolveExpressionType } from './resolve-expression-type';
 
 describe('Parser Type Resolver', () => {
-
   function assertParsedType(expectedType, expr) {
     test(`For ${expr}`, () => {
       const parsedType = resolveExpressionType(expr);
@@ -144,8 +143,7 @@ describe('Parser Type Resolver', () => {
       `a ? 4`,
       `1 > ? a : b`,
       `true ? a`,
-      `!true`
+      `!true`,
     ]);
   });
-
 });

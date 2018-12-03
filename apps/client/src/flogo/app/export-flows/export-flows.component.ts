@@ -1,8 +1,8 @@
-import {Component, HostBinding, Inject} from '@angular/core';
-import {Action, ERROR_CODE} from '@flogo-web/client/core';
-import {AppDetailService} from '@flogo-web/client/app/core/apps.service';
-import {NotificationsService} from '@flogo-web/client/core/notifications';
-import {MODAL_TOKEN, modalAnimate, ModalControl} from '@flogo-web/client/core/modal';
+import { Component, HostBinding, Inject } from '@angular/core';
+import { Action, ERROR_CODE } from '@flogo-web/client/core';
+import { AppDetailService } from '@flogo-web/client/app/core/apps.service';
+import { NotificationsService } from '@flogo-web/client/core/notifications';
+import { MODAL_TOKEN, modalAnimate, ModalControl } from '@flogo-web/client/core/modal';
 
 export interface ExportFlowsData {
   flows: Array<Action>;
@@ -21,14 +21,14 @@ export class FlogoExportFlowsComponent {
   checkAllFlows = [];
 
   constructor(
-    @Inject(MODAL_TOKEN) public exportFlowsData: ExportFlowsData, public control: ModalControl,
+    @Inject(MODAL_TOKEN) public exportFlowsData: ExportFlowsData,
+    public control: ModalControl,
     private appDetailService: AppDetailService,
     private notificationsService: NotificationsService
   ) {
     this.resetForm();
     this.selectAllFlows();
   }
-
 
   public selectAllFlows() {
     this.checkedFlows = [];
@@ -63,25 +63,29 @@ export class FlogoExportFlowsComponent {
     } else {
       flowsToExport = this.checkedFlows;
     }
-    return () => this.appDetailService.exportFlow(flowsToExport, this.exportFlowsData.isLegacyExport)
-      .then(appWithFlows => {
-        this.control.close('Flows Exported');
-        return [{
-          fileName: 'flows.json',
-          data: appWithFlows
-        }];
-      }).catch(errRsp => {
-        if (errRsp && errRsp.errors && errRsp.errors[0] && errRsp.errors[0].code === ERROR_CODE.HAS_SUBFLOW) {
-          this.notificationsService.error({key: 'DETAILS-EXPORT:CANNOT-EXPORT'});
-        } else {
-          console.error(errRsp.errors);
-          this.notificationsService.error({key: 'DETAILS-EXPORT:ERROR_UNKNOWN'});
-        }
-      });
+    return () =>
+      this.appDetailService
+        .exportFlow(flowsToExport, this.exportFlowsData.isLegacyExport)
+        .then(appWithFlows => {
+          this.control.close('Flows Exported');
+          return [
+            {
+              fileName: 'flows.json',
+              data: appWithFlows,
+            },
+          ];
+        })
+        .catch(errRsp => {
+          if (errRsp && errRsp.errors && errRsp.errors[0] && errRsp.errors[0].code === ERROR_CODE.HAS_SUBFLOW) {
+            this.notificationsService.error({ key: 'DETAILS-EXPORT:CANNOT-EXPORT' });
+          } else {
+            console.error(errRsp.errors);
+            this.notificationsService.error({ key: 'DETAILS-EXPORT:ERROR_UNKNOWN' });
+          }
+        });
   }
 
   private resetForm() {
     this.unselectAllFlows();
   }
-
 }

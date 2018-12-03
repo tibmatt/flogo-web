@@ -5,7 +5,7 @@ import { FlowSummary } from '@flogo-web/client/core';
 @Component({
   selector: 'flogo-apps-flows',
   templateUrl: 'flows.component.html',
-  styleUrls: ['flows.component.less']
+  styleUrls: ['flows.component.less'],
 })
 export class FlogoApplicationFlowsComponent implements OnChanges {
   @Input()
@@ -15,8 +15,7 @@ export class FlogoApplicationFlowsComponent implements OnChanges {
   @Output()
   public deleteFlow: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnChanges(changes: SimpleChanges) {
     this.flows = sortBy(this.flows, flow => flow.name.toLowerCase());

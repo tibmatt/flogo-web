@@ -2,7 +2,6 @@ import get from 'lodash/get';
 import { activitiesDBService } from '../../common/db/activities';
 
 export class ActivitiesManager {
-
   /**
    * List or find activities
    *
@@ -26,10 +25,9 @@ export class ActivitiesManager {
   static find(terms) {
     terms = terms || {};
 
-    return activitiesDBService.db.find(terms)
-      .then(result => (result || [])
-        .map(activityRow => prepareForOutput(activityRow)),
-      );
+    return activitiesDBService.db
+      .find(terms)
+      .then(result => (result || []).map(activityRow => prepareForOutput(activityRow)));
   }
 }
 
@@ -38,6 +36,6 @@ function prepareForOutput(activity) {
   return Object.assign(
     { id: activity.id || activity._id },
     { ref: activity.ref, homepage: get(activity, 'schema.homepage', '') },
-    activity.schema,
+    activity.schema
   );
 }

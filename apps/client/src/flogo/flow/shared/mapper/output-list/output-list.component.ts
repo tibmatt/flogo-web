@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-import { selectFilterFromOutputs, selectNodesFromOutputs } from '@flogo-web/client/flow/shared/mapper/services/selectors';
+import {
+  selectFilterFromOutputs,
+  selectNodesFromOutputs,
+} from '@flogo-web/client/flow/shared/mapper/services/selectors';
 
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
 import { TYPE_PARAM_OUTPUT } from '../services/dragging.service';
@@ -12,7 +15,7 @@ import { MapperService } from '../services/mapper.service';
 @Component({
   selector: 'flogo-mapper-output-list',
   templateUrl: 'output-list.component.html',
-  styleUrls: ['output-list.component.css']
+  styleUrls: ['output-list.component.css'],
 })
 export class OutputListComponent implements OnInit, OnDestroy {
   @Input() searchPlaceholder: string;
@@ -23,8 +26,7 @@ export class OutputListComponent implements OnInit, OnDestroy {
 
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
 
-  constructor(private mapperService: MapperService) {
-  }
+  constructor(private mapperService: MapperService) {}
 
   ngOnInit() {
     const state$ = this.mapperService.state$.pipe(shareReplay());
@@ -43,5 +45,4 @@ export class OutputListComponent implements OnInit, OnDestroy {
   onSearchChange(searchTerm: string) {
     this.mapperService.filterOutputs(searchTerm);
   }
-
 }

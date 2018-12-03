@@ -3,5 +3,5 @@ export const CONSTRAINTS = {
   UNIQUE: 'UniqueValue',
   NOT_INSTALLED_TRIGGER: 'notInstalledTrigger',
   NOT_INSTALLED_ACTIVITY: 'notInstalledActivity',
-  WRONG_INPUT_JSON_FILE: 'wrongInputJSONFile'
+  WRONG_INPUT_JSON_FILE: 'wrongInputJSONFile',
 };

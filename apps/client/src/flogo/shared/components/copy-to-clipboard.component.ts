@@ -3,8 +3,15 @@ import { copyToClipboard } from '../utils';
 
 @Component({
   selector: 'flogo-copy-to-clipboard',
-  template: `<button class="tc-buttons tc-buttons-primary-call flogo-clipboard-button"
-        (click)="copy()" [ngClass]="{disabled: copied}" >{{ text }}</button>`
+  template: `
+    <button
+      class="tc-buttons tc-buttons-primary-call flogo-clipboard-button"
+      (click)="copy()"
+      [ngClass]="{ disabled: copied }"
+    >
+      {{ text }}
+    </button>
+  `,
 })
 export class CopyToClipboardComponent {
   @Input() element: HTMLElement;
@@ -17,8 +24,7 @@ export class CopyToClipboardComponent {
   copy() {
     if (copyToClipboard(this.element)) {
       this.copied = true;
-      setTimeout(() => this.copied = false, 1200);
+      setTimeout(() => (this.copied = false), 1200);
     }
   }
-
 }

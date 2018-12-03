@@ -37,12 +37,12 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
   private hasFocus = false;
   private isHovered = false;
 
-  constructor(private elementRef: ElementRef,
-              private renderer: Renderer2,
-              private domSanitizer: DomSanitizer,
-              @Inject(DOCUMENT) private document,
-  ) {
-  }
+  constructor(
+    private elementRef: ElementRef,
+    private renderer: Renderer2,
+    private domSanitizer: DomSanitizer,
+    @Inject(DOCUMENT) private document
+  ) {}
 
   ngOnChanges(changes: { fgContentEditable?: SimpleChange }) {
     if (!changes.fgContentEditable || changes.fgContentEditable.isFirstChange()) {
@@ -208,7 +208,6 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
     } else if (this.isHovered) {
       color = '#ccc';
     }
-    return this.borderColor = color;
+    return (this.borderColor = color);
   }
-
 }

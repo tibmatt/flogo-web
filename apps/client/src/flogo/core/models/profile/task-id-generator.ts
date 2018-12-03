@@ -1,6 +1,6 @@
-import {FLOGO_PROFILE_TYPE} from '../../constants';
-import {deviceTaskIdGenerator} from './devices/task-id-generator';
-import {microserviceTaskIdGenerator} from './microservices/task-id-generator';
+import { FLOGO_PROFILE_TYPE } from '../../constants';
+import { deviceTaskIdGenerator } from './devices/task-id-generator';
+import { microserviceTaskIdGenerator } from './microservices/task-id-generator';
 
 export function taskIdGenerator(profile: FLOGO_PROFILE_TYPE, items?: any, currentTask?: any): string {
   switch (profile) {

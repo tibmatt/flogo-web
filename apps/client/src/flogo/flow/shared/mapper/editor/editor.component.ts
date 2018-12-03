@@ -22,7 +22,7 @@ import { EditorService, InsertEvent } from './editor.service';
 function distinctAndDebounce(obs) {
   return obs.pipe(
     debounceTime(300),
-    distinctUntilChanged(),
+    distinctUntilChanged()
   );
 }
 
@@ -39,13 +39,12 @@ interface EditorHint {
 export class EditorComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) editor: MonacoEditorComponent;
   expression = '';
-  valueHints$: Observable<null|Array<EditorHint>>;
+  valueHints$: Observable<null | Array<EditorHint>>;
 
   private currentMapKey: string;
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
 
-  constructor(private editorService: EditorService, private mapperService: MapperService) {
-  }
+  constructor(private editorService: EditorService, private mapperService: MapperService) {}
 
   ngOnInit() {
     const mapperState$ = this.mapperService.state$.pipe(shareReplay());
@@ -55,22 +54,18 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.valueHints$ = this.createHintsStream(editorContext$, mapperState$.pipe(getCurrentNodeValueHints));
     this.subscribeToValueChanges(editorContext$);
 
-    this.editorService.insert$
-      .pipe(takeUntil(this.ngDestroy))
-      .subscribe((event: InsertEvent) => {
-        if (event.replaceTokenAtPosition) {
-          this.editor.replaceTokenAtClientPosition(event.text, event.replaceTokenAtPosition);
-        } else {
-          this.editor.insert(event.text);
-        }
-        this.editor.focus();
-      });
+    this.editorService.insert$.pipe(takeUntil(this.ngDestroy)).subscribe((event: InsertEvent) => {
+      if (event.replaceTokenAtPosition) {
+        this.editor.replaceTokenAtClientPosition(event.text, event.replaceTokenAtPosition);
+      } else {
+        this.editor.insert(event.text);
+      }
+      this.editor.focus();
+    });
 
-    this.editorService.dragOver$
-      .pipe(takeUntil(this.ngDestroy))
-      .subscribe(position => {
-        this.editor.selectTokenAtClientPosition(position);
-      });
+    this.editorService.dragOver$.pipe(takeUntil(this.ngDestroy)).subscribe(position => {
+      this.editor.selectTokenAtClientPosition(position);
+    });
   }
 
   onHintSelected(event: Event, hint: EditorHint) {
@@ -92,7 +87,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     editorContext$
       .pipe(
         switchMap(() => valueChange$),
-        takeUntil(this.ngDestroy),
+        takeUntil(this.ngDestroy)
       )
       .subscribe((value: string) => {
         this.mapperService.expressionChange(this.currentMapKey, value);
@@ -104,9 +99,9 @@ export class EditorComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap(() => mapperState$.pipe(selectCurrentEditingExpression)),
         takeUntil(this.ngDestroy),
-        filter(context => !!context),
+        filter(context => !!context)
       )
-      .subscribe((context) => {
+      .subscribe(context => {
         this.currentMapKey = context.currentKey;
         this.expression = context.expression;
         const newExpression = context.expression || '';
@@ -119,18 +114,17 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   private createHintsStream(editorContext$, currentNodeValueHints$: Observable<null | any[]>) {
     const hasValues = a => a && a.length >= 0;
-    const nodeHintsToEditorHints = nodeHints => hasValues(nodeHints)
-      ? nodeHints.map(value => ({ label: value, value: JSON.stringify(value) }))
-      : [];
-    return this.editor.ready
-      .pipe(
-        switchMap(() => editorContext$),
-        switchMap(() => combineLatest(
+    const nodeHintsToEditorHints = nodeHints =>
+      hasValues(nodeHints) ? nodeHints.map(value => ({ label: value, value: JSON.stringify(value) })) : [];
+    return this.editor.ready.pipe(
+      switchMap(() => editorContext$),
+      switchMap(() =>
+        combineLatest(
           this.editor.valueChange.pipe(startWith(this.editor.value)),
-          currentNodeValueHints$.pipe(map(nodeHintsToEditorHints)),
-        )),
-        map(([currentEditorValue, hints]) => !currentEditorValue ? hints : null),
-      );
+          currentNodeValueHints$.pipe(map(nodeHintsToEditorHints))
+        )
+      ),
+      map(([currentEditorValue, hints]) => (!currentEditorValue ? hints : null))
+    );
   }
-
 }

@@ -1,6 +1,6 @@
 import get from 'lodash/get';
 import isObject from 'lodash/isObject';
-import {TASK_HANDLER_NAME_ROOT} from "../constants";
+import { TASK_HANDLER_NAME_ROOT } from '../constants';
 
 /**
  * Finds out if an activity schema represents a mapper activity.

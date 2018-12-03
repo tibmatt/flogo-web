@@ -3,7 +3,11 @@ import { MapperState, MapperTreeNode } from '../../models';
 const calculateIsOverallValid = (nodes: MapperTreeNode[]) => nodes.every(node => !node.isInvalid);
 const calculateIsOverallDirty = (nodes: MapperTreeNode[]) => nodes.some(node => node.isDirty);
 
-export function aggregateStatusChanges(state: MapperState, prevNode: MapperTreeNode, nextNode: MapperTreeNode): MapperState {
+export function aggregateStatusChanges(
+  state: MapperState,
+  prevNode: MapperTreeNode,
+  nextNode: MapperTreeNode
+): MapperState {
   const newStatus = { isValid: state.isValid, isDirty: state.isDirty };
   const inputNodes = Object.values(state.inputs.nodes);
   if (prevNode.isInvalid !== nextNode.isInvalid) {

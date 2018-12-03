@@ -21,8 +21,7 @@ describe('Component: FlogoNewAppComponent', () => {
       imports: [NoDependenciesFakeLanguageModule, BsModalModule],
       providers: [{ provide: ProfilesAPIService, useClass: MockProfilesAPIService }],
       declarations: [FlogoNewAppComponent], // declare the test component
-    })
-      .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(inject([ProfilesAPIService], (serviceAPI: ProfilesAPIService) => {
@@ -31,10 +30,10 @@ describe('Component: FlogoNewAppComponent', () => {
     comp = fixture.componentInstance;
   }));
 
-  it('Should emit \'microservice\' when selecting microservice profile', (done) => {
+  it("Should emit 'microservice' when selecting microservice profile", done => {
     comp.newAppModal.open();
     fixture.detectChanges();
-    comp.add.subscribe((profileDetails) => {
+    comp.add.subscribe(profileDetails => {
       expect(profileDetails.profileType).toEqual(FLOGO_PROFILE_TYPE.MICRO_SERVICE);
       done();
     });
@@ -42,10 +41,10 @@ describe('Component: FlogoNewAppComponent', () => {
     de[1].nativeElement.click();
   });
 
-  it('Should show 3 devices in the list when device is selected', (done) => {
+  it('Should show 3 devices in the list when device is selected', done => {
     comp.newAppModal.open();
     comp.showList = true;
-    service.getProfilesList().then((res) => {
+    service.getProfilesList().then(res => {
       comp.devicesList = res;
       fixture.detectChanges();
       const de = fixture.debugElement.queryAll(By.css('.flogo-profile__list-element'));
@@ -54,14 +53,14 @@ describe('Component: FlogoNewAppComponent', () => {
     });
   });
 
-  it('Should emit \'Atmel AVR\' when selecting Atmel AVR device profile', (done) => {
+  it("Should emit 'Atmel AVR' when selecting Atmel AVR device profile", done => {
     comp.newAppModal.open();
-    comp.add.subscribe((profileDetails) => {
+    comp.add.subscribe(profileDetails => {
       expect(profileDetails.deviceType).toEqual('Atmel AVR');
       done();
     });
     comp.showList = true;
-    service.getProfilesList().then((res) => {
+    service.getProfilesList().then(res => {
       comp.devicesList = res;
       fixture.detectChanges();
       const de = fixture.debugElement.queryAll(By.css('.flogo-profile__list-element'));

@@ -6,20 +6,22 @@ import { MonacoEditorLoaderService } from './monaco-editor-loader.service';
 // tslint:disable-next-line:directive-selector
 @Directive({ selector: '[loadMonacoEditor]' })
 export class MonacoEditorLoaderDirective {
-    @Input() set loadMonacoEditor(value) {
-        this.monacoEditorLoaderService.monacoPath = value;
-    }
+  @Input()
+  set loadMonacoEditor(value) {
+    this.monacoEditorLoaderService.monacoPath = value;
+  }
 
-    constructor(
-        private templateRef: TemplateRef<any>,
-        private viewContainer: ViewContainerRef,
-        private monacoEditorLoaderService: MonacoEditorLoaderService) {
-        monacoEditorLoaderService.isMonacoLoaded.subscribe(isLoaded => {
-            if (isLoaded) {
-                this.viewContainer.createEmbeddedView(this.templateRef);
-            } else {
-                this.viewContainer.clear();
-            }
-        });
-    }
+  constructor(
+    private templateRef: TemplateRef<any>,
+    private viewContainer: ViewContainerRef,
+    private monacoEditorLoaderService: MonacoEditorLoaderService
+  ) {
+    monacoEditorLoaderService.isMonacoLoaded.subscribe(isLoaded => {
+      if (isLoaded) {
+        this.viewContainer.createEmbeddedView(this.templateRef);
+      } else {
+        this.viewContainer.clear();
+      }
+    });
+  }
 }

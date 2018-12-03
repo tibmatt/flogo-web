@@ -1,1 +1,1 @@
-export {TriggerBlockComponent} from './trigger-block.component';
+export { TriggerBlockComponent } from './trigger-block.component';

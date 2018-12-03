@@ -2,29 +2,53 @@
   <h3 class="title">{{ 'APP-LIST:MY-APPS' | translate }}</h3>
   <button class="flogo-button--secondary" (click)="importInput.click()">
     {{ 'DETAILS:IMPORT' | translate }}
-    <input #importInput type="file" accept="application/json" class="app-list__app-import-input"
-           (change)="onImportFileSelected($event)">
+    <input
+      #importInput
+      type="file"
+      accept="application/json"
+      class="app-list__app-import-input"
+      (change)="onImportFileSelected($event)"
+    />
   </button>
   <button class="flogo-button--default" (click)="openProfileSelect()">{{ 'APP-LIST:NEW' | translate }}</button>
-  <flogo-home-new-app *ngIf="showProfileSeclectionDialog" (close)="closeModal()"
-                      (add)="onAdd($event)"></flogo-home-new-app>
-  <flogo-home-app-import *ngIf="showValidationErrors" [importValidationErrors]="importValidationErrors" (modalClose)="resetValidationErrors()">
+  <flogo-home-new-app
+    *ngIf="showProfileSeclectionDialog"
+    (close)="closeModal()"
+    (add)="onAdd($event)"
+  ></flogo-home-new-app>
+  <flogo-home-app-import
+    *ngIf="showValidationErrors"
+    [importValidationErrors]="importValidationErrors"
+    (modalClose)="resetValidationErrors()"
+  >
   </flogo-home-app-import>
 </div>
 <div class="content">
-  <article *ngFor="let app of applications" class="app qa-app"
-         [ngClass]="{'flogo-profile__thumbnail--microservice': app.type != 'flogo:device',
-                       'flogo-profile__thumbnail--device': app.type === 'flogo:device'}"
-         (click)="onSelectApp($event, deleteBox, app)">
-      <div class="app__content">
-        <h4 class="app__name qa-app-name">{{ app.name }}</h4>
-        <div class="app__description">{{ app.description ? app.description : '&nbsp;'}}</div>
-        <footer class="app__created-at">{{ 'FLOWS:CREATED' | translate:{value:''} }}{{ app.createdAt | timeFromNow}}</footer>
-        <flogo-delete-popover #deleteBox class="app__delete qa-app-delete" (confirmDel)="remove($event)"
-                              [deleteContent]="app" [deleteContentType]="'application'">
-        </flogo-delete-popover>
-      </div>
-    </article>
+  <article
+    *ngFor="let app of applications"
+    class="app qa-app"
+    [ngClass]="{
+      'flogo-profile__thumbnail--microservice': app.type != 'flogo:device',
+      'flogo-profile__thumbnail--device': app.type === 'flogo:device'
+    }"
+    (click)="onSelectApp($event, deleteBox, app)"
+  >
+    <div class="app__content">
+      <h4 class="app__name qa-app-name">{{ app.name }}</h4>
+      <div class="app__description">{{ app.description ? app.description : '&nbsp;' }}</div>
+      <footer class="app__created-at">
+        {{ 'FLOWS:CREATED' | translate: { value: '' } }}{{ app.createdAt | timeFromNow }}
+      </footer>
+      <flogo-delete-popover
+        #deleteBox
+        class="app__delete qa-app-delete"
+        (confirmDel)="remove($event)"
+        [deleteContent]="app"
+        [deleteContentType]="'application'"
+      >
+      </flogo-delete-popover>
+    </div>
+  </article>
   <div *ngIf="!applications.length" class="app-list-empty">
     <div class="app-list-empty__image"></div>
     <div class="app-list-empty__legend">{{ 'APP-LIST:EMPTY' | translate }}</div>

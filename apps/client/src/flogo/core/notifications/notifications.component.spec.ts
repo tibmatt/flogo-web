@@ -15,13 +15,10 @@ describe('NotificationsComponent', () => {
     mockNotificationService = new NotificationsServiceMock();
     spyOn(mockNotificationService, 'removeNotification').and.callThrough();
     TestBed.configureTestingModule({
-      declarations: [ NotificationsComponent ],
+      declarations: [NotificationsComponent],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [
-        { provide: NotificationsService, useValue: mockNotificationService }
-      ],
-    })
-    .compileComponents();
+      providers: [{ provide: NotificationsService, useValue: mockNotificationService }],
+    }).compileComponents();
   }));
 
   beforeEach(async(() => {
@@ -65,5 +62,4 @@ describe('NotificationsComponent', () => {
       message: 'notification 1',
     });
   });
-
 });

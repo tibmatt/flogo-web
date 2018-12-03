@@ -4,7 +4,7 @@ import { MapperController } from '../../shared/mapper';
 @Component({
   selector: 'flogo-flow-task-configurator-iterator',
   templateUrl: 'iterator.component.html',
-  styleUrls: [ 'iterator.component.less' ],
+  styleUrls: ['iterator.component.less'],
 })
 export class IteratorComponent implements OnInit {
   @Input() iteratorModeOn;
@@ -15,11 +15,10 @@ export class IteratorComponent implements OnInit {
 
   ngOnInit() {
     // avoid toggle button animation on init
-    setTimeout(() => this.isIniting = false, 0);
+    setTimeout(() => (this.isIniting = false), 0);
   }
 
   onChangeIteratorMode() {
     this.changeIteratorMode.emit();
   }
-
 }

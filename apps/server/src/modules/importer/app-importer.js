@@ -1,7 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 
 export class AppImporter {
-
   /**
    * @param {{ validate: function(object) }} fullAppValidator
    * @param {{ create: Function(object):Promise }} appStorage
@@ -41,5 +40,4 @@ export class AppImporter {
     this.fullAppValidator.validate(fullApp);
     return fullApp;
   }
-
 }

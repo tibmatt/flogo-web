@@ -8,4 +8,3 @@ export function setupMode(defaults: LanguageServiceDefaultsImpl): void {
   const languageId = defaults.languageId;
   disposables.push(new languageFeatures.DiagnosticsAdapter(languageId));
 }
-

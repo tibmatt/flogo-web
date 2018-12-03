@@ -7,7 +7,7 @@ import {
   Output,
   QueryList,
   SimpleChanges,
-  ViewChildren
+  ViewChildren,
 } from '@angular/core';
 
 import { PerfectScrollbarDirective as ScrollbarDirective } from 'ngx-perfect-scrollbar';
@@ -19,7 +19,7 @@ import { IconsService } from '../services/icons.service';
 @Component({
   selector: 'flogo-mapper-tree',
   templateUrl: 'tree.component.html',
-  styleUrls: ['tree.component.less']
+  styleUrls: ['tree.component.less'],
 })
 export class TreeComponent implements OnChanges, AfterViewInit {
   @Input() treeNodes: MapperTreeNode[];
@@ -37,8 +37,7 @@ export class TreeComponent implements OnChanges, AfterViewInit {
 
   private selectedBranch: MapperTreeNode[] | null;
 
-  constructor(private draggingService: DraggingService, private iconsService: IconsService) {
-  }
+  constructor(private draggingService: DraggingService, private iconsService: IconsService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selected'] && this.selected) {
@@ -52,7 +51,6 @@ export class TreeComponent implements OnChanges, AfterViewInit {
     if (changes['treeNodes']) {
       this.updateScrollbars();
     }
-
   }
 
   ngAfterViewInit() {
@@ -112,5 +110,4 @@ export class TreeComponent implements OnChanges, AfterViewInit {
       }
     }, 0);
   }
-
 }

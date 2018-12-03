@@ -4,11 +4,12 @@ import { distinctUntilChanged, distinctUntilKeyChanged, map, shareReplay } from 
 
 import { MapExpression, MapperState, TreeState } from '../../models';
 
-function selectFromMapperState<T extends keyof MapperState>(property: T):
-  OperatorFunction<MapperState, MapperState[T]> {
+function selectFromMapperState<T extends keyof MapperState>(
+  property: T
+): OperatorFunction<MapperState, MapperState[T]> {
   return pipe(
     distinctUntilKeyChanged<MapperState>(property),
-    map((state: MapperState) => state[property]),
+    map((state: MapperState) => state[property])
   );
 }
 
@@ -23,57 +24,55 @@ function selectFromTreeState<P extends keyof TreeState>(propName: P) {
   return function(source: Observable<TreeState>) {
     return source.pipe(
       map(treeState => treeState[propName]),
-      distinctUntilChanged(),
+      distinctUntilChanged()
     );
   };
 }
 
 export const selectNodesFromOutputs = pipe(
   selectOutputsState,
-  selectFromTreeState('nodes'),
+  selectFromTreeState('nodes')
 );
 
 export const selectFilterFromOutputs = pipe(
   selectOutputsState,
-  selectFromTreeState('filterTerm'),
+  selectFromTreeState('filterTerm')
 );
 
 export const selectNodesFromFunctions = pipe(
   selectFunctionsState,
-  selectFromTreeState('nodes'),
+  selectFromTreeState('nodes')
 );
 
 export const selectFilterFromFunctions = pipe(
   selectFunctionsState,
-  selectFromTreeState('filterTerm'),
+  selectFromTreeState('filterTerm')
 );
 
 export const selectInputFilter: OperatorFunction<MapperState, string | null> = pipe(
   selectInputsState,
-  map((inputsState) => inputsState.filterTerm)
+  map(inputsState => inputsState.filterTerm)
 );
 
 export const selectInputNodes = pipe(
   selectInputsState,
-  map((inputsState: MapperState['inputs']) => inputsState.nodes),
+  map((inputsState: MapperState['inputs']) => inputsState.nodes)
 );
 
 export const selectInputsList = pipe(
   selectInputNodes,
-  map(inputs => Object.values(inputs)),
+  map(inputs => Object.values(inputs))
 );
 
 interface EditingExpression {
   currentKey: string;
   expression?: string;
 }
-export const selectCurrentEditingExpression = (source: Observable<MapperState>): Observable<null | EditingExpression> => {
+export const selectCurrentEditingExpression = (
+  source: Observable<MapperState>
+): Observable<null | EditingExpression> => {
   const sharedSource: Observable<MapperState> = source.pipe(shareReplay());
-  return combineLatest(
-    sharedSource.pipe(selectedInputKey),
-    sharedSource.pipe(selectMappings)
-  )
-  .pipe(
+  return combineLatest(sharedSource.pipe(selectedInputKey), sharedSource.pipe(selectMappings)).pipe(
     map(([currentKey, mappings]) => {
       if (!currentKey) {
         return null;
@@ -84,38 +83,29 @@ export const selectCurrentEditingExpression = (source: Observable<MapperState>):
         expression: nodeMappings.expression,
       };
     }),
-    distinctUntilChanged(isEqual),
+    distinctUntilChanged(isEqual)
   );
 };
 
 export const selectCurrentNode = (source: Observable<MapperState>) => {
   const sharedSource = source.pipe(shareReplay());
-  return combineLatest(
-    sharedSource.pipe(selectedInputKey),
-    sharedSource.pipe(selectInputNodes),
-  )
-  .pipe(
-    map(([currentNodeKey, nodes]) => currentNodeKey && nodes ? nodes[currentNodeKey] : null),
-    distinctUntilChanged(),
+  return combineLatest(sharedSource.pipe(selectedInputKey), sharedSource.pipe(selectInputNodes)).pipe(
+    map(([currentNodeKey, nodes]) => (currentNodeKey && nodes ? nodes[currentNodeKey] : null)),
+    distinctUntilChanged()
   );
 };
 
 export const getCurrentNodeValueHints = (source: Observable<MapperState>) => {
-  return source
-    .pipe(
-      selectCurrentNode,
-      map((currentTreeNode) => currentTreeNode && currentTreeNode.hintOptions ? currentTreeNode.hintOptions : null),
-      distinctUntilChanged(),
-    );
+  return source.pipe(
+    selectCurrentNode,
+    map(currentTreeNode => (currentTreeNode && currentTreeNode.hintOptions ? currentTreeNode.hintOptions : null)),
+    distinctUntilChanged()
+  );
 };
 
 export const selectFilteredNodes = (source: Observable<MapperState>) => {
   const sharedSource = source.pipe(shareReplay());
-  return combineLatest(
-    sharedSource.pipe(selectInputFilter),
-    sharedSource.pipe(selectInputsList)
-  )
-  .pipe(
+  return combineLatest(sharedSource.pipe(selectInputFilter), sharedSource.pipe(selectInputsList)).pipe(
     map(([filterTerm, inputs]) => {
       if (!filterTerm || !filterTerm.trim()) {
         return inputs;
@@ -125,4 +115,3 @@ export const selectFilteredNodes = (source: Observable<MapperState>) => {
     })
   );
 };
-

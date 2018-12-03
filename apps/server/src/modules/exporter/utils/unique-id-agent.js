@@ -1,7 +1,6 @@
 import { normalizeName } from './normalize-name';
 
 export class UniqueIdAgent {
-
   constructor(startFromIndex) {
     this.idCounter = startFromIndex || 0;
     this.uniqueIdArray = [];
@@ -17,5 +16,4 @@ export class UniqueIdAgent {
 
     return uniqueId;
   }
-
 }

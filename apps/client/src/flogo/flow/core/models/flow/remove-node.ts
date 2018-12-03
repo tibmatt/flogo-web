@@ -7,8 +7,8 @@ interface Collections {
 }
 
 export function removeNode({ flowGraph, items }: Collections, nodeId: string): Collections {
-  const { [nodeId]: nodeToRemove, ...resultNodes  } = flowGraph.nodes;
-  const { [nodeId]: itemToRemove, ...resultItems  } = items;
+  const { [nodeId]: nodeToRemove, ...resultNodes } = flowGraph.nodes;
+  const { [nodeId]: itemToRemove, ...resultItems } = items;
   if (!nodeToRemove) {
     return { flowGraph, items };
   }
@@ -53,7 +53,7 @@ function updateRootNode(flowGraph: FlowGraph, rootNode: GraphNode): FlowGraph {
   if (rootNode) {
     rootId = rootNode.id;
     nodeChange = {
-      [rootNode.id]:  {
+      [rootNode.id]: {
         ...rootNode,
         parents: [],
       },
@@ -75,7 +75,7 @@ function updateRootNode(flowGraph: FlowGraph, rootNode: GraphNode): FlowGraph {
 function unlinkChild(node: GraphNode, childToRemoveId: string): GraphNode {
   return {
     ...node,
-    children: node.children.filter(childId => childId !== childToRemoveId)
+    children: node.children.filter(childId => childId !== childToRemoveId),
   };
 }
 
@@ -91,17 +91,14 @@ function deleteChildren(collections: Collections, node: GraphNode): Collections 
 }
 
 function linkParentWithChildren(flowGraph: FlowGraph, parent: GraphNode, childNodes: GraphNode[]): FlowGraph {
-  const updatedNodes = fromPairs(
-    childNodes.map(child => [child.id, { ...child, parents: [parent.id] }])
-  );
+  const updatedNodes = fromPairs(childNodes.map(child => [child.id, { ...child, parents: [parent.id] }]));
   const nodes = {
     ...flowGraph.nodes,
     ...updatedNodes,
     [parent.id]: {
       ...parent,
-      children: [...parent.children, ...childNodes.map(child => child.id)]
+      children: [...parent.children, ...childNodes.map(child => child.id)],
     },
   };
   return { ...flowGraph, nodes };
 }
-

@@ -36,24 +36,28 @@ export class FlogoFlowDetails {
   }
 
   get selectionChange$() {
-    return this.store
-      .select(FlowSelectors.selectCurrentSelection)
-      .pipe(distinctUntilChanged(isEqual));
+    return this.store.select(FlowSelectors.selectCurrentSelection).pipe(distinctUntilChanged(isEqual));
   }
 
   removeItem(handlerType: HandlerType, itemId: string) {
-    this.store.dispatch(new FlowActions.RemoveItem({
-      handlerType,
-      itemId,
-    }));
+    this.store.dispatch(
+      new FlowActions.RemoveItem({
+        handlerType,
+        itemId,
+      })
+    );
   }
 
-  updateItem(handlerType: HandlerType, { item, node }: { item: {id: string} & Partial<Item>, node?: {id: string} & Partial<GraphNode> }) {
-    this.store.dispatch(new FlowActions.ItemUpdated({
-      handlerType,
-      item,
-      node,
-    }));
+  updateItem(
+    handlerType: HandlerType,
+    { item, node }: { item: { id: string } & Partial<Item>; node?: { id: string } & Partial<GraphNode> }
+  ) {
+    this.store.dispatch(
+      new FlowActions.ItemUpdated({
+        handlerType,
+        item,
+        node,
+      })
+    );
   }
-
 }

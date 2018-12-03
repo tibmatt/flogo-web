@@ -25,4 +25,3 @@ export class LanguageServiceDefaultsImpl implements monaco.languages.json.Langua
     this._onDidChange.fire(this);
   }
 }
-

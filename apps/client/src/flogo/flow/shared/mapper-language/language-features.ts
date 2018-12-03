@@ -6,7 +6,6 @@ import { LanguageService } from './language-service';
 // --- diagnostics --- ---
 
 export class DiagnosticsAdapter {
-
   private _disposables: IDisposable[] = [];
   private _listener: { [uri: string]: IDisposable } = Object.create(null);
 
@@ -20,7 +19,7 @@ export class DiagnosticsAdapter {
       let handle: number;
       this._listener[model.uri.toString()] = model.onDidChangeContent(() => {
         clearTimeout(handle);
-        handle = <any> setTimeout(() => this._doValidate(model.uri, modeId), 500);
+        handle = <any>setTimeout(() => this._doValidate(model.uri, modeId), 500);
       });
 
       this._doValidate(model.uri, modeId);
@@ -37,22 +36,26 @@ export class DiagnosticsAdapter {
     };
 
     this._disposables.push(monaco.editor.onDidCreateModel(onModelAdd));
-    this._disposables.push(monaco.editor.onWillDisposeModel(model => {
-      onModelRemoved(model);
-      this._resetSchema(model.uri);
-    }));
-    this._disposables.push(monaco.editor.onDidChangeModelLanguage(event => {
-      onModelRemoved(event.model);
-      onModelAdd(event.model);
-      this._resetSchema(event.model.uri);
-    }));
+    this._disposables.push(
+      monaco.editor.onWillDisposeModel(model => {
+        onModelRemoved(model);
+        this._resetSchema(model.uri);
+      })
+    );
+    this._disposables.push(
+      monaco.editor.onDidChangeModelLanguage(event => {
+        onModelRemoved(event.model);
+        onModelAdd(event.model);
+        this._resetSchema(event.model.uri);
+      })
+    );
 
     this._disposables.push({
       dispose: () => {
         Object.keys(this._listener).forEach(key => {
           this._listener[key].dispose();
         });
-      }
+      },
     });
 
     monaco.editor.getModels().forEach(onModelAdd);
@@ -74,15 +77,13 @@ export class DiagnosticsAdapter {
     if (!initialModel) {
       return;
     }
-    LanguageService
-      .doValidation(initialModel.getValue())
-      .then(diagnostics => {
-         const model = monaco.editor.getModel(resource);
-         if (model.getModeId() === languageId) {
-           const markers = diagnostics.map(d => toDiagnostics(resource, d));
-           monaco.editor.setModelMarkers(model, languageId, markers);
-         }
-      });
+    LanguageService.doValidation(initialModel.getValue()).then(diagnostics => {
+      const model = monaco.editor.getModel(resource);
+      if (model.getModeId() === languageId) {
+        const markers = diagnostics.map(d => toDiagnostics(resource, d));
+        monaco.editor.setModelMarkers(model, languageId, markers);
+      }
+    });
 
     // this._worker(resource).then(worker => {
     //   return worker.doValidation(resource.toString()).then(diagnostics => {
@@ -111,11 +112,11 @@ export class DiagnosticsAdapter {
 // }
 
 //
-function toDiagnostics(resource: Uri, diagnostic: RecognitionException|LexingError): monaco.editor.IMarkerData {
+function toDiagnostics(resource: Uri, diagnostic: RecognitionException | LexingError): monaco.editor.IMarkerData {
   if ((<RecognitionException>diagnostic).token) {
-    return parseExceptionToMarker(<RecognitionException> diagnostic);
+    return parseExceptionToMarker(<RecognitionException>diagnostic);
   } else {
-    return lexErrorToMarker(resource, <LexingError> diagnostic);
+    return lexErrorToMarker(resource, <LexingError>diagnostic);
   }
 }
 

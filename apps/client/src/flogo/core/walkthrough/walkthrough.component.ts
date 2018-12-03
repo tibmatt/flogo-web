@@ -4,10 +4,9 @@ import { BsModalComponent } from 'ng2-bs3-modal';
 @Component({
   selector: 'flogo-walkthrough',
   templateUrl: 'walkthrough.component.html',
-  styleUrls: ['walkthrough.component.less']
+  styleUrls: ['walkthrough.component.less'],
 })
 export class WalkthroughComponent implements OnChanges {
-
   @ViewChild('instructionsModal') modal: BsModalComponent;
 
   @Input()
@@ -18,7 +17,7 @@ export class WalkthroughComponent implements OnChanges {
     { title: 'Configure the trigger', description: '', screenshot: 'flogo.instructions.screen-1@3x.png' },
     { title: 'Add and configure activities', description: '', screenshot: 'flogo.instructions.screen-2@3x.png' },
     { title: 'Run and test at any time', description: '', screenshot: 'flogo.instructions.screen-3@3x.png' },
-    { title: 'Build and run', description: '', screenshot: 'flogo.instructions.screen-4@3x.png' }
+    { title: 'Build and run', description: '', screenshot: 'flogo.instructions.screen-4@3x.png' },
   ];
   currentIndex: number;
   currentStep: any;
@@ -52,10 +51,7 @@ export class WalkthroughComponent implements OnChanges {
     this.currentStep = this.steps[this.currentIndex];
   }
 
-  ngOnChanges(changes: {
-    [key: string]: SimpleChange
-  }) {
-
+  ngOnChanges(changes: { [key: string]: SimpleChange }) {
     if (_.has(changes, 'isActivated')) {
       if (changes['isActivated'].currentValue) {
         this.openModal();
@@ -77,6 +73,5 @@ export class WalkthroughComponent implements OnChanges {
     this.closedModal.emit(true);
   }
 
-  onInstallAction(url: string) {
-  }
+  onInstallAction(url: string) {}
 }

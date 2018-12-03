@@ -5,12 +5,10 @@ function getReporters(config) {
   if (process.env.TRAVIS) {
     return ['mocha'];
   }
-  return config.angularCli && config.angularCli.codeCoverage
-    ? ['progress', 'coverage-istanbul']
-    : ['kjhtml', 'mocha']
+  return config.angularCli && config.angularCli.codeCoverage ? ['progress', 'coverage-istanbul'] : ['kjhtml', 'mocha'];
 }
 
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
@@ -20,25 +18,26 @@ module.exports = function (config) {
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
       require('@angular-devkit/build-angular/plugins/karma'),
-      require('karma-mocha-reporter')
+      require('karma-mocha-reporter'),
     ],
-    client:{
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
+    client: {
+      clearContext: false, // leave Jasmine Spec Runner output visible in browser
     },
     mime: {
-      'text/x-typescript': ['ts','tsx']
+      'text/x-typescript': ['ts', 'tsx'],
     },
     coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, 'coverage'), reports: [ 'html', 'lcovonly' ],
-      fixWebpackSourcePaths: true
+      dir: require('path').join(__dirname, 'coverage'),
+      reports: ['html', 'lcovonly'],
+      fixWebpackSourcePaths: true,
     },
     angularCli: {
-      environment: 'dev'
+      environment: 'dev',
     },
     reporters: getReporters(config),
     // reporter options
     mochaReporter: {
-      output: 'full'
+      output: 'full',
     },
     customLaunchers: {
       Chrome_travis_ci: {
@@ -48,14 +47,14 @@ module.exports = function (config) {
           '--disable-gpu',
           // Without a remote debugging port, Google Chrome exits immediately.
           '--remote-debugging-port=9222',
-        ]
-      }
+        ],
+      },
     },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: process.env.TRAVIS ?  ['Chrome_travis_ci'] : ['Chrome'],
-    singleRun: false
+    browsers: process.env.TRAVIS ? ['Chrome_travis_ci'] : ['Chrome'],
+    singleRun: false,
   });
 };

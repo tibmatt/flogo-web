@@ -6,8 +6,7 @@ import { BaseField } from './field-base';
 
 @Injectable()
 export class FormBuilderService {
-  constructor(private ngFB: FormBuilder, private formService: FormFieldService) {
-  }
+  constructor(private ngFB: FormBuilder, private formService: FormFieldService) {}
 
   toFormGroup(fields: SchemaAttribute[], { requireAll } = { requireAll: false }) {
     const fieldsWithControlType = fields.map(f => this.formService.mapFieldsToControlType(f, requireAll));
@@ -31,5 +30,4 @@ export class FormBuilderService {
     }
     return this.ngFB.group(group);
   }
-
 }

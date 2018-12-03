@@ -4,7 +4,6 @@ import { PUBLISH_FIELDS_SHORT, PUBLISH_FIELDS_LONG } from './constants';
 import { triggersDBService } from '../../common/db/triggers';
 
 export class TriggerManager {
-
   /**
    * List or find triggers
    *
@@ -27,19 +26,16 @@ export class TriggerManager {
    */
   static find(terms, options) {
     terms = translateFindTerms(terms);
-    const {fields} = Object.assign({fields: 'full'}, options);
+    const { fields } = Object.assign({ fields: 'full' }, options);
 
-    return triggersDBService.db.find(terms)
-      .then(result => (result || [])
-        .map(triggerRow => cleanForOutput(triggerRow, fields)),
-      );
+    return triggersDBService.db
+      .find(terms)
+      .then(result => (result || []).map(triggerRow => cleanForOutput(triggerRow, fields)));
   }
 
   static findByRef(ref) {
-    return triggersDBService.db.findOne({ ref })
-      .then(trigger => (trigger ? cleanForOutput(trigger) : null));
+    return triggersDBService.db.findOne({ ref }).then(trigger => (trigger ? cleanForOutput(trigger) : null));
   }
-
 }
 
 function cleanForOutput(trigger, fields) {
@@ -47,12 +43,12 @@ function cleanForOutput(trigger, fields) {
     {
       id: trigger.id || trigger._id,
       ref: trigger.ref,
-      homepage: get(trigger, 'schema.homepage', '')
+      homepage: get(trigger, 'schema.homepage', ''),
     },
     trigger.schema
   );
 
-  if(fields === 'raw') {
+  if (fields === 'raw') {
     return trigger;
   }
 
@@ -68,7 +64,7 @@ function translateFindTerms(terms) {
   if (!terms) {
     return {};
   }
-  terms = {...terms};
+  terms = { ...terms };
   if (terms.shim) {
     delete terms.shim;
     terms['schema.shim'] = { $exists: true };

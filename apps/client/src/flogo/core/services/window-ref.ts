@@ -4,7 +4,6 @@ function _window(): Window {
   return window;
 }
 
-
 @Injectable()
 /**
  * An injectable reference to the native window

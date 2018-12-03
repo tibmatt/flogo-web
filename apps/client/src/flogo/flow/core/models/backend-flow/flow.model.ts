@@ -1,4 +1,16 @@
-import { difference, cloneDeep, find, get, each, includes, isEmpty, isNumber, isString, isUndefined, trim  } from 'lodash';
+import {
+  difference,
+  cloneDeep,
+  find,
+  get,
+  each,
+  includes,
+  isEmpty,
+  isNumber,
+  isString,
+  isUndefined,
+  trim,
+} from 'lodash';
 import { convertTaskID, getDefaultValue, isSubflowTask } from '@flogo-web/client/shared/utils';
 
 import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '@flogo-web/client/core/constants';
@@ -27,30 +39,28 @@ import {
   ItemTask,
   FlowGraph,
   GraphNode,
-  NodeType, Action,
+  NodeType,
+  Action,
 } from '@flogo-web/client/core';
 
 const DEBUG = false;
 const INFO = true;
 
-const generateDiagramTraverser = (schemas) => {
+const generateDiagramTraverser = schemas => {
   const visited: string[] = [];
   const tasksDest: flowToJSON_Task[] = [];
   const linksDest: flowToJSON_Link[] = [];
   let idCounter = 0;
   const _genLinkId = () => ++idCounter;
 
-  function _traversalDiagramChildren(node: GraphNode,
-                                     nodes: Dictionary<GraphNode>,
-                                     tasks: Dictionary<Item>) {
+  function _traversalDiagramChildren(node: GraphNode, nodes: Dictionary<GraphNode>, tasks: Dictionary<Item>) {
     // if haven't visited
     if (!includes(visited, node.id)) {
       visited.push(node.id);
 
       const nodesToGo = difference(node.children, visited);
 
-      each(nodesToGo, (nid) => {
-
+      each(nodesToGo, nid => {
         const childNode = nodes[nid];
 
         // handle branch node differently
@@ -67,7 +77,7 @@ const generateDiagramTraverser = (schemas) => {
             _traversalDiagramChildren(childNode, nodes, tasks);
           } else {
             /* tslint:disable-next-line:no-unused-expression */
-            DEBUG && console.warn('- Found a branch!\n- Don\'t care..');
+            DEBUG && console.warn("- Found a branch!\n- Don't care..");
           }
 
           return;
@@ -87,16 +97,13 @@ const generateDiagramTraverser = (schemas) => {
          */
 
         if (node.type === NodeType.Task) {
-
           linksDest.push({
             id: _genLinkId(),
             from: convertTaskID(node.id),
             to: convertTaskID(childNode.id),
-            type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.DEFAULT
+            type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.DEFAULT,
           });
-
         } else if (node.type === NodeType.Branch && node.parents.length === 1) {
-
           const parentNode = nodes[node.parents[0]];
           const branch = tasks[node.id] as ItemBranch;
 
@@ -105,20 +112,18 @@ const generateDiagramTraverser = (schemas) => {
             from: convertTaskID(parentNode.id),
             to: convertTaskID(childNode.id),
             type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH,
-            value: branch.condition
+            value: branch.condition,
           });
-
         }
 
         _traversalDiagramChildren(childNode, nodes, tasks);
-
       });
     }
   }
 
   function _prepareTaskInfo(item: ItemTask) {
     // todo: remove schema === {} for subflow case
-    const schema = <ActivitySchema> schemas[item.ref] || <any>{};
+    const schema = <ActivitySchema>schemas[item.ref] || <any>{};
     const task = mergeItemWithSchema(item, schema);
     const taskInfo = <flowToJSON_Task>{};
     if (_isValidInternalTaskInfo(task)) {
@@ -152,7 +157,6 @@ const generateDiagramTraverser = (schemas) => {
       if (!isEmpty(task.settings)) {
         taskInfo.settings = cloneDeep(task.settings);
       }
-
     } else {
       /* tslint:disable-next-line:no-unused-expression */
       INFO && console.warn('Invalid task found.');
@@ -168,7 +172,7 @@ const generateDiagramTraverser = (schemas) => {
       tasksDest.push(rootTaskInfo);
     }
     _traversalDiagramChildren(rootNode, nodes, tasks);
-    return {tasks: tasksDest, links: linksDest};
+    return { tasks: tasksDest, links: linksDest };
   };
 };
 
@@ -179,7 +183,6 @@ function _isValidInternalTaskInfo(task: {
   ref?: string;
   [key: string]: any;
 }): boolean {
-
   if (isEmpty(task)) {
     /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.warn('Empty task');
@@ -213,8 +216,8 @@ function _isValidInternalTaskInfo(task: {
   return true;
 }
 
-function _parseFlowAttributes(inAttrs: any[]): flowToJSON_Attribute [] {
-  const attributes = <flowToJSON_Attribute []>[];
+function _parseFlowAttributes(inAttrs: any[]): flowToJSON_Attribute[] {
+  const attributes = <flowToJSON_Attribute[]>[];
 
   each(inAttrs, (inAttr: any) => {
     const attr = <flowToJSON_Attribute>{};
@@ -254,7 +257,6 @@ function _parseFlowAttributes(inAttrs: any[]): flowToJSON_Attribute [] {
  * Convert the action to server model
  */
 export function savableFlow(inFlow: UiFlow): Action {
-
   const flowJSON = <Action>{};
   /* validate the required fields */
 
@@ -280,10 +282,12 @@ export function savableFlow(inFlow: UiFlow): Action {
   flowJSON.id = flowID;
   flowJSON.name = inFlow.name || '';
   flowJSON.description = inFlow.description || '';
-  flowJSON.metadata = _parseMetadata(inFlow.metadata || {
-    input: [],
-    output: [],
-  });
+  flowJSON.metadata = _parseMetadata(
+    inFlow.metadata || {
+      input: [],
+      output: [],
+    }
+  );
 
   if (isMainFlowEmpty && isErrorFlowEmpty) {
     /* tslint:disable-next-line:no-unused-expression */
@@ -307,7 +311,7 @@ export function savableFlow(inFlow: UiFlow): Action {
     const rootNode = flowPathNodes[flowPathRoot];
     if (!isEmpty(rootNode)) {
       const _traversalDiagram = generateDiagramTraverser(inFlow.schemas);
-      const {tasks, links} = _traversalDiagram(rootNode, flowPathNodes, flowItems);
+      const { tasks, links } = _traversalDiagram(rootNode, flowPathNodes, flowItems);
       flowJSON.tasks = tasks as Action['tasks'];
       flowJSON.links = links;
     }
@@ -317,10 +321,10 @@ export function savableFlow(inFlow: UiFlow): Action {
     const rootNode = errorPathNodes[errorPathRoot];
     if (!isEmpty(rootNode)) {
       const _traversalDiagram = generateDiagramTraverser(inFlow.schemas);
-      const {tasks, links} = _traversalDiagram(rootNode, errorPathNodes, errorItems);
+      const { tasks, links } = _traversalDiagram(rootNode, errorPathNodes, errorItems);
       flowJSON.errorHandler = {
         tasks: tasks as Action['tasks'],
-        links
+        links,
       };
     }
   }
@@ -338,7 +342,6 @@ export function savableFlow(inFlow: UiFlow): Action {
  * @returns {LegacyFlowWrapper}
  */
 export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
-
   const flowJSON = <LegacyFlowWrapper>{};
 
   /* validate the required fields */
@@ -365,10 +368,12 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
   flowJSON.id = flowID;
   flowJSON.name = inFlow.name || '';
   flowJSON.description = inFlow.description || '';
-  flowJSON.metadata = _parseMetadata(inFlow.metadata || {
-    input: [],
-    output: [],
-  });
+  flowJSON.metadata = _parseMetadata(
+    inFlow.metadata || {
+      input: [],
+      output: [],
+    }
+  );
 
   if (isMainFlowEmpty && isErrorFlowEmpty) {
     /* tslint:disable-next-line:no-unused-expression */
@@ -413,7 +418,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
         ref: '',
         name: 'root',
         tasks: <flowToJSON_Task[]>[],
-        links: <flowToJSON_Link[]>[]
+        links: <flowToJSON_Link[]>[],
       };
 
       const rootNode = flowPathNodes[flowPathRoot];
@@ -425,17 +430,14 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
         return rootTask;
       }
       const _traversalDiagram = generateDiagramTraverser(inFlow.schemas);
-      const {tasks, links} = _traversalDiagram(rootNode, flowPathNodes, flowItems);
+      const { tasks, links } = _traversalDiagram(rootNode, flowPathNodes, flowItems);
       rootTask.tasks = tasks;
       rootTask.links = links;
 
       return rootTask;
-    }());
-
-
+    })();
 
     flow.errorHandlerTask = (function _parseErrorTask() {
-
       const errorTask = <flowToJSON_RootTask>{
         id: '__error_root',
         type: FLOGO_TASK_TYPE.TASK, // this is 1
@@ -443,7 +445,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
         ref: '',
         name: 'error_root',
         tasks: <flowToJSON_Task[]>[],
-        links: <flowToJSON_Link[]>[]
+        links: <flowToJSON_Link[]>[],
       };
       /*
        * add the root node to tasks of the root flow as it now is an activity
@@ -454,15 +456,15 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
         return errorTask;
       }
       const _traversalDiagram = generateDiagramTraverser(inFlow.schemas);
-      const {tasks, links} = _traversalDiagram(rootNode, errorPathNodes, errorItems);
+      const { tasks, links } = _traversalDiagram(rootNode, errorPathNodes, errorItems);
       errorTask.tasks = tasks;
       errorTask.links = links;
 
       return errorTask;
-    }());
+    })();
 
     return flow;
-  }());
+  })();
 
   if (_hasExplicitReply(flowJSON.flow && flowJSON.flow.rootTask && flowJSON.flow.rootTask.tasks)) {
     flowJSON.flow.explicitReply = true;
@@ -482,13 +484,12 @@ function _hasExplicitReply(tasks?: any): boolean {
   // hardcoding the activity type, for now
   // TODO: maybe the activity should expose a property so we know it can reply?
   return !!find(tasks, task => (<any>task).activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
-
 }
 
 function _parseMetadata(metadata: FlowMetadata): FlowMetadata {
   const flowMetadata: FlowMetadata = {
     input: [],
-    output: []
+    output: [],
   };
   flowMetadata.input = metadata.input.map(input => {
     const inputMetadata: MetadataAttribute = {
@@ -513,7 +514,9 @@ export function parseFlowMappings(inMappings: any[] = []): flowToJSON_Mapping[] 
       return parsedMappings;
     }
     const parsedMapping: flowToJSON_Mapping = {
-      type: inMapping.type, value: inMapping.value, mapTo: inMapping.mapTo
+      type: inMapping.type,
+      value: inMapping.value,
+      mapTo: inMapping.mapTo,
     };
     if (!isNumber(parsedMapping.type)) {
       console.warn('Force invalid mapping type to 1 since it is not a number.');

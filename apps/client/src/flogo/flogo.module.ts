@@ -27,16 +27,18 @@ import { environment } from '../environments/environment';
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
+        useFactory: createTranslateLoader,
         deps: [HttpClient],
-      }
+      },
     }),
     StoreModule.forRoot({}),
     EffectsModule.forRoot([]),
-    !environment.production ? StoreDevtoolsModule.instrument({
-      maxAge: 25, // Retains last 25 states
-      logOnly: environment.production // Restrict extension to log-only mode
-    }) : [],
+    !environment.production
+      ? StoreDevtoolsModule.instrument({
+          maxAge: 25, // Retains last 25 states
+          logOnly: environment.production, // Restrict extension to log-only mode
+        })
+      : [],
     BrowserModule,
     BrowserAnimationsModule,
     CoreModule,
@@ -47,16 +49,13 @@ import { environment } from '../environments/environment';
     FlogoLogsModule,
     routing,
   ],
-  declarations: [
-    FlogoAppComponent
-  ],
+  declarations: [FlogoAppComponent],
   bootstrap: [FlogoAppComponent],
   providers: [
     { provide: LanguageService, useExisting: TranslateService },
     { provide: APP_INITIALIZER, useFactory: initializer, deps: [TranslateService], multi: true },
     { provide: APP_BASE_HREF, useValue: '/' },
-    appRoutingProviders
-  ]
+    appRoutingProviders,
+  ],
 })
-export class FlogoModule {
-}
+export class FlogoModule {}

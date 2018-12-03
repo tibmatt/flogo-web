@@ -1,4 +1,4 @@
-import { Observable ,  Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { OverlayRef } from '@angular/cdk/overlay';
 import { ConfirmationResult } from './confirmation-result';
 
@@ -28,5 +28,4 @@ export class ConfirmationControl {
     this.resultSubscriber.next(result);
     this.resultSubscriber.complete();
   }
-
 }

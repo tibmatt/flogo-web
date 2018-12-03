@@ -5,7 +5,8 @@
  */
 import { Node } from './node';
 
-export type Expr = SelectorExpr
+export type Expr =
+  | SelectorExpr
   | ScopeResolver
   | IndexExpr
   | CallExpr

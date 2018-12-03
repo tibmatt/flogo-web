@@ -14,7 +14,7 @@ import { selectedInputKey, selectFilterFromFunctions, selectNodesFromFunctions }
 @Component({
   selector: 'flogo-mapper-functions',
   templateUrl: 'functions.component.html',
-  styleUrls: ['functions.component.css']
+  styleUrls: ['functions.component.css'],
 })
 export class FunctionsComponent implements OnInit, OnDestroy {
   help: MapperTreeNode;
@@ -25,8 +25,7 @@ export class FunctionsComponent implements OnInit, OnDestroy {
 
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
 
-  constructor(private mapperService: MapperService, private editorService: EditorService) {
-  }
+  constructor(private mapperService: MapperService, private editorService: EditorService) {}
 
   ngOnInit() {
     const state$ = this.mapperService.state$.pipe(shareReplay());
@@ -64,6 +63,4 @@ export class FunctionsComponent implements OnInit, OnDestroy {
   onSearch(searchTerm: string) {
     this.mapperService.filterFunctions(searchTerm);
   }
-
-
 }

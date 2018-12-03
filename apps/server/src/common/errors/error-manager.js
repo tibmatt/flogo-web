@@ -2,7 +2,6 @@ import { FlogoError } from './flogo-error';
 import { ERROR_TYPES } from './error-types';
 
 export class ErrorManager {
-
   /**
    *
    * @param message {string}
@@ -14,7 +13,6 @@ export class ErrorManager {
   static makeError(message, options) {
     return new FlogoError(message, { ctr: ErrorManager.makeError, ...options });
   }
-
 
   /**
    *
@@ -31,7 +29,6 @@ export class ErrorManager {
       ctr: ctr || ErrorManager.createValidationError,
     });
   }
-
 
   /**
    * Creates a custom validation error object which caused due to the data the server logic is performing on.
@@ -56,10 +53,7 @@ export class ErrorManager {
       params: params || {},
     };
 
-    return ErrorManager.createValidationError(
-      'Validation error',
-      { details: [error] } ,
-    );
+    return ErrorManager.createValidationError('Validation error', { details: [error] });
   }
 
   /**
@@ -97,23 +91,27 @@ export class ErrorManager {
         code: ERROR_TYPES.COMMON.NOT_FOUND,
         title: 'Resource not found',
       },
-      details);
+      details
+    );
     return ErrorManager.createRestError(message, details, ErrorManager.createRestNotFoundError);
   }
 
   static validationToRestErrors(validationErrors = []) {
     return validationErrors.map(validationError =>
-      ErrorManager.createRestError(validationError.title, {
-        status: 400,
-        code: validationError.type,
-        title: validationError.title,
-        detail: validationError.detail,
-        meta: {
-          property: validationError.property,
-          value: validationError.value,
+      ErrorManager.createRestError(
+        validationError.title,
+        {
+          status: 400,
+          code: validationError.type,
+          title: validationError.title,
+          detail: validationError.detail,
+          meta: {
+            property: validationError.property,
+            value: validationError.value,
+          },
         },
-      }, ErrorManager.validationToRestErrors),
+        ErrorManager.validationToRestErrors
+      )
     );
   }
-
 }

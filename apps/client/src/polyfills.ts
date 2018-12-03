@@ -40,17 +40,14 @@
 /** IE10 and IE11 requires the following for the Reflect API. */
 // import 'core-js/es6/reflect';
 
-
 /** Evergreen browsers require these. **/
 // Used for reflect-metadata in JIT. If you use AOT (and only Angular decorators), you can remove.
-
-
 
 /**
  * Required to support Web Animations `@angular/platform-browser/animations`.
  * Needed for: All but Chrome, Firefox and Opera. http://caniuse.com/#feat=web-animation
  **/
-import 'web-animations-js';  // Run `npm install --save web-animations-js`.
+import 'web-animations-js'; // Run `npm install --save web-animations-js`.
 
 /**
  * By default, zone.js will patch all possible macroTask and DomEvents
@@ -62,15 +59,15 @@ import 'web-animations-js';  // Run `npm install --save web-animations-js`.
 // (window as any).__zone_symbol__BLACK_LISTED_EVENTS = ['scroll', 'mousemove']; // disable patch specified eventNames
 
 /*
-* in IE/Edge developer tools, the addEventListener will also be wrapped by zone.js
-* with the following flag, it will bypass `zone.js` patch for IE/Edge
-*/
+ * in IE/Edge developer tools, the addEventListener will also be wrapped by zone.js
+ * with the following flag, it will bypass `zone.js` patch for IE/Edge
+ */
 // (window as any).__Zone_enable_cross_context_check = true;
 
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
-import 'zone.js/dist/zone';  // Included with Angular CLI.
+import 'zone.js/dist/zone'; // Included with Angular CLI.
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
@@ -83,7 +80,7 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 // - https://github.com/angular/zone.js/issues/1077
 /* tslint:disable */
 /* external code used as it is from: https://github.com/Microsoft/monaco-editor/issues/790#issuecomment-378452532 **/
-(window as any).Promise.all = function (values: any): Promise<any> {
+(window as any).Promise.all = function(values: any): Promise<any> {
   let resolve: (v: any) => void;
   let reject: (v: any) => void;
   const promise = new this((res, rej) => {
@@ -98,18 +95,21 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
       value = this.resolve(value);
     }
     value.then(
-      ((index) => (value: any) => {
+      (index => (value: any) => {
         resolvedValues[index] = value;
         count--;
         if (!count) {
           resolve(resolvedValues);
         }
       })(index),
-      reject);
+      reject
+    );
     count++;
     index++;
   }
-  if (!count) { resolve(resolvedValues); }
+  if (!count) {
+    resolve(resolvedValues);
+  }
   return promise;
 };
 /* tslint:enable */

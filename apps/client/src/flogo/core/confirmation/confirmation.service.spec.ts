@@ -5,7 +5,7 @@ import { ConfirmationService } from './confirmation.service';
 xdescribe('ConfirmationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ConfirmationService]
+      providers: [ConfirmationService],
     });
   });
 

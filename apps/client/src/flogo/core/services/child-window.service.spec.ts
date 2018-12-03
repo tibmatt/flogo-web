@@ -2,17 +2,15 @@ import { NgZone } from '@angular/core';
 import { ChildWindowService } from './child-window.service';
 import { WindowRef } from './window-ref';
 
-describe('Service: ChildWindowService', function (this: {
+describe('Service: ChildWindowService', function(this: {
   service: ChildWindowService;
   MockWindowClass: any;
   mockWindow: any;
   zone: NgZone;
   windowRef: WindowRef;
 }) {
-
   beforeAll(() => {
     this.MockWindowClass = MockWindow;
-
 
     function MockWindow() {
       this.url = null;
@@ -33,11 +31,9 @@ describe('Service: ChildWindowService', function (this: {
         // noop
       };
     }
-
   });
 
   beforeEach(() => {
-
     this.mockWindow = new this.MockWindowClass();
 
     this.windowRef = { nativeWindow: <Window>this.mockWindow };
@@ -52,7 +48,7 @@ describe('Service: ChildWindowService', function (this: {
     expect(this.mockWindow.url).toEqual('an-url');
   });
 
-  it('Child window should be marked as closed when the child window implementation closes', (done) => {
+  it('Child window should be marked as closed when the child window implementation closes', done => {
     const childMockWindow = new this.MockWindowClass();
     spyOn(this.mockWindow, 'open').and.returnValue(childMockWindow);
 
@@ -63,7 +59,5 @@ describe('Service: ChildWindowService', function (this: {
       done();
     });
     setTimeout(() => childMockWindow.handler(), 0);
-
   });
-
 });

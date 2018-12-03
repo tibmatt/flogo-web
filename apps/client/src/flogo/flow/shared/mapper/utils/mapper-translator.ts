@@ -2,13 +2,13 @@ import { isString, isArray, fromPairs } from 'lodash';
 import { resolveExpressionType } from '@flogo-web/parser';
 
 import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_TYPE, ValueType } from '@flogo-web/client/core/constants';
-import { Task as FlowTile, AttributeMapping as FlowMapping, } from '@flogo-web/client/core';
+import { Task as FlowTile, AttributeMapping as FlowMapping } from '@flogo-web/client/core';
 import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL, ROOT_TYPES } from '../constants';
 // todo: shared models should be moved to core
 import { FlowMetadata, MapperSchema, Properties as MapperSchemaProperties } from '../../../task-configurator/models';
 import { Mappings, MapExpression } from '../models';
 
-export type  MappingsValidatorFn = (mappings: Mappings) => boolean;
+export type MappingsValidatorFn = (mappings: Mappings) => boolean;
 export interface AttributeDescriptor {
   name: string;
   type: ValueType;
@@ -19,13 +19,13 @@ export interface AttributeDescriptor {
 function getEnumDescriptor(attr: AttributeDescriptor) {
   let allowed = isArray(attr.allowed) ? [...attr.allowed] : [];
   if (attr.type === ValueType.Boolean) {
-    allowed = [ true, false, ...allowed ];
+    allowed = [true, false, ...allowed];
   }
   if (allowed.length <= 0) {
     return null;
   }
   // removing duplicates
-  return Array.from((new Set(allowed)).values());
+  return Array.from(new Set(allowed).values());
 }
 
 export class MapperTranslator {
@@ -38,9 +38,11 @@ export class MapperTranslator {
   }
 
   static createOutputSchema(
-    tiles: Array<FlowTile | FlowMetadata>, additionalSchemas?: MapperSchemaProperties, includeEmptySchemas = false
+    tiles: Array<FlowTile | FlowMetadata>,
+    additionalSchemas?: MapperSchemaProperties,
+    includeEmptySchemas = false
   ): MapperSchema {
-    const rootSchema = {type: 'object', properties: {}};
+    const rootSchema = { type: 'object', properties: {} };
     tiles.forEach(tile => {
       switch (tile.type) {
         case FLOGO_TASK_TYPE.TASK:
@@ -53,7 +55,7 @@ export class MapperTranslator {
           break;
         default:
           rootSchema.properties[tile.name] = { type: tile.type };
-        break;
+          break;
       }
     });
     rootSchema.properties = Object.assign(rootSchema.properties, additionalSchemas);
@@ -71,7 +73,10 @@ export class MapperTranslator {
     }
   }
 
-  static attributesToObjectDescriptor(attributes: AttributeDescriptor[], additionalProps?: { [key: string]: any }): MapperSchema {
+  static attributesToObjectDescriptor(
+    attributes: AttributeDescriptor[],
+    additionalProps?: { [key: string]: any }
+  ): MapperSchema {
     const properties = {};
     const requiredPropertyNames = [];
     attributes.forEach(attr => {
@@ -81,14 +86,14 @@ export class MapperTranslator {
         enum: getEnumDescriptor(attr),
       };
       if (additionalProps) {
-        property = {...additionalProps, ...property};
+        property = { ...additionalProps, ...property };
       }
       properties[attr.name] = property;
       if (attr.required) {
         requiredPropertyNames.push(attr.name);
       }
     });
-    return { type: 'object', properties: sortObjectKeys(properties), required: requiredPropertyNames};
+    return { type: 'object', properties: sortObjectKeys(properties), required: requiredPropertyNames };
   }
 
   static translateMappingsIn(inputMappings: FlowMapping[]) {
@@ -96,7 +101,7 @@ export class MapperTranslator {
     return inputMappings.reduce((mappings, input) => {
       let value = MapperTranslator.upgradeLegacyMappingIfNeeded(input.value);
       value = MapperTranslator.rawExpressionToString(value, input.type);
-      mappings[input.mapTo] = {expression: value, mappingType: input.type};
+      mappings[input.mapTo] = { expression: value, mappingType: input.type };
       return mappings;
     }, {});
   }
@@ -107,19 +112,23 @@ export class MapperTranslator {
       : rawExpression;
   }
 
-  static translateMappingsOut(mappings: { [attr: string]: { expression: string, mappingType?: number } }): FlowMapping[] {
-    return Object.keys(mappings || {})
-    // filterOutEmptyExpressions
-      .filter(attrName => mappings[attrName].expression && mappings[attrName].expression.trim())
-      .map(attrName => {
-        const mapping = mappings[attrName];
-        const { value, mappingType } = MapperTranslator.parseExpression(mapping.expression);
-        return {
-          mapTo: attrName,
-          type: mappingType,
-          value
-        };
-      });
+  static translateMappingsOut(mappings: {
+    [attr: string]: { expression: string; mappingType?: number };
+  }): FlowMapping[] {
+    return (
+      Object.keys(mappings || {})
+        // filterOutEmptyExpressions
+        .filter(attrName => mappings[attrName].expression && mappings[attrName].expression.trim())
+        .map(attrName => {
+          const mapping = mappings[attrName];
+          const { value, mappingType } = MapperTranslator.parseExpression(mapping.expression);
+          return {
+            mapTo: attrName,
+            type: mappingType,
+            value,
+          };
+        })
+    );
   }
 
   static parseExpression(expression: string) {
@@ -145,8 +154,7 @@ export class MapperTranslator {
       if (!mappings) {
         return true;
       }
-      const invalidMapping = Object.keys(mappings)
-        .find(mapTo => isInvalidMapping(mappings[mapTo]));
+      const invalidMapping = Object.keys(mappings).find(mapTo => isInvalidMapping(mappings[mapTo]));
       return !invalidMapping;
     };
   }
@@ -173,14 +181,13 @@ export class MapperTranslator {
   private static addTileToOutputContext(rootSchema, tile, includeEmptySchemas: boolean = false) {
     const attributes = tile.attributes;
     let outputs;
-    if (tile.type === FLOGO_TASK_TYPE.TASK
-      || tile.type === FLOGO_TASK_TYPE.TASK_SUB_PROC) {
+    if (tile.type === FLOGO_TASK_TYPE.TASK || tile.type === FLOGO_TASK_TYPE.TASK_SUB_PROC) {
       // try to get data from task from outputs
       outputs = attributes && attributes.outputs ? attributes.outputs : [];
     } else {
       // it's a trigger, outputs for trigger doesn't seem to be consistent in the UI model impl
       // hence checking in two places
-      outputs = (<any>tile).outputs || attributes && attributes.outputs;
+      outputs = (<any>tile).outputs || (attributes && attributes.outputs);
     }
     const hasAttributes = outputs && outputs.length > 0;
     if (hasAttributes || includeEmptySchemas) {
@@ -191,10 +198,9 @@ export class MapperTranslator {
       rootSchema.properties[propName] = tileSchema;
     }
   }
-
 }
 
-function sortObjectKeys (object: {[key: string]: any}) {
+function sortObjectKeys(object: { [key: string]: any }) {
   const keys = Object.keys(object);
   const sortedKeys = keys.sort();
   return fromPairs(sortedKeys.map(key => [key, object[key]]));

@@ -3,7 +3,7 @@ import { AbstractControl, Validators, ValidationErrors } from '@angular/forms';
 import { BaseField } from '../field-base';
 import { ValueType } from '@flogo-web/client/core';
 
-function isObjectValidator (control: AbstractControl): ValidationErrors | null {
+function isObjectValidator(control: AbstractControl): ValidationErrors | null {
   return !isEmpty(control.value) && !isObject(control.value) ? { notAnObject: true } : null;
 }
 
@@ -24,5 +24,4 @@ export class ObjectType extends BaseField<any> {
       this.validators.push(isObjectValidator);
     }
   }
-
 }

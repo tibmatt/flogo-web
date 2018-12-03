@@ -5,11 +5,13 @@ import { FlogoConfigComponent } from './config.component';
 
 @NgModule({
   imports: [
-    RouterModule.forChild([{
-      path: '',
-      component: FlogoConfigComponent
-    }]),
+    RouterModule.forChild([
+      {
+        path: '',
+        component: FlogoConfigComponent,
+      },
+    ]),
   ],
-  exports: [ RouterModule ],
+  exports: [RouterModule],
 })
 export class ConfigRoutingModule {}

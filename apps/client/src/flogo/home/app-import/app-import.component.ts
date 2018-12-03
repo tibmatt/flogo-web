@@ -1,16 +1,14 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnChanges, Output, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
 import { ImportErrorFormatterService } from '../core/import-error-formatter.service';
-import {ValidationDetail} from '@flogo-web/client/core';
-
+import { ValidationDetail } from '@flogo-web/client/core';
 
 @Component({
   selector: 'flogo-home-app-import',
   templateUrl: 'app-import.component.html',
-  styleUrls: ['app-import.component.less']
+  styleUrls: ['app-import.component.less'],
 })
 export class FlogoAppImportComponent implements OnChanges, AfterViewInit {
-
   @ViewChild('errorModal') modal: BsModalComponent;
 
   @Input() importValidationErrors: ValidationDetail[];
@@ -37,7 +35,6 @@ export class FlogoAppImportComponent implements OnChanges, AfterViewInit {
   onModalCloseOrDismiss() {
     this.modalClose.emit(false);
   }
-
 
   closeModal() {
     this.modal.close();

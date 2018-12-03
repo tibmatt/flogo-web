@@ -1,7 +1,7 @@
 import * as path from 'path';
 
-import {config} from '../../config/app-config';
-import {createFolder as ensureDir} from '../../common/utils/file';
+import { config } from '../../config/app-config';
+import { createFolder as ensureDir } from '../../common/utils/file';
 
 import { copyBinaryToDestination, removeDir } from './file-utils';
 import { processHost } from '../../common/utils/process';
@@ -37,7 +37,7 @@ class Engine {
   private libVersion: string;
   private path: string;
   private runLogger: object;
-  private tasks: { activities: object[], triggers: object[] };
+  private tasks: { activities: object[]; triggers: object[] };
 
   constructor(pathToEngine: string, libVersion: string, runLogger: object) {
     this.path = pathToEngine;
@@ -51,8 +51,9 @@ class Engine {
   }
 
   load() {
-    return commander.list(this.path)
-      .then((installedContribs) => loader.loadMetadata(this.path, installedContribs))
+    return commander
+      .list(this.path)
+      .then(installedContribs => loader.loadMetadata(this.path, installedContribs))
       .then((contribMetadata: TaskCollections) => {
         this.tasks = contribMetadata;
         return contribMetadata;
@@ -73,9 +74,7 @@ class Engine {
     console.time('engine:create');
     return commander
       .create(this.path, options)
-      .then(() => Promise.all(
-        [DIR_TEST_BIN, DIR_BUILD_BIN].map(dir => ensureDir(path.resolve(this.path, dir))),
-      ))
+      .then(() => Promise.all([DIR_TEST_BIN, DIR_BUILD_BIN].map(dir => ensureDir(path.resolve(this.path, dir)))))
       .then((result: any) => {
         console.timeEnd('engine:create');
         return result;
@@ -140,13 +139,11 @@ class Engine {
     delete options.type;
     options.target = path.join(this.path, buildTargetDir);
 
-    return ensureDir(options.target)
-      .then(() => buildAndCopyBinary(this.path, options));
+    return ensureDir(options.target).then(() => buildAndCopyBinary(this.path, options));
   }
 
   buildPlugin(options: Options) {
-    return ensureDir(path.join(this.path, DIR_BUILD_BIN))
-      .then(() => buildPlugin(this.path, options));
+    return ensureDir(path.join(this.path, DIR_BUILD_BIN)).then(() => buildPlugin(this.path, options));
   }
 
   buildOnly(options: Options) {
@@ -155,8 +152,7 @@ class Engine {
 
   copyToBinTest() {
     const targetDir = path.join(this.path, DIR_TEST_BIN);
-    return ensureDir(targetDir)
-      .then(() => copyBinaryToDestination(this.path, targetDir));
+    return ensureDir(targetDir).then(() => copyBinaryToDestination(this.path, targetDir));
   }
 
   start() {
@@ -181,8 +177,11 @@ class Engine {
    * @param {string} [flowName] - the name of this flow
    * @return {boolean} if successful, return true, otherwise return false
    */
-  addFlow(flowPath: string){
-      return commander.add.flow(this.path, flowPath);
+  addFlow(flowPath: string) {
+    return commander.add.flow(
+      this.path,
+      flowPath
+    );
   }
 
   /**
@@ -192,7 +191,12 @@ class Engine {
    * @param options.version {string} version
    */
   installPalette(palettePath: string, options: Options) {
-    options = Object.assign({ /* version: this.libVersion */ }, options);
+    options = Object.assign(
+      {
+        /* version: this.libVersion */
+      },
+      options
+    );
     return this._installItem('palette', palettePath, options);
   }
 
@@ -241,24 +245,21 @@ class Engine {
   _installItem(itemType: string, ref: string, options: Options) {
     const label = `engine:install:${itemType}`;
     console.time(label);
-    options = {...options};
-    return commander.add[itemType](this.path, ref, options)
-      .then((result: any) => {
-        console.timeEnd(label);
-        return result;
-      });
+    options = { ...options };
+    return commander.add[itemType](this.path, ref, options).then((result: any) => {
+      console.timeEnd(label);
+      return result;
+    });
   }
 
-  _hasItem(where: {name?: string, path?: string}[], nameOrPath: string) {
-    const foundItem = (where || []).find(item => item.name === nameOrPath || item.path === nameOrPath)
+  _hasItem(where: { name?: string; path?: string }[], nameOrPath: string) {
+    const foundItem = (where || []).find(item => item.name === nameOrPath || item.path === nameOrPath);
     return !!foundItem;
   }
 
   _buildLibsOption() {
     const libConstraint = this.libVersion ? `@${this.libVersion}` : '';
-    return DEFAULT_LIBS
-      .map(lib => `${lib}${libConstraint}`)
-      .join(',');
+    return DEFAULT_LIBS.map(lib => `${lib}${libConstraint}`).join(',');
   }
 }
 
@@ -266,5 +267,5 @@ class Engine {
 Engine.TYPE_TEST = TYPE_TEST;
 Engine.TYPE_BUILD = TYPE_BUILD;
 
-export {Engine, TYPE_TEST, TYPE_BUILD};
+export { Engine, TYPE_TEST, TYPE_BUILD };
 export default Engine;

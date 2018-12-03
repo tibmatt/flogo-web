@@ -7,6 +7,8 @@ export const buildTrigger = buildHandler(async (context, options) => {
   const buildResult = await AppsTriggersManager.buildShim(triggerId, options);
   return {
     content: buildResult.data,
-    fileName: buildResult.plugin ? `${buildResult.trigger}.zip` : getNameForAppBinary(buildResult.appName, options.compile),
+    fileName: buildResult.plugin
+      ? `${buildResult.trigger}.zip`
+      : getNameForAppBinary(buildResult.appName, options.compile),
   };
 });

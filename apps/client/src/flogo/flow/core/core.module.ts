@@ -5,14 +5,8 @@ import { UIModelConverterService } from './ui-model-converter.service';
 import { FlogoFlowService } from './flow.service';
 
 @NgModule({
-  imports: [
-    CommonModule,
-  ],
+  imports: [CommonModule],
   declarations: [],
-  providers: [
-    RunOrchestratorService,
-    UIModelConverterService,
-    FlogoFlowService
-  ]
+  providers: [RunOrchestratorService, UIModelConverterService, FlogoFlowService],
 })
-export class CoreModule { }
+export class CoreModule {}

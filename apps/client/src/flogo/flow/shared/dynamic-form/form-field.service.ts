@@ -6,17 +6,16 @@ import { NumberType } from './number/number';
 import { Radio } from './radio/radio';
 import { ObjectType } from './object/objectType';
 
-const coerceToBoolean = (value) => !!(value && value !== 'false');
+const coerceToBoolean = value => !!(value && value !== 'false');
 
 @Injectable()
 export class FormFieldService {
-
   mapFieldsToControlType(field: SchemaAttribute, forceRequired: boolean): BaseField<any> {
     const initOpts = {
       name: field.name,
       type: field.type,
       value: field.value,
-      required: field.required || forceRequired
+      required: field.required || forceRequired,
     };
     switch (field.type) {
       case ValueType.String:

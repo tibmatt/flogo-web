@@ -10,6 +10,6 @@ export function updateNodeExpression(currentNode: MapperTreeNode, expression: st
       expression,
     },
     isInvalid: isExpressionInvalid,
-    isDirty: currentNode.isDirty || expression !== currentNode.data.expression
+    isDirty: currentNode.isDirty || expression !== currentNode.data.expression,
   };
 }

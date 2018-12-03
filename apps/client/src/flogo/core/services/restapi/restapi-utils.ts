@@ -1,4 +1,3 @@
-
 export function getFileName(header) {
   let filename = '';
   if (header && header.indexOf('attachment') !== -1) {

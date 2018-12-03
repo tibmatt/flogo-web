@@ -17,20 +17,19 @@ export class SaveEffects {
       ActionType.TaskItemCreated,
       ActionType.RemoveItem,
       ActionType.ItemUpdated,
-      ActionType.CommitItemConfiguration,
+      ActionType.CommitItemConfiguration
     ),
     switchMap(() => this.saveFlow()),
     filter(flowWasSaved => flowWasSaved),
-    map(() => new FlowActions.FlowSaveSuccess()),
+    map(() => new FlowActions.FlowSaveSuccess())
   );
 
   constructor(private flowService: FlowsService, private actions$: Actions) {}
 
-  private saveFlow()  {
+  private saveFlow() {
     return this.flowService.currentFlowDetails.flowState$.pipe(
       take(1),
-      switchMap((flowState) => this.flowService.saveFlowIfChanged(flowState.id, flowState))
+      switchMap(flowState => this.flowService.saveFlowIfChanged(flowState.id, flowState))
     );
   }
-
 }

@@ -4,7 +4,7 @@ import { TriggerConfigureTab, TriggerConfigureTabType } from '../../../../core/i
 @Component({
   selector: 'flogo-flow-triggers-configurator-tabs',
   templateUrl: './tabs.component.html',
-  styleUrls: ['./tabs.component.less']
+  styleUrls: ['./tabs.component.less'],
 })
 export class TabsComponent {
   @Input() tabs: TriggerConfigureTab;
@@ -20,5 +20,4 @@ export class TabsComponent {
   trackTabsByFn(index, tab: TriggerConfigureTab) {
     return tab.type;
   }
-
 }

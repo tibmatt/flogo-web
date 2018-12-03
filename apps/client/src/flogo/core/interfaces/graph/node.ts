@@ -30,4 +30,3 @@ export interface GraphNode {
   title?: string;
   description?: string;
 }
-

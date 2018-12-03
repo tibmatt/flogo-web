@@ -13,7 +13,12 @@ export interface CstVisitorBase {
   new (...args: any[]): ICstVisitor<CstNode, Node | Node[]>;
 }
 
-type PrimaryExprNode = ExprNodes.BasicLit | ExprNodes.Identifier | ExprNodes.SelectorExpr | ExprNodes.IndexExpr | ExprNodes.CallExpr;
+type PrimaryExprNode =
+  | ExprNodes.BasicLit
+  | ExprNodes.Identifier
+  | ExprNodes.SelectorExpr
+  | ExprNodes.IndexExpr
+  | ExprNodes.CallExpr;
 type PrimaryExprAstNode = ExprNodes.SelectorExpr | ExprNodes.IndexExpr | ExprNodes.CallExpr;
 
 export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisitorBase {
@@ -25,18 +30,18 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     mappingExpression(ctx): ExprNodes.ExprStmt | JsonNodes.JsonNode {
-      const expression = <ExprNodes.Expr> this.visit(ctx.expression);
+      const expression = <ExprNodes.Expr>this.visit(ctx.expression);
       if (expression) {
         return {
           type: 'ExprStmt',
-          x: expression
+          x: expression,
         };
       }
-      return <JsonNodes.JsonNode> this.visit(ctx.json);
+      return <JsonNodes.JsonNode>this.visit(ctx.json);
     }
 
     attrAccess(ctx) {
-      const operand = <ExprNodes.ScopeResolver | ExprNodes.Identifier> this.visit(ctx.operandHead);
+      const operand = <ExprNodes.ScopeResolver | ExprNodes.Identifier>this.visit(ctx.operandHead);
       if (ctx.primaryExprTail) {
         return this.$createPrimaryExprHierarchy(ctx.primaryExprTail, operand);
       } else {
@@ -66,7 +71,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
         type: 'BinaryExpr',
         x: null,
         operator: ctx.BinaryOp[0].image,
-        y: <ExprNodes.Expr> this.visit(ctx.baseExpr),
+        y: <ExprNodes.Expr>this.visit(ctx.baseExpr),
       };
     }
 
@@ -77,7 +82,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     primaryExpr(ctx): PrimaryExprNode {
-      const operand = <ExprNodes.BasicLit | ExprNodes.Identifier> this.visit(ctx.operand);
+      const operand = <ExprNodes.BasicLit | ExprNodes.Identifier>this.visit(ctx.operand);
       if (ctx.primaryExprTail) {
         return this.$createPrimaryExprHierarchy(ctx.primaryExprTail, operand);
       } else {
@@ -104,11 +109,11 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
 
     primaryExprTail(ctx): ExprNodes.SelectorExpr | ExprNodes.IndexExpr | ExprNodes.CallExpr {
       if (ctx.selector) {
-        return <ExprNodes.SelectorExpr> this.visit(ctx.selector);
+        return <ExprNodes.SelectorExpr>this.visit(ctx.selector);
       } else if (ctx.index) {
-        return <ExprNodes.IndexExpr> this.visit(ctx.index);
+        return <ExprNodes.IndexExpr>this.visit(ctx.index);
       } else {
-        return <ExprNodes.CallExpr> this.visit(ctx.argumentList);
+        return <ExprNodes.CallExpr>this.visit(ctx.argumentList);
       }
     }
 
@@ -127,15 +132,15 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
           name: ctx.IdentifierName[0].image,
         };
       }
-      return <ExprNodes.ScopeResolver> this.visit(ctx.resolver);
+      return <ExprNodes.ScopeResolver>this.visit(ctx.resolver);
     }
 
     resolver(ctx): ExprNodes.ScopeResolver {
-      const resolverNode = <ExprNodes.ScopeResolver> {
+      const resolverNode = <ExprNodes.ScopeResolver>{
         type: 'ScopeResolver',
       };
 
-      const resolverSelector = <any> this.visit(ctx.resolverSelector);
+      const resolverSelector = <any>this.visit(ctx.resolverSelector);
       const { name, selector } = resolverSelector || <any>{};
       if (name) {
         resolverNode.name = name.image;
@@ -146,9 +151,9 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
       return resolverNode;
     }
 
-    resolverSelector(ctx): { name: string, selector?: string } {
+    resolverSelector(ctx): { name: string; selector?: string } {
       const [name] = ctx.IdentifierName;
-      const resolverSelector: { name: string, selector?: string } = { name };
+      const resolverSelector: { name: string; selector?: string } = { name };
       if (ctx.ResolverIdentifier) {
         const [selector] = ctx.ResolverIdentifier;
         resolverSelector.selector = selector;
@@ -182,7 +187,9 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     json(ctx): JsonNodes.JsonNode {
-      const value = ctx.object ? <JsonNodes.ObjectNode>this.visit(ctx.object) : <JsonNodes.ArrayNode> this.visit(ctx.array);
+      const value = ctx.object
+        ? <JsonNodes.ObjectNode>this.visit(ctx.object)
+        : <JsonNodes.ArrayNode>this.visit(ctx.array);
       return {
         type: 'json',
         value,
@@ -205,7 +212,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
 
     objectItem(ctx): JsonNodes.PropertyNode {
       const key = JSON.parse(ctx.StringLiteral[0].image);
-      const value = <JsonNodes.ValueNode> this.visit(ctx.jsonValue);
+      const value = <JsonNodes.ValueNode>this.visit(ctx.jsonValue);
       return {
         type: 'jsonProperty',
         key,
@@ -215,8 +222,8 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
 
     jsonValue(ctx): JsonNodes.ValueNode {
       const cstNodeType = this.$findCstNodeTypeFromContext(ctx);
-      if (cstNodeType === 'object' || cstNodeType === 'array' || cstNodeType === 'stringTemplate' ) {
-        return <JsonNodes.ObjectNode | JsonNodes.ArrayNode> this.visit(ctx[cstNodeType]);
+      if (cstNodeType === 'object' || cstNodeType === 'array' || cstNodeType === 'stringTemplate') {
+        return <JsonNodes.ObjectNode | JsonNodes.ArrayNode>this.visit(ctx[cstNodeType]);
       } else {
         return makeLiteralNode('jsonLiteral', ctx[cstNodeType][0]) as JsonNodes.LiteralNode;
       }
@@ -225,7 +232,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     stringTemplate(ctx): JsonNodes.StringTemplateNode {
       return {
         type: 'stringTemplate',
-        expression: <ExprNodes.Expr> this.visit(ctx.expression),
+        expression: <ExprNodes.Expr>this.visit(ctx.expression),
       };
     }
 
@@ -240,7 +247,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
         .map(cstTailNode => this.visit(cstTailNode))
         .reduce((member: PrimaryExprAstNode, selector: PrimaryExprAstNode) => {
           if (selector.type === 'CallExpr') {
-            const callExprNode = <ExprNodes.CallExpr> selector;
+            const callExprNode = <ExprNodes.CallExpr>selector;
             callExprNode.fun = member;
             return callExprNode;
           } else {
@@ -248,18 +255,16 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
             return selector;
           }
         }, operand);
-
     }
 
     private $reduceToBinaryExpression(ctx, unaryExpr) {
       return ctx.binaryExprSide
-        .map(cstNode => <ExprNodes.BinaryExpr> this.visit(cstNode))
+        .map(cstNode => <ExprNodes.BinaryExpr>this.visit(cstNode))
         .reduce((leftOperator: ExprNodes.BinaryExpr, binaryExpr: ExprNodes.BinaryExpr) => {
           binaryExpr.x = leftOperator;
           return binaryExpr;
         }, unaryExpr);
     }
-
   }
 
   return AstConstructor;

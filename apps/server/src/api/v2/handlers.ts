@@ -90,4 +90,3 @@ async function deleteHandler(ctx: Context) {
 
   ctx.status = 204;
 }
-

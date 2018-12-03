@@ -8,19 +8,16 @@ const keepPersistableOnly = (notifications: Notification[]) => notifications.fil
 const DEFAULT_TIMEOUT = 4500;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NotificationsService {
-
   private notificationsSource = new BehaviorSubject([]);
   private routeChange$: Observable<any>;
   private navigationSubscription: Subscription;
 
   constructor(private router: Router) {
-    this.routeChange$ = router.events
-      .pipe(filter(event => event instanceof NavigationStart));
-    this.navigationSubscription = this.routeChange$
-      .subscribe(() => this.onNavigation());
+    this.routeChange$ = router.events.pipe(filter(event => event instanceof NavigationStart));
+    this.navigationSubscription = this.routeChange$.subscribe(() => this.onNavigation());
   }
 
   get notifications$() {
@@ -36,7 +33,7 @@ export class NotificationsService {
   }
 
   removeNotification(notification: Notification) {
-    this.updateNotifications((current) => current.filter(n => n !== notification));
+    this.updateNotifications(current => current.filter(n => n !== notification));
   }
 
   destroy() {
@@ -77,5 +74,4 @@ export class NotificationsService {
       this.notificationsSource.next(nextNotifications);
     }
   }
-
 }

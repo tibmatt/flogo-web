@@ -3,10 +3,10 @@ import { validatorFactory } from './validator-factory';
 describe('importer.validator-factory', () => {
   let validator;
   beforeEach(() => {
-    validator = validatorFactory(
-      makeTestSchema(),
-      { activities: ['ref/to/an/activity'], triggers: ['ref/to/a/trigger'] },
-    );
+    validator = validatorFactory(makeTestSchema(), {
+      activities: ['ref/to/an/activity'],
+      triggers: ['ref/to/a/trigger'],
+    });
   });
 
   test('should error for not installed contributions', () => {
@@ -37,10 +37,12 @@ describe('importer.validator-factory', () => {
   });
 
   test('should allow installed contributions', () => {
-    expect(() => validator.validate({
-      trigger: 'ref/to/a/trigger',
-      activity: 'ref/to/an/activity',
-    })).not.toThrowError();
+    expect(() =>
+      validator.validate({
+        trigger: 'ref/to/a/trigger',
+        activity: 'ref/to/an/activity',
+      })
+    ).not.toThrowError();
   });
 
   function makeTestSchema() {

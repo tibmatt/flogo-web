@@ -1,8 +1,8 @@
 // script based on: https://github.com/CoderAjay/ng2Draggable under MIT license
-import { Directive, ElementRef, HostListener, OnDestroy, OnInit, Renderer2 as Renderer} from '@angular/core';
+import { Directive, ElementRef, HostListener, OnDestroy, OnInit, Renderer2 as Renderer } from '@angular/core';
 
 @Directive({
-  selector: '[fgDraggable]'
+  selector: '[fgDraggable]',
 })
 export class DraggableDirective implements OnDestroy, OnInit {
   private Δx = 0;
@@ -14,7 +14,10 @@ export class DraggableDirective implements OnDestroy, OnInit {
   constructor(private el: ElementRef, private renderer: Renderer) {
     try {
       if (this.mustBePosition.indexOf(this.el.nativeElement.style.position) === -1) {
-        console.warn(this.el.nativeElement, 'Must be having position attribute set to ' + this.mustBePosition.join('|'));
+        console.warn(
+          this.el.nativeElement,
+          'Must be having position attribute set to ' + this.mustBePosition.join('|')
+        );
       }
     } catch (ex) {
       console.error(ex);
@@ -34,7 +37,8 @@ export class DraggableDirective implements OnDestroy, OnInit {
       this.dragItem = event.target['cloneNode'](true);
       this.dragItem.style.visibility = 'hidden';
       document.body.appendChild(this.dragItem);
-      if (event.dataTransfer['setDragImage']) { // IE Edge does not support setDragImage
+      if (event.dataTransfer['setDragImage']) {
+        // IE Edge does not support setDragImage
         event.dataTransfer['setDragImage'](this.dragItem, 0, 0);
       }
 
@@ -72,17 +76,14 @@ export class DraggableDirective implements OnDestroy, OnInit {
   }
 
   doTranslation(x: number, y: number) {
-    if (!x || !y)  {
+    if (!x || !y) {
       return;
     }
-    this.renderer.setStyle(this.el.nativeElement, 'top', (y - this.Δy) + 'px');
-    this.renderer.setStyle(this.el.nativeElement, 'left', (x - this.Δx) + 'px');
+    this.renderer.setStyle(this.el.nativeElement, 'top', y - this.Δy + 'px');
+    this.renderer.setStyle(this.el.nativeElement, 'left', x - this.Δx + 'px');
   }
 
   public ngOnDestroy(): void {
     this.renderer.setAttribute(this.el.nativeElement, 'draggable', 'false');
   }
-
 }
-
-

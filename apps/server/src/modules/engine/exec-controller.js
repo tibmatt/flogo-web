@@ -40,31 +40,43 @@ export const execController = {
   },
   stop(name) {
     return new Promise((resolve, reject) => {
-      ps.lookup({
-        command: name,
-      }, (err, resultList) => {
-        if (err) {
-          reject(new Error(err));
-          return;
-        }
+      ps.lookup(
+        {
+          command: name,
+        },
+        (err, resultList) => {
+          if (err) {
+            reject(new Error(err));
+            return;
+          }
 
-        const process = resultList.shift();
-        if (process) {
-          console.log('[info] Stop engine PID: %s, COMMAND: %s, ARGUMENTS: %s', process.pid, process.command, process.arguments);
-          ps.kill(process.pid, {
-            timeout: 60
-          }, killErr => {
-            if (killErr) {
-              reject(new Error(killErr));
-              return;
-            }
-            console.log('[info] Stop engine Process %s has been killed!', process.pid);
-            resolve(true);
-          });
-        } else {
-          resolve(false);
+          const process = resultList.shift();
+          if (process) {
+            console.log(
+              '[info] Stop engine PID: %s, COMMAND: %s, ARGUMENTS: %s',
+              process.pid,
+              process.command,
+              process.arguments
+            );
+            ps.kill(
+              process.pid,
+              {
+                timeout: 60,
+              },
+              killErr => {
+                if (killErr) {
+                  reject(new Error(killErr));
+                  return;
+                }
+                console.log('[info] Stop engine Process %s has been killed!', process.pid);
+                resolve(true);
+              }
+            );
+          } else {
+            resolve(false);
+          }
         }
-      });
+      );
     });
   },
 };

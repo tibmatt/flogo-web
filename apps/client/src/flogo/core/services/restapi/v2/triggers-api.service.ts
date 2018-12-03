@@ -10,23 +10,19 @@ import { RestApiOptions, RestApiService } from '../rest-api.service';
 // TriggerRepository
 @Injectable()
 export class TriggersApiService {
-  constructor(private restApi: RestApiService) {
-  }
+  constructor(private restApi: RestApiService) {}
 
   listTriggersForApp(appId, filters?: { name?: string }) {
     const options: RestApiOptions = filters && filters.name ? { params: { 'filter[name]': filters.name } } : null;
-    return this.restApi.get<any>(`apps/${appId}/triggers`, options)
-      .toPromise();
+    return this.restApi.get<any>(`apps/${appId}/triggers`, options).toPromise();
   }
 
   createTrigger(appId, trigger: any) {
-    return this.restApi.post<any>(`apps/${appId}/triggers`, trigger)
-      .toPromise();
+    return this.restApi.post<any>(`apps/${appId}/triggers`, trigger).toPromise();
   }
 
   getTrigger(triggerId) {
-    return this.restApi.get<any>(`triggers/${triggerId}`)
-      .toPromise();
+    return this.restApi.get<any>(`triggers/${triggerId}`).toPromise();
   }
 
   updateTrigger(triggerId: string, trigger: any) {
@@ -35,14 +31,13 @@ export class TriggersApiService {
       .pipe(
         catchError((err: HttpErrorResponse) => {
           return _throw(this.extractErrors(err));
-        }),
+        })
       )
       .toPromise();
   }
 
   deleteTrigger(triggerId: string) {
-    return this.restApi.delete(`triggers/${triggerId}`)
-      .toPromise();
+    return this.restApi.delete(`triggers/${triggerId}`).toPromise();
   }
 
   public getShimTriggerBuildLink(triggerId: string) {
@@ -57,5 +52,4 @@ export class TriggersApiService {
       return body.errors || [body];
     }
   }
-
 }

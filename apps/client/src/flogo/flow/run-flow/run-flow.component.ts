@@ -5,9 +5,8 @@ import { MetadataAttribute } from '@flogo-web/client/core';
 @Component({
   selector: 'flogo-run-flow',
   templateUrl: 'run-flow.component.html',
-  styleUrls: ['run-flow.component.less']
+  styleUrls: ['run-flow.component.less'],
 })
-
 export class FlogoRunFlowComponent {
   @Input()
   flowInputs: MetadataAttribute[];
@@ -32,9 +31,9 @@ export class FlogoRunFlowComponent {
   }
 
   /*
-  * Run Flow form is not shown when the flow does not have any input metadata for the flow.
-  * The Run Flow button should directly run the flow
-  */
+   * Run Flow form is not shown when the flow does not have any input metadata for the flow.
+   * The Run Flow button should directly run the flow
+   */
   handleRunFlowClick() {
     if (this.flowInputs.length > 0) {
       this.showHideRun();

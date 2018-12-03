@@ -5,7 +5,6 @@ export const TYPE_PARAM_OUTPUT = 'mapper-param-output';
 
 @Injectable()
 export class DraggingService {
-
   type: string;
   data: any;
 
@@ -30,5 +29,4 @@ export class DraggingService {
   getData() {
     return this.data;
   }
-
 }

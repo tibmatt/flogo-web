@@ -11,7 +11,7 @@ interface BaseTile {
   type: TileType;
 }
 
-export type  Tile = InsertTile | TaskTile | BaseTile;
+export type Tile = InsertTile | TaskTile | BaseTile;
 
 export interface InsertTile extends BaseTile {
   type: TileType.Insert;

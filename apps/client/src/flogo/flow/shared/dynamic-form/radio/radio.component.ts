@@ -5,9 +5,8 @@ import { BaseField } from '../field-base';
 @Component({
   selector: 'flogo-fb-radio',
   templateUrl: 'radio.component.html',
-  styleUrls: ['../shared/dynamic-form.less', 'radio.component.less']
+  styleUrls: ['../shared/dynamic-form.less', 'radio.component.less'],
 })
-
 export class RadioComponent {
   @Input()
   fieldGroup: FormGroup;

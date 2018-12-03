@@ -32,11 +32,13 @@ describe('JSONSchema: Common', () => {
     });
 
     test('should allow correct mappings', () => {
-      expect(isValidMapping({
-        type: 'literal',
-        mapTo: 'someProp',
-        value: 4,
-      })).toBe(true);
+      expect(
+        isValidMapping({
+          type: 'literal',
+          mapTo: 'someProp',
+          value: 4,
+        })
+      ).toBe(true);
     });
 
     test('should reject incomplete mappings', () => {
@@ -46,8 +48,7 @@ describe('JSONSchema: Common', () => {
         { type: '', mapTo: '', value: null },
         { type: 'expression', mapTo: 3, value: null },
       ];
-      incompleteMappings
-        .forEach((mapping, i) => expect(isValidMapping(mapping)).toBe(false));
+      incompleteMappings.forEach((mapping, i) => expect(isValidMapping(mapping)).toBe(false));
     });
   });
 
@@ -59,17 +60,16 @@ describe('JSONSchema: Common', () => {
     });
 
     test('should allow correct mappings', () => {
-      expect(validate([
-        { type: 'literal', mapTo: 'someProp', value: 5 },
-        { type: 'expression', mapTo: 'someOtherProp', value: 'somexpr' },
-      ])).toBe(true);
+      expect(
+        validate([
+          { type: 'literal', mapTo: 'someProp', value: 5 },
+          { type: 'expression', mapTo: 'someOtherProp', value: 'somexpr' },
+        ])
+      ).toBe(true);
     });
 
     test('should reject incorrect mappings', () => {
-      expect(validate([
-        { type: 'expression', mapTo: 'someProp', value: 'someexpr' },
-        { im: 'incorrect' },
-      ])).toBe(false);
+      expect(validate([{ type: 'expression', mapTo: 'someProp', value: 'someexpr' }, { im: 'incorrect' }])).toBe(false);
     });
 
     test('should accept empty collections', () => {

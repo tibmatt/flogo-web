@@ -1,5 +1,5 @@
-import {isEqual} from 'lodash';
-import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output, ElementRef} from '@angular/core';
+import { isEqual } from 'lodash';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, ElementRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { TriggerInformation } from '../../interfaces';
@@ -11,7 +11,7 @@ const COMMON_FIELDS_TO_ENABLE = ['name', 'description', 'triggerSettings'];
 @Component({
   selector: 'flogo-triggers-configuration-settings',
   templateUrl: 'settings.component.html',
-  styleUrls: ['./shared/form-common-styles.less', 'settings.component.less']
+  styleUrls: ['./shared/form-common-styles.less', 'settings.component.less'],
 })
 export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   @Input() settingsForm: FormGroup;
@@ -24,26 +24,24 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   private previousState;
   private valueChangeSubscription: Subscription;
 
-  constructor(private confirmationService: ConfirmationService) {
-  }
+  constructor(private confirmationService: ConfirmationService) {}
 
   ngOnChanges() {
-    this.triggerSettings = this.settingsForm.controls.triggerSettings ?
-      Object.keys((<FormGroup>this.settingsForm.controls.triggerSettings).controls)
+    this.triggerSettings = this.settingsForm.controls.triggerSettings
+      ? Object.keys((<FormGroup>this.settingsForm.controls.triggerSettings).controls)
       : null;
-    this.handlerSettings = this.settingsForm.controls.handlerSettings ?
-      Object.keys((<FormGroup>this.settingsForm.controls.handlerSettings).controls)
+    this.handlerSettings = this.settingsForm.controls.handlerSettings
+      ? Object.keys((<FormGroup>this.settingsForm.controls.handlerSettings).controls)
       : null;
     this.unsubscribePrevious();
     this.previousState = null;
-    this.valueChangeSubscription = this.settingsForm.statusChanges
-      .subscribe(() => {
-        const settingsStatus = this.getSettingsFormStatus();
-        if (!isEqual(this.previousState, settingsStatus)) {
-          this.previousState = settingsStatus;
-          this.statusChanges.emit(settingsStatus);
-        }
-      });
+    this.valueChangeSubscription = this.settingsForm.statusChanges.subscribe(() => {
+      const settingsStatus = this.getSettingsFormStatus();
+      if (!isEqual(this.previousState, settingsStatus)) {
+        this.previousState = settingsStatus;
+        this.statusChanges.emit(settingsStatus);
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -57,14 +55,11 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   onEnableSettings(ref: ElementRef) {
     const data = new WeakMap<any, any>();
     data.set(EDITION_DATA_TOKEN, { flowCount: this.triggerInformation.trigger.handlersCount } as EditionData);
-    this.confirmationService
-      .openPopover(ref, ConfirmEditionComponent, data)
-      .result
-      .subscribe(result => {
-        if (result === ConfirmationResult.Confirm) {
-          this.enableAllSettings();
-        }
-      });
+    this.confirmationService.openPopover(ref, ConfirmEditionComponent, data).result.subscribe(result => {
+      if (result === ConfirmationResult.Confirm) {
+        this.enableAllSettings();
+      }
+    });
   }
 
   enableAllSettings() {
@@ -87,7 +82,7 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
     return {
       isPending: this.settingsForm.pending,
       isValid: this.settingsForm.valid,
-      isDirty: this.settingsForm.dirty
+      isDirty: this.settingsForm.dirty,
     };
   }
 }

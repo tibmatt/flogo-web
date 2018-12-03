@@ -8,13 +8,24 @@ import { AutofocusDirective } from './autofocus.directive';
 @Component({
   selector: 'flogo-test-container',
   template: `
-
-<div [ngSwitch]="caseName">
-    <input  *ngSwitchDefault  type="text" fgAutofocus id="inputNoBind" />
-    <input  *ngSwitchCase="'bindTrue'"  type="text" fgAutofocus [shouldAutofocus]="shouldAutofocus" id="inputBindTrue" />
-    <input  *ngSwitchCase="'bindFalse'" type="text" fgAutofocus [shouldAutofocus]="shouldAutofocus" id="inputBindFalse" />
-</div>
-   `
+    <div [ngSwitch]="caseName">
+      <input *ngSwitchDefault type="text" fgAutofocus id="inputNoBind" />
+      <input
+        *ngSwitchCase="'bindTrue'"
+        type="text"
+        fgAutofocus
+        [shouldAutofocus]="shouldAutofocus"
+        id="inputBindTrue"
+      />
+      <input
+        *ngSwitchCase="'bindFalse'"
+        type="text"
+        fgAutofocus
+        [shouldAutofocus]="shouldAutofocus"
+        id="inputBindFalse"
+      />
+    </div>
+  `,
 })
 class ContainerComponent {
   public caseName: string;
@@ -28,12 +39,11 @@ describe('Directive: fgAutofocus ', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [CommonModule, BrowserModule],
-      declarations: [AutofocusDirective, ContainerComponent]
+      declarations: [AutofocusDirective, ContainerComponent],
     });
     fixture = TestBed.createComponent(ContainerComponent);
     container = fixture.componentInstance;
   });
-
 
   it('The input control should have the focus when the input initializes', () => {
     fixture.detectChanges();
@@ -55,5 +65,4 @@ describe('Directive: fgAutofocus ', () => {
 
     expect(document.activeElement.id).toEqual('inputBindTrue');
   });
-
 });

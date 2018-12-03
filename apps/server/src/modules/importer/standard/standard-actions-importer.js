@@ -4,7 +4,6 @@ import { AbstractActionsImporter } from '../common';
 import { fromStandardTypeMapper } from './utils';
 
 export class StandardActionsImporter extends AbstractActionsImporter {
-
   /**
    * @param {ActionsManager} actionStorage
    * @param {typeof StandardTaskConverter} taskConverterFactory
@@ -19,11 +18,10 @@ export class StandardActionsImporter extends AbstractActionsImporter {
     }
     super(actionStorage, activitySchemas);
     this.taskConverterFactory = taskConverterFactory;
-    this.activitySchemasByRef = activitySchemas
-      .reduce(
-        (registry, activity) => registry.set(activity.ref, activity),
-        new Map(),
-      );
+    this.activitySchemasByRef = activitySchemas.reduce(
+      (registry, activity) => registry.set(activity.ref, activity),
+      new Map()
+    );
   }
 
   extractActions(fromRawApp) {
@@ -41,7 +39,7 @@ export class StandardActionsImporter extends AbstractActionsImporter {
       metadata: this.extractMetadata(resourceData),
       tasks: this.mapTasks(resourceData.tasks),
       links: this.mapLinks(resourceData.links),
-      errorHandler
+      errorHandler,
     };
   }
 
@@ -52,7 +50,7 @@ export class StandardActionsImporter extends AbstractActionsImporter {
     }
     return {
       tasks: this.mapTasks(errorHandler.tasks),
-      links: this.mapLinks(errorHandler.links)
+      links: this.mapLinks(errorHandler.links),
     };
   }
 
@@ -81,8 +79,6 @@ export class StandardActionsImporter extends AbstractActionsImporter {
 
   convertTask(resourceTask) {
     const activitySchema = this.activitySchemasByRef.get(resourceTask.activity.ref);
-    return this.taskConverterFactory
-      .create(resourceTask, activitySchema)
-      .convert();
+    return this.taskConverterFactory.create(resourceTask, activitySchema).convert();
   }
 }

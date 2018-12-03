@@ -6,9 +6,7 @@ import { ButtonComponent } from './button/button.component';
 import { ParamRowComponent } from '@flogo-web/client/flow/params-schema/param-row/param-row.component';
 
 @NgModule({
-  imports: [
-    SharedModule
-  ],
+  imports: [SharedModule],
   declarations: [
     ParamsSchemaComponent,
     ButtonComponent,
@@ -16,9 +14,6 @@ import { ParamRowComponent } from '@flogo-web/client/flow/params-schema/param-ro
     // private to this module
     ParamRowComponent,
   ],
-  exports: [
-    ParamsSchemaComponent,
-    ButtonComponent,
-  ]
+  exports: [ParamsSchemaComponent, ButtonComponent],
 })
-export class ParamsSchemaModule { }
+export class ParamsSchemaModule {}

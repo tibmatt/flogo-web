@@ -10,10 +10,8 @@ import { NoDependenciesFakeLanguageModule } from '@flogo-web/client/core/languag
 @Component({
   selector: 'flogo-container',
   template: `
-                <div class="flows">
-                    <flogo-apps-flows [flows]="flows"></flogo-apps-flows>
-                </div>
-            `
+    <div class="flows"><flogo-apps-flows [flows]="flows"></flogo-apps-flows></div>
+  `,
 })
 class ContainerComponent {
   @Output() changes = new EventEmitter();
@@ -22,29 +20,32 @@ class ContainerComponent {
       id: '879',
       name: 'Log temperature',
       // tslint:disable-next-line:max-line-length
-      description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
-      createdAt: new Date()
+      description:
+        'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
+      createdAt: new Date(),
     },
     {
       id: '869',
       name: 'Log temperature 2',
       // tslint:disable-next-line:max-line-length
-      description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
-      createdAt: new Date()
+      description:
+        'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
+      createdAt: new Date(),
     },
     {
       id: '897',
       name: 'Manually adjust temperature',
       // tslint:disable-next-line:max-line-length
-      description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Luptas oilsksd as asdfwo',
-      createdAt: new Date()
+      description:
+        'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Luptas oilsksd as asdfwo',
+      createdAt: new Date(),
     },
     {
       id: '987',
       name: 'Raise temperature & notifiy operator',
       description: 'A basic flow for apietusam',
-      createdAt: new Date()
-    }
+      createdAt: new Date(),
+    },
   ];
 
   flowsDisorder: Array<any> = [
@@ -52,29 +53,32 @@ class ContainerComponent {
       id: '897',
       name: 'Manually adjust temperature',
       // tslint:disable-next-line:max-line-length
-      description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Luptas oilsksd as asdfwo',
-      createdAt: new Date()
+      description:
+        'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Luptas oilsksd as asdfwo',
+      createdAt: new Date(),
     },
     {
       id: '987',
       name: 'Raise temperature & notifiy operator',
       description: 'A basic flow for apietusam',
-      createdAt: new Date()
+      createdAt: new Date(),
     },
     {
       id: '879',
       name: 'Log temperature',
       // tslint:disable-next-line:max-line-length
-      description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
-      createdAt: new Date()
+      description:
+        'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
+      createdAt: new Date(),
     },
     {
       id: '869',
       name: 'Try to find pet',
       // tslint:disable-next-line:max-line-length
-      description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
-      createdAt: new Date()
-    }
+      description:
+        'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
+      createdAt: new Date(),
+    },
   ];
 
   // helper function to repeat the event propagation
@@ -92,7 +96,13 @@ describe('Application flows', () => {
     TestBed.configureTestingModule({
       imports: [NoDependenciesFakeLanguageModule],
       // declare the test component
-      declarations: [FlogoApplicationFlowsComponent, BsModalComponent, ContainerComponent, TimeFromNowPipe, FlogoDeletePopupComponent],
+      declarations: [
+        FlogoApplicationFlowsComponent,
+        BsModalComponent,
+        ContainerComponent,
+        TimeFromNowPipe,
+        FlogoDeletePopupComponent,
+      ],
     });
     return TestBed.compileComponents();
   });
@@ -108,8 +118,12 @@ describe('Application flows', () => {
     fixture.detectChanges();
     const res = fixture.debugElement.queryAll(By.css('.qa-flow-title'));
     const nameList = res.map(element => element.nativeElement.innerHTML.trim());
-    expect(nameList).toEqual(['Log temperature', 'Manually adjust temperature',
-      'Raise temperature &amp; notifiy operator', 'Try to find pet']);
+    expect(nameList).toEqual([
+      'Log temperature',
+      'Manually adjust temperature',
+      'Raise temperature &amp; notifiy operator',
+      'Try to find pet',
+    ]);
   });
 
   it('Should render 4 flows', () => {
@@ -128,6 +142,4 @@ describe('Application flows', () => {
     el = res[3].nativeElement;
     expect(el.innerText).toEqual('A basic flow for apietusam');
   });
-
 });
-

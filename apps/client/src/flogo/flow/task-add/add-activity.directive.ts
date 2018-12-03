@@ -1,16 +1,15 @@
-import {Directive, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {AddActivityService} from './add-activity.service';
-import {DiagramSelection, DiagramSelectionType} from '@flogo-web/client/packages/diagram/interfaces';
-import {isEqual} from 'lodash';
-import {BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS} from '@flogo-web/client/core';
+import { Directive, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { AddActivityService } from './add-activity.service';
+import { DiagramSelection, DiagramSelectionType } from '@flogo-web/client/packages/diagram/interfaces';
+import { isEqual } from 'lodash';
+import { BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS } from '@flogo-web/client/core';
 
 const BRANCH_ANIMATION_DURATION = 300;
 
 @Directive({
-  selector: '[fgAddActivity]'
+  selector: '[fgAddActivity]',
 })
 export class AddActivityDirective implements OnInit, OnChanges, OnDestroy {
-
   @Input()
   selection: DiagramSelection;
 
@@ -20,7 +19,7 @@ export class AddActivityDirective implements OnInit, OnChanges, OnDestroy {
     this.addTaskService.startSubscriptions();
   }
 
-  ngOnChanges({selection}: SimpleChanges) {
+  ngOnChanges({ selection }: SimpleChanges) {
     if (selection && !selection.firstChange) {
       const currentSelection = selection.currentValue;
       const previousSelection = selection.previousValue;
@@ -30,13 +29,19 @@ export class AddActivityDirective implements OnInit, OnChanges, OnDestroy {
        *    2. If the current selection is not of type Insert
        *    3. If the current selection and the previous selection are of Insert type and with the same parent taskId
        */
-      if (!currentSelection || currentSelection.type !== DiagramSelectionType.Insert || isEqual(currentSelection, previousSelection)) {
+      if (
+        !currentSelection ||
+        currentSelection.type !== DiagramSelectionType.Insert ||
+        isEqual(currentSelection, previousSelection)
+      ) {
         setTimeout(() => {
           this.addTaskService.close();
         }, 0);
       } else {
         setTimeout(() => {
-          const selectedInsertTile = this.el.nativeElement.querySelector(`.${SELECTED_INSERT_TILE_CLASS} .${BUTTON_INSERT_CLASS}`);
+          const selectedInsertTile = this.el.nativeElement.querySelector(
+            `.${SELECTED_INSERT_TILE_CLASS} .${BUTTON_INSERT_CLASS}`
+          );
           this.addTaskService.open(selectedInsertTile, currentSelection.taskId);
         }, BRANCH_ANIMATION_DURATION);
       }
@@ -52,7 +57,7 @@ export class AddActivityDirective implements OnInit, OnChanges, OnDestroy {
     const popoverRef = this.addTaskService.popoverReference;
     const keepActive = this.addTaskService.shouldKeepPopoverActive;
     if (!keepActive && popoverRef && popoverRef.hasAttached()) {
-      const clickTarget = <HTMLElement> event.target;
+      const clickTarget = <HTMLElement>event.target;
       const overlayHost = popoverRef.hostElement;
       if (clickTarget !== overlayHost && !overlayHost.contains(clickTarget)) {
         this.addTaskService.cancel();

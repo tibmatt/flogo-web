@@ -1,14 +1,12 @@
-import {Component} from '@angular/core';
-import {ChildWindowService, ChildWindow} from '../core/services/child-window.service';
+import { Component } from '@angular/core';
+import { ChildWindowService, ChildWindow } from '../core/services/child-window.service';
 
-@Component(
-  {
-    selector: 'flogo-logs',
-    // moduleId: module.id,
-    templateUrl: 'logs.component.html',
-    styleUrls: ['logs.component.less']
-  }
-)
+@Component({
+  selector: 'flogo-logs',
+  // moduleId: module.id,
+  templateUrl: 'logs.component.html',
+  styleUrls: ['logs.component.less'],
+})
 export class LogsComponent {
   messages: string[];
   searchValue = '';
@@ -41,7 +39,6 @@ export class LogsComponent {
     } else {
       this.isOpen = !this.isOpen;
     }
-
   }
 
   public showLogs() {
@@ -54,24 +51,21 @@ export class LogsComponent {
 
   // --------- windows service
 
-   public isChildWindowOpen() {
+  public isChildWindowOpen() {
     return this.childWindow && this.childWindow.isOpen();
-   }
+  }
 
-   open() {
-     if (!this.windowService.isSupported()) {
+  open() {
+    if (!this.windowService.isSupported()) {
       console.log('Child window not supported');
       return;
-     } else if (this.childWindow && this.childWindow.isOpen()) {
+    } else if (this.childWindow && this.childWindow.isOpen()) {
       return this.childWindow.focus();
-     }
+    }
 
-     this.childWindow = this.windowService.open('/logs?nonav=true', 'logs');
-     this.childWindow.closed
-       .subscribe(e => {
-        this.childWindow = null;
-       });
-
-     }
-
+    this.childWindow = this.windowService.open('/logs?nonav=true', 'logs');
+    this.childWindow.closed.subscribe(e => {
+      this.childWindow = null;
+    });
+  }
 }

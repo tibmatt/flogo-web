@@ -5,7 +5,6 @@ import { WindowRef } from './window-ref';
 import { first, publishReplay, refCount, tap } from 'rxjs/operators';
 
 export class ChildWindow {
-
   private _isClosed = false;
   private _closed: Observable<Event>;
 
@@ -15,13 +14,12 @@ export class ChildWindow {
     }
 
     // since the event comes from a different window we need to manually re-enter it into the ngZone
-    this._closed = fromEvent(nativeWindow, 'beforeunload')
-      .pipe(
-        tap(event => ngZone.run(() => this._isClosed = true)),
-        first(),
-        publishReplay(),
-        refCount(),
-      );
+    this._closed = fromEvent(nativeWindow, 'beforeunload').pipe(
+      tap(event => ngZone.run(() => (this._isClosed = true))),
+      first(),
+      publishReplay(),
+      refCount()
+    );
   }
 
   get closed(): Observable<Event> {
@@ -43,7 +41,6 @@ export class ChildWindow {
   focus() {
     this.nativeWindow.focus();
   }
-
 }
 
 @Injectable()
@@ -63,7 +60,6 @@ export class ChildWindow {
  *  });
  */
 export class ChildWindowService {
-
   private window: Window;
   private childWindow: any = null;
 
@@ -92,8 +88,4 @@ export class ChildWindowService {
   close() {
     this.window.close();
   }
-
-
 }
-
-

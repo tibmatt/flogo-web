@@ -18,7 +18,7 @@ export class UpdateTrigger implements Action {
 
 export class UpdateHandler implements Action {
   readonly type = TriggerActionType.UpdateHandler;
-  constructor(public payload: { triggerId: string, handler: TriggerHandler }) {}
+  constructor(public payload: { triggerId: string; handler: TriggerHandler }) {}
 }
 
 export class RemoveHandler implements Action {
@@ -28,17 +28,17 @@ export class RemoveHandler implements Action {
 
 export class SelectTrigger implements Action {
   readonly type = TriggerActionType.SelectTrigger;
-  constructor(public payload: { triggerId: string, triggerSchemas: Dictionary<TriggerSchema> }) {}
+  constructor(public payload: { triggerId: string; triggerSchemas: Dictionary<TriggerSchema> }) {}
 }
 
 export class AddTrigger implements Action {
   readonly type = TriggerActionType.AddTrigger;
-  constructor(public payload: { trigger: Trigger, handler: TriggerHandler }) {}
+  constructor(public payload: { trigger: Trigger; handler: TriggerHandler }) {}
 }
 
 export class CopyTrigger implements Action {
   readonly type = TriggerActionType.CopyTrigger;
-  constructor(public payload: { copiedTriggerId: string, newTrigger: Trigger, newHandler: TriggerHandler }) {}
+  constructor(public payload: { copiedTriggerId: string; newTrigger: Trigger; newHandler: TriggerHandler }) {}
 }
 
 export type TriggerActionsUnion =
@@ -48,4 +48,3 @@ export type TriggerActionsUnion =
   | SelectTrigger
   | AddTrigger
   | CopyTrigger;
-

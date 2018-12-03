@@ -8,7 +8,7 @@ import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
 @Component({
   selector: 'flogo-home',
   templateUrl: 'home.component.html',
-  styleUrls: ['home.component.less']
+  styleUrls: ['home.component.less'],
 })
 export class FlogoHomeComponent implements OnInit, OnDestroy {
   public recent: Array<any> = [];
@@ -18,11 +18,7 @@ export class FlogoHomeComponent implements OnInit, OnDestroy {
   isFlying = false;
   private flynnFlightSubscription: Subscription;
 
-  constructor(private router: Router,
-              public applicationServiceAPI: AppsApiService,
-              private ngZone: NgZone
-  ) {
-  }
+  constructor(private router: Router, public applicationServiceAPI: AppsApiService, private ngZone: NgZone) {}
 
   ngOnInit() {
     this.loadFlows();
@@ -35,11 +31,10 @@ export class FlogoHomeComponent implements OnInit, OnDestroy {
   }
 
   loadFlows() {
-    this.applicationServiceAPI.recentFlows()
-      .then((flows: Array<any>) => {
-        flows = flows.length <= 10 ? flows : flows.slice(0, 10);
-        this.recent = flows;
-      });
+    this.applicationServiceAPI.recentFlows().then((flows: Array<any>) => {
+      flows = flows.length <= 10 ? flows : flows.slice(0, 10);
+      this.recent = flows;
+    });
   }
 
   onSelectedApp(application: App) {
@@ -52,8 +47,8 @@ export class FlogoHomeComponent implements OnInit, OnDestroy {
       return;
     }
     const flynnSvg = event.target.contentDocument.children[0];
-    const startFlight = () => this.isFlying = true;
-    const endFlight = () => this.isFlying = false;
+    const startFlight = () => (this.isFlying = true);
+    const endFlight = () => (this.isFlying = false);
     this.flynnFlightSubscription = fromEvent(flynnSvg, 'click')
       .pipe(
         bufferCount(3),
@@ -64,5 +59,4 @@ export class FlogoHomeComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => this.ngZone.run(endFlight));
   }
-
 }

@@ -1,45 +1,33 @@
-import {Component, OnInit} from '@angular/core';
-import {Store} from '@ngrx/store';
+import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { FlowState } from '@flogo-web/client/flow/core/state';
 import { AppState } from '@flogo-web/client/flow/core/state/app.state';
-import {FlogoFlowService as FlowsService} from '@flogo-web/client/flow/core';
-import {FLOGO_TASK_TYPE, GraphNode, ItemBranch, LanguageService} from '@flogo-web/client/core';
-import {MapperController, MapperControllerFactory} from '@flogo-web/client/flow/shared/mapper';
-import {
- getStateWhenConfigureChanges,
-} from '@flogo-web/client/flow/shared/configurator/configurator.selector';
-import {skip, takeUntil} from 'rxjs/operators';
-import {SingleEmissionSubject} from '@flogo-web/client/core/models';
-import {cloneDeep} from 'lodash';
-import {getInputContext} from '@flogo-web/client/flow/core/models/task-configure/get-input-context';
-import {Subscription} from 'rxjs';
+import { FlogoFlowService as FlowsService } from '@flogo-web/client/flow/core';
+import { FLOGO_TASK_TYPE, GraphNode, ItemBranch, LanguageService } from '@flogo-web/client/core';
+import { MapperController, MapperControllerFactory } from '@flogo-web/client/flow/shared/mapper';
+import { getStateWhenConfigureChanges } from '@flogo-web/client/flow/shared/configurator/configurator.selector';
+import { skip, takeUntil } from 'rxjs/operators';
+import { SingleEmissionSubject } from '@flogo-web/client/core/models';
+import { cloneDeep } from 'lodash';
+import { getInputContext } from '@flogo-web/client/flow/core/models/task-configure/get-input-context';
+import { Subscription } from 'rxjs';
 import * as FlowActions from '@flogo-web/client/flow/core/state/flow/flow.actions';
-import {animate, style, transition, trigger} from '@angular/animations';
-import {createSaveBranchAction} from '@flogo-web/client/flow/task-configurator/models/save-action-creator';
-import {createBranchMappingContext} from '@flogo-web/client/flow/branch-configurator/branch-configurator-context';
-
+import { animate, style, transition, trigger } from '@angular/animations';
+import { createSaveBranchAction } from '@flogo-web/client/flow/task-configurator/models/save-action-creator';
+import { createBranchMappingContext } from '@flogo-web/client/flow/branch-configurator/branch-configurator-context';
 
 @Component({
   selector: 'flogo-flow-branch-configurator',
-  styleUrls: [
-    '../../../assets/_mapper-modal.less',
-    'branch-configurator.component.less'
-  ],
+  styleUrls: ['../../../assets/_mapper-modal.less', 'branch-configurator.component.less'],
   templateUrl: 'branch-configurator.component.html',
   animations: [
     trigger('dialog', [
-      transition('void => *', [
-        style({transform: 'translateY(-100%)', opacity: 0}),
-        animate('250ms ease-in')
-      ]),
-      transition('* => void', [
-        animate('250ms ease-in', style({transform: 'translateY(-100%)', opacity: 0}))
-      ]),
-    ])
+      transition('void => *', [style({ transform: 'translateY(-100%)', opacity: 0 }), animate('250ms ease-in')]),
+      transition('* => void', [animate('250ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 }))]),
+    ]),
   ],
 })
 export class BranchConfiguratorComponent implements OnInit {
-
   itemId: string;
   inputScope: any[];
   isActive = false;
@@ -56,15 +44,14 @@ export class BranchConfiguratorComponent implements OnInit {
     private store: Store<AppState>,
     private _flowService: FlowsService,
     private translate: LanguageService,
-    private mapperControllerFactory: MapperControllerFactory,
-  ) {
-  }
+    private mapperControllerFactory: MapperControllerFactory
+  ) {}
 
   ngOnInit() {
     this.store
       .pipe(
         getStateWhenConfigureChanges([FLOGO_TASK_TYPE.TASK_BRANCH]),
-        takeUntil(this.destroy$),
+        takeUntil(this.destroy$)
       )
       .subscribe(state => {
         if (state) {
@@ -83,10 +70,9 @@ export class BranchConfiguratorComponent implements OnInit {
     this.createActivityLinksInfo(state);
     this.isSaveDisabled = true;
     this.inputScope = getInputContext(this.itemId, state);
-    const {propsToMap, mappings} = createBranchMappingContext(selectedItem.condition);
+    const { propsToMap, mappings } = createBranchMappingContext(selectedItem.condition);
     this.resetInputMappingsController(propsToMap, this.inputScope, mappings);
     this.open();
-
   }
 
   private ensurePreviousContextCleanup() {
@@ -96,11 +82,15 @@ export class BranchConfiguratorComponent implements OnInit {
   }
 
   private createActivityLinksInfo(state) {
-    const selectedLinksGraph = <GraphNode>cloneDeep(state.mainGraph.nodes[this.itemId] || state.errorGraph.nodes[this.itemId]);
-    const selectedLinksParentItem = cloneDeep(state.mainItems[selectedLinksGraph.parents[0]] ||
-      state.errorItems[selectedLinksGraph.parents[0]]);
-    const selectedLinksChildItem = cloneDeep(state.mainItems[selectedLinksGraph.children[0]] ||
-      state.errorItems[selectedLinksGraph.children[0]]);
+    const selectedLinksGraph = <GraphNode>(
+      cloneDeep(state.mainGraph.nodes[this.itemId] || state.errorGraph.nodes[this.itemId])
+    );
+    const selectedLinksParentItem = cloneDeep(
+      state.mainItems[selectedLinksGraph.parents[0]] || state.errorItems[selectedLinksGraph.parents[0]]
+    );
+    const selectedLinksChildItem = cloneDeep(
+      state.mainItems[selectedLinksGraph.children[0]] || state.errorItems[selectedLinksGraph.children[0]]
+    );
     this.childActivity = selectedLinksChildItem ? selectedLinksChildItem.name : null;
     this.parentActivity = selectedLinksParentItem ? selectedLinksParentItem.name : null;
   }
@@ -115,7 +105,7 @@ export class BranchConfiguratorComponent implements OnInit {
         skip(1),
         takeUntil(this.contextChange$)
       )
-      .subscribe((state) => {
+      .subscribe(state => {
         this.isEmpty = !state.mappings.condition;
         this.isSaveDisabled = !state.isDirty || !state.isValid || this.isEmpty;
       });
@@ -136,11 +126,10 @@ export class BranchConfiguratorComponent implements OnInit {
     createSaveBranchAction(this.store, {
       id: this.itemId,
       condition: this.inputMapperController.getCurrentState().mappings.condition.expression,
-    })
-      .subscribe(action => {
-        this.store.dispatch(action);
-        this.isActive = false;
-      });
+    }).subscribe(action => {
+      this.store.dispatch(action);
+      this.isActive = false;
+    });
   }
 
   cancel() {

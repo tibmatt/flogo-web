@@ -1,6 +1,6 @@
-import {filterSourceBy} from './filter-source-by';
-import {of, Observable, Subject} from 'rxjs';
-import {async} from '@angular/core/testing';
+import { filterSourceBy } from './filter-source-by';
+import { of, Observable, Subject } from 'rxjs';
+import { async } from '@angular/core/testing';
 
 describe('FilterSourceByValue', () => {
   let filterTerm$: Subject<string>;

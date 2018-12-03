@@ -1,26 +1,30 @@
-<bs-modal [cssClass]="'flogo-common-modal flogo-error'" #errorModal (onClose)="onModalCloseOrDismiss()"
-       (onDismiss)="onModalCloseOrDismiss()">
+<bs-modal
+  [cssClass]="'flogo-common-modal flogo-error'"
+  #errorModal
+  (onClose)="onModalCloseOrDismiss()"
+  (onDismiss)="onModalCloseOrDismiss()"
+>
   <i class="flogo-icon-close flogo-error__close" (click)="closeModal()"></i>
   <div class="flogo-error__header">
     <h4 class="flogo-error__head">
       <i class="flogo-icon-info flogo-error__warning"></i>
-      <span class="flogo-error_head-text">{{"IMPORT-ERROR:IMPORT_FAILED" | translate}}</span>
+      <span class="flogo-error_head-text">{{ 'IMPORT-ERROR:IMPORT_FAILED' | translate }}</span>
     </h4>
   </div>
   <div class="flogo-error__container">
     <p class="flogo-error__content flogo-error__count">
-      {{ "IMPORT-ERROR:ERRORS_FOUND" | translate:{value:errorDetails.length} }}
+      {{ 'IMPORT-ERROR:ERRORS_FOUND' | translate: { value: errorDetails.length } }}
     </p>
     <div class="flogo-error__list-container">
       <div class="flogo-error__list" *ngFor="let detail of errorDetails">
-        <h4 class="flogo-error__list-head">{{errorFormatter.formatMessageHeader(detail.keyword)}}</h4>
-        <span class="flogo-error__content">{{errorFormatter.formatErrorMessage(detail)}}</span>
+        <h4 class="flogo-error__list-head">{{ errorFormatter.formatMessageHeader(detail.keyword) }}</h4>
+        <span class="flogo-error__content">{{ errorFormatter.formatErrorMessage(detail) }}</span>
       </div>
     </div>
   </div>
   <div class="flogo-error__btn-container">
     <button class="flogo-button--default flogo-error__confirm" (click)="closeModal()">
-      {{"MODAL:OKAY" | translate}}
+      {{ 'MODAL:OKAY' | translate }}
     </button>
   </div>
 </bs-modal>

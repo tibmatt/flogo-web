@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
-import {TriggerStatus} from '../interfaces';
+import { TriggerStatus } from '../interfaces';
 
 @Component({
   selector: 'flogo-triggers-configure-trigger',

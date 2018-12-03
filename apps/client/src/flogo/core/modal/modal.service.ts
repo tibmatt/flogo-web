@@ -1,7 +1,7 @@
-import {Injectable, InjectionToken, Injector} from '@angular/core';
-import {ComponentType, Overlay, OverlayConfig, OverlayRef} from '@angular/cdk/overlay';
-import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
-import {ModalControl} from './modal-control';
+import { Injectable, InjectionToken, Injector } from '@angular/core';
+import { ComponentType, Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
+import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
+import { ModalControl } from './modal-control';
 
 export const MODAL_TOKEN = new InjectionToken<any>('flogo/core/modal-token');
 
@@ -11,9 +11,7 @@ export interface ModalContent {
 
 @Injectable()
 export class ModalService {
-
-  constructor(private injector: Injector, private overlay: Overlay) {
-  }
+  constructor(private injector: Injector, private overlay: Overlay) {}
 
   openModal<T>(contentComponent: ComponentType<ModalContent>, componentData: T): ModalControl {
     const data = new WeakMap<any, any>();
@@ -54,10 +52,11 @@ export class ModalService {
     return new OverlayConfig({
       hasBackdrop: true,
       scrollStrategy: this.overlay.scrollStrategies.block(),
-      positionStrategy: this.overlay.position()
+      positionStrategy: this.overlay
+        .position()
         .global()
         .centerHorizontally()
-        .centerVertically()
+        .centerVertically(),
     });
   }
 }

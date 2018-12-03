@@ -2,29 +2,37 @@ import objectContaining = jasmine.objectContaining;
 import ObjectContaining = jasmine.ObjectContaining;
 
 import { createTileMatrix } from './create-tile-matrix';
-import {GraphNode, GraphNodeDictionary, NodeType} from '@flogo-web/client/core';
+import { GraphNode, GraphNodeDictionary, NodeType } from '@flogo-web/client/core';
 import { InsertTile, TaskTile, Tile, TileType } from '../interfaces';
 import { NodeMatrix } from '../renderable-model/matrix';
 
-describe('diagram.createTileMatrix', function () {
-  it('should create a renderable matrix from a node matrix', function () {
+describe('diagram.createTileMatrix', function() {
+  it('should create a renderable matrix from a node matrix', function() {
     const result = createTileMatrix(getTestData(), getNodesTestData(), 5);
     const expected: ObjectContaining<Tile>[][] = getExpectedMatrix();
-    expect(expected.length).toEqual(result.length, `Actual matrix has different row count than expected.
-               Actual: ${result.length}, expected: ${expected.length}`);
+    expect(expected.length).toEqual(
+      result.length,
+      `Actual matrix has different row count than expected.
+               Actual: ${result.length}, expected: ${expected.length}`
+    );
     expected.forEach((expectedRow, rowIndex) => {
       const actualRow = result[rowIndex];
-      expect(actualRow.length).toEqual(expectedRow.length, `Length of row ${rowIndex} doesn't match expected length.
-               Actual: ${actualRow.length}, expected: ${expectedRow.length}`);
+      expect(actualRow.length).toEqual(
+        expectedRow.length,
+        `Length of row ${rowIndex} doesn't match expected length.
+               Actual: ${actualRow.length}, expected: ${expectedRow.length}`
+      );
       expectRow(actualRow, expectedRow, rowIndex);
     });
-
   });
 
   function expectRow(actualRow, expectedRow, rowIndex) {
     expectedRow.forEach((expectedTile, tileIndex) => {
-      expect(actualRow[tileIndex]).toEqual(expectedTile, `For row ${rowIndex} at tile with position ${tileIndex}
-      expected ${JSON.stringify(actualRow[tileIndex])} to equal ${JSON.stringify(expectedTile)}`);
+      expect(actualRow[tileIndex]).toEqual(
+        expectedTile,
+        `For row ${rowIndex} at tile with position ${tileIndex}
+      expected ${JSON.stringify(actualRow[tileIndex])} to equal ${JSON.stringify(expectedTile)}`
+      );
     });
   }
 
@@ -52,7 +60,7 @@ describe('diagram.createTileMatrix', function () {
             canBranch: true,
           },
           status: {},
-        }
+        },
       ],
       [
         null,
@@ -77,8 +85,8 @@ describe('diagram.createTileMatrix', function () {
             canBranch: true,
           },
           status: {},
-        }
-      ]
+        },
+      ],
     ];
   }
 
@@ -87,19 +95,17 @@ describe('diagram.createTileMatrix', function () {
       [
         objectContaining<TaskTile>({
           type: TileType.Task,
-          task: <GraphNode><any>objectContaining<GraphNode>(
-            {
-              id: 'root',
-              type: NodeType.Task
-            },
-          )
+          task: <GraphNode>(<any>objectContaining<GraphNode>({
+            id: 'root',
+            type: NodeType.Task,
+          })),
         }),
         objectContaining<TaskTile>({
           type: TileType.Task,
-          task: <GraphNode><any>objectContaining<GraphNode>({
+          task: <GraphNode>(<any>objectContaining<GraphNode>({
             id: 'child1',
-            type: NodeType.Task
-          })
+            type: NodeType.Task,
+          })),
         }),
       ],
       [
@@ -108,17 +114,17 @@ describe('diagram.createTileMatrix', function () {
         }),
         objectContaining<TaskTile>({
           type: TileType.Task,
-          task: <GraphNode><any>objectContaining<GraphNode>({
+          task: <GraphNode>(<any>objectContaining<GraphNode>({
             id: 'branch1',
-            type: NodeType.Branch
-          })
+            type: NodeType.Branch,
+          })),
         }),
         objectContaining<TaskTile>({
           type: TileType.Task,
-          task: <GraphNode><any>objectContaining<GraphNode>({
+          task: <GraphNode>(<any>objectContaining<GraphNode>({
             id: 'child2',
-            type: NodeType.Task
-          }),
+            type: NodeType.Task,
+          })),
         }),
         objectContaining<InsertTile>({
           type: TileType.Insert,
@@ -127,7 +133,7 @@ describe('diagram.createTileMatrix', function () {
         objectContaining<Tile>({
           type: TileType.Placeholder,
         }),
-      ]
+      ],
     ];
   }
 
@@ -176,7 +182,7 @@ describe('diagram.createTileMatrix', function () {
           canBranch: true,
         },
         status: {},
-      }
+      },
     };
   }
-  });
+});

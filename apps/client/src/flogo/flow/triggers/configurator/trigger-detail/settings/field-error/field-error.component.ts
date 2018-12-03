@@ -6,14 +6,16 @@ import {
   ErrorTypeMismatch,
   ErrorTypes,
   ErrorUnknownResolverName,
-  ErrorValueNotAllowed
+  ErrorValueNotAllowed,
 } from '../../settings-validation';
 import { ValidationErrors } from '@angular/forms/src/directives/validators';
 
 const errorFormatters: { [errorType: string]: (error?: any) => string } = {
   [ErrorTypes.Required]: (error: ErrorRequired) => 'Property is required',
-  [ErrorTypes.ValueNotAllowed]: (error: ErrorValueNotAllowed) => `Value not allowed, expected one of: ${error.allowedValues.join(', ')}`,
-  [ErrorTypes.SyntaxError]: (error: ErrorSyntaxError) => 'Expression cannot be parsed, use $property[name] or $env[VAR_NAME]',
+  [ErrorTypes.ValueNotAllowed]: (error: ErrorValueNotAllowed) =>
+    `Value not allowed, expected one of: ${error.allowedValues.join(', ')}`,
+  [ErrorTypes.SyntaxError]: (error: ErrorSyntaxError) =>
+    'Expression cannot be parsed, use $property[name] or $env[VAR_NAME]',
   [ErrorTypes.MissingResolvableProperty]: (error: ErrorMissingResolvableProperty) => {
     if (error.resolverName === 'env') {
       return 'Missing variable name, use: $env[VAR_NAME]';
@@ -33,10 +35,9 @@ const formatErrorMessage = ([errorName, error]: [string, any]) => errorFormatter
 @Component({
   selector: 'flogo-configuration-settings-field-error',
   templateUrl: './field-error.component.html',
-  styleUrls: ['./field-error.component.less']
+  styleUrls: ['./field-error.component.less'],
 })
 export class FieldErrorComponent implements OnChanges {
-
   @Input() validationErrors: ValidationErrors | null;
   errorMessages: string[] | null;
 
@@ -45,5 +46,4 @@ export class FieldErrorComponent implements OnChanges {
       this.errorMessages = Object.entries(this.validationErrors).map(formatErrorMessage);
     }
   }
-
 }

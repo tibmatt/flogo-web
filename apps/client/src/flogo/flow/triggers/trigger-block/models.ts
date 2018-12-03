@@ -1,1 +1,1 @@
-export {TriggerMenuSelectionEvent} from './trigger-block.component';
+export { TriggerMenuSelectionEvent } from './trigger-block.component';

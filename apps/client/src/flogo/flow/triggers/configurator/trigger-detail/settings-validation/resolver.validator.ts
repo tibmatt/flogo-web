@@ -15,7 +15,7 @@ export function validateExpression(settingValue: SettingValue) {
   let errors = [];
   const parsingErrors = getParsingErrors(settingValue);
   if (parsingErrors) {
-    errors.push([ErrorTypes.SyntaxError, {parsingErrors}]);
+    errors.push([ErrorTypes.SyntaxError, { parsingErrors }]);
   } else {
     errors = [...errors, ...validateResolver(settingValue)];
   }
@@ -48,13 +48,13 @@ function validateResolver(value: SettingValue) {
   }
   const resolverName = resolverDetails.name || '';
   if (!ALLOWED_RESOLVERS.includes(resolverName)) {
-    errors.push([ErrorTypes.UnknownResolverName, {name: resolverName, allowed: [...ALLOWED_RESOLVERS]}]);
+    errors.push([ErrorTypes.UnknownResolverName, { name: resolverName, allowed: [...ALLOWED_RESOLVERS] }]);
   }
   const elementToResolve = resolverDetails.sel;
   if (elementToResolve) {
     // todo: check if resolvable property exists for $property resolvers example: check if myAppProp exists for $property[myProp]
   } else {
-    errors.push([[ErrorTypes.MissingResolvableProperty], {resolverName}]);
+    errors.push([[ErrorTypes.MissingResolvableProperty], { resolverName }]);
   }
   return errors;
 }

@@ -4,10 +4,9 @@ import { FLOGO_INSTALLER_STATUS_INSTALLING } from '../constants';
 @Component({
   selector: 'flogo-flow-url-installer',
   templateUrl: 'url-installer.component.html',
-  styleUrls: ['url-installer.component.less']
+  styleUrls: ['url-installer.component.less'],
 })
 export class FlogoUrlInstallerComponent implements OnChanges {
-
   @Input()
   installType: string;
   @Input()
@@ -24,14 +23,10 @@ export class FlogoUrlInstallerComponent implements OnChanges {
     this.disableInstall = false;
   }
 
-  ngOnChanges(changes: {
-    [key: string]: SimpleChange
-  }): any {
-
+  ngOnChanges(changes: { [key: string]: SimpleChange }): any {
     if (_.has(changes, 'status')) {
       this.onInstallerStatusChange(changes['status'].currentValue);
     }
-
   }
 
   onSourceUrlChange(newUrl: string) {

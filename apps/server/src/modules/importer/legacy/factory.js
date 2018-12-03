@@ -9,7 +9,6 @@ import { TriggersHandlersImporter } from './triggers-handlers-importer';
 import { loadMicroserviceContribs } from '../common/load-microservice-contribs';
 
 export class LegacyAppImporterFactory {
-
   /**
    * @param {ResourceStorageRegistry} resourceStorageRegistry
    */
@@ -25,7 +24,7 @@ export class LegacyAppImporterFactory {
     );
     const triggersHandlersImporter = this.createTriggersHandlersImporter(
       this.resourceStorageRegistry.getAppsTriggersManager(),
-      this.resourceStorageRegistry.getHandlersManager(),
+      this.resourceStorageRegistry.getHandlersManager()
     );
     const validator = this.createValidator(contributions);
     return {
@@ -36,10 +35,7 @@ export class LegacyAppImporterFactory {
   }
 
   async loadContributions() {
-    return loadMicroserviceContribs(
-      this.getActivitiesManager(),
-      this.getTriggersManager(),
-    );
+    return loadMicroserviceContribs(this.getActivitiesManager(), this.getTriggersManager());
   }
 
   getTriggersManager() {

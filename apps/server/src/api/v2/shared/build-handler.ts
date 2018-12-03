@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 
 export interface BuildOptions {
-  compile: { os?: string, arch?: string };
+  compile: { os?: string; arch?: string };
 }
 
 export type BuilderFn = (ctx: Koa.Context, options: BuildOptions) => Promise<{ fileName: string; content: any }>;
@@ -13,7 +13,7 @@ export function buildHandler(performBuild: BuilderFn): Koa.Middleware {
     const { fileName, content } = await performBuild(context, options);
     context.attachment(fileName);
     context.body = content;
-  }
+  };
 }
 
 function getCompileOptions(context: Koa.Context) {

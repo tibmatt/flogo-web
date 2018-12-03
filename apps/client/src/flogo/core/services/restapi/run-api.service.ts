@@ -1,7 +1,7 @@
 import { get, filter as _filter } from 'lodash';
 import { Injectable } from '@angular/core';
 
-import { Observable ,  throwError as _throw } from 'rxjs';
+import { Observable, throwError as _throw } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { flowToJSON_Link, Interceptor, InterceptorTask, Snapshot, Step } from '@flogo-web/client/core/interfaces';
@@ -51,8 +51,7 @@ export interface RestartResponse {
 
 @Injectable()
 export class RunApiService {
-  constructor(private restApi: RestApiService) {
-  }
+  constructor(private restApi: RestApiService) {}
 
   getStatusByInstanceId(instanceId: string): Observable<StatusResponse | null> {
     return this.restApi.get(`runner/instances/${instanceId}/status`);
@@ -86,52 +85,54 @@ export class RunApiService {
   //  to do proper restart process, need to select proper snapshot, hence
   //  the current implementation is only for the last start-from-beginning snapshot, i.e.
   //  the using this.runState.processInstanceId to restart
-  restartFrom(processInstanceId: string, step: number, interceptor: Interceptor, updateProcessId?: string): Observable<RestartResponse> {
+  restartFrom(
+    processInstanceId: string,
+    step: number,
+    interceptor: Interceptor,
+    updateProcessId?: string
+  ): Observable<RestartResponse> {
     // get the state of the last step
     if (step < 0) {
       return _throw(new Error(`Invalid step ${step} to start from.`));
     }
     const snapshotId = step !== 0 ? step : 1;
 
-    return this.getSnapshot(processInstanceId, snapshotId)
-      .pipe(
-        map(snapshot => updateProcessId ? updateSnapshotActionUri(snapshot, updateProcessId) : snapshot),
-        switchMap((snapshot) => {
-          // TODO: flowinfo interface
-          return this.restApi.get(`runner/processes/${updateProcessId}`)
-            .pipe(
-              map(flowInfo => {
-                const links = get(flowInfo, 'rootTask.links', []);
-                return { snapshot, links };
-              })
-            );
-        }),
-        switchMap(({snapshot, links}) => {
-          // process state info based on flowInfo
-          // find all of the tasks in the path of the given tasks to intercept.
-          // i.e. remove the tasks that won't get executed because they are not linked
-          const taskIdsInPath = this.findTaskIdsInLinkPath(interceptor.tasks, links);
-          // get rid of the tasks that don't need to be executed
-          const filteredSnapshot = this.filterSnapshot(snapshot, taskIdsInPath);
+    return this.getSnapshot(processInstanceId, snapshotId).pipe(
+      map(snapshot => (updateProcessId ? updateSnapshotActionUri(snapshot, updateProcessId) : snapshot)),
+      switchMap(snapshot => {
+        // TODO: flowinfo interface
+        return this.restApi.get(`runner/processes/${updateProcessId}`).pipe(
+          map(flowInfo => {
+            const links = get(flowInfo, 'rootTask.links', []);
+            return { snapshot, links };
+          })
+        );
+      }),
+      switchMap(({ snapshot, links }) => {
+        // process state info based on flowInfo
+        // find all of the tasks in the path of the given tasks to intercept.
+        // i.e. remove the tasks that won't get executed because they are not linked
+        const taskIdsInPath = this.findTaskIdsInLinkPath(interceptor.tasks, links);
+        // get rid of the tasks that don't need to be executed
+        const filteredSnapshot = this.filterSnapshot(snapshot, taskIdsInPath);
 
-          // then restart from that state with data
-          // TODO: document response data
-          return this.restApi.post('runner/processes/restart', {
-            initialState: filteredSnapshot,
-            interceptor,
-          });
-        }),
-      );
+        // then restart from that state with data
+        // TODO: document response data
+        return this.restApi.post('runner/processes/restart', {
+          initialState: filteredSnapshot,
+          interceptor,
+        });
+      })
+    );
 
     function updateSnapshotActionUri(snapshot, newFlowId) {
       // replace the old flowURL with the newFlowID
-      const pattern = new RegExp('flows\/(.+)$');
+      const pattern = new RegExp('flows/(.+)$');
       snapshot.actionUri = snapshot.flowUri.replace(pattern, `flows/${newFlowId}`);
       /** @deprecated snapshot.flowUri */
       snapshot.flowUri = snapshot.actionUri;
       return snapshot;
     }
-
   }
 
   /**
@@ -141,7 +142,6 @@ export class RunApiService {
    * @return {any}
    */
   private filterSnapshot(snapshot: Snapshot, taskIds: string[]) {
-
     let workQueue = snapshot.workQueue || [];
     snapshot.rootTaskEnv = snapshot.rootTaskEnv || {};
     let taskData = snapshot.rootTaskEnv.taskDatas || [];
@@ -191,5 +191,4 @@ export class RunApiService {
     }
     return tasksIdsInPath;
   }
-
 }

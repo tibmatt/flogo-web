@@ -1,5 +1,4 @@
 export class FlogoError extends Error {
-
   constructor(message, { type, details, ctr } = {}) {
     super();
     this.name = 'FlogoError';

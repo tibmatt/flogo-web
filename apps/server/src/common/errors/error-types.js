@@ -5,7 +5,7 @@ export const ERROR_TYPES = {
     VALIDATION: 'ValidationError',
     ALREADY_EXISTS: 'AlreadyExists',
     NOT_FOUND: 'NotFoundError',
-    HAS_SUBFLOW: 'HasSubflow'
+    HAS_SUBFLOW: 'HasSubflow',
   },
   ENGINE: {
     NOTHANDLED: 'CaseNotHandled',
@@ -14,6 +14,6 @@ export const ERROR_TYPES = {
     BUILD: 'EngineBuildFailed',
     STOP: 'EngineStopFailed',
     START: 'EngineStartFailed',
-    SYNC: 'DatabaseSyncFailed'
-  }
+    SYNC: 'DatabaseSyncFailed',
+  },
 };

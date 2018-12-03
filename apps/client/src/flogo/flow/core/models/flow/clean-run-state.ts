@@ -7,10 +7,10 @@ const cleanNodeRunStatus = (node: GraphNode): GraphNode => ({
     ...node.status,
     executed: false,
     executionErrored: null,
-  }
+  },
 });
 
 export const cleanGraphRunState = (graph: FlowGraph) => ({
   ...graph,
-  nodes: mapValues(graph.nodes, cleanNodeRunStatus)
+  nodes: mapValues(graph.nodes, cleanNodeRunStatus),
 });

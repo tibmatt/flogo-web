@@ -5,7 +5,7 @@ import {
   changePermissions,
   copyFile,
   fileExists,
-  rmFolder
+  rmFolder,
 } from '../../common/utils/file';
 
 export function removeDir(dirpath) {
@@ -33,7 +33,6 @@ export async function findFirstChildDir(parentDirPath) {
   throw new Error(`No child directories found in ${parentDirPath}`);
 }
 
-
 export async function recursivelyFindFirstFile(dirPath) {
   const [childFile] = await fse.readdir(dirPath);
   if (!childFile) {
@@ -49,10 +48,9 @@ export async function recursivelyFindFirstFile(dirPath) {
 }
 
 export function copyBinaryToDestination(enginePath, target) {
-  return recursivelyFindFirstFile(joinPath(enginePath, 'bin'))
-    .then(binaryPath => {
-      return copyBinaryToTarget(binaryPath, target);
-    });
+  return recursivelyFindFirstFile(joinPath(enginePath, 'bin')).then(binaryPath => {
+    return copyBinaryToTarget(binaryPath, target);
+  });
 }
 
 export function copyBinaryToTarget(binaryPath, targetDir) {

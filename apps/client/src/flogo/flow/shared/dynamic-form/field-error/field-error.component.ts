@@ -2,8 +2,8 @@ import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/c
 import { ValidationErrors } from '@angular/forms';
 
 const errorFormatters: { [errorType: string]: (error?: any) => string } = {
-  'required': (error) => 'Property is required',
-  'notAnObject': (error) => `Value cannot be parsed as json`,
+  required: error => 'Property is required',
+  notAnObject: error => `Value cannot be parsed as json`,
 };
 
 const formatErrorMessage = ([errorName, error]: [string, any]) => errorFormatters[errorName](error);
@@ -15,7 +15,6 @@ const formatErrorMessage = ([errorName, error]: [string, any]) => errorFormatter
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FieldErrorComponent implements OnChanges {
-
   @Input() validationErrors: ValidationErrors | null;
   errorMessages: string[] | null;
 
@@ -24,5 +23,4 @@ export class FieldErrorComponent implements OnChanges {
       this.errorMessages = Object.entries(this.validationErrors).map(formatErrorMessage);
     }
   }
-
 }

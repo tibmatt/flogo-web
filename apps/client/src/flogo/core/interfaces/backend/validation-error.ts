@@ -1,4 +1,3 @@
-
 export interface ServerValidationError {
   meta: ErrorMetaData;
   detail: string;

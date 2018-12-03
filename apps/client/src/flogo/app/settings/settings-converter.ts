@@ -10,7 +10,7 @@ export interface SettingGroup {
 
 export const OTHER_CATEGORY = 'other';
 
-const sortCategories = function (a, b) {
+const sortCategories = function(a, b) {
   const nameA = a.key.toUpperCase();
   const nameB = b.key.toUpperCase();
   if (nameA < nameB) {
@@ -33,8 +33,7 @@ export function importSettings(settings: any) {
   // iterate over settings properties
   const keys = Object.keys(settings);
 
-
-  keys.forEach((key) => {
+  keys.forEach(key => {
     const keyParts = key.split(':');
     let category;
     let fieldName;
@@ -48,12 +47,12 @@ export function importSettings(settings: any) {
         fieldName = keyParts[0];
       }
 
-      const hostCategory = convertedSettings.find((current) => {
+      const hostCategory = convertedSettings.find(current => {
         return current.key === category;
       });
 
       if (!hostCategory) {
-        const newCategory: SettingGroup = { 'key': category, 'settings': { [fieldName]: settings[key] } };
+        const newCategory: SettingGroup = { key: category, settings: { [fieldName]: settings[key] } };
         convertedSettings.push(newCategory);
       } else {
         hostCategory.settings[fieldName] = settings[key];
@@ -61,14 +60,13 @@ export function importSettings(settings: any) {
     }
   });
 
-  const other = convertedSettings.find((input) => input.key === OTHER_CATEGORY);
+  const other = convertedSettings.find(input => input.key === OTHER_CATEGORY);
   if (!other) {
-    convertedSettings.push({ 'key': OTHER_CATEGORY, 'settings': {} });
+    convertedSettings.push({ key: OTHER_CATEGORY, settings: {} });
   }
 
   return convertedSettings; // .sort(sortCategories);
 }
-
 
 export function serializeSettings(settingGroups: SettingGroup[]) {
   const convertedSettings: any = {};

@@ -1,11 +1,11 @@
-import {FlowMetadata} from '@flogo-web/client/core/interfaces/flow';
-import {Tabs} from '../../../shared/tabs/models/tabs.model';
-import {TRIGGER_TABS} from './constants';
+import { FlowMetadata } from '@flogo-web/client/core/interfaces/flow';
+import { Tabs } from '../../../shared/tabs/models/tabs.model';
+import { TRIGGER_TABS } from './constants';
 
-const defaultTabsInfo: { name: string, labelKey: string }[] = [
-  {name: TRIGGER_TABS.SETTINGS, labelKey: 'TRIGGER-CONFIGURATOR:SETTINGS'},
-  {name: TRIGGER_TABS.MAP_FLOW_INPUT, labelKey: 'TRIGGER-CONFIGURATOR:FLOW-INPUTS'},
-  {name: TRIGGER_TABS.MAP_FLOW_OUTPUT, labelKey: 'TRIGGER-CONFIGURATOR:FLOW-OUTPUTS'}
+const defaultTabsInfo: { name: string; labelKey: string }[] = [
+  { name: TRIGGER_TABS.SETTINGS, labelKey: 'TRIGGER-CONFIGURATOR:SETTINGS' },
+  { name: TRIGGER_TABS.MAP_FLOW_INPUT, labelKey: 'TRIGGER-CONFIGURATOR:FLOW-INPUTS' },
+  { name: TRIGGER_TABS.MAP_FLOW_OUTPUT, labelKey: 'TRIGGER-CONFIGURATOR:FLOW-OUTPUTS' },
 ];
 
 export function createTabs(schema, metadata: FlowMetadata) {

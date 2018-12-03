@@ -1,13 +1,13 @@
-import {ConfiguratorComponent} from './configurator.component';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {DebugElement} from '@angular/core';
-import {By} from '@angular/platform-browser';
+import { ConfiguratorComponent } from './configurator.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 import { Store, StoreModule } from '@ngrx/store';
-import {FakeRootLanguageModule} from '@flogo-web/client/core/language/testing';
+import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
 import { featureReducer, FlowState, INITIAL_STATE } from '@flogo-web/client/flow/core/state';
-import {ConfiguratorModule} from './configurator.module';
-import {TriggersMock} from './mocks/triggers.mock';
-import {ConfiguratorStatus} from './interfaces';
+import { ConfiguratorModule } from './configurator.module';
+import { TriggersMock } from './mocks/triggers.mock';
+import { ConfiguratorStatus } from './interfaces';
 import { OpenConfigureWithSelection } from '@flogo-web/client/flow/core/state/triggers-configure/trigger-configure.actions';
 
 const TEST_STATE: FlowState = {
@@ -142,7 +142,7 @@ xdescribe('ConfiguratorComponent component', () => {
     selectedTriggerId: 'trigger_1',
     isOpen: true,
     disableSave: true,
-    triggers: [...TriggersMock]
+    triggers: [...TriggersMock],
   };
 
   beforeEach(() => {
@@ -150,11 +150,14 @@ xdescribe('ConfiguratorComponent component', () => {
       imports: [
         ConfiguratorModule,
         FakeRootLanguageModule,
-        StoreModule.forRoot({
-          flow: featureReducer,
-        }, {
-          initialState: { flow: TEST_STATE },
-        }),
+        StoreModule.forRoot(
+          {
+            flow: featureReducer,
+          },
+          {
+            initialState: { flow: TEST_STATE },
+          }
+        ),
       ],
     });
     fixture = TestBed.createComponent(ConfiguratorComponent);
@@ -164,7 +167,7 @@ xdescribe('ConfiguratorComponent component', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  beforeEach(function () {
+  beforeEach(function() {
     store.dispatch(new OpenConfigureWithSelection({ triggerId: 'trigger1', triggerSchemas }));
   });
 
@@ -198,121 +201,119 @@ xdescribe('ConfiguratorComponent component', () => {
 
   triggerSchemas = {
     'github.com/TIBCOSoftware/flogo-contrib/trigger/rest': {
-      'name': 'flogo-rest',
-      'type': 'flogo:trigger',
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
-      'version': '0.0.1',
-      'title': 'Receive HTTP Message',
-      'description': 'Simple REST Trigger',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
-      'settings': [
+      name: 'flogo-rest',
+      type: 'flogo:trigger',
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+      version: '0.0.1',
+      title: 'Receive HTTP Message',
+      description: 'Simple REST Trigger',
+      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
+      settings: [
         {
-          'name': 'port',
-          'type': 'integer',
-          'required': true
-        }
+          name: 'port',
+          type: 'integer',
+          required: true,
+        },
       ],
-      'output': [
+      output: [
         {
-          'name': 'params',
-          'type': 'params'
+          name: 'params',
+          type: 'params',
         },
         {
-          'name': 'pathParams',
-          'type': 'params'
+          name: 'pathParams',
+          type: 'params',
         },
         {
-          'name': 'queryParams',
-          'type': 'params'
+          name: 'queryParams',
+          type: 'params',
         },
         {
-          'name': 'header',
-          'type': 'params'
+          name: 'header',
+          type: 'params',
         },
         {
-          'name': 'content',
-          'type': 'any'
-        }
+          name: 'content',
+          type: 'any',
+        },
       ],
-      'reply': [
+      reply: [
         {
-          'name': 'code',
-          'type': 'integer'
+          name: 'code',
+          type: 'integer',
         },
         {
-          'name': 'data',
-          'type': 'any'
-        }
+          name: 'data',
+          type: 'any',
+        },
       ],
-      'handler': {
-        'settings': [
+      handler: {
+        settings: [
           {
-            'name': 'method',
-            'type': 'string',
-            'required' : true,
-            'allowed' : ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+            name: 'method',
+            type: 'string',
+            required: true,
+            allowed: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
           },
           {
-            'name': 'path',
-            'type': 'string',
-            'required' : true
-          }
-        ]
-      }
+            name: 'path',
+            type: 'string',
+            required: true,
+          },
+        ],
+      },
     },
     'github.com/TIBCOSoftware/flogo-contrib/trigger/timer': {
-      'name': 'flogo-timer',
-      'type': 'flogo:trigger',
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/timer',
-      'version': '0.0.1',
-      'title': 'Timer',
-      'description': 'Simple Timer trigger',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer',
-      'settings': [
-      ],
-      'output': [
+      name: 'flogo-timer',
+      type: 'flogo:trigger',
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/timer',
+      version: '0.0.1',
+      title: 'Timer',
+      description: 'Simple Timer trigger',
+      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer',
+      settings: [],
+      output: [
         {
-          'name': 'params',
-          'type': 'params'
+          name: 'params',
+          type: 'params',
         },
         {
-          'name': 'content',
-          'type': 'object'
-        }
+          name: 'content',
+          type: 'object',
+        },
       ],
-      'handler': {
-        'settings': [
+      handler: {
+        settings: [
           {
-            'name': 'repeating',
-            'type': 'string',
-            'value': 'false',
-            'required' : true
+            name: 'repeating',
+            type: 'string',
+            value: 'false',
+            required: true,
           },
           {
-            'name': 'notImmediate',
-            'type': 'string',
-            'value': 'true'
+            name: 'notImmediate',
+            type: 'string',
+            value: 'true',
           },
           {
-            'name': 'startDate',
-            'type': 'string',
-            'value': '2018-01-01T12:00:00Z00:00'
+            name: 'startDate',
+            type: 'string',
+            value: '2018-01-01T12:00:00Z00:00',
           },
           {
-            'name': 'hours',
-            'type': 'string'
+            name: 'hours',
+            type: 'string',
           },
           {
-            'name': 'minutes',
-            'type': 'string'
+            name: 'minutes',
+            type: 'string',
           },
           {
-            'name': 'seconds',
-            'type': 'string'
-          }
-        ]
-      }
-    }
+            name: 'seconds',
+            type: 'string',
+          },
+        ],
+      },
+    },
   };
-
 });

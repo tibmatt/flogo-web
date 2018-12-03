@@ -1,5 +1,14 @@
 import {
-  ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, Output, SimpleChanges, TrackByFunction
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  HostBinding,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  SimpleChanges,
+  TrackByFunction,
 } from '@angular/core';
 import { FlowGraph } from '@flogo-web/client/core';
 import { DiagramAction, DiagramSelection, Tile } from '../interfaces';
@@ -59,5 +68,4 @@ export class DiagramComponent implements OnChanges, OnDestroy {
       this.tileMatrix = EMPTY_MATRIX;
     }
   }
-
 }

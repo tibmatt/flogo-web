@@ -1,11 +1,11 @@
-import {requiredValidator} from './required.validator';
-import {makeExpectationFunctions} from './testing/make-expectation-functions';
-import {SettingValue} from '../settings-value';
-import {isString, isNull} from 'lodash';
+import { requiredValidator } from './required.validator';
+import { makeExpectationFunctions } from './testing/make-expectation-functions';
+import { SettingValue } from '../settings-value';
+import { isString, isNull } from 'lodash';
 
 describe('requiredValidator', () => {
   it('Should correctly validate required values', () => {
-    const {shouldPass, shouldFail} = makeExpectationFunctions(requiredValidator);
+    const { shouldPass, shouldFail } = makeExpectationFunctions(requiredValidator);
     shouldPass(createTestData(0));
     shouldPass(createTestData(false));
     shouldPass(createTestData('true'));
@@ -17,11 +17,11 @@ describe('requiredValidator', () => {
   });
 });
 
-function createTestData(value: any): {value: SettingValue} {
+function createTestData(value: any): { value: SettingValue } {
   return {
     value: {
       parsedValue: value,
-      viewValue: isString(value) || isNull(value) ? value : JSON.stringify(value)
-    }
+      viewValue: isString(value) || isNull(value) ? value : JSON.stringify(value),
+    },
   };
 }

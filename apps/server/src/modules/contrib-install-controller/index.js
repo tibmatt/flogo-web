@@ -1,8 +1,8 @@
-import {copyFile, fileExists, rmFolder} from '../../common/utils';
+import { copyFile, fileExists, rmFolder } from '../../common/utils';
 import path from 'path';
-import {logger} from '../../common/logging';
-import {ERROR_TYPES, ErrorManager} from '../../common/errors';
-import {syncTasks} from './sync-tasks';
+import { logger } from '../../common/logging';
+import { ERROR_TYPES, ErrorManager } from '../../common/errors';
+import { syncTasks } from './sync-tasks';
 
 const INSTALLATION_STATE = {
   INIT: 'initializing',
@@ -12,14 +12,13 @@ const INSTALLATION_STATE = {
   COPYBIN: 'copying-binary',
   STOP: 'stopping',
   START: 'starting',
-  SYNC: 'syncing-db'
+  SYNC: 'syncing-db',
 };
 
 const SRC_FOLDER = 'src';
 const BACKUP_SRC_FOLDER = 'backupsrc';
 
 export class ContribInstallController {
-
   setupController(engine, remoteInstaller) {
     this.engine = engine;
     this.remoteInstaller = remoteInstaller;
@@ -40,10 +39,12 @@ export class ContribInstallController {
       .then(installResults => {
         results = installResults;
         return this.buildEngine();
-      }).then(() => {
+      })
+      .then(() => {
         logger.debug(`Restarting the engine upon successful '${url}' installation.`);
         return this.restartEngineAfterBuild();
-      }).then(() => this.updateContribsDB())
+      })
+      .then(() => this.updateContribsDB())
       .then(() => this.removeBackup())
       .then(() => results)
       .catch(err => {
@@ -60,8 +61,7 @@ export class ContribInstallController {
   }
 
   installContribution(url) {
-    return this.createBackup()
-      .then(() => this.installToEngine(url));
+    return this.createBackup().then(() => this.installToEngine(url));
   }
 
   restartEngineAfterBuild() {
@@ -73,8 +73,7 @@ export class ContribInstallController {
   updateContribsDB() {
     logger.debug(`Syncing the contributions DB`);
     this.installState = INSTALLATION_STATE.SYNC;
-    return this.engine.load()
-      .then(() => syncTasks(this.engine));
+    return this.engine.load().then(() => syncTasks(this.engine));
   }
 
   customInstallationError() {
@@ -113,7 +112,7 @@ export class ContribInstallController {
         message = message + `at ${this.installState} state`;
         break;
     }
-    return ErrorManager.createRestError(message, {type});
+    return ErrorManager.createRestError(message, { type });
   }
 
   recoverEngine() {
@@ -123,8 +122,7 @@ export class ContribInstallController {
         promise = this.recoverSource();
         break;
       case INSTALLATION_STATE.BUILD:
-        promise = this.recoverSource()
-          .then(() => this.buildEngine());
+        promise = this.recoverSource().then(() => this.buildEngine());
         break;
       case INSTALLATION_STATE.COPYBIN:
         promise = this.recoverSource()

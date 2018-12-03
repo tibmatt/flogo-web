@@ -46,4 +46,3 @@ export interface BaseSchema {
   homepage: string;
   outputs?: SchemaAttribute[];
 }
-

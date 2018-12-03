@@ -12,7 +12,10 @@ describe('JSONSchema: Trigger', () => {
 
   const validFlowData = { flowURI: 'res://flow:example' };
   const validMapping = { type: 'literal', mapTo: 'someProp', value: 5 };
-  const actionWithoutMappings = { ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow', data: { ...validFlowData } };
+  const actionWithoutMappings = {
+    ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow',
+    data: { ...validFlowData },
+  };
   const validAction = {
     ...actionWithoutMappings,
     mappings: {
@@ -34,7 +37,8 @@ describe('JSONSchema: Trigger', () => {
     test(`should require "${propName}" property`, () => {
       const triggerUnderTest = { ...validTrigger };
       delete triggerUnderTest[propName];
-      testContext.ajvContext.createValidator()
+      testContext.ajvContext
+        .createValidator()
         .validateAndCreateAsserter(triggerUnderTest)
         .assertIsInvalid()
         .assertHasErrorForRequiredProp(propName);
@@ -48,7 +52,8 @@ describe('JSONSchema: Trigger', () => {
 
   test('handlers should be an array', () => {
     const triggerUnderTest = { ...validTrigger, handlers: {} };
-    testContext.ajvContext.createValidator()
+    testContext.ajvContext
+      .createValidator()
       .validateAndCreateAsserter(triggerUnderTest)
       .assertIsInvalid()
       .assertHasErrorForMismatchingPropertyType('handlers', 'array');
@@ -136,28 +141,25 @@ describe('JSONSchema: Trigger', () => {
         expect(isValid).toBe(true);
       });
 
-      test(
-        'when using removeAdditional option all settings should be preserved',
-        () => {
-          const validateAndRemoveAdditional = testContext.ajvContext
-            .cloneContext({ removeAdditional: true })
-            .compileDefinitionSubschema('handler');
-          const settings = {
-            a: 1,
-            b: 'xyz',
-            c: { foo: 'bar' },
-          };
-          const actionUnderTest = {
-            action: { ...validAction },
-            unknownProp: 22,
-            settings: { ...settings },
-          };
-          const isValid = validateAndRemoveAdditional(actionUnderTest);
-          expect(isValid).toBe(true);
-          expect(actionUnderTest).not.toHaveProperty('unknownProp');
-          expect(actionUnderTest.settings).toMatchObject(settings);
-        }
-      );
+      test('when using removeAdditional option all settings should be preserved', () => {
+        const validateAndRemoveAdditional = testContext.ajvContext
+          .cloneContext({ removeAdditional: true })
+          .compileDefinitionSubschema('handler');
+        const settings = {
+          a: 1,
+          b: 'xyz',
+          c: { foo: 'bar' },
+        };
+        const actionUnderTest = {
+          action: { ...validAction },
+          unknownProp: 22,
+          settings: { ...settings },
+        };
+        const isValid = validateAndRemoveAdditional(actionUnderTest);
+        expect(isValid).toBe(true);
+        expect(actionUnderTest).not.toHaveProperty('unknownProp');
+        expect(actionUnderTest.settings).toMatchObject(settings);
+      });
     });
   });
 });

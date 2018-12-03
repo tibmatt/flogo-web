@@ -19,32 +19,31 @@ import { NotificationsServiceMock } from '@flogo-web/client/core/notifications/t
 
 describe('FlogoAppList component', () => {
   const applications = [
-      {
-        id: '1',
-        name: 'Sample Application 1',
-        version: '0.0.1',
-        description: 'My App',
-        createdAt: '2016-12-16T00:24:26+00:00',
-        updatedAt: '2016-12-16T00:24:26+00:00'
-      },
-      {
-        id: '2',
-        name: 'Sample Application 2',
-        version: '0.0.1',
-        description: 'My App',
-        createdAt: '2016-12-16T00:24:26+00:00',
-        updatedAt: '2016-12-16T00:24:26+00:00'
-      },
-      {
-        id: '3',
-        name: 'Sample Application 3',
-        version: '0.0.1',
-        description: 'My App',
-        createdAt: '2016-12-16T00:24:26+00:00',
-        updatedAt: '2016-12-16T00:24:26+00:00'
-      }
-
-    ];
+    {
+      id: '1',
+      name: 'Sample Application 1',
+      version: '0.0.1',
+      description: 'My App',
+      createdAt: '2016-12-16T00:24:26+00:00',
+      updatedAt: '2016-12-16T00:24:26+00:00',
+    },
+    {
+      id: '2',
+      name: 'Sample Application 2',
+      version: '0.0.1',
+      description: 'My App',
+      createdAt: '2016-12-16T00:24:26+00:00',
+      updatedAt: '2016-12-16T00:24:26+00:00',
+    },
+    {
+      id: '3',
+      name: 'Sample Application 3',
+      version: '0.0.1',
+      description: 'My App',
+      createdAt: '2016-12-16T00:24:26+00:00',
+      updatedAt: '2016-12-16T00:24:26+00:00',
+    },
+  ];
   let comp: FlogoAppsListComponent;
   let fixture: ComponentFixture<FlogoAppsListComponent>;
   let de: DebugElement;
@@ -64,7 +63,7 @@ describe('FlogoAppList component', () => {
         TimeFromNowPipe,
         FlogoAppImportComponent,
         BsModalComponent,
-        FlogoNewAppComponent
+        FlogoNewAppComponent,
       ], // declare the test component
       providers: [
         HttpUtilsService,
@@ -72,7 +71,7 @@ describe('FlogoAppList component', () => {
         { provide: ErrorService, useClass: ErrorService },
         { provide: AppsApiService, useClass: AppsApiServiceMock },
         { provide: NotificationsService, useValue: new NotificationsServiceMock() },
-      ]
+      ],
     });
     return TestBed.compileComponents();
   });
@@ -97,8 +96,8 @@ describe('FlogoAppList component', () => {
         version: '0.0.1',
         description: 'My App',
         createdAt: '2016-12-16T00:24:26+00:00',
-        updatedAt: '2016-12-16T00:24:26+00:00'
-      }
+        updatedAt: '2016-12-16T00:24:26+00:00',
+      },
     ];
     fixture.detectChanges();
     const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.qa-app-name'));
@@ -114,13 +113,13 @@ describe('FlogoAppList component', () => {
         version: '0.0.1',
         description: 'My App',
         createdAt: '2016-12-16T00:24:26+00:00',
-        updatedAt: '2016-12-16T00:24:26+00:00'
-      }
+        updatedAt: '2016-12-16T00:24:26+00:00',
+      },
     ];
 
     fixture.detectChanges();
     de = fixture.debugElement.query(By.css('.qa-app-name'));
-    comp.appSelected.subscribe((app) => {
+    comp.appSelected.subscribe(app => {
       expect(app.name).toEqual('Sample Application');
       done();
     });
@@ -137,8 +136,8 @@ describe('FlogoAppList component', () => {
         version: '0.0.1',
         description: 'My App',
         createdAt: '2016-12-16T00:24:26+00:00',
-        updatedAt: '2016-12-16T00:24:26+00:00'
-      }
+        updatedAt: '2016-12-16T00:24:26+00:00',
+      },
     ];
 
     fixture.detectChanges();

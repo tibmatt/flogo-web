@@ -13,28 +13,25 @@ export const appRoutes: Routes = [
   },
   {
     path: 'logs',
-    component: ExternalWindowComponent
+    component: ExternalWindowComponent,
   },
   {
     path: 'flows',
-    loadChildren: './flow/flow.module#FlowModule'
+    loadChildren: './flow/flow.module#FlowModule',
   },
   {
     path: '_config',
-    loadChildren: './config/config.module#ConfigModule'
+    loadChildren: './config/config.module#ConfigModule',
   },
   {
     path: '**',
     redirectTo: '',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
 ];
 
 export const appRoutingProviders: any[] = [];
 
-export const routing: ModuleWithProviders = RouterModule.forRoot(
-  appRoutes,
-  {
-    preloadingStrategy: PreloadAllModules
-  }
-);
+export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, {
+  preloadingStrategy: PreloadAllModules,
+});

@@ -7,55 +7,64 @@ const POPOVER_WIDTH = 344;
   selector: 'flogo-delete-popover',
   template: `
     <span class="flogo-icon-delete" (click)="showPopup($event)"></span>
-    <div *ngIf="isPopupOpen" class="popup-container" [class.popup-container--left]="showLeft" [style.width]="width+'px'">
+    <div
+      *ngIf="isPopupOpen"
+      class="popup-container"
+      [class.popup-container--left]="showLeft"
+      [style.width]="width + 'px'"
+    >
       <p class="popup-content">
-        <span *ngIf="deleteContentType=='application'">{{ 'APP-LIST-POPUP:CONFIRM-MESSAGE-DELETE' | translate }}</span>
-        <span *ngIf="deleteContentType=='flow'">{{ 'APP-DETAIL-POPUP:CONFIRM-MESSAGE-DELETE' | translate }}</span>
+        <span *ngIf="deleteContentType == 'application'">{{
+          'APP-LIST-POPUP:CONFIRM-MESSAGE-DELETE' | translate
+        }}</span>
+        <span *ngIf="deleteContentType == 'flow'">{{ 'APP-DETAIL-POPUP:CONFIRM-MESSAGE-DELETE' | translate }}</span>
       </p>
-      <button class="flogo-button--secondary" (click)="cancelDelete($event)">{{
-        'APP-LIST-POPUP:DELETE-CANCEL' | translate | uppercase}}
+      <button class="flogo-button--secondary" (click)="cancelDelete($event)">
+        {{ 'APP-LIST-POPUP:DELETE-CANCEL' | translate | uppercase }}
       </button>
-      <button class="popup-btn-confirm flogo-button--default" (click)="confirmDelete($event)">{{
-        'APP-LIST-POPUP:DELETE-CONFIRM' | translate | uppercase}}
+      <button class="popup-btn-confirm flogo-button--default" (click)="confirmDelete($event)">
+        {{ 'APP-LIST-POPUP:DELETE-CONFIRM' | translate | uppercase }}
       </button>
     </div>
   `,
-  styles: [`
-    :host(.always-visible) {
-      visibility: visible !important;
-    }
+  styles: [
+    `
+      :host(.always-visible) {
+        visibility: visible !important;
+      }
 
-    .flogo-icon-delete:hover {
-      color: #79b8dc;
-    }
+      .flogo-icon-delete:hover {
+        color: #79b8dc;
+      }
 
-    .popup-container {
-      position: absolute;
-      z-index: 2;
-      top: 0;
-      left: 30px;
-      border: 1px solid #d8d8d8;
-      padding: 40px;
-      background: #fff;
-      box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.33);
-    }
+      .popup-container {
+        position: absolute;
+        z-index: 2;
+        top: 0;
+        left: 30px;
+        border: 1px solid #d8d8d8;
+        padding: 40px;
+        background: #fff;
+        box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.33);
+      }
 
-    .popup-container--left {
-      left: unset;
-      right: 30px;
-    }
+      .popup-container--left {
+        left: unset;
+        right: 30px;
+      }
 
-    .popup-container .popup-content {
-      color: #d0021b;
-      font-weight: 600;
-      margin-top: 0;
-      margin-bottom: 2em;
-    }
-    .popup-container .popup-btn-confirm {
-      background-color: #d0011b;
-      border-color: #d0011b;
-    }
-  `]
+      .popup-container .popup-content {
+        color: #d0021b;
+        font-weight: 600;
+        margin-top: 0;
+        margin-bottom: 2em;
+      }
+      .popup-container .popup-btn-confirm {
+        background-color: #d0011b;
+        border-color: #d0011b;
+      }
+    `,
+  ],
 })
 export class FlogoDeletePopupComponent {
   readonly width = POPOVER_WIDTH;
@@ -97,6 +106,4 @@ export class FlogoDeletePopupComponent {
     const minWidth = this.nativeElement.getBoundingClientRect().right + POPOVER_WIDTH;
     return minWidth < this.document.body.clientWidth;
   }
-
-
 }

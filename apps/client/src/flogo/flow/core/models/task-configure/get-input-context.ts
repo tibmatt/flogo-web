@@ -8,20 +8,16 @@ import { FlowMetadata } from '@flogo-web/client/flow/task-configurator/models/fl
 
 // todo: fcastill - specify return interfaces
 export function getInputContext(taskId: string, state: FlowState): any[] {
-  const scope: any[] = isItemInErrorHandlerPath(taskId, state) ?
-      getPrecedingTasksForErrorHandler(taskId, state)
-      : getPrecedingTasksForMainHandler(taskId, state);
+  const scope: any[] = isItemInErrorHandlerPath(taskId, state)
+    ? getPrecedingTasksForErrorHandler(taskId, state)
+    : getPrecedingTasksForMainHandler(taskId, state);
   const metadata = getFlowMetadata(state);
   scope.push(metadata);
   return scope;
 }
 
 export function getFlowMetadata(flowState: FlowState): FlowMetadata {
-  return defaultsDeep(
-    { type: 'metadata', },
-    flowState.metadata,
-    { input: [], output: [] }
-  );
+  return defaultsDeep({ type: 'metadata' }, flowState.metadata, { input: [], output: [] });
 }
 
 function getPrecedingTasksForMainHandler(taskId: string, state: FlowState) {
@@ -33,25 +29,21 @@ export function getPrecedingTasksForErrorHandler(itemId: string, state: FlowStat
   const allItemsInMainHandler = mapItemIdsToTasks(
     Object.keys(state.mainGraph.nodes),
     { nodes: state.mainGraph.nodes, items: state.mainItems },
-    state,
+    state
   );
   const { errorGraph, errorItems } = state;
   return [
     ...allItemsInMainHandler,
     makeErrorTask(),
-    ...findPrecedingTasks(
-      errorGraph.rootId, itemId,
-      { nodes: errorGraph.nodes, items: errorItems },
-      state,
-    ),
+    ...findPrecedingTasks(errorGraph.rootId, itemId, { nodes: errorGraph.nodes, items: errorItems }, state),
   ];
 }
 
 function findPrecedingTasks(
   fromItemId: string,
   toItemId: string,
-  from: { nodes: Dictionary<GraphNode>, items: Dictionary<Item> },
-  flowState: FlowState,
+  from: { nodes: Dictionary<GraphNode>; items: Dictionary<Item> },
+  flowState: FlowState
 ) {
   const precedingItemIds = findPathToNode(fromItemId, toItemId, from.nodes);
   // ignore last item as it is the very same selected node
@@ -95,15 +87,15 @@ const isSubflowItem = (item: Item): item is ItemSubflow => isSubflowTask(item.ty
 
 function mapItemIdsToTasks(
   nodeIds: any[],
-  from: { nodes: Dictionary<GraphNode>, items: Dictionary<Item> },
-  flowState: FlowState,
+  from: { nodes: Dictionary<GraphNode>; items: Dictionary<Item> },
+  flowState: FlowState
 ) {
   const canUseItemOutputs = (node: GraphNode) => node.type === NodeType.Task;
   return nodeIds
     .map(nodeId => {
       const node = from.nodes[nodeId];
       if (canUseItemOutputs(node)) {
-        const item = <ItemTask> from.items[nodeId];
+        const item = <ItemTask>from.items[nodeId];
         let schema: PartialActivitySchema = flowState.schemas[item.ref];
         if (isSubflowItem(item)) {
           const subFlowSchema = flowState.linkedSubflows[item.settings.flowPath];

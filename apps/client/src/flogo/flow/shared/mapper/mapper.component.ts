@@ -2,15 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnChanges, OnInit, Output, S
 import { Mappings } from './models/mappings';
 
 import { merge, Subject } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  distinctUntilChanged,
-  first,
-  map,
-  share,
-  takeUntil
-} from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, first, map, share, takeUntil } from 'rxjs/operators';
 
 import { MonacoEditorLoaderService } from '../monaco-editor';
 import { load as loadMonacoLangPlugin } from '../mapper-language/monaco-contribution';
@@ -29,7 +21,7 @@ import { MapperState } from './models/mapper-state';
   selector: 'flogo-mapper',
   templateUrl: 'mapper.component.html',
   styleUrls: ['mapper.component.less'],
-  providers: [MapperService, EditorService, DraggingService]
+  providers: [MapperService, EditorService, DraggingService],
 })
 export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   @Input() controller: MapperController;
@@ -45,10 +37,12 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   private contextChanged = new Subject();
   private hasInitted = false;
 
-  constructor(private mapperService: MapperService,
-              private editorService: EditorService,
-              private draggingService: DraggingService,
-              private monacoLoaderService: MonacoEditorLoaderService) {
+  constructor(
+    private mapperService: MapperService,
+    private editorService: EditorService,
+    private draggingService: DraggingService,
+    private monacoLoaderService: MonacoEditorLoaderService
+  ) {
     monacoLoaderService.isMonacoLoaded.subscribe(isLoaded => {
       if (isLoaded) {
         loadMonacoLangPlugin();
@@ -117,33 +111,30 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private isDragAcceptable() {
-    return this.draggingService.accepts(TYPE_PARAM_OUTPUT)
-      || this.draggingService.accepts(TYPE_PARAM_FUNCTION);
+    return this.draggingService.accepts(TYPE_PARAM_OUTPUT) || this.draggingService.accepts(TYPE_PARAM_FUNCTION);
   }
 
   private initContext() {
-    const stop$ = merge(this.ngDestroy, this.contextChanged)
-      .pipe(
-        first(),
-        share(),
-      );
+    const stop$ = merge(this.ngDestroy, this.contextChanged).pipe(
+      first(),
+      share()
+    );
 
-    const state$ = this.mapperService.state$
-      .pipe(
-        catchError(err => {
-          console.error(err);
-          throw err;
-        }),
-        takeUntil(stop$),
-        share(),
-      );
+    const state$ = this.mapperService.state$.pipe(
+      catchError(err => {
+        console.error(err);
+        throw err;
+      }),
+      takeUntil(stop$),
+      share()
+    );
 
     state$
       .pipe(
         selectCurrentNode,
-        takeUntil(stop$),
+        takeUntil(stop$)
       )
-      .subscribe((currentInputNode) => {
+      .subscribe(currentInputNode => {
         this.currentInput = currentInputNode;
       });
 
@@ -159,15 +150,15 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
         takeUntil(stop$),
         debounceTime(300),
         map((ev: DragEvent) => ({ x: ev.clientX, y: ev.clientY })),
-        distinctUntilChanged((prev, next) => prev.x === next.x && prev.y === next.y),
+        distinctUntilChanged((prev, next) => prev.x === next.x && prev.y === next.y)
       )
       .subscribe(position => this.editorService.dragOver(position));
 
-    this.mapperService
-      .state$.pipe(
+    this.mapperService.state$
+      .pipe(
         distinctUntilChanged(),
         takeUntil(stop$),
-        first(),
+        first()
       )
       .subscribe((state: MapperState) => {
         const inputsData = state.inputs;
@@ -177,5 +168,4 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
         }
       });
   }
-
 }

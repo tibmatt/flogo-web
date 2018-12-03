@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable ,  of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 
 import { SingleEmissionSubject } from '@flogo-web/client/core/models/single-emission-subject';
@@ -9,24 +9,19 @@ import { TriggerConfigureSelectors } from '../../core/state/triggers-configure';
 import * as TriggerConfigureActions from '../../core/state/triggers-configure/trigger-configure.actions';
 
 import { configuratorAnimations } from './configurator.animations';
-import {ConfiguratorService as TriggerConfiguratorService} from './services/configurator.service';
+import { ConfiguratorService as TriggerConfiguratorService } from './services/configurator.service';
 import { FlowState } from '../../core/state';
 import { TriggerStatus } from './interfaces';
 import { ConfirmationService, ConfirmationResult } from '@flogo-web/client/core';
-import {ConfirmationComponent} from './confirmation';
+import { ConfirmationComponent } from './confirmation';
 import { TRIGGER_STATUS_TOKEN } from './confirmation/status.token';
 
 @Component({
   selector: 'flogo-triggers-configuration',
   templateUrl: 'configurator.component.html',
-  styleUrls: [
-    '../../../../assets/_mapper-modal.less',
-    'configurator.component.less'
-  ],
+  styleUrls: ['../../../../assets/_mapper-modal.less', 'configurator.component.less'],
   animations: configuratorAnimations,
-  providers: [
-    ConfirmationService,
-  ],
+  providers: [ConfirmationService],
 })
 export class ConfiguratorComponent implements OnInit, OnDestroy {
   isConfiguratorInitialized$: Observable<boolean>;
@@ -41,36 +36,33 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     private triggerConfiguratorService: TriggerConfiguratorService,
     private confirmationService: ConfirmationService,
     private store: Store<FlowState>
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.isConfiguratorInitialized$ = this.store.select(TriggerConfigureSelectors.getHasTriggersConfigure);
     const triggerStatuses$ = this.store.select(TriggerConfigureSelectors.getTriggerStatuses);
     this.triggerStatuses$ = this.observeWhileConfiguratorIsActive(triggerStatuses$, []);
 
-    this.isConfiguratorInitialized$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(isConfigInitialized => {
-        this.isOpen = isConfigInitialized;
-        if (this.isOpen) {
-          this.triggerConfiguratorService.clear();
-        }
-      });
-
-    this.store.pipe(
-      TriggerConfigureSelectors.getCurrentTriggerOverallStatus,
-      takeUntil(this.ngDestroy$),
-    ).subscribe(status => {
-      this.currentTriggerDetailStatus = status;
+    this.isConfiguratorInitialized$.pipe(takeUntil(this.ngDestroy$)).subscribe(isConfigInitialized => {
+      this.isOpen = isConfigInitialized;
+      if (this.isOpen) {
+        this.triggerConfiguratorService.clear();
+      }
     });
 
-    const currentTriggerId$ = this.store.select(TriggerConfigureSelectors.selectCurrentTriggerId);
-    this.observeWhileConfiguratorIsActive(currentTriggerId$, null)
-      .subscribe((currentTriggerId) => {
-        this.selectedTriggerId = currentTriggerId;
+    this.store
+      .pipe(
+        TriggerConfigureSelectors.getCurrentTriggerOverallStatus,
+        takeUntil(this.ngDestroy$)
+      )
+      .subscribe(status => {
+        this.currentTriggerDetailStatus = status;
       });
 
+    const currentTriggerId$ = this.store.select(TriggerConfigureSelectors.selectCurrentTriggerId);
+    this.observeWhileConfiguratorIsActive(currentTriggerId$, null).subscribe(currentTriggerId => {
+      this.selectedTriggerId = currentTriggerId;
+    });
   }
 
   changeTriggerSelection(triggerId: string) {
@@ -115,10 +107,8 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
 
   private observeWhileConfiguratorIsActive<T>(observable$: Observable<T>, valueWhenNotInitialized: any) {
     return this.isConfiguratorInitialized$.pipe(
-      switchMap(isInitialized => isInitialized ? observable$ : of(valueWhenNotInitialized)),
-      takeUntil(this.ngDestroy$),
+      switchMap(isInitialized => (isInitialized ? observable$ : of(valueWhenNotInitialized))),
+      takeUntil(this.ngDestroy$)
     );
   }
-
-
 }

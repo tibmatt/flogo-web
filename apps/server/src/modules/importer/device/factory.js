@@ -9,7 +9,6 @@ import { ActionsImporter } from './actions-importer';
 import { TriggersHandlersImporter } from './triggers-handlers-importer';
 
 export class DeviceAppImporterFactory {
-
   /**
    * @param {ResourceStorageRegistry} resourceStorageRegistry
    */
@@ -23,13 +22,13 @@ export class DeviceAppImporterFactory {
 
     const actionsImporter = this.createActionsImporter(
       this.resourceStorageRegistry.getActionsManager(),
-      contributions.activities,
+      contributions.activities
     );
 
     const triggersHandlersImporter = this.createTriggersHandlersImporter(
       this.resourceStorageRegistry.getAppsTriggersManager(),
       this.resourceStorageRegistry.getHandlersManager(),
-      contributions.triggers,
+      contributions.triggers
     );
 
     return {
@@ -68,5 +67,4 @@ export class DeviceAppImporterFactory {
     };
     return validatorFactory(fullDeviceAppSchema, contribRefs);
   }
-
 }

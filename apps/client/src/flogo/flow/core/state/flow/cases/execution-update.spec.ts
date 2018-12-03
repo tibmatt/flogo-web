@@ -2,12 +2,12 @@ import { executionUpdate } from './execution-update';
 import { FlowState, INITIAL_STATE } from '../flow.state';
 import { GraphNode, NodeType } from '../../../../../core/interfaces/graph/node';
 
-describe('state.cases.execution-update', function () {
+describe('state.cases.execution-update', function() {
   let mainNode: GraphNode;
   let errorNode: GraphNode;
   let state: FlowState;
 
-  beforeEach(function () {
+  beforeEach(function() {
     mainNode = {
       id: 'mainNode',
       type: NodeType.Task,
@@ -35,29 +35,25 @@ describe('state.cases.execution-update', function () {
         rootId: mainNode.id,
         nodes: {
           [mainNode.id]: mainNode,
-        }
+        },
       },
       errorGraph: {
         rootId: errorNode.id,
         nodes: {
           [errorNode.id]: errorNode,
-        }
-      }
+        },
+      },
     };
   });
 
   it('should not reveal the error panel if no tasks in error panel were executed', function() {
-    const newState = executionUpdate(
-      state,
-      {
-        changes: {
-          errorGraphNodes: {
-            [errorNode.id]: {...errorNode, status: { executed: false }}
-          }
+    const newState = executionUpdate(state, {
+      changes: {
+        errorGraphNodes: {
+          [errorNode.id]: { ...errorNode, status: { executed: false } },
         },
-      }
-    );
+      },
+    });
     expect(newState.isErrorPanelOpen).toBe(false);
   });
-
 });

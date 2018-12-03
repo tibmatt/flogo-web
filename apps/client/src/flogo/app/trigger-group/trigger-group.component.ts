@@ -5,7 +5,7 @@ import { DeleteEvent } from '../shared/delete-event';
 @Component({
   selector: 'flogo-apps-flows-trigger-group',
   templateUrl: 'trigger-group.component.html',
-  styleUrls: ['../shared/group.component.less', 'trigger-group.component.less']
+  styleUrls: ['../shared/group.component.less', 'trigger-group.component.less'],
 })
 export class FlowTriggerGroupComponent implements OnChanges {
   @Input() public flow: FlowSummary;

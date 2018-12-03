@@ -1,14 +1,13 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { ReplaySubject ,  Observable } from 'rxjs';
+import { ReplaySubject, Observable } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
 
 import { MapperTreeNode } from '../models/mapper-treenode.model';
-import { MapperController} from './mapper-controller';
+import { MapperController } from './mapper-controller';
 import { MapperState } from '@flogo-web/client/flow/shared/mapper/models/mapper-state';
 
 @Injectable()
 export class MapperService implements OnDestroy {
-
   state$: Observable<MapperState>;
   private controllerSrc: ReplaySubject<MapperController>;
   private controller: MapperController;
@@ -17,7 +16,7 @@ export class MapperService implements OnDestroy {
     this.controllerSrc = new ReplaySubject<MapperController>(1);
     this.state$ = this.controllerSrc.pipe(
       filter(controller => !!controller),
-      switchMap((controller) => controller.state$),
+      switchMap(controller => controller.state$)
     );
   }
 
@@ -61,5 +60,4 @@ export class MapperService implements OnDestroy {
       this.controller.expressionChange(nodePath, expression);
     }
   }
-
 }

@@ -35,4 +35,3 @@ export interface StringTemplateNode {
   type: 'stringTemplate';
   expression: Expr;
 }
-

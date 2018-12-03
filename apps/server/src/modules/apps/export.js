@@ -13,28 +13,27 @@ export function consolidateFlowsAndTriggers(flowsData = []) {
   const flows = [];
 
   // same trigger if same ref and same settings
-  const findExistingTriggerEntry = trigger => triggers.find(
-    entry => entry.ref === trigger.ref && isEqual(trigger.settings, entry.settings));
+  const findExistingTriggerEntry = trigger =>
+    triggers.find(entry => entry.ref === trigger.ref && isEqual(trigger.settings, entry.settings));
 
-  flowsData
-    .forEach((flowData) => {
-      const { trigger, flow } = flowData;
+  flowsData.forEach(flowData => {
+    const { trigger, flow } = flowData;
 
-      if (!flowData.trigger) {
-        return; // empty trigger, we'll ignore it
-      }
+    if (!flowData.trigger) {
+      return; // empty trigger, we'll ignore it
+    }
 
-      const triggerEntry = determineTriggerEntry(trigger);
-      const triggerEndpoints = trigger.handlers || [];
-      const handlersEntry = triggerEndpoints[0] || { settings: {} };
-      triggerEntry.handlers.push(handlersEntry);
+    const triggerEntry = determineTriggerEntry(trigger);
+    const triggerEndpoints = trigger.handlers || [];
+    const handlersEntry = triggerEndpoints[0] || { settings: {} };
+    triggerEntry.handlers.push(handlersEntry);
 
-      // link trigger to flow/action
-      if (flowData.flow) {
-        flows.push(flow);
-        handlersEntry.actionId = flow.id;
-      }
-    });
+    // link trigger to flow/action
+    if (flowData.flow) {
+      flows.push(flow);
+      handlersEntry.actionId = flow.id;
+    }
+  });
 
   return {
     triggers,

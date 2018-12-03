@@ -1,10 +1,32 @@
-import { assign, cloneDeep, get, isEmpty, isNil, isNull, isUndefined, map as _map, mapValues, noop, reduce, set } from 'lodash';
+import {
+  assign,
+  cloneDeep,
+  get,
+  isEmpty,
+  isNil,
+  isNull,
+  isUndefined,
+  map as _map,
+  mapValues,
+  noop,
+  reduce,
+  set,
+} from 'lodash';
 import { Observable, Subject, throwError } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { catchError, filter, map, mergeMap, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 
-import { Dictionary, FlowGraph, GraphNode, Interceptor, LanguageService, NodeType, ItemActivityTask, ActivitySchema } from '@flogo-web/client/core';
+import {
+  Dictionary,
+  FlowGraph,
+  GraphNode,
+  Interceptor,
+  LanguageService,
+  NodeType,
+  ItemActivityTask,
+  ActivitySchema,
+} from '@flogo-web/client/core';
 import { NotificationsService } from '@flogo-web/client/core/notifications';
 import { OperationalError } from '@flogo-web/client/core/services';
 import { FlowActions, FlowSelectors } from '@flogo-web/client/flow/core/state';
@@ -14,8 +36,11 @@ import { FlowState } from '@flogo-web/client/flow/core/state';
 import {
   RunOrchestratorService,
   ERRORS as RUNNER_ERRORS,
-  RunProgress, RunProgressStore, RunStateCode as RUNNER_STATE,
-  RunStatusCode as RUNNER_STATUS, Step
+  RunProgress,
+  RunProgressStore,
+  RunStateCode as RUNNER_STATE,
+  RunStatusCode as RUNNER_STATUS,
+  Step,
 } from './run-orchestrator.service';
 import { createRunOptionsForRoot } from './create-run-options-for-root';
 
@@ -24,17 +49,16 @@ export class TestRunnerService implements OnDestroy {
   private contextChange = new Subject<void>();
   private runState = {
     // TODO: may need better implementation
-    lastProcessInstanceFromBeginning: <any> null,
-    steps: <Step[]> null,
+    lastProcessInstanceFromBeginning: <any>null,
+    steps: <Step[]>null,
   };
 
   constructor(
     private store: Store<FlowState>,
     private orchestrator: RunOrchestratorService,
     private translate: LanguageService,
-    private notificationsService: NotificationsService,
-  ) {
-  }
+    private notificationsService: NotificationsService
+  ) {}
 
   runFromRoot() {
     this.contextChange.next();
@@ -42,7 +66,7 @@ export class TestRunnerService implements OnDestroy {
     return this._runFromRoot();
   }
 
-  runFromTask(options: { taskId: string, inputs: any }) {
+  runFromTask(options: { taskId: string; inputs: any }) {
     this.contextChange.next();
     return this._runFromThisTile(options);
   }
@@ -58,23 +82,22 @@ export class TestRunnerService implements OnDestroy {
 
   private _runFromRoot() {
     this.store.dispatch(new FlowActions.RunFromStart());
-    return this.getFlowStateOnce()
-      .pipe(
-        takeUntil(this.contextChange),
-        map((flowState: FlowState) => {
-          this.runState.steps = null;
-          const runOptions = createRunOptionsForRoot(flowState);
-          return this.orchestrator.runFromRoot(runOptions);
-        }),
-        tap(runner => {
-          this.observeProcessRegistration(runner);
-        }),
-        switchMap(runner => this.observeRunProgress(runner)),
-        tap((runState: RunProgress) => {
-          this.runState.lastProcessInstanceFromBeginning = runState.lastInstance;
-        }),
-        catchError(err => this.handleRunError(err)),
-      );
+    return this.getFlowStateOnce().pipe(
+      takeUntil(this.contextChange),
+      map((flowState: FlowState) => {
+        this.runState.steps = null;
+        const runOptions = createRunOptionsForRoot(flowState);
+        return this.orchestrator.runFromRoot(runOptions);
+      }),
+      tap(runner => {
+        this.observeProcessRegistration(runner);
+      }),
+      switchMap(runner => this.observeRunProgress(runner)),
+      tap((runState: RunProgress) => {
+        this.runState.lastProcessInstanceFromBeginning = runState.lastInstance;
+      }),
+      catchError(err => this.handleRunError(err))
+    );
   }
 
   // TODO
@@ -83,43 +106,44 @@ export class TestRunnerService implements OnDestroy {
   //  the using this.runState.processInstanceId to restart
   private _runFromThisTile({ inputs, taskId }) {
     console.group('Run from this tile');
-    return this.getFlowStateOnce()
-      .pipe(
-        map((flowState: FlowState) => {
-          const selectedTask = flowState.mainItems[taskId] as ItemActivityTask;
-          const schema = flowState.schemas[selectedTask.ref] as ActivitySchema;
-          if (!flowState.lastFullExecution.processId) {
-            // run from other than the trigger (root task);
-            // TODO
-            throw new Error('Cannot find proper step to restart from, skipping...');
-          }
+    return this.getFlowStateOnce().pipe(
+      map((flowState: FlowState) => {
+        const selectedTask = flowState.mainItems[taskId] as ItemActivityTask;
+        const schema = flowState.schemas[selectedTask.ref] as ActivitySchema;
+        if (!flowState.lastFullExecution.processId) {
+          // run from other than the trigger (root task);
+          // TODO
+          throw new Error('Cannot find proper step to restart from, skipping...');
+        }
 
-          const stepNumber = this.getStepNumberFromSteps(taskId);
-          if (stepNumber < 0) {
-            // TODO
-            //  handling the case that trying to start from the middle of a path without run from the trigger for the first time.
-            throw new Error(`Cannot start from task ${(<any>selectedTask).name} (${selectedTask.id})`);
-          }
+        const stepNumber = this.getStepNumberFromSteps(taskId);
+        if (stepNumber < 0) {
+          // TODO
+          //  handling the case that trying to start from the middle of a path without run from the trigger for the first time.
+          throw new Error(`Cannot start from task ${(<any>selectedTask).name} (${selectedTask.id})`);
+        }
 
-          this.store.dispatch(new FlowActions.RunFromTask());
-          const dataOfInterceptor: Interceptor = {
-            tasks: [{
+        this.store.dispatch(new FlowActions.RunFromTask());
+        const dataOfInterceptor: Interceptor = {
+          tasks: [
+            {
               id: selectedTask.id,
               inputs: mergeInputAndSchema(schema.inputs, inputs),
-            }]
-          };
-          this.runState.steps = null;
+            },
+          ],
+        };
+        this.runState.steps = null;
 
-          return this.orchestrator.rerun({
-            useFlowId: flowState.id,
-            interceptor: dataOfInterceptor,
-            step: stepNumber,
-            instanceId: flowState.lastFullExecution.instanceId,
-          });
-        }),
-        switchMap(runner => this.observeRunProgress(runner)),
-        catchError(err => this.handleRunError(err)),
-      );
+        return this.orchestrator.rerun({
+          useFlowId: flowState.id,
+          interceptor: dataOfInterceptor,
+          step: stepNumber,
+          instanceId: flowState.lastFullExecution.instanceId,
+        });
+      }),
+      switchMap(runner => this.observeRunProgress(runner)),
+      catchError(err => this.handleRunError(err))
+    );
 
     function mergeInputAndSchema(schemaInput: any, inputData: any) {
       if (!schemaInput) {
@@ -129,11 +153,10 @@ export class TestRunnerService implements OnDestroy {
         // override the value;
         return assign(cloneDeep(input), {
           value: inputData[input.name],
-          type: input.type
+          type: input.type,
         });
       });
     }
-
   }
 
   // TODO
@@ -147,7 +170,6 @@ export class TestRunnerService implements OnDestroy {
     return steps.findIndex(step => step.taskId == taskId);
   }
 
-
   // monitor the status of a process util it's done or up to the max trials
   private observeRunProgress(runner: RunProgressStore): Observable<RunProgress | void> {
     // TODO: remove noop when fixed https://github.com/ReactiveX/rxjs/issues/2180
@@ -156,11 +178,9 @@ export class TestRunnerService implements OnDestroy {
       .subscribe(processStatus => logRunStatus(processStatus), noop);
 
     // TODO: only on run from trigger?
-    runner.registered
-      .pipe(takeUntil(this.contextChange))
-      .subscribe(info => {
-        this.store.dispatch(new FlowActions.NewExecutionRegistered());
-      }, noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180);
+    runner.registered.pipe(takeUntil(this.contextChange)).subscribe(info => {
+      this.store.dispatch(new FlowActions.NewExecutionRegistered());
+    }, noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180);
 
     runner.steps
       .pipe(
@@ -168,9 +188,9 @@ export class TestRunnerService implements OnDestroy {
         filter(steps => {
           return !!steps;
         }),
-        mergeMap((steps) => this.getFlowStateOnce()
-          .pipe(map(flowState =>  this.updateTaskRunStatus(flowState, steps, {})))
-        ),
+        mergeMap(steps =>
+          this.getFlowStateOnce().pipe(map(flowState => this.updateTaskRunStatus(flowState, steps, {})))
+        )
       )
       .subscribe(noop, noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180
 
@@ -187,7 +207,7 @@ export class TestRunnerService implements OnDestroy {
   private getFlowStateOnce(): Observable<FlowState> {
     return this.store.pipe(
       select(FlowSelectors.selectFlowState),
-      take(1),
+      take(1)
     );
   }
 
@@ -196,10 +216,13 @@ export class TestRunnerService implements OnDestroy {
     // todo: more specific error message?
     let msgKey = null;
     if (error.isOperational) {
-      const opError = <OperationalError> error;
+      const opError = <OperationalError>error;
       if (opError.name === RUNNER_ERRORS.PROCESS_NOT_COMPLETED) {
         // run error instance has status prop hence the casting to any
-        msgKey = (<any>opError).status === RUNNER_STATUS.Cancelled ? 'CANVAS:RUN-ERROR:RUN-CANCELLED' : 'CANVAS:RUN-ERROR:RUN-FAILED';
+        msgKey =
+          (<any>opError).status === RUNNER_STATUS.Cancelled
+            ? 'CANVAS:RUN-ERROR:RUN-CANCELLED'
+            : 'CANVAS:RUN-ERROR:RUN-FAILED';
       } else if (opError.name === RUNNER_ERRORS.MAX_TRIALS_REACHED) {
         msgKey = 'CANVAS:RUN-ERROR:MAX-REACHED';
       }
@@ -246,9 +269,10 @@ export class TestRunnerService implements OnDestroy {
       }
     });
 
-    const filterBranches = (nodes: Dictionary<GraphNode>) => [...Object.values(nodes)].filter(node => node.type === NodeType.Branch);
-    const branchUpdates = (nodes: FlowGraph['nodes']) => filterBranches(nodes)
-      .reduce((changes, branchNode) => {
+    const filterBranches = (nodes: Dictionary<GraphNode>) =>
+      [...Object.values(nodes)].filter(node => node.type === NodeType.Branch);
+    const branchUpdates = (nodes: FlowGraph['nodes']) =>
+      filterBranches(nodes).reduce((changes, branchNode) => {
         const branchWasExecuted = isBranchExecuted(branchNode, nodes);
         if (branchWasExecuted && !nodes[branchNode.id].status.executed) {
           changes[branchNode.id] = {
@@ -270,14 +294,14 @@ export class TestRunnerService implements OnDestroy {
       errorGraphNodes: {
         ...allStatusChanges.errorGraphNodes,
         ...branchUpdates({ ...flowState.errorGraph.nodes, ...allStatusChanges.errorGraphNodes }),
-      }
+      },
     };
 
     set(rsp, '__status', {
       isFlowDone: isFlowDone,
       errors: errors,
       runTasks: runTasks,
-      runTasksIDs: runTaskIds
+      runTasksIDs: runTaskIds,
     });
 
     this.store.dispatch(new FlowActions.ExecutionStateUpdated({ changes: allStatusChanges }));
@@ -293,66 +317,71 @@ export class TestRunnerService implements OnDestroy {
     //  how to verify if a task is running?
     //    should be the next task downstream the last running task
     //    but need to find the node of that task in the diagram
-
   }
-
 
   private extractExecutionStatus(steps: Step[]) {
     let isFlowDone = false;
     const runTaskIds = [];
-    const errors = <{
-      [index: string]: {
-        msg: string;
-        time: string;
-      }[];
-    }>{};
-    const runTasks = reduce(steps, (result: any, step: any) => {
-      const taskID = step.taskId;
-
-      if (taskID !== 'root' && taskID !== 1 && !isNil(taskID)) {
-
-        /****
-         *  Exclude the tasks which are skipped by the engine while running the flow
-         *  but their running task information is generated and maintained
-         ****/
-        const taskState = step.taskState || 0;
-        if (taskState !== RUNNER_STATE.Skipped) {
-          runTaskIds.push(taskID);
-        }
-        const reAttrName = new RegExp(`^_A.${step.taskId}\\..*`, 'g');
-        const reAttrErrMsg = new RegExp(`^_E.message`, 'g');
-
-        const taskInfo = reduce(get(step, 'flow.attributes', []),
-          (currentTaskInfo: any, attr: any) => {
-            if (reAttrName.test(get(attr, 'name', ''))) {
-              currentTaskInfo[attr.name] = attr;
-            }
-
-            if (reAttrErrMsg.test(attr.name)) {
-              let errs = <any[]>get(errors, `${taskID}`);
-              const shouldOverride = isUndefined(errs);
-              errs = errs || [];
-
-              errs.push({
-                msg: attr.value,
-                time: new Date().toJSON()
-              });
-
-              if (shouldOverride) {
-                set(errors, `${taskID}`, errs);
-              }
-            }
-            return currentTaskInfo;
-          }, {});
-
-        result[taskID] = {attrs: taskInfo};
-      } else if (isNull(taskID)) {
-        isFlowDone = true;
+    const errors = <
+      {
+        [index: string]: {
+          msg: string;
+          time: string;
+        }[];
       }
+    >{};
+    const runTasks = reduce(
+      steps,
+      (result: any, step: any) => {
+        const taskID = step.taskId;
 
-      return result;
-    }, {});
+        if (taskID !== 'root' && taskID !== 1 && !isNil(taskID)) {
+          /****
+           *  Exclude the tasks which are skipped by the engine while running the flow
+           *  but their running task information is generated and maintained
+           ****/
+          const taskState = step.taskState || 0;
+          if (taskState !== RUNNER_STATE.Skipped) {
+            runTaskIds.push(taskID);
+          }
+          const reAttrName = new RegExp(`^_A.${step.taskId}\\..*`, 'g');
+          const reAttrErrMsg = new RegExp(`^_E.message`, 'g');
+
+          const taskInfo = reduce(
+            get(step, 'flow.attributes', []),
+            (currentTaskInfo: any, attr: any) => {
+              if (reAttrName.test(get(attr, 'name', ''))) {
+                currentTaskInfo[attr.name] = attr;
+              }
+
+              if (reAttrErrMsg.test(attr.name)) {
+                let errs = <any[]>get(errors, `${taskID}`);
+                const shouldOverride = isUndefined(errs);
+                errs = errs || [];
+
+                errs.push({
+                  msg: attr.value,
+                  time: new Date().toJSON(),
+                });
+
+                if (shouldOverride) {
+                  set(errors, `${taskID}`, errs);
+                }
+              }
+              return currentTaskInfo;
+            },
+            {}
+          );
+
+          result[taskID] = { attrs: taskInfo };
+        } else if (isNull(taskID)) {
+          isFlowDone = true;
+        }
+
+        return result;
+      },
+      {}
+    );
     return { isFlowDone, runTasks, runTaskIds, errors };
   }
-
 }

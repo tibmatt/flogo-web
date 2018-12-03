@@ -1,19 +1,9 @@
-import {
-  cloneDeep,
-  filter as _filter,
-  get,
-  isEmpty,
-} from 'lodash';
+import { cloneDeep, filter as _filter, get, isEmpty } from 'lodash';
 import { takeUntil, switchMap, take, filter } from 'rxjs/operators';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger as animationTrigger, transition, animateChild } from '@angular/animations';
-import {
-  MetadataAttribute,
-  Task,
-  LanguageService,
-  Item,
-} from '@flogo-web/client/core';
+import { MetadataAttribute, Task, LanguageService, Item } from '@flogo-web/client/core';
 
 import { NotificationsService } from '@flogo-web/client/core/notifications';
 
@@ -22,10 +12,7 @@ import { FlowMetadata } from './task-configurator/models/flow-metadata';
 
 import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
 import { RESTAPIHandlersService } from '../core/services/restapi/v2/handlers-api.service';
-import {
-  FLOGO_PROFILE_TYPE,
-  FLOGO_TASK_TYPE
-} from '../core/constants';
+import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '../core/constants';
 import { getProfileType, isMapperActivity } from '@flogo-web/client/shared/utils';
 
 import { FlogoFlowService as FlowsService } from './core/flow.service';
@@ -37,8 +24,8 @@ import { FlowState } from './core/state';
 import { SingleEmissionSubject } from '@flogo-web/client/core/models';
 import { Trigger } from './core';
 import { TestRunnerService } from '@flogo-web/client/flow/core/test-runner/test-runner.service';
-import {ConfirmationResult} from '@flogo-web/client/core';
-import {ConfirmationModalService} from '@flogo-web/client/core/confirmation/confirmation-modal/confirmation-modal.service';
+import { ConfirmationResult } from '@flogo-web/client/core';
+import { ConfirmationModalService } from '@flogo-web/client/core/confirmation/confirmation-modal/confirmation-modal.service';
 import { MonacoEditorLoaderService } from '@flogo-web/client/flow/shared/monaco-editor';
 
 interface TaskContext {
@@ -59,9 +46,7 @@ interface TaskContext {
   providers: [TestRunnerService],
   templateUrl: 'flow.component.html',
   styleUrls: ['flow.component.less'],
-  animations: [
-    animationTrigger('initialAnimation', [ transition( 'void => *', animateChild()) ]),
-  ],
+  animations: [animationTrigger('initialAnimation', [transition('void => *', animateChild())])],
 })
 export class FlowComponent implements OnInit, OnDestroy {
   @HostBinding('@initialAnimation') initialAnimation = true;
@@ -90,16 +75,18 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private ngOnDestroy$ = SingleEmissionSubject.create();
 
-  constructor(public translate: LanguageService,
-              private _flowService: FlowsService,
-              private _restAPIHandlerService: RESTAPIHandlersService,
-              private _restAPIAppsService: AppsApiService,
-              private _router: Router,
-              private confirmationModalService: ConfirmationModalService,
-              private _route: ActivatedRoute,
-              private testRunner: TestRunnerService,
-              private notifications: NotificationsService,
-              private monacoLoaderService: MonacoEditorLoaderService) {
+  constructor(
+    public translate: LanguageService,
+    private _flowService: FlowsService,
+    private _restAPIHandlerService: RESTAPIHandlersService,
+    private _restAPIAppsService: AppsApiService,
+    private _router: Router,
+    private confirmationModalService: ConfirmationModalService,
+    private _route: ActivatedRoute,
+    private testRunner: TestRunnerService,
+    private notifications: NotificationsService,
+    private monacoLoaderService: MonacoEditorLoaderService
+  ) {
     this._isDiagramEdited = false;
 
     this.loading = true;
@@ -114,17 +101,20 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     const flowData: FlowData = this._route.snapshot.data['flowData'];
-    this.flowDetails
-      .flowState$
+    this.flowDetails.flowState$
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(flowState => this.onFlowStateUpdate(flowState));
     this.initFlowData(flowData);
     this.flowDetails.runnableState$
       .pipe(takeUntil(this.ngOnDestroy$))
-      .subscribe(runnableState => this.runnableInfo = runnableState);
+      .subscribe(runnableState => (this.runnableInfo = runnableState));
     this.monacoLoaderService.isMonacoLoaded
-      .pipe(filter(Boolean), take(1), takeUntil(this.ngOnDestroy$))
-      .subscribe((loaded) => {
+      .pipe(
+        filter(Boolean),
+        take(1),
+        takeUntil(this.ngOnDestroy$)
+      )
+      .subscribe(loaded => {
         if (loaded) {
           this.loading = false;
         }
@@ -158,29 +148,34 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   deleteFlow() {
     this.closeFlowMenu();
-    this.translate.get(['FLOWS:CONFIRM_DELETE', 'MODAL:CONFIRM-DELETION'], {flowName: this.flowState.name}).pipe(
-      switchMap(translation => {
-        return this.confirmationModalService.openModal({
-          title: translation['MODAL:CONFIRM-DELETION'],
-          textMessage: translation['FLOWS:CONFIRM_DELETE']
-        }).result;
-      })
-    ).subscribe(result => {
-      if (result === ConfirmationResult.Confirm) {
-        const appPromise = (this.app) ? Promise.resolve(this.app) : this._restAPIAppsService.getApp(this.flowState.app.id);
-        appPromise
-          .then((app) => {
-            const triggerDetails = this.getTriggerCurrentFlow(app, this.flowState.id);
-            return this._flowService.deleteFlow(this.flowId, triggerDetails ? triggerDetails.id : null);
-          })
-          .then(() => this.navigateToApp())
-          .then(() => this.notifications.success({ key: 'FLOWS:SUCCESS-MESSAGE-FLOW-DELETED' }))
-          .catch(err => {
-            console.error(err);
-            this.notifications.error({ key: 'FLOWS:ERROR-MESSAGE-REMOVE-FLOW', params: err });
-          });
-      }
-    });
+    this.translate
+      .get(['FLOWS:CONFIRM_DELETE', 'MODAL:CONFIRM-DELETION'], { flowName: this.flowState.name })
+      .pipe(
+        switchMap(translation => {
+          return this.confirmationModalService.openModal({
+            title: translation['MODAL:CONFIRM-DELETION'],
+            textMessage: translation['FLOWS:CONFIRM_DELETE'],
+          }).result;
+        })
+      )
+      .subscribe(result => {
+        if (result === ConfirmationResult.Confirm) {
+          const appPromise = this.app
+            ? Promise.resolve(this.app)
+            : this._restAPIAppsService.getApp(this.flowState.app.id);
+          appPromise
+            .then(app => {
+              const triggerDetails = this.getTriggerCurrentFlow(app, this.flowState.id);
+              return this._flowService.deleteFlow(this.flowId, triggerDetails ? triggerDetails.id : null);
+            })
+            .then(() => this.navigateToApp())
+            .then(() => this.notifications.success({ key: 'FLOWS:SUCCESS-MESSAGE-FLOW-DELETED' }))
+            .catch(err => {
+              console.error(err);
+              this.notifications.error({ key: 'FLOWS:ERROR-MESSAGE-REMOVE-FLOW', params: err });
+            });
+        }
+      });
   }
 
   onDeleteTask(taskDetails) {
@@ -248,16 +243,14 @@ export class FlowComponent implements OnInit, OnDestroy {
         }
         return wasSaved;
       })
-      .catch(() => this.notifications.error({ key: 'CANVAS:ERROR-MESSAGE-UPDATE', params: { value: property }  }));
+      .catch(() => this.notifications.error({ key: 'CANVAS:ERROR-MESSAGE-UPDATE', params: { value: property } }));
   }
 
   /**
    * @deprecated state should be updated instead but supporting this for now for old modules
    */
   private _updateFlow() {
-    return this._flowService
-      .saveFlowIfChanged(this.flowId, this.flowState)
-      .toPromise();
+    return this._flowService.saveFlowIfChanged(this.flowId, this.flowState).toPromise();
   }
 
   public changeFlowDetailName(name, property) {
@@ -268,8 +261,9 @@ export class FlowComponent implements OnInit, OnDestroy {
       return Promise.resolve(true);
     }
 
-    return this._flowService.listFlowsByName(this.flowState.appId, name)
-      .then((flows) => {
+    return this._flowService
+      .listFlowsByName(this.flowState.appId, name)
+      .then(flows => {
         const results = flows || [];
         if (!isEmpty(results)) {
           if (results[0].id === this.flowId) {
@@ -285,13 +279,14 @@ export class FlowComponent implements OnInit, OnDestroy {
               this.notifications.success({ key: 'CANVAS:SUCCESS-MESSAGE-UPDATE', params: { value: property } });
               this.flowName = this.flowState.name;
               return response;
-            }).catch((err) => {
+            })
+            .catch(err => {
               this.notifications.error({ key: 'CANVAS:ERROR-MESSAGE-UPDATE', params: { value: property } });
               return Promise.reject(err);
             });
         }
       })
-      .catch((err) => {
+      .catch(err => {
         this.notifications.error({ key: 'CANVAS:ERROR-MESSAGE-UPDATE', params: { value: property } });
         return Promise.reject(err);
       });
@@ -303,8 +298,8 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     // todo: unnecessary, app.triggers.filter is true?
     if (triggersForCurrentApp) {
-      triggersForCurrentApp.forEach((currentTrigger) => {
-        const handlers = currentTrigger.handlers.find((handler) => {
+      triggersForCurrentApp.forEach(currentTrigger => {
+        const handlers = currentTrigger.handlers.find(handler => {
           return handler.actionId === flowId;
         });
 
@@ -324,7 +319,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const currentStep = this.getCurrentRunStateForTask(taskId);
     const context = this._getCurrentTaskContext(taskId);
 
-    const currentItem = <Item> cloneDeep(this.getTaskInHandler(handlerId, taskId));
+    const currentItem = <Item>cloneDeep(this.getTaskInHandler(handlerId, taskId));
     let currentTask;
     if (currentItem.type === FLOGO_TASK_TYPE.TASK_BRANCH) {
       currentTask = cloneDeep(currentItem);
@@ -344,26 +339,29 @@ export class FlowComponent implements OnInit, OnDestroy {
     if (!task) {
       return;
     }
-    this.translate.get(['FLOW:CONFIRM-TASK-DELETE', 'MODAL:CONFIRM-DELETION']).pipe(
-      switchMap(translation => {
-        return this.confirmationModalService.openModal({
-          title: translation['MODAL:CONFIRM-DELETION'],
-          textMessage: translation['FLOW:CONFIRM-TASK-DELETE']
-        }).result;
-      })
-    ).subscribe(result => {
-      if (!result) {
-        return;
-      }
-      if (result === ConfirmationResult.Confirm) {
-        this._isDiagramEdited = true;
-        this.flowDetails.removeItem(handlerType, taskId);
-      }
-    });
+    this.translate
+      .get(['FLOW:CONFIRM-TASK-DELETE', 'MODAL:CONFIRM-DELETION'])
+      .pipe(
+        switchMap(translation => {
+          return this.confirmationModalService.openModal({
+            title: translation['MODAL:CONFIRM-DELETION'],
+            textMessage: translation['FLOW:CONFIRM-TASK-DELETE'],
+          }).result;
+        })
+      )
+      .subscribe(result => {
+        if (!result) {
+          return;
+        }
+        if (result === ConfirmationResult.Confirm) {
+          this._isDiagramEdited = true;
+          this.flowDetails.removeItem(handlerType, taskId);
+        }
+      });
   }
 
   private _getAllTasks() {
-    return {...this.flowState.mainItems, ...this.flowState.errorItems};
+    return { ...this.flowState.mainItems, ...this.flowState.errorItems };
   }
 
   /*-------------------------------*
@@ -425,7 +423,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.flowState.metadata.input = this.mergeFlowInputMetadata(newMetadata.input);
     this.flowState.metadata.output = newMetadata.output;
 
-    const propCollectionToRegistry = (from) => new Map(<Array<[string, boolean]>>from.map((o: any) => [o.name, true]));
+    const propCollectionToRegistry = from => new Map(<Array<[string, boolean]>>from.map((o: any) => [o.name, true]));
 
     const outputRegistry = propCollectionToRegistry(newMetadata.output);
     const inputRegistry = propCollectionToRegistry(newMetadata.input);
@@ -447,7 +445,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   // when flow schema's input change we need to remove the trigger mappings that were referencing them
   private cleanDanglingTriggerMappingsToFlow(inputRegistry: Map<string, boolean>) {
-    const isApplicableMapping = (mapping) => inputRegistry.has(mapping.mapTo);
+    const isApplicableMapping = mapping => inputRegistry.has(mapping.mapTo);
     const handlersToUpdate = this.triggersList.reduce((result, trigger) => {
       const handlersToUpdateInTrigger = trigger.handlers
         .filter(handler => handler.actionId === this.flowId)
@@ -456,9 +454,11 @@ export class FlowComponent implements OnInit, OnDestroy {
       return result.concat(handlersToUpdateInTrigger);
     }, []);
     if (handlersToUpdate.length > 0) {
-      return Promise.all(handlersToUpdate.map(({ handler, triggerId }) => {
-        return this._restAPIHandlerService.updateHandler(triggerId, this.flowId, handler);
-      }));
+      return Promise.all(
+        handlersToUpdate.map(({ handler, triggerId }) => {
+          return this._restAPIHandlerService.updateHandler(triggerId, this.flowId, handler);
+        })
+      );
     }
     return Promise.resolve();
 
@@ -480,12 +480,10 @@ export class FlowComponent implements OnInit, OnDestroy {
       const inputs = (task.attributes || {}).inputs || [];
       return isMapperActivity(schema) && inputs.length > 0;
     };
-    _filter(this._getAllTasks(), isMapperContribAndHasMapping)
-      .forEach((task: Task) => {
-        task.attributes.inputs.forEach((mapping) => {
-          mapping.value = mapping.value.filter((m) => outputRegistry.has(m.mapTo));
-        });
+    _filter(this._getAllTasks(), isMapperContribAndHasMapping).forEach((task: Task) => {
+      task.attributes.inputs.forEach(mapping => {
+        mapping.value = mapping.value.filter(m => outputRegistry.has(m.mapTo));
       });
+    });
   }
-
 }

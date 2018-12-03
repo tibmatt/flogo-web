@@ -4,8 +4,7 @@ import { TriggerHandler } from '@flogo-web/client/flow/core';
 
 @Injectable()
 export class RESTAPIHandlersService {
-  constructor(private restApiService: RestApiService) {
-  }
+  constructor(private restApiService: RestApiService) {}
 
   updateHandler(triggerId, actionId, handlerSettings) {
     return this.restApiService
@@ -14,15 +13,10 @@ export class RESTAPIHandlersService {
   }
 
   getHandler(triggerId, actionId) {
-    return this.restApiService
-      .get(`triggers/${triggerId}/handlers/${actionId}`)
-      .toPromise();
+    return this.restApiService.get(`triggers/${triggerId}/handlers/${actionId}`).toPromise();
   }
 
   deleteHandler(actionId, triggerId) {
-    return this.restApiService
-      .delete(`triggers/${triggerId}/handlers/${actionId}`)
-      .toPromise();
+    return this.restApiService.delete(`triggers/${triggerId}/handlers/${actionId}`).toPromise();
   }
-
 }

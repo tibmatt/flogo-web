@@ -6,15 +6,13 @@ import { RESTAPIContributionsService } from '../../core/services/restapi/v2/cont
 import { AbstractModelConverter } from './models/ui-converter.model';
 import { MicroServiceModelConverter } from './models/profiles/microservice-converter.model';
 import { DeviceModelConverter } from './models/profiles/device-converter.model';
-import {ActionBase} from '@flogo-web/client/core';
+import { ActionBase } from '@flogo-web/client/core';
 
 @Injectable()
 export class UIModelConverterService {
   private converterModelInstance: AbstractModelConverter;
 
-  constructor(public contribService: RESTAPIContributionsService,
-              public errorService: ErrorService) {
-  }
+  constructor(public contribService: RESTAPIContributionsService, public errorService: ErrorService) {}
 
   setProfile(profile: FLOGO_PROFILE_TYPE) {
     if (profile === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
@@ -53,14 +51,12 @@ export class UIModelConverterService {
   }
 
   getTriggerTask(trigger) {
-    return this.converterModelInstance.getTriggerSchema(trigger)
-      .then((installedTrigger) => {
-        return this.converterModelInstance.makeTriggerTask(trigger, installedTrigger);
-      });
+    return this.converterModelInstance.getTriggerSchema(trigger).then(installedTrigger => {
+      return this.converterModelInstance.makeTriggerTask(trigger, installedTrigger);
+    });
   }
 
   getTriggerSchema(triggerRef) {
     return this.converterModelInstance.getTriggerSchema({ ref: triggerRef });
   }
-
 }

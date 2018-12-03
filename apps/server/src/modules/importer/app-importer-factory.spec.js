@@ -9,7 +9,7 @@ describe('importer.AppImporterFactory', () => {
   let context;
   let appImporterFactory;
 
-  beforeAll(function () {
+  beforeAll(function() {
     sandbox = sinon.createSandbox();
     context = createTestContext(sandbox);
     appImporterFactory = new AppImporterFactory(context.appsManagerMock);
@@ -22,61 +22,44 @@ describe('importer.AppImporterFactory', () => {
   describe('when given a standard app', () => {
     const standardApp = { appModel: '1.0.0' };
 
-    test(
-      '#isLegacyApp should correctly determine it is a standard app',
-      async () => {
-        expect(appImporterFactory.isStandardApp(standardApp)).toBe(true);
-      }
-    );
+    test('#isLegacyApp should correctly determine it is a standard app', async () => {
+      expect(appImporterFactory.isStandardApp(standardApp)).toBe(true);
+    });
 
     test('#isStandardApp should accept only appModel 1.0.0', async () => {
       ['', '1.2.4', undefined, 1, 'xyx'].forEach(appModelTestVal =>
-        expect(appImporterFactory.isStandardApp({ appModel: appModelTestVal })).not.toBe(true));
+        expect(appImporterFactory.isStandardApp({ appModel: appModelTestVal })).not.toBe(true)
+      );
       expect(appImporterFactory.isStandardApp({})).not.toBe(true);
     });
 
-    test(
-      '#dependenciesFactory should select the standard dependencies factory',
-      () => {
-        assertFactorySelected('standardDependenciesFactory', standardApp);
-      }
-    );
+    test('#dependenciesFactory should select the standard dependencies factory', () => {
+      assertFactorySelected('standardDependenciesFactory', standardApp);
+    });
   });
 
   describe('when given a legacy app', () => {
-    const legacyApp = { };
+    const legacyApp = {};
 
-    test(
-      '#isLegacyApp should correctly determine it is a legacy app',
-      async () => {
-        expect(appImporterFactory.isLegacyApp(legacyApp)).toBe(true);
-      }
-    );
+    test('#isLegacyApp should correctly determine it is a legacy app', async () => {
+      expect(appImporterFactory.isLegacyApp(legacyApp)).toBe(true);
+    });
 
-    test(
-      '#dependenciesFactory should select the legacy dependencies factory',
-      () => {
-        assertFactorySelected('legacyDependenciesFactory', legacyApp);
-      }
-    );
+    test('#dependenciesFactory should select the legacy dependencies factory', () => {
+      assertFactorySelected('legacyDependenciesFactory', legacyApp);
+    });
   });
 
   describe('when given a device app', () => {
     const deviceApp = { device: 'devicetype' };
 
-    test(
-      '#isDeviceApp should correctly determine it is a device app',
-      async () => {
-        expect(appImporterFactory.isDeviceApp(deviceApp)).toBe(true);
-      }
-    );
+    test('#isDeviceApp should correctly determine it is a device app', async () => {
+      expect(appImporterFactory.isDeviceApp(deviceApp)).toBe(true);
+    });
 
-    test(
-      '#dependenciesFactory should select the device dependencies factory',
-      () => {
-        assertFactorySelected('deviceDependenciesFactory', deviceApp);
-      }
-    );
+    test('#dependenciesFactory should select the device dependencies factory', () => {
+      assertFactorySelected('deviceDependenciesFactory', deviceApp);
+    });
   });
 
   function assertFactorySelected(factorySelector, testApp) {

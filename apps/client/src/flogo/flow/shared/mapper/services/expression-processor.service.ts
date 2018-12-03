@@ -5,7 +5,8 @@ import { NodeFactory } from '../models/expr-visitor';
 import {
   ValidatorReporter,
   // ValidatorVisitor,
-  ValidationError } from '../models/validator';
+  ValidationError,
+} from '../models/validator';
 import { ReferenceCollector } from '../models/reference-collector';
 
 export interface ProcessedExpression {
@@ -19,26 +20,28 @@ export interface ProcessedExpression {
 
 @Injectable()
 export class ExpressionProcessorService {
-
-  processExpression(expression: string,
-                    expectedResultDataType: { type: string, array?: boolean },
-                    symbolTable: { [key: string]: any },
-                    relativeMapsTo?: string): ProcessedExpression {
+  processExpression(
+    expression: string,
+    expectedResultDataType: { type: string; array?: boolean },
+    symbolTable: { [key: string]: any },
+    relativeMapsTo?: string
+  ): ProcessedExpression {
     let hasSyntaxErrors = false;
     let hasSemanticErrors = false;
     let errors = [];
     let structureDetails = null;
     expression = expression || '';
 
-
     const parseResult = this.parse(expression);
     const langTree = parseResult.getParseTree().getTree();
 
     if (langTree) {
-      const {
-        errors: semanticErrors,
-        structureDetails: extractedDetails
-      } = this.validate(langTree, expectedResultDataType, symbolTable, relativeMapsTo);
+      const { errors: semanticErrors, structureDetails: extractedDetails } = this.validate(
+        langTree,
+        expectedResultDataType,
+        symbolTable,
+        relativeMapsTo
+      );
       structureDetails = extractedDetails;
       if (semanticErrors && semanticErrors.length > 0) {
         hasSemanticErrors = true;
@@ -66,8 +69,12 @@ export class ExpressionProcessorService {
     return expressionParser.parse(expression);
   }
 
-  private validate(tree: any, expectedResultDataType: { type: string, array?: boolean },
-                   symbolTable: { [key: string]: any }, relativeMapsTo?: string) {
+  private validate(
+    tree: any,
+    expectedResultDataType: { type: string; array?: boolean },
+    symbolTable: { [key: string]: any },
+    relativeMapsTo?: string
+  ) {
     const programNode = NodeFactory.createNode(tree, null);
     const reporter = new ValidatorReporter();
     const refsCollector = new ReferenceCollector(relativeMapsTo);

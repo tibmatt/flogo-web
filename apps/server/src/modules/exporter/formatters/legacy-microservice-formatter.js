@@ -3,8 +3,8 @@ import isEmpty from 'lodash/isEmpty';
 import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
 import { isIterableTask } from '../../../common/utils';
 import { appHasSubflowTasks } from '../../../common/utils/subflow';
-import {FLOGO_TASK_TYPE, LEGACY_FLOW_TYPE} from '../../../common/constants';
-import { mappingsToAttributes } from "../mappings-to-attributes";
+import { FLOGO_TASK_TYPE, LEGACY_FLOW_TYPE } from '../../../common/constants';
+import { mappingsToAttributes } from '../mappings-to-attributes';
 
 const MICROSERVICE_ACTION_REF = 'github.com/TIBCOSoftware/flogo-contrib/action/flow';
 
@@ -30,7 +30,7 @@ export class LegacyMicroServiceFormatter {
     action.ref = MICROSERVICE_ACTION_REF;
 
     action.data = {
-      flow: this.makeFlow(action)
+      flow: this.makeFlow(action),
     };
     const flow = action.data.flow;
     delete action.name;
@@ -41,13 +41,16 @@ export class LegacyMicroServiceFormatter {
 
     /* The reply activity is deprecated in the flogo-contribs project.
      * But we are maintaining this for legacy applications */
-    const hasExplicitReply = allTasks.find(t => t.activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
+    const hasExplicitReply = allTasks.find(
+      t => t.activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply'
+    );
     if (hasExplicitReply) {
       flow.explicitReply = true;
     }
 
     // Update task type of iterators as per engine specifications
-    allTasks.filter(task => isIterableTask(task))
+    allTasks
+      .filter(task => isIterableTask(task))
       .forEach(task => {
         task.type = FLOGO_TASK_TYPE.TASK_ITERATOR;
       });
@@ -70,9 +73,9 @@ export class LegacyMicroServiceFormatter {
         id: 'root',
         type: FLOGO_TASK_TYPE.TASK,
         links: action.links,
-        tasks: action.tasks
+        tasks: action.tasks,
       },
-      errorHandlerTask
+      errorHandlerTask,
     };
   }
 
@@ -80,13 +83,12 @@ export class LegacyMicroServiceFormatter {
     if (isEmpty(errorHandler) || isEmpty(errorHandler.tasks)) {
       return undefined;
     }
-    const {tasks, links} = errorHandler;
+    const { tasks, links } = errorHandler;
     return {
       id: '__error_root',
       type: FLOGO_TASK_TYPE.TASK,
       tasks,
-      links
-    }
+      links,
+    };
   }
-
 }

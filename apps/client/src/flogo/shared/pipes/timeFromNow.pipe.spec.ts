@@ -5,7 +5,9 @@ import { TimeFromNowPipe } from './time-from-now.pipe';
 
 @Component({
   selector: 'flogo-test-container',
-  template: `<span>{{ dateCreated | timeFromNow }}</span>`
+  template: `
+    <span>{{ dateCreated | timeFromNow }}</span>
+  `,
 })
 class ContainerComponent {
   public dateCreated: any;
@@ -21,7 +23,7 @@ describe('Pipe: timeFromNow', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TimeFromNowPipe, ContainerComponent]
+      declarations: [TimeFromNowPipe, ContainerComponent],
     });
     fixture = TestBed.createComponent(ContainerComponent);
     directiveHost = fixture.debugElement.query(By.css('span'));
@@ -40,5 +42,4 @@ describe('Pipe: timeFromNow', () => {
     fixture.detectChanges();
     expect(directiveHost.nativeElement.innerHTML).toEqual('about 1 hour ago');
   });
-
 });

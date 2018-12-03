@@ -4,21 +4,21 @@
 
 export enum FLOGO_PROFILE_TYPE {
   MICRO_SERVICE,
-  DEVICE
+  DEVICE,
 }
 
 export enum FLOGO_CONTRIB_TYPE {
   TRIGGER = 'trigger',
-  ACTIVITY = 'activity'
+  ACTIVITY = 'activity',
 }
 
 export enum FLOGO_CONTRIB_TYPE_VALUES {
   MICRO_SERVICE_ACTIVITY = 'flogo:activity',
-  DEVICE_ACTIVITY = 'flogo:device:activity'
+  DEVICE_ACTIVITY = 'flogo:device:activity',
 }
 
 export enum FLOGO_TASK_TYPE {
-  TASK_ROOT,  // this is the type for triggers
+  TASK_ROOT, // this is the type for triggers
   TASK = 1,
   TASK_ITERATOR = 2,
   TASK_BRANCH,
@@ -26,27 +26,28 @@ export enum FLOGO_TASK_TYPE {
 }
 
 export enum FLOGO_FLOW_DIAGRAM_NODE_TYPE {
-  NODE_PADDING,   // padding node
-  NODE_HOLDER,    // placeholder node
-  NODE_ADD,       // node to add an activity
-  NODE_ROOT,      // the trigger node
-  NODE_ROOT_NEW,  // node to add a trigger
-  NODE,           // activity node
-  NODE_BRANCH,    // the branch line node
-  NODE_LINK,      // the link node
-  NODE_SUB_PROC,  // activity with sub flow
-  NODE_LOOP,       // repeatable activity
-  NODE_ROOT_ERROR_NEW
+  NODE_PADDING, // padding node
+  NODE_HOLDER, // placeholder node
+  NODE_ADD, // node to add an activity
+  NODE_ROOT, // the trigger node
+  NODE_ROOT_NEW, // node to add a trigger
+  NODE, // activity node
+  NODE_BRANCH, // the branch line node
+  NODE_LINK, // the link node
+  NODE_SUB_PROC, // activity with sub flow
+  NODE_LOOP, // repeatable activity
+  NODE_ROOT_ERROR_NEW,
 }
 
 export enum FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE {
   DEFAULT,
   BRANCH,
-  LABELED
+  LABELED,
 }
 
-export enum FLOGO_PROCESS_TYPE { DEFAULT = 1 }
-
+export enum FLOGO_PROCESS_TYPE {
+  DEFAULT = 1,
+}
 
 export enum ValueType {
   String = 'string',
@@ -58,7 +59,7 @@ export enum ValueType {
   Array = 'array',
   Any = 'any',
   Params = 'params',
-  ComplexObject = 'complexObject'
+  ComplexObject = 'complexObject',
 }
 
 const _allTypes: ReadonlyArray<ValueType> = Object.values(ValueType);
@@ -92,21 +93,20 @@ export const ERROR_CODE = {
   NOT_INSTALLED_TRIGGER: 'notInstalledTrigger',
   NOT_INSTALLED_ACTIVITY: 'notInstalledActivity',
   WRONG_INPUT_JSON_FILE: 'wrongInputJSONFile',
-  HAS_SUBFLOW: 'HasSubflow'
+  HAS_SUBFLOW: 'HasSubflow',
 };
 
 export const ERROR_CONSTRAINT = {
   NOT_UNIQUE: 'notUnique',
   NOT_INSTALLED_TRIGGER: 'notInstalledTrigger',
   NOT_INSTALLED_ACTIVITY: 'notInstalledActivity',
-  WRONG_INPUT_JSON_FILE: 'wrongInputJSONFile'
+  WRONG_INPUT_JSON_FILE: 'wrongInputJSONFile',
 };
 
 export const TRIGGER_MENU_OPERATION = {
   SHOW_SETTINGS: 'show-settings',
-  DELETE: 'delete'
+  DELETE: 'delete',
 };
-
 
 const APP_MODEL_LEGACY: 'legacy' = 'legacy';
 const APP_MODEL_STANDARD: 'standard' = 'standard';
@@ -119,7 +119,7 @@ export type TYPE_APP_MODEL = typeof APP_MODEL_LEGACY | typeof APP_MODEL_STANDARD
 export const CONTRIB_REF_PLACEHOLDER = {
   REF_SUBFLOW: 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow',
   REF_LAMBDA: 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda',
-  REF_CLI: 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli'
+  REF_CLI: 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli',
 };
 
 export const SELECTED_INSERT_TILE_CLASS = 'logic-selected';

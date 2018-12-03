@@ -3,7 +3,6 @@ import { ItemActivityTask, ItemBranch, ItemTask } from '../../../../core/index';
 import { FLOGO_TASK_TYPE, ValueType } from '../../../../core/constants';
 
 export class ItemFactory {
-
   static getDefaultTaskProperties(installed) {
     const defaults = {
       name: '',
@@ -28,17 +27,25 @@ export class ItemFactory {
       __props: {
         errors: [],
       },
-      __status: {}
+      __status: {},
     };
     return Object.assign({}, defaults, pick(installed, ['name', 'version', 'homepage', 'description', 'ref']));
   }
 
-  static makeTrigger(trigger: { installed: any, cli: any, handlerSetting: any, node: any }): any {
+  static makeTrigger(trigger: { installed: any; cli: any; handlerSetting: any; node: any }): any {
     // todo: what does cli means in this context??
     const { installed, cli, handlerSetting } = trigger;
-    const item = Object.assign({}, this.getDefaultTriggerProperties(installed), { id: trigger.node.taskID }, {
-      nodeId: trigger.node.taskID, type: FLOGO_TASK_TYPE.TASK_ROOT, triggerType: installed.name, settings: [],
-    });
+    const item = Object.assign(
+      {},
+      this.getDefaultTriggerProperties(installed),
+      { id: trigger.node.taskID },
+      {
+        nodeId: trigger.node.taskID,
+        type: FLOGO_TASK_TYPE.TASK_ROOT,
+        triggerType: installed.name,
+        settings: [],
+      }
+    );
 
     const settings = get(cli, 'settings', {});
     const triggerSchemaSettings = isArray(installed.settings) ? installed.settings : [];
@@ -62,7 +69,7 @@ export class ItemFactory {
     return item;
   }
 
-  static makeItem(activitySource: {activitySchema, taskInstance}): ItemTask {
+  static makeItem(activitySource: { activitySchema; taskInstance }): ItemTask {
     const { activitySchema, taskInstance } = activitySource;
 
     const attributes = taskInstance.attributes || [];
@@ -73,7 +80,9 @@ export class ItemFactory {
       name: taskInstance.name,
       description: taskInstance.description,
       inputMappings: taskInstance.inputMappings || [],
-      type: FLOGO_TASK_TYPE[taskInstance.type] ? FLOGO_TASK_TYPE[FLOGO_TASK_TYPE[taskInstance.type]] : FLOGO_TASK_TYPE.TASK,
+      type: FLOGO_TASK_TYPE[taskInstance.type]
+        ? FLOGO_TASK_TYPE[FLOGO_TASK_TYPE[taskInstance.type]]
+        : FLOGO_TASK_TYPE.TASK,
       settings: taskInstance.settings || {},
       return: !!activitySchema.return,
       input: fromPairs(attributes.map(attr => [attr.name, attr.value])),
@@ -83,7 +92,9 @@ export class ItemFactory {
 
   static makeBranch(branch): ItemBranch {
     return {
-      id: branch.taskID, type: FLOGO_TASK_TYPE.TASK_BRANCH, condition: branch.condition,
+      id: branch.taskID,
+      type: FLOGO_TASK_TYPE.TASK_BRANCH,
+      condition: branch.condition,
     };
   }
 }

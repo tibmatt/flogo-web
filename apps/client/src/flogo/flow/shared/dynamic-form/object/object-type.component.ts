@@ -6,10 +6,7 @@ import { BaseField } from '../field-base';
 @Component({
   selector: 'flogo-fb-object',
   templateUrl: 'object-type.component.html',
-  styleUrls: [
-    '../shared/dynamic-form.less',
-    'object-type.component.less',
-  ]
+  styleUrls: ['../shared/dynamic-form.less', 'object-type.component.less'],
 })
 export class ObjectTypeComponent {
   @Input() fieldGroup: FormGroup;
@@ -33,5 +30,4 @@ export class ObjectTypeComponent {
       return value;
     }
   }
-
 }

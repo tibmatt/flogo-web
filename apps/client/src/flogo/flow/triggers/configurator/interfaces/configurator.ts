@@ -1,6 +1,6 @@
-import {FlowMetadata} from '@flogo-web/client/core/interfaces/flow';
-import {Trigger, TriggerHandler, TriggerConfigureState} from '../../../core';
-import {Tabs} from '../../../shared/tabs/models/tabs.model';
+import { FlowMetadata } from '@flogo-web/client/core/interfaces/flow';
+import { Trigger, TriggerHandler, TriggerConfigureState } from '../../../core';
+import { Tabs } from '../../../shared/tabs/models/tabs.model';
 import { TriggerSchema, AppProperty } from '@flogo-web/client/core';
 
 export interface TriggerConfiguration {
@@ -13,7 +13,7 @@ export interface TriggerConfiguration {
 }
 
 export interface HandlerMappings {
-  actionMappings: { input: any[], output: any[] };
+  actionMappings: { input: any[]; output: any[] };
 }
 
 export interface TriggerDetail {

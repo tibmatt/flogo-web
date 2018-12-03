@@ -1,26 +1,24 @@
-import {ConfigureSettingsComponent} from './settings.component';
-import {ConfirmationService} from '@flogo-web/client/core/confirmation';
+import { ConfigureSettingsComponent } from './settings.component';
+import { ConfirmationService } from '@flogo-web/client/core/confirmation';
 import Spy = jasmine.Spy;
-import {EDITION_DATA_TOKEN} from './confirm-edition/confirm-edition.component';
-import {ElementRef} from '@angular/core';
-import {of} from 'rxjs';
+import { EDITION_DATA_TOKEN } from './confirm-edition/confirm-edition.component';
+import { ElementRef } from '@angular/core';
+import { of } from 'rxjs';
 
 describe('Component: ConfigureSettingsComponent', function(this: {
-  testComponent: ConfigureSettingsComponent,
-  confirmationService: ConfirmationService
+  testComponent: ConfigureSettingsComponent;
+  confirmationService: ConfirmationService;
 }) {
   beforeEach(() => {
-    this.confirmationService = jasmine.createSpyObj<ConfirmationService>('confirmationService', [
-      'openPopover'
-    ]);
+    this.confirmationService = jasmine.createSpyObj<ConfirmationService>('confirmationService', ['openPopover']);
     this.testComponent = new ConfigureSettingsComponent(this.confirmationService);
     this.testComponent.triggerInformation = {
       settingsControls: null,
       trigger: {
         handlersCount: 3,
         readme: '',
-        homePage: ''
-      }
+        homePage: '',
+      },
     };
   });
 
@@ -29,7 +27,7 @@ describe('Component: ConfigureSettingsComponent', function(this: {
     spyingObj.and.callFake(function() {
       expect(arguments[2].get(EDITION_DATA_TOKEN).flowCount).toEqual(3);
       return {
-        result: of({})
+        result: of({}),
       };
     });
     this.testComponent.onEnableSettings(new ElementRef(document.createElement('input')));

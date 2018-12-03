@@ -20,4 +20,3 @@ export interface DiagramActionChild extends DiagramAction {
   type: DiagramActionType.Insert | DiagramActionType.Branch;
   parentId: string;
 }
-

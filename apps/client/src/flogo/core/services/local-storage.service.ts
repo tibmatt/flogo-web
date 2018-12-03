@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { WindowRef } from './window-ref';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 /**
  * Simple local storage wrapper, mainly to be able to mock the local storage for component testing
@@ -28,5 +28,4 @@ export class LocalStorageService {
   setItem(key: string, value: string) {
     this.storage.setItem(key, value);
   }
-
 }

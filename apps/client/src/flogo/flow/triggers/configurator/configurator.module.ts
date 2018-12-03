@@ -1,16 +1,16 @@
-import {NgModule} from '@angular/core';
-import { ReactiveFormsModule} from '@angular/forms';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule as NgCommonModule } from '@angular/common';
 import { ScrollDispatchModule } from '@angular/cdk/scrolling';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
 
-import {SharedModule as FlogoSharedModule} from '@flogo-web/client/shared';
-import {MapperModule} from '@flogo-web/client/flow/shared/mapper';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared';
+import { MapperModule } from '@flogo-web/client/flow/shared/mapper';
 
 import { MonacoEditorModule } from '../../shared/monaco-editor';
-import {ConfiguratorService} from './services/configurator.service';
-import {ConfiguratorComponent} from './configurator.component';
+import { ConfiguratorService } from './services/configurator.service';
+import { ConfiguratorComponent } from './configurator.component';
 import { ConfigureTriggerComponent } from './trigger/trigger.component';
 import { ConfirmationComponent } from './confirmation/index';
 import {
@@ -57,21 +57,8 @@ import {
     FieldErrorComponent,
     ConfirmEditionComponent,
   ],
-  exports: [
-    ConfiguratorComponent
-  ],
-  providers: [
-    ConfiguratorService,
-    ConfigureDetailsService,
-    SettingsFormBuilder,
-    TriggerNameValidatorService,
-  ],
-  entryComponents: [
-    AutoCompleteContentComponent,
-    ConfirmationComponent,
-    ConfirmEditionComponent,
-  ]
+  exports: [ConfiguratorComponent],
+  providers: [ConfiguratorService, ConfigureDetailsService, SettingsFormBuilder, TriggerNameValidatorService],
+  entryComponents: [AutoCompleteContentComponent, ConfirmationComponent, ConfirmEditionComponent],
 })
-
-export class ConfiguratorModule {
-}
+export class ConfiguratorModule {}

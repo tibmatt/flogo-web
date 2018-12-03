@@ -17,5 +17,4 @@ export class Validator {
       throw ErrorManager.createValidationError('Validation error', { details });
     }
   }
-
 }

@@ -9,32 +9,32 @@ export function makeErrorTask(): Task {
     type: FLOGO_TASK_TYPE.TASK_ROOT,
     triggerType: FLOGO_ERROR_ROOT_NAME,
     attributes: {
-      outputs:  [
+      outputs: [
         {
           name: 'activity',
           type: ValueType.String,
           title: 'activity',
-          value: ''
+          value: '',
         },
         {
           name: 'message',
           type: ValueType.String,
           title: 'message',
-          value: ''
+          value: '',
         },
         {
           name: 'data',
           type: ValueType.Any,
           title: 'data',
-          value: ''
+          value: '',
         },
         {
           name: 'code',
           type: ValueType.String,
           title: 'code',
-          value: ''
-        }
+          value: '',
+        },
       ],
-    }
+    },
   };
 }

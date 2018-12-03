@@ -1,13 +1,13 @@
-<div class="content" #content
-     [@wrappedContentState]="panelStatus"
-     (@wrappedContentState.done)="onAnimationEnd($event)">
+<div class="content" #content [@wrappedContentState]="panelStatus" (@wrappedContentState.done)="onAnimationEnd($event)">
   <ng-content></ng-content>
 </div>
 <div class="debug-panel-container" [class.is-open]="isOpen" [@debugPanelContainerState]="panelStatus">
-  <div class="debug-panel-container__content"
-       *ngIf="isOpen"
-       [class.is-open]="isOpen"
-       [@debugPanelState]="{ value: panelStatus, params: toggleButtonAnimationParams }">
+  <div
+    class="debug-panel-container__content"
+    *ngIf="isOpen"
+    [class.is-open]="isOpen"
+    [@debugPanelState]="{ value: panelStatus, params: toggleButtonAnimationParams }"
+  >
     <flogo-flow-debug-panel-header-toggler [isOpen]="isOpen" (open)="openPanel()" (close)="closePanel()">
     </flogo-flow-debug-panel-header-toggler>
     <flogo-flow-debug-panel-content
@@ -21,6 +21,7 @@
       [canRestart]="isRestartableTask$ | async"
       [runDisabled]="isRunDisabled$ | async"
       [isEndOfFlow]="isEndOfFlow$ | async"
-      (runFromHere)="run()"></flogo-flow-debug-panel-content>
+      (runFromHere)="run()"
+    ></flogo-flow-debug-panel-content>
   </div>
 </div>

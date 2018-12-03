@@ -31,20 +31,17 @@ export const loader = {
       taskDataPromise = Promise.resolve(taskData);
     }
 
-    return Promise.all([
-      taskDataPromise,
-      determinePathToVendor(enginePath),
-    ])
-    .then(([data, vendorPath]) => {
-      return Promise.all([
-        _readTasks(vendorPath, 'trigger', data.triggers),
-        _readTasks(vendorPath, 'activity', data.activities),
-      ]);
-    })
-    .then(([triggers, activities]) => ({
-      activities,
-      triggers,
-    }));
+    return Promise.all([taskDataPromise, determinePathToVendor(enginePath)])
+      .then(([data, vendorPath]) => {
+        return Promise.all([
+          _readTasks(vendorPath, 'trigger', data.triggers),
+          _readTasks(vendorPath, 'activity', data.activities),
+        ]);
+      })
+      .then(([triggers, activities]) => ({
+        activities,
+        triggers,
+      }));
   },
   /**
    *
@@ -63,18 +60,20 @@ export const loader = {
     return determinePathToVendor(enginePath)
       .then(vendorPath => {
         return Promise.all([
-          _readTasks(vendorPath, 'trigger', triggersToRead.map(refToPath))
-            .then(triggers => triggers.map(trigger => {
+          _readTasks(vendorPath, 'trigger', triggersToRead.map(refToPath)).then(triggers =>
+            triggers.map(trigger => {
               // rt === schema of the trigger
               trigger.rt = normalizeContribSchema(trigger.rt);
               return trigger;
-            })),
-          _readTasks(vendorPath, 'activity', activitiesToRead.map(refToPath))
-            .then(activities => activities.map(activity => {
+            })
+          ),
+          _readTasks(vendorPath, 'activity', activitiesToRead.map(refToPath)).then(activities =>
+            activities.map(activity => {
               // rt === schema of the activity
               activity.rt = normalizeContribSchema(activity.rt);
               return activity;
-            })),
+            })
+          ),
         ]);
       })
       .then(([triggers, activities]) => ({ triggers, activities }));
@@ -90,11 +89,15 @@ function _readTasks(vendorPath, type, data) {
     return Promise.resolve([]);
   }
 
-  return Promise.all(data.map(function (taskInfo) {
-    return readJSONFile(path.join(vendorPath, taskInfo.path, `${type}.json`))
-      // rt means "runtime", the name was used to differentiate the ui descriptor versus the runtime descriptor,
-      // now that the metadata is consolidated "rt" qualifier is not necessary anymore
-      // todo: change "rt" to a more descriptive name
-      .then(schema => Object.assign({}, taskInfo, { rt: schema }));
-  }));
+  return Promise.all(
+    data.map(function(taskInfo) {
+      return (
+        readJSONFile(path.join(vendorPath, taskInfo.path, `${type}.json`))
+          // rt means "runtime", the name was used to differentiate the ui descriptor versus the runtime descriptor,
+          // now that the metadata is consolidated "rt" qualifier is not necessary anymore
+          // todo: change "rt" to a more descriptive name
+          .then(schema => Object.assign({}, taskInfo, { rt: schema }))
+      );
+    })
+  );
 }

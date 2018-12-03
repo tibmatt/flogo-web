@@ -1,15 +1,30 @@
 export function load() {
   return {
-    keywords: [
-      'true', 'false', 'null', 'nil',
-    ],
+    keywords: ['true', 'false', 'null', 'nil'],
 
     builtins: [],
 
     operators: [
-      '=', '>', '<', '!', '?', ':',
-      '==', '<=', '>=', '!=', '&&', '||',
-      '+', '-', '*', '/', '&', '|', '^', '%',
+      '=',
+      '>',
+      '<',
+      '!',
+      '?',
+      ':',
+      '==',
+      '<=',
+      '>=',
+      '!=',
+      '&&',
+      '||',
+      '+',
+      '-',
+      '*',
+      '/',
+      '&',
+      '|',
+      '^',
+      '%',
     ],
 
     // define our own brackets as '<' and '>' do not match in javascript
@@ -29,8 +44,7 @@ export function load() {
 
     tokenizer: {
       root: [
-
-        {include: '@baseExpr'},
+        { include: '@baseExpr' },
 
         [/{/, 'json.delimiter', '@json'],
 
@@ -38,33 +52,27 @@ export function load() {
         [/[{}()\[\]]/, '@brackets'],
 
         // strings: recover on non-terminated strings
-        [/"([^"\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
-        [/'([^'\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
+        [/"([^"\\]|\\.)*$/, 'string.invalid'], // non-teminated string
+        [/'([^'\\]|\\.)*$/, 'string.invalid'], // non-teminated string
         [/"/, 'string', '@string."'],
-        [/'/, 'string', '@string.\''],
+        [/'/, 'string', "@string.'"],
       ],
 
-      whitespace: [
-        [/[ \t\r\n]+/, 'white'],
-      ],
+      whitespace: [[/[ \t\r\n]+/, 'white']],
 
-      templateExpr: [
-        {include: '@baseExpr'},
-        [/[()\[\]]/, '@brackets'],
-        [/}}/, {token: '@rematch', next: '@pop'}],
-      ],
+      templateExpr: [{ include: '@baseExpr' }, [/[()\[\]]/, '@brackets'], [/}}/, { token: '@rematch', next: '@pop' }]],
 
       json: [
-        {include: '@whitespace'},
-        [/"([^"\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
+        { include: '@whitespace' },
+        [/"([^"\\]|\\.)*$/, 'string.invalid'], // non-teminated string
         [/"/, 'json.key', '@jsonKey."'],
         [/:\s*/, 'json.delimiter', '@jsonValue'],
         [/,/, 'json.delimiter'],
-        [/}/, {token: 'json.delimiter', next: '@pop'}],
+        [/}/, { token: 'json.delimiter', next: '@pop' }],
       ],
 
       jsonValue: [
-        [/"([^"\\]|\\.)*$/, 'string.invalid', '@pop'],  // non-teminated string
+        [/"([^"\\]|\\.)*$/, 'string.invalid', '@pop'], // non-teminated string
         [/"/, { token: 'json.string', switchTo: '@stringTemplate."' }],
         [/{/, { token: 'json.delimiter', switchTo: '@json' }],
         [/\d+\.\d*(@exponent)?/, 'number.float', '@pop'],
@@ -74,64 +82,72 @@ export function load() {
         [/0[0-7]+/, 'number.octal', '@pop'],
         [/\d+/, 'number', '@pop'],
         [/true|false|null/, 'keyword', '@pop'],
-        [/\[/, { token: 'json.delimiter', switchTo: '@jsonArray' }]
+        [/\[/, { token: 'json.delimiter', switchTo: '@jsonArray' }],
       ],
 
       jsonArray: [
         { include: '@whitespace' },
-        [/"([^"\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
+        [/"([^"\\]|\\.)*$/, 'string.invalid'], // non-teminated string
         [/"/, { token: 'json.string', next: '@stringTemplate."' }],
         [/{/, { token: 'json.delimiter', next: '@json' }],
         { include: '@numbers' },
         [/true|false|null/, 'keyword'],
         [/\[/, 'json.delimiter', '@jsonArray'],
         [/,/, 'json.delimiter'],
-        [/\]/, 'json.delimiter', '@pop']
+        [/\]/, 'json.delimiter', '@pop'],
       ],
 
       jsonKey: [
         [/[^\\"']+/, 'json.key'],
         [/@escapes/, 'json.key'],
         [/\\./, 'string.escape.invalid'],
-        [/["']/, {
-          cases: {
-            '$#==$S2': {token: 'json.key', next: '@pop'},
-            '@default': 'json.key'
-          }
-        }]
+        [
+          /["']/,
+          {
+            cases: {
+              '$#==$S2': { token: 'json.key', next: '@pop' },
+              '@default': 'json.key',
+            },
+          },
+        ],
       ],
 
       baseExpr: [
-
         [/([a-zA-Z_][\w\$]*)(\()/, ['function.call', 'delimiter']],
 
         // identifiers and keywords
-        [/([a-zA-Z_][\w\$]*)(\s*)(:?)/, {
-          cases: {
-            '$1@keywords': ['keyword', 'white', 'delimiter'],
-            '$3': ['key.identifier', 'white', 'delimiter'],   // followed by :
-            '$1@builtins': ['predefined.identifier', 'white', 'delimiter'],
-            '@default': ['identifier', 'white', 'delimiter']
-          }
-        }],
+        [
+          /([a-zA-Z_][\w\$]*)(\s*)(:?)/,
+          {
+            cases: {
+              '$1@keywords': ['keyword', 'white', 'delimiter'],
+              $3: ['key.identifier', 'white', 'delimiter'], // followed by :
+              '$1@builtins': ['predefined.identifier', 'white', 'delimiter'],
+              '@default': ['identifier', 'white', 'delimiter'],
+            },
+          },
+        ],
 
         [/(\$)(@resolvers)(\[\w+\])/, ['resolver.symbol', 'resolver.name', 'resolver.selector']],
         [/(\$)(@resolvers)/, ['resolver.symbol', 'resolver.name']],
         [/(\$)(\.)/, ['resolver.symbol', 'delimiter']],
 
         // whitespace
-        {include: '@whitespace'},
+        { include: '@whitespace' },
 
         // delimiters and operators
         [/[;,.]/, 'delimiter'],
-        [/@symbols/, {
-          cases: {
-            '@operators': 'operator',
-            '@default': ''
-          }
-        }],
+        [
+          /@symbols/,
+          {
+            cases: {
+              '@operators': 'operator',
+              '@default': '',
+            },
+          },
+        ],
 
-        { include: '@numbers' }
+        { include: '@numbers' },
       ],
 
       numbers: [
@@ -144,34 +160,49 @@ export function load() {
       ],
 
       stringTemplate: [
-        [/{{/, {
-          token: 'string-template.open', bracket: '@open', next: '@templateExpr'
-        }],
-        [/}}/, {
-          token: 'string-template.close', bracket: '@close'
-        }],
+        [
+          /{{/,
+          {
+            token: 'string-template.open',
+            bracket: '@open',
+            next: '@templateExpr',
+          },
+        ],
+        [
+          /}}/,
+          {
+            token: 'string-template.close',
+            bracket: '@close',
+          },
+        ],
         [/[^\\"']+/, 'json.string'],
         [/@escapes/, 'string.value.json'],
         [/\\./, 'string.invalid'],
-        [/["']/, {
-          cases: {
-            '$#==$S2': {token: 'json.string', next: '@pop'},
-            '@default': 'json.string'
-          }
-        }]
+        [
+          /["']/,
+          {
+            cases: {
+              '$#==$S2': { token: 'json.string', next: '@pop' },
+              '@default': 'json.string',
+            },
+          },
+        ],
       ],
 
       string: [
         [/[^\\"']+/, 'string'],
         [/@escapes/, 'string.escape'],
         [/\\./, 'string.escape.invalid'],
-        [/["']/, {
-          cases: {
-            '$#==$S2': {token: 'string', next: '@pop'},
-            '@default': 'string'
-          }
-        }]
-      ]
+        [
+          /["']/,
+          {
+            cases: {
+              '$#==$S2': { token: 'string', next: '@pop' },
+              '@default': 'string',
+            },
+          },
+        ],
+      ],
     },
   };
 }

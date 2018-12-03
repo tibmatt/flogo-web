@@ -1,5 +1,5 @@
 import { flow } from '../backend';
-import {FlowMetadata} from '../flow/flow-metadata';
+import { FlowMetadata } from '../flow/flow-metadata';
 
 export interface ActionBase {
   id: string;

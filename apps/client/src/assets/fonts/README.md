@@ -11,6 +11,6 @@ Add new icons or make your modifications. It is important that you keep the same
 ## Exporting
 
 1. Export the font from icomoon app
-2. Unzip the icomoon package and copy the flogo-icon.* fonts into `src/client/assets/fonts` of this project
+2. Unzip the icomoon package and copy the flogo-icon.\* fonts into `src/client/assets/fonts` of this project
 3. From the icomoon package copy `style.css` and move it to `src/client/assets/flogo-icons.less`
 4. From the icomoon package copy `selection.json` and move it to `src/client/icomoon-project.json`

@@ -9,7 +9,7 @@ export interface StepAttribute {
 
 export interface Step {
   flow: {
-    attributes: StepAttribute[],
+    attributes: StepAttribute[];
     // todo: what's the difference between state and status?
     state: number;
     status: number;

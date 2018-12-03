@@ -9,13 +9,15 @@ export abstract class BaseField<T> {
   controlType: string;
   validators?: Array<Validator | ValidatorFn>;
 
-  constructor(options: {
-    name?: string,
-    type?: ValueType,
-    value?: any,
-    required?: boolean,
-    controlType?: string
-  } = {}) {
+  constructor(
+    options: {
+      name?: string;
+      type?: ValueType;
+      value?: any;
+      required?: boolean;
+      controlType?: string;
+    } = {}
+  ) {
     this.name = options.name;
     this.type = options.type;
     this.value = options.value;

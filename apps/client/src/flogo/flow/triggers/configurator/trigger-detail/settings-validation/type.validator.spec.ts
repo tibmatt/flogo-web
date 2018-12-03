@@ -1,10 +1,10 @@
-import {arrayValidator, booleanValidator, getNumberValidator, getObjectValidator} from './type.validator';
-import {makeExpectationFunctions} from './testing/make-expectation-functions';
-import {ValueType} from '@flogo-web/client/core';
+import { arrayValidator, booleanValidator, getNumberValidator, getObjectValidator } from './type.validator';
+import { makeExpectationFunctions } from './testing/make-expectation-functions';
+import { ValueType } from '@flogo-web/client/core';
 
-describe('booleanValidator', function () {
-  it('Should correctly validate boolean values', function () {
-    const {shouldPass, shouldFail} = makeExpectationFunctions(booleanValidator);
+describe('booleanValidator', function() {
+  it('Should correctly validate boolean values', function() {
+    const { shouldPass, shouldFail } = makeExpectationFunctions(booleanValidator);
 
     shouldPass(true);
     shouldPass(false);
@@ -21,9 +21,9 @@ describe('booleanValidator', function () {
   });
 });
 
-describe('arrayValidator', function () {
-  it('Should correctly validate array values', function () {
-    const {shouldPass, shouldFail} = makeExpectationFunctions(arrayValidator);
+describe('arrayValidator', function() {
+  it('Should correctly validate array values', function() {
+    const { shouldPass, shouldFail } = makeExpectationFunctions(arrayValidator);
 
     shouldPass([]);
     shouldPass([1, 'a', 'b']);
@@ -43,9 +43,9 @@ describe('arrayValidator', function () {
   });
 });
 
-describe('numberValidator', function () {
-  it('Should correctly validate number values', function () {
-    const {shouldPass, shouldFail} = makeExpectationFunctions(getNumberValidator(ValueType.Integer));
+describe('numberValidator', function() {
+  it('Should correctly validate number values', function() {
+    const { shouldPass, shouldFail } = makeExpectationFunctions(getNumberValidator(ValueType.Integer));
 
     shouldPass(1);
     shouldPass(23423433);
@@ -65,12 +65,12 @@ describe('numberValidator', function () {
   });
 });
 
-describe('getObjectValidator', function () {
-  it('Should correctly validate object values', function () {
-    const {shouldPass, shouldFail} = makeExpectationFunctions(getObjectValidator(ValueType.Object));
+describe('getObjectValidator', function() {
+  it('Should correctly validate object values', function() {
+    const { shouldPass, shouldFail } = makeExpectationFunctions(getObjectValidator(ValueType.Object));
 
     shouldPass({});
-    shouldPass({'a': 32424});
+    shouldPass({ a: 32424 });
 
     shouldFail(undefined);
     shouldFail(null);

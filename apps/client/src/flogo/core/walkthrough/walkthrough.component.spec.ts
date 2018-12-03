@@ -5,7 +5,6 @@ import { WalkthroughComponent } from './walkthrough.component';
 import { NoDependenciesFakeLanguageModule } from '../language/testing';
 
 describe('Component: WalkthroughComponent Modal', () => {
-
   let comp: WalkthroughComponent;
   let fixture: ComponentFixture<WalkthroughComponent>;
 
@@ -25,9 +24,11 @@ describe('Component: WalkthroughComponent Modal', () => {
     return TestBed.compileComponents();
   }));
 
-  beforeEach(async(inject([BsModalService], (modalService: BsModalService) => {
-    return modalService.dismissAll();
-  })));
+  beforeEach(async(
+    inject([BsModalService], (modalService: BsModalService) => {
+      return modalService.dismissAll();
+    })
+  ));
 
   beforeEach(async(() => {
     fixture = TestBed.createComponent(WalkthroughComponent);
@@ -43,7 +44,6 @@ describe('Component: WalkthroughComponent Modal', () => {
   it('When load, should select by default the step number 1', () => {
     expect(findCurrentlySelectedStepNumber(fixture)).toEqual(1);
   });
-
 
   it('When load, back button must not exist and next button should exist', () => {
     const backButton = fixture.debugElement.query(By.css('#buttonBack'));
@@ -81,5 +81,4 @@ describe('Component: WalkthroughComponent Modal', () => {
     fixture.detectChanges();
     expect(findCurrentlySelectedStepNumber(fixture)).toEqual(3);
   });
-
 });

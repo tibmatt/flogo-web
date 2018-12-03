@@ -12,9 +12,6 @@ import without from 'lodash/without';
  */
 export function ensureKeyOrder(object, keyOrder) {
   const objectKeys = Object.keys(object);
-  const newKeyOrder = [
-    ...keyOrder,
-    ...without(objectKeys, keyOrder),
-  ];
+  const newKeyOrder = [...keyOrder, ...without(objectKeys, keyOrder)];
   return pick(object, newKeyOrder);
 }

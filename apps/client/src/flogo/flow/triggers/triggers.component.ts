@@ -1,5 +1,5 @@
 import { pick, uniq } from 'lodash';
-import {Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { from } from 'rxjs';
 import { takeUntil, mergeMap, reduce } from 'rxjs/operators';
@@ -9,10 +9,10 @@ import { LanguageService, FlowMetadata, TriggerSchema, Dictionary } from '@flogo
 import { TriggersApiService } from '@flogo-web/client/core/services';
 import { FLOGO_PROFILE_TYPE, TRIGGER_MENU_OPERATION } from '@flogo-web/client/core/constants';
 import { objectFromArray } from '@flogo-web/client/shared/utils';
-import {RESTAPIHandlersService} from '@flogo-web/client/core/services/restapi/v2/handlers-api.service';
+import { RESTAPIHandlersService } from '@flogo-web/client/core/services/restapi/v2/handlers-api.service';
 
 import { SingleEmissionSubject } from '@flogo-web/client/core/models/single-emission-subject';
-import {UIModelConverterService} from '@flogo-web/client/flow/core/ui-model-converter.service';
+import { UIModelConverterService } from '@flogo-web/client/flow/core/ui-model-converter.service';
 
 import { AppState } from '../core/state/app.state';
 
@@ -24,13 +24,13 @@ import * as TriggerActions from '../core/state/triggers/triggers.actions';
 import * as TriggerConfigureActions from '../core/state/triggers-configure/trigger-configure.actions';
 
 @Component({
-  selector : 'flogo-flow-triggers',
-  templateUrl : 'triggers.component.html',
-  styleUrls : [ 'triggers.component.less' ]
+  selector: 'flogo-flow-triggers',
+  templateUrl: 'triggers.component.html',
+  styleUrls: ['triggers.component.less'],
 })
 export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   actionId: string;
-  appDetails: {appId: string, appProfileType:  FLOGO_PROFILE_TYPE, metadata?: FlowMetadata};
+  appDetails: { appId: string; appProfileType: FLOGO_PROFILE_TYPE; metadata?: FlowMetadata };
   triggersList: RenderableTrigger[] = [];
   allowMultipleTriggers = true;
   currentTrigger: RenderableTrigger;
@@ -39,13 +39,14 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
 
   private ngDestroy$ = SingleEmissionSubject.create();
 
-  constructor(private restAPITriggersService: TriggersApiService,
-              private _restAPIHandlerService: RESTAPIHandlersService,
-              private _converterService: UIModelConverterService,
-              private _router: Router,
-              private _translate: LanguageService,
-              private store: Store<AppState>) {
-  }
+  constructor(
+    private restAPITriggersService: TriggersApiService,
+    private _restAPIHandlerService: RESTAPIHandlersService,
+    private _converterService: UIModelConverterService,
+    private _router: Router,
+    private _translate: LanguageService,
+    private store: Store<AppState>
+  ) {}
 
   ngOnInit() {
     this.store
@@ -108,7 +109,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
       .then(trigger => {
         const handler = trigger.handlers.find(h => h.actionId === this.actionId);
         this.store.dispatch(new TriggerActions.AddTrigger({ trigger, handler }));
-    });
+      });
   }
 
   private persistNewTriggerAndHandler(data, settings, outputs) {
@@ -117,16 +118,17 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
       const appId = this.appDetails.appId;
       const triggerInfo: any = pick(data.triggerData, ['name', 'ref', 'description']);
       triggerInfo.settings = objectFromArray(data.triggerData.settings || [], false);
-      registerTrigger = this.restAPITriggersService.createTrigger(appId, triggerInfo)
-        .then((triggerResult) => triggerResult.id);
+      registerTrigger = this.restAPITriggersService
+        .createTrigger(appId, triggerInfo)
+        .then(triggerResult => triggerResult.id);
     } else {
       registerTrigger = Promise.resolve(data.triggerData.id);
     }
-    return registerTrigger
-      .then(triggerId => {
-        return this._restAPIHandlerService.updateHandler(triggerId, this.actionId, {settings, outputs})
-          .then(() => triggerId);
-      });
+    return registerTrigger.then(triggerId => {
+      return this._restAPIHandlerService
+        .updateHandler(triggerId, this.actionId, { settings, outputs })
+        .then(() => triggerId);
+    });
   }
 
   private openTriggerMapper(selectedTrigger: Trigger) {
@@ -136,17 +138,21 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
         mergeMap(ref => this._converterService.getTriggerSchema(ref)),
         reduce((schemas: Dictionary<TriggerSchema>, schema: TriggerSchema) => {
           return { ...schemas, [schema.ref]: schema };
-        }, {}),
-      ).subscribe((triggerSchemas) => {
-        this.store.dispatch(new TriggerConfigureActions.OpenConfigureWithSelection({
-          triggerId: selectedTrigger.id,
-          triggerSchemas,
-        }));
+        }, {})
+      )
+      .subscribe(triggerSchemas => {
+        this.store.dispatch(
+          new TriggerConfigureActions.OpenConfigureWithSelection({
+            triggerId: selectedTrigger.id,
+            triggerSchemas,
+          })
+        );
       });
   }
 
   private deleteHandlerForTrigger(triggerId) {
-    this._restAPIHandlerService.deleteHandler(this.actionId, triggerId)
+    this._restAPIHandlerService
+      .deleteHandler(this.actionId, triggerId)
       .then(() => this._router.navigate(['/flows', this.actionId]))
       .then(() => this.store.dispatch(new TriggerActions.RemoveHandler(triggerId)));
   }
@@ -164,5 +170,4 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
         break;
     }
   }
-
 }

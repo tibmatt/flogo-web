@@ -6,7 +6,8 @@ import { BaseField } from '../field-base';
   // tslint:disable:component-selector
   // using attribute selector for accesibility e.g. <label flogo-flow-dynamic-form-label></label>
   selector: '[flogo-flow-dynamic-form-label]',
-  template: '{{ control.value }}<ng-container *ngIf="!fieldMetadata.required && !noOptionalLabel"> (Optional)</ng-container>',
+  template:
+    '{{ control.value }}<ng-container *ngIf="!fieldMetadata.required && !noOptionalLabel"> (Optional)</ng-container>',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })

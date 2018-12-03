@@ -30,26 +30,29 @@ describe('importer.AppImporter', () => {
       };
       let importResult;
 
-      beforeAll(async function () {
+      beforeAll(async function() {
         sandbox = sinon.createSandbox();
-        testDoubles.validatorStub = sandbox.stub(importer, 'validateAndCleanAdditionalProperties')
-          .callsFake(app => {
-            app.id = 'myValidCleanAppId';
-          });
-        testDoubles.appCreationStub = sandbox.stub(dependencies.appStorage, 'create')
-          .returns({ id: 'createdAppId' });
+        testDoubles.validatorStub = sandbox.stub(importer, 'validateAndCleanAdditionalProperties').callsFake(app => {
+          app.id = 'myValidCleanAppId';
+        });
+        testDoubles.appCreationStub = sandbox.stub(dependencies.appStorage, 'create').returns({ id: 'createdAppId' });
 
         const actionsMap = new Map();
-        testDoubles.actionsImporterStub = sandbox.stub(dependencies.actionsImporter, 'importAll')
-          .returns(actionsMap);
+        testDoubles.actionsImporterStub = sandbox.stub(dependencies.actionsImporter, 'importAll').returns(actionsMap);
         testDoubles.triggerImporterMock = sandbox.mock(dependencies.triggerHandlersImporter);
-        testDoubles.triggerImporterMock.expects('setAppId').once().withArgs('createdAppId');
-        testDoubles.triggerImporterMock.expects('setActionsByOriginalId').once().withArgs(actionsMap);
+        testDoubles.triggerImporterMock
+          .expects('setAppId')
+          .once()
+          .withArgs('createdAppId');
+        testDoubles.triggerImporterMock
+          .expects('setActionsByOriginalId')
+          .once()
+          .withArgs(actionsMap);
         testDoubles.triggerImporterMock.expects('importAll').once();
 
         importResult = await importer.import({ id: 'myValidRawAppId' });
       });
-      afterAll(function () {
+      afterAll(function() {
         sandbox.restore();
       });
       test('should validate the app structure', () => {
@@ -66,12 +69,9 @@ describe('importer.AppImporter', () => {
         expect(actionsImporterStub.calledOnce).toBe(true);
         expect(actionsImporterStub.calledWith('createdAppId', { id: 'myValidRawAppId' })).toBe(true);
       });
-      test(
-        'should configure the trigger handlers importer and import the triggers and handlers',
-        () => {
-          testDoubles.triggerImporterMock.verify();
-        }
-      );
+      test('should configure the trigger handlers importer and import the triggers and handlers', () => {
+        testDoubles.triggerImporterMock.verify();
+      });
       test('should return the imported app', () => {
         expect(importResult.id).toBe('createdAppId');
       });
@@ -85,18 +85,12 @@ describe('importer.AppImporter', () => {
    * }}
    */
   function makeContext() {
-    const noOp = () => {
-    };
+    const noOp = () => {};
     const fullAppValidator = {};
     const appStorage = { create: noOp };
     const actionsImporter = { importAll: noOp };
     const triggerHandlersImporter = { setAppId: noOp, setActionsByOriginalId: noOp, importAll: noOp };
-    const importerInstance = new AppImporter(
-      fullAppValidator,
-      appStorage,
-      actionsImporter,
-      triggerHandlersImporter,
-    );
+    const importerInstance = new AppImporter(fullAppValidator, appStorage, actionsImporter, triggerHandlersImporter);
     return {
       importer: importerInstance,
       dependencies: {

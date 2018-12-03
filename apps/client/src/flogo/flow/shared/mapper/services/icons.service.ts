@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ValueType as ValueType } from '@flogo-web/client/core/constants';
+import { ValueType } from '@flogo-web/client/core/constants';
 import { MapperTreeNode } from '../models/mapper-treenode.model';
 
 @Injectable()
 export class IconsService {
-
   private iconMap = {
     date: '#flogo-mapper-icon-date',
     [ValueType.Array]: '#flogo-mapper-icon-array',
@@ -32,5 +31,4 @@ export class IconsService {
 
     return this.iconMap[dataType];
   }
-
 }

@@ -8,7 +8,7 @@ export function triggersReducer(state: FlowState, action: TriggerActionsUnion): 
     case TriggerActionType.SelectTrigger: {
       return {
         ...state,
-        currentSelection: makeTriggerSelection(action.payload.triggerId)
+        currentSelection: makeTriggerSelection(action.payload.triggerId),
       };
     }
     case TriggerActionType.UpdateHandler: {
@@ -27,26 +27,27 @@ export function triggersReducer(state: FlowState, action: TriggerActionsUnion): 
         triggers: {
           ...state.triggers,
           [action.payload.id]: { ...action.payload },
-        }
+        },
       };
     }
     case TriggerActionType.AddTrigger: {
-     const { trigger, handler } = action.payload;
-     const handlers = state.handlers;
-     const triggerId = trigger.id;
-     return {
-       ...state,
-       triggers: {
-         ...state.triggers,
-         [triggerId]: { ...trigger },
-       },
-       handlers: {
-         ...handlers,
-         [triggerId]: {
-           ...handler, triggerId
-         },
-       },
-     };
+      const { trigger, handler } = action.payload;
+      const handlers = state.handlers;
+      const triggerId = trigger.id;
+      return {
+        ...state,
+        triggers: {
+          ...state.triggers,
+          [triggerId]: { ...trigger },
+        },
+        handlers: {
+          ...handlers,
+          [triggerId]: {
+            ...handler,
+            triggerId,
+          },
+        },
+      };
     }
     case TriggerActionType.RemoveHandler: {
       state = removeTriggerAndHandler(state, action.payload);

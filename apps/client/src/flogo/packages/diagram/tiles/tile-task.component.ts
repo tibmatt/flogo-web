@@ -9,9 +9,7 @@ import { OpenCloseMenuAnimation } from './tile.animations';
   templateUrl: './tile-task.component.html',
   styleUrls: ['./tile-task.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('menuOptions', OpenCloseMenuAnimation)
-  ]
+  animations: [trigger('menuOptions', OpenCloseMenuAnimation)],
 })
 export class TileTaskComponent extends AbstractTileTaskComponent implements OnChanges {
   @HostBinding('class.--with-branches') hasBranch = false;
@@ -47,9 +45,9 @@ export class TileTaskComponent extends AbstractTileTaskComponent implements OnCh
     if (this.tile.isTerminalInRow) {
       return true;
     }
-    const {task} = this.tile;
+    const { task } = this.tile;
     if (task) {
-      const {final: isFinal, canHaveChildren} = task.features;
+      const { final: isFinal, canHaveChildren } = task.features;
       return isFinal || !canHaveChildren;
     }
     return false;
@@ -63,5 +61,4 @@ export class TileTaskComponent extends AbstractTileTaskComponent implements OnCh
     }
     return null;
   }
-
 }

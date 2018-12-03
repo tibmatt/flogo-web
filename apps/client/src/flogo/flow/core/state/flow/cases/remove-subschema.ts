@@ -4,8 +4,8 @@ import { getLinkedSubflow } from './get-linked-subflow';
 
 export function removeSubschemaIfNotUsed(state: FlowState, subflowId: string) {
   if (!isSubflowUsedAgain(state, subflowId)) {
-    const {[subflowId]: subflowToRemove, ...subflows} = state.linkedSubflows;
-    state = {...state, linkedSubflows: subflows};
+    const { [subflowId]: subflowToRemove, ...subflows } = state.linkedSubflows;
+    state = { ...state, linkedSubflows: subflows };
   }
   return state;
 }
@@ -13,7 +13,7 @@ export function removeSubschemaIfNotUsed(state: FlowState, subflowId: string) {
 function isSubflowUsedAgain(state: FlowState, subflowId: string) {
   const isReferencedSubflow = (t: ItemSubflow) => getLinkedSubflow(t) === subflowId;
   return Boolean(
-    Object.values(state.mainItems).find(isReferencedSubflow)
-    || Object.values(state.errorItems).find(isReferencedSubflow)
+    Object.values(state.mainItems).find(isReferencedSubflow) ||
+      Object.values(state.errorItems).find(isReferencedSubflow)
   );
 }

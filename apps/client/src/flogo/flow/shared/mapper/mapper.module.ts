@@ -37,10 +37,7 @@ import { MapperControllerFactory } from './services/mapper-controller/mapper-con
     TreeModule,
     MonacoEditorModule,
   ],
-  exports: [
-    FunctionsComponent,
-    MapperComponent
-  ],
+  exports: [FunctionsComponent, MapperComponent],
   declarations: [
     EditorComponent,
     FunctionsComponent,
@@ -55,9 +52,7 @@ import { MapperControllerFactory } from './services/mapper-controller/mapper-con
     TreeComponent,
     ListComponent,
   ],
-  entryComponents: [
-    MapperComponent
-  ],
+  entryComponents: [MapperComponent],
   providers: [
     TreeNodeFactoryService,
     TreeService,
@@ -66,8 +61,6 @@ import { MapperControllerFactory } from './services/mapper-controller/mapper-con
     MappingParser,
     MapperControllerFactory,
   ],
-  bootstrap: []
+  bootstrap: [],
 })
-export class MapperModule {
-
-}
+export class MapperModule {}

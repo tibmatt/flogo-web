@@ -1,6 +1,6 @@
-import {isEmpty, partialRight, times} from 'lodash';
-import {GraphNode, GraphNodeDictionary, NodeType} from '@flogo-web/client/core';
-import {NodeMatrix} from './matrix';
+import { isEmpty, partialRight, times } from 'lodash';
+import { GraphNode, GraphNodeDictionary, NodeType } from '@flogo-web/client/core';
+import { NodeMatrix } from './matrix';
 
 interface TranslateContext {
   parentNode: GraphNode;
@@ -9,7 +9,7 @@ interface TranslateContext {
 
 export function nodesToNodeMatrix(rootNode: GraphNode, nodes: GraphNodeDictionary): NodeMatrix {
   const matrix: NodeMatrix = [[rootNode]];
-  translateChildren({parentNode: rootNode, nodes}, matrix);
+  translateChildren({ parentNode: rootNode, nodes }, matrix);
   return matrix;
 }
 

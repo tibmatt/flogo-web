@@ -1,26 +1,26 @@
-import {TriggerManager} from '../../../../modules/triggers';
-import {ActivitiesManager} from '../../../../modules/activities';
-import {getContribInstallationController as getInstallationController} from '../../../../modules/engine';
-import {config} from '../../../../config/app-config';
-import {logger} from '../../../../common/logging';
+import { TriggerManager } from '../../../../modules/triggers';
+import { ActivitiesManager } from '../../../../modules/activities';
+import { getContribInstallationController as getInstallationController } from '../../../../modules/engine';
+import { config } from '../../../../config/app-config';
+import { logger } from '../../../../common/logging';
 import { install as installContributionToEngine } from '../../../../modules/contrib-installer/microservice';
-import {TYPE_ACTIVITY, TYPE_TRIGGER} from '../../../../common/constants';
-import {ERROR_TYPES, ErrorManager} from '../../../../common/errors';
+import { TYPE_ACTIVITY, TYPE_TRIGGER } from '../../../../common/constants';
+import { ERROR_TYPES, ErrorManager } from '../../../../common/errors';
 import flatten from 'lodash/flatten';
 
 const contributionTypes = {
-  'activity': {
-    'manager': ActivitiesManager,
-    'installerOpts': {
-      'type': TYPE_ACTIVITY
-    }
+  activity: {
+    manager: ActivitiesManager,
+    installerOpts: {
+      type: TYPE_ACTIVITY,
+    },
   },
-  'trigger': {
-    'manager': TriggerManager,
-    'installerOpts': {
-      'type': TYPE_TRIGGER
-    }
-  }
+  trigger: {
+    manager: TriggerManager,
+    installerOpts: {
+      type: TYPE_TRIGGER,
+    },
+  },
 };
 
 export function contribs(router) {
@@ -56,8 +56,10 @@ async function listContributions(ctx) {
   if (contributionType) {
     foundContributions = await contributionType.manager.find(searchTerms);
   } else {
-    const contributionsFetcher = Object.keys(contributionTypes)
-      .reduce((getContribsArray, type) =>  getContribsArray.concat(contributionTypes[type].manager.find(searchTerms)), []);
+    const contributionsFetcher = Object.keys(contributionTypes).reduce(
+      (getContribsArray, type) => getContribsArray.concat(contributionTypes[type].manager.find(searchTerms)),
+      []
+    );
     const results = await Promise.all(contributionsFetcher);
     foundContributions = flatten(results);
   }
@@ -83,15 +85,14 @@ async function installContribution(ctx, next) {
       type: ERROR_TYPES.ENGINE.INSTALL,
       message: 'Unknown type of contribution',
       params: {
-        body: 'Should be in the pattern: {"url": "path_to_contribution", "type": "activity"}'
-      }
+        body: 'Should be in the pattern: {"url": "path_to_contribution", "type": "activity"}',
+      },
     });
   }
 
   logger.info(`[log] Install ${contribType.installerOpts.type}: '${url}'`);
-  const installController = await getInstallationController(
-    config.defaultEngine.path,
-    (url, engine) => installContributionToEngine(url, contribType.installerOpts.type, engine),
+  const installController = await getInstallationController(config.defaultEngine.path, (url, engine) =>
+    installContributionToEngine(url, contribType.installerOpts.type, engine)
   );
 
   const result = await installController.install(url);

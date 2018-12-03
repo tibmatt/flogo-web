@@ -7,15 +7,18 @@ import { SettingControlGroup } from '../../interfaces';
 import { SaveParams } from './save-params';
 import { convertSettingsFormValues } from './convert-setting-form-values';
 
-export function extractHandlerChanges(oldHandler: TriggerHandler, {settings, flowInputMapper, replyMapper}: SaveParams) {
+export function extractHandlerChanges(
+  oldHandler: TriggerHandler,
+  { settings, flowInputMapper, replyMapper }: SaveParams
+) {
   const changes = [];
   const settingChanges = checkForSettingChanges(settings);
   if (settingChanges) {
-    changes.push([ 'settings', settingChanges ]);
+    changes.push(['settings', settingChanges]);
   }
   const mappingChanges = checkForMappingChanges(oldHandler, flowInputMapper, replyMapper);
   if (mappingChanges) {
-    changes.push([ 'actionMappings', mappingChanges ]);
+    changes.push(['actionMappings', mappingChanges]);
   }
   return changes.length > 0 ? fromPairs(changes) : null;
 }
@@ -31,14 +34,18 @@ function checkForSettingChanges(settings: FormGroup) {
   return null;
 }
 
-function checkForMappingChanges(prevHandler: TriggerHandler, flowInputMapper?: MapperController, replyMapper?: MapperController) {
+function checkForMappingChanges(
+  prevHandler: TriggerHandler,
+  flowInputMapper?: MapperController,
+  replyMapper?: MapperController
+) {
   const originalMappings = prevHandler.actionMappings;
   let newMappings = originalMappings;
   if (flowInputMapper) {
-    newMappings = {...newMappings, input: extractMappings(flowInputMapper)};
+    newMappings = { ...newMappings, input: extractMappings(flowInputMapper) };
   }
   if (replyMapper) {
-    newMappings = {...newMappings, output: extractMappings(replyMapper)};
+    newMappings = { ...newMappings, output: extractMappings(replyMapper) };
   }
   return newMappings !== originalMappings ? newMappings : null;
 }

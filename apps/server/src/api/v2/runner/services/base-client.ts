@@ -10,8 +10,13 @@ export function createBaseClient() {
 }
 
 const tag = name => `[TestRunner][${name}]`;
-const logRequest = (req) => logger.info(tag('Request'), `${req.method} ${req.href}`, req.body);
-const logResponse = (res) => logger.info(tag('Response'), `${res.req.method} ${res.requestUrl} - ${res.statusCode} ${res.statusMessage} - `, res.body);
+const logRequest = req => logger.info(tag('Request'), `${req.method} ${req.href}`, req.body);
+const logResponse = res =>
+  logger.info(
+    tag('Response'),
+    `${res.req.method} ${res.requestUrl} - ${res.statusCode} ${res.statusMessage} - `,
+    res.body
+  );
 async function requestLogger(options, next) {
   logRequest(options);
   const response = await next(options);

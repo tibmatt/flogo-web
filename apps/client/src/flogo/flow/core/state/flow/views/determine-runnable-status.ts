@@ -8,7 +8,7 @@ const findNotRunnableTasks = (tasks: Dictionary<Item>) => !!Object.values(tasks)
 export function determineRunnableStatus(mainItems: Dictionary<Item>, errorItems: Dictionary<Item>) {
   const runnableInfo = {
     disabled: isEmpty(mainItems),
-    disableReason: null
+    disableReason: null,
   };
   if (runnableInfo.disabled) {
     return runnableInfo;

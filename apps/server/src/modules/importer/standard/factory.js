@@ -5,14 +5,11 @@ import { validatorFactory } from '../validator';
 
 import { extractContribRefs } from '../common/extract-contrib-refs';
 
-
 import { StandardActionsImporter } from './standard-actions-importer';
 import { StandardTaskConverter } from './standard-task-converter';
 import { StandardTriggersHandlersImporter } from './standard-triggers-handlers-importer';
 
-
 export class StandardAppImporterFactory {
-
   /**
    * @param {ResourceStorageRegistry} resourceStorageRegistry
    */
@@ -27,11 +24,11 @@ export class StandardAppImporterFactory {
 
     const actionsImporter = this.createActionsImporter(
       this.resourceStorageRegistry.getActionsManager(),
-      contributions.activities,
+      contributions.activities
     );
     const triggersHandlersImporter = this.createTriggersHandlersImporter(
       this.resourceStorageRegistry.getAppsTriggersManager(),
-      this.resourceStorageRegistry.getHandlersManager(),
+      this.resourceStorageRegistry.getHandlersManager()
     );
     return {
       actionsImporter,
@@ -41,10 +38,7 @@ export class StandardAppImporterFactory {
   }
 
   async loadContributions() {
-    return loadMicroserviceContribs(
-      this.getActivitiesManager(),
-      this.getTriggersManager(),
-    );
+    return loadMicroserviceContribs(this.getActivitiesManager(), this.getTriggersManager());
   }
 
   getTriggersManager() {
@@ -61,11 +55,7 @@ export class StandardAppImporterFactory {
       triggers: extractContribRefs(contributions.triggers),
     };
     return validatorFactory(schemas.app, contribRefs, {
-      schemas: [
-        schemas.common,
-        schemas.trigger,
-        schemas.flow,
-      ],
+      schemas: [schemas.common, schemas.trigger, schemas.flow],
     });
   }
 

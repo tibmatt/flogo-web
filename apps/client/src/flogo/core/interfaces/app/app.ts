@@ -15,4 +15,3 @@ export interface App {
   type?: string;
   device?: any;
 }
-

@@ -1,6 +1,6 @@
 import { defaultsDeep, cloneDeep } from 'lodash';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject ,  Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { AppsApiService } from '@flogo-web/client/core/services/restapi/v2/apps-api.service';
 import { ErrorService } from '@flogo-web/client/core/services/error.service';
@@ -10,29 +10,27 @@ import { ApplicationDetail } from './application-detail.interface';
 import { TriggerGroup } from './trigger-group.interface';
 import { FlowGroup } from './flow-group.interface';
 import { APP_MODELS, App as BackendApp } from '@flogo-web/client/core';
-import {getProfileType} from '@flogo-web/client/shared/utils';
+import { getProfileType } from '@flogo-web/client/shared/utils';
 
 const DEFAULT_STATE = {
   name: {
     pendingSave: false,
     hasErrors: false,
-    errors: {}
+    errors: {},
   },
   description: {
     pendingSave: false,
     hasErrors: false,
-    errors: {}
-  }
+    errors: {},
+  },
 };
 
 @Injectable()
 export class AppDetailService {
-
   private currentApp$ = new BehaviorSubject<ApplicationDetail>(undefined);
   private fetching: boolean;
 
-  constructor(private appsApiService: AppsApiService, private errorService: ErrorService) {
-  }
+  constructor(private appsApiService: AppsApiService, private errorService: ErrorService) {}
 
   public currentApp(): Observable<ApplicationDetail> {
     return this.currentApp$.asObservable();
@@ -44,10 +42,13 @@ export class AppDetailService {
 
   public load(appId: string) {
     this.fetchApp(appId).then(app => {
-      this.currentApp$.next(<ApplicationDetail>defaultsDeep({}, {
-        app: this.transform(app),
-        state: DEFAULT_STATE
-      }));
+      this.currentApp$.next(<ApplicationDetail>defaultsDeep(
+        {},
+        {
+          app: this.transform(app),
+          state: DEFAULT_STATE,
+        }
+      ));
     });
   }
 
@@ -59,10 +60,13 @@ export class AppDetailService {
     }
     this.fetchApp(currentApp.app.id).then(app => {
       const prevApp = this.currentApp$.getValue();
-      this.currentApp$.next(<ApplicationDetail>defaultsDeep({}, {
-        app: this.transform(app),
-        state: prevApp.state
-      }));
+      this.currentApp$.next(<ApplicationDetail>defaultsDeep(
+        {},
+        {
+          app: this.transform(app),
+          state: prevApp.state,
+        }
+      ));
     });
   }
 
@@ -92,7 +96,7 @@ export class AppDetailService {
         nextApp.state[prop] = {
           pendingSave: false,
           hasErrors: false,
-          errors: {}
+          errors: {},
         };
         this.currentApp$.next(nextApp);
       })
@@ -104,7 +108,7 @@ export class AppDetailService {
         nextApp.state[prop] = {
           pendingSave: false,
           hasErrors: !!errors.length,
-          errors: this.errorService.transformRestErrors(errors)
+          errors: this.errorService.transformRestErrors(errors),
         };
         this.currentApp$.next(nextApp);
       });
@@ -121,14 +125,16 @@ export class AppDetailService {
     if (!currentApp) {
       return;
     }
-    this.appsApiService.deleteApp(currentApp.id)
-      .then(() => {
-        this.currentApp$.next(<ApplicationDetail>defaultsDeep({}, {
+    this.appsApiService.deleteApp(currentApp.id).then(() => {
+      this.currentApp$.next(<ApplicationDetail>defaultsDeep(
+        {},
+        {
           // todo better signal app was deleted
           app: null,
-          state: DEFAULT_STATE
-        }));
-      });
+          state: DEFAULT_STATE,
+        }
+      ));
+    });
   }
 
   public toEngineSpec(isLegacyExport?: boolean) {
@@ -144,7 +150,7 @@ export class AppDetailService {
     return this.appsApiService.exportFlows(this.currentApp$.getValue().app.id, flowids, appModel);
   }
 
-  public build(appId, opts: { os: string, arch: string }) {
+  public build(appId, opts: { os: string; arch: string }) {
     return this.appsApiService.buildAndDownload(appId, opts);
   }
 
@@ -154,11 +160,10 @@ export class AppDetailService {
 
   private fetchApp(appId: string) {
     this.fetching = true;
-    return this.appsApiService.getApp(appId)
-      .then((app: App) => {
-        this.fetching = false;
-        return app;
-      });
+    return this.appsApiService.getApp(appId).then((app: App) => {
+      this.fetching = false;
+      return app;
+    });
   }
 
   private getCurrentAsEditable() {
@@ -169,12 +174,17 @@ export class AppDetailService {
     const triggers = app.triggers || [];
     const actions = app.actions || [];
     const profileType = getProfileType(app);
-    return <App> Object.assign({}, app, {
-      profileType,
-      flowGroups: this.makeFlowGroups(triggers, actions)
-    }, {
-      triggerGroups: this.makeTriggerGroups(triggers, actions)
-    });
+    return <App>Object.assign(
+      {},
+      app,
+      {
+        profileType,
+        flowGroups: this.makeFlowGroups(triggers, actions),
+      },
+      {
+        triggerGroups: this.makeTriggerGroups(triggers, actions),
+      }
+    );
   }
 
   private makeFlowGroups(triggers, actions): FlowGroup[] {
@@ -183,22 +193,22 @@ export class AppDetailService {
       handlers = handlers.concat(t.handlers);
     });
     const orphanActions = actions.filter(a => !handlers.find(h => h.actionId === a.id));
-    const orphanActionMap = new Map(<[string, any][]> orphanActions.map(a => [a.id, a]));
-    const actionMap = new Map(<[string, any][]> actions.map(a => [a.id, a]));
+    const orphanActionMap = new Map(<[string, any][]>orphanActions.map(a => [a.id, a]));
+    const actionMap = new Map(<[string, any][]>actions.map(a => [a.id, a]));
 
     const pullAction = actionId => {
       const action = actionMap.get(actionId);
       return action;
     };
 
-    const triggerGroups = triggers.map(trigger => {
-      return {
-        trigger: trigger,
-        flows: trigger.handlers
-          .map(h => pullAction(h.actionId))
-          .filter(flow => !!flow),
-      };
-    }).filter(triggerGroup => triggerGroup.flows.length > 0);
+    const triggerGroups = triggers
+      .map(trigger => {
+        return {
+          trigger: trigger,
+          flows: trigger.handlers.map(h => pullAction(h.actionId)).filter(flow => !!flow),
+        };
+      })
+      .filter(triggerGroup => triggerGroup.flows.length > 0);
 
     // orphan flows
     if (orphanActionMap.size) {
@@ -212,16 +222,16 @@ export class AppDetailService {
   }
 
   private makeTriggerGroups(triggers, actions): TriggerGroup[] {
-    return actions.map(action => {
-      return {
-        flow: action,
-        triggers: triggers.filter(t => !!t.handlers.find(h => h.actionId === action.id))
-      };
-    }).map(actionGroup => {
-      actionGroup.triggers = actionGroup.triggers.length > 0 ? actionGroup.triggers : null;
-      return actionGroup;
-    });
+    return actions
+      .map(action => {
+        return {
+          flow: action,
+          triggers: triggers.filter(t => !!t.handlers.find(h => h.actionId === action.id)),
+        };
+      })
+      .map(actionGroup => {
+        actionGroup.triggers = actionGroup.triggers.length > 0 ? actionGroup.triggers : null;
+        return actionGroup;
+      });
   }
-
 }
-

@@ -1,6 +1,6 @@
 import { join as joinPath } from 'path';
 import { runShellCMD } from '../../../common/utils/process';
-import { logger } from "../../../common/logging";
+import { logger } from '../../../common/logging';
 
 import { mergeEnvWithOpts } from './merge-env-with-opts';
 

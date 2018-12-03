@@ -1,10 +1,9 @@
-import {AbstractActionsImporter, portTaskTypeForIterators} from '../common';
+import { AbstractActionsImporter, portTaskTypeForIterators } from '../common';
 import omit from 'lodash/omit';
 import get from 'lodash/get';
-import {TASK_HANDLER_NAME_ERROR} from "../../../common/constants";
+import { TASK_HANDLER_NAME_ERROR } from '../../../common/constants';
 
 export class ActionsImporter extends AbstractActionsImporter {
-
   extractActions(fromRawApp) {
     return (fromRawApp.actions || []).map(this.formatAction);
   }
@@ -21,10 +20,9 @@ export class ActionsImporter extends AbstractActionsImporter {
     if (errorHandlerTask) {
       formattedAction[TASK_HANDLER_NAME_ERROR] = {
         tasks: (errorHandlerTask.tasks || []).map(portTaskTypeForIterators),
-        links: errorHandlerTask.links || []
+        links: errorHandlerTask.links || [],
       };
     }
     return formattedAction;
   }
-
 }

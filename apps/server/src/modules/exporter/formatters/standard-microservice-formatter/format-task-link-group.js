@@ -5,7 +5,7 @@ import { formatTasks } from './format-tasks';
 export function formatTaskLinkGroups(activitySchemas, flow) {
   const rootTask = {
     tasks: flow.tasks,
-    links: flow.links
+    links: flow.links,
   };
   const errorHandler = flow.errorHandler || {};
   return {

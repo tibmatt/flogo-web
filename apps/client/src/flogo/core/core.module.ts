@@ -4,8 +4,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 
 import {
-  createDefaultRestApiHttpHeaders, DEFAULT_REST_HEADERS, HttpUtilsService, RestApiService,
-  TriggersApiService
+  createDefaultRestApiHttpHeaders,
+  DEFAULT_REST_HEADERS,
+  HttpUtilsService,
+  RestApiService,
+  TriggersApiService,
 } from './services/restapi';
 import { RESTAPIHandlersService as RESTAPIHandlersServiceV2 } from './services/restapi/v2/handlers-api.service';
 import { APIFlowsService } from './services/restapi/v2/flows-api.service';
@@ -26,13 +29,13 @@ import { FlogoNavbarComponent } from './navbar/navbar.component';
 import { WalkthroughModule } from './walkthrough/walkthrough.module';
 import { ShimTriggerBuildApiService } from './services/restapi/v2/shim-trigger-build-api.service';
 import { FileDownloaderService } from './services/file-downloader.service';
-import {SharedModule as FlogoSharedModule} from '@flogo-web/client/shared';
-import {ConfirmationModalComponent} from '@flogo-web/client/core/confirmation/confirmation-modal/confirmation-modal.component';
-import {ConfirmationService} from '@flogo-web/client/core/confirmation/confirmation.service';
-import {OverlayModule} from '@angular/cdk/overlay';
-import {ConfirmationModalService} from './confirmation/confirmation-modal/confirmation-modal.service';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared';
+import { ConfirmationModalComponent } from '@flogo-web/client/core/confirmation/confirmation-modal/confirmation-modal.component';
+import { ConfirmationService } from '@flogo-web/client/core/confirmation/confirmation.service';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { ConfirmationModalService } from './confirmation/confirmation-modal/confirmation-modal.service';
 import { NotificationsModule } from './notifications';
-import {ModalService} from '@flogo-web/client/core/modal/modal.service';
+import { ModalService } from '@flogo-web/client/core/modal/modal.service';
 
 @NgModule({
   imports: [
@@ -44,7 +47,8 @@ import {ModalService} from '@flogo-web/client/core/modal/modal.service';
     FlogoSharedModule,
     NotificationsModule,
   ],
-  providers: [ // services
+  providers: [
+    // services
     { provide: DEFAULT_REST_HEADERS, useValue: createDefaultRestApiHttpHeaders() },
     HttpUtilsService,
     RestApiService,
@@ -71,19 +75,10 @@ import {ModalService} from '@flogo-web/client/core/modal/modal.service';
     FileDownloaderService,
     ConfirmationService,
     ConfirmationModalService,
-    ModalService
+    ModalService,
   ],
-  declarations: [
-    FlogoNavbarComponent,
-    ConfirmationModalComponent
-  ],
-  exports: [
-    FlogoNavbarComponent,
-    NotificationsModule,
-  ],
-  entryComponents: [
-    ConfirmationModalComponent
-  ]
+  declarations: [FlogoNavbarComponent, ConfirmationModalComponent],
+  exports: [FlogoNavbarComponent, NotificationsModule],
+  entryComponents: [ConfirmationModalComponent],
 })
-export class CoreModule {
-}
+export class CoreModule {}

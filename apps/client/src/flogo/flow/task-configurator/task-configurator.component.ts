@@ -5,29 +5,34 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-import {ActivitySchema, Task} from '@flogo-web/client/core/interfaces';
+import { ActivitySchema, Task } from '@flogo-web/client/core/interfaces';
 import { mergeItemWithSchema, SingleEmissionSubject } from '@flogo-web/client/core/models';
 import { NotificationsService } from '@flogo-web/client/core/notifications';
 
 import { MapperTranslator, MapperControllerFactory, MapperController } from '../shared/mapper';
 
-import {FlogoFlowService as FlowsService} from '@flogo-web/client/flow/core';
-import {Tabs} from '../shared/tabs/models/tabs.model';
-import {SubFlowConfig} from './subflow-config';
+import { FlogoFlowService as FlowsService } from '@flogo-web/client/flow/core';
+import { Tabs } from '../shared/tabs/models/tabs.model';
+import { SubFlowConfig } from './subflow-config';
 import { isIterableTask, isMapperActivity, isSubflowTask } from '@flogo-web/client/shared/utils';
-import {ActionBase, FLOGO_TASK_TYPE, Item, ItemActivityTask, ItemSubflow, ItemTask} from '@flogo-web/client/core';
-import { createIteratorMappingContext, getIteratorOutputSchema, ITERABLE_VALUE_KEY, ITERATOR_OUTPUT_KEY } from './models';
+import { ActionBase, FLOGO_TASK_TYPE, Item, ItemActivityTask, ItemSubflow, ItemTask } from '@flogo-web/client/core';
+import {
+  createIteratorMappingContext,
+  getIteratorOutputSchema,
+  ITERABLE_VALUE_KEY,
+  ITERATOR_OUTPUT_KEY,
+} from './models';
 import { FlowState, FlowActions } from '@flogo-web/client/flow/core/state';
 import { getFlowMetadata, getInputContext } from '@flogo-web/client/flow/core/models/task-configure/get-input-context';
 import { getStateWhenConfigureChanges } from '../shared/configurator/configurator.selector';
-import {createSaveAction} from '@flogo-web/client/flow/task-configurator/models/save-action-creator';
-import {hasTaskWithSameName} from '@flogo-web/client/flow/core/models/unique-task-name';
+import { createSaveAction } from '@flogo-web/client/flow/task-configurator/models/save-action-creator';
+import { hasTaskWithSameName } from '@flogo-web/client/flow/core/models/unique-task-name';
 import { AppState } from '@flogo-web/client/flow/core/state/app.state';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',
   ITERATOR: 'iterator',
-  INPUT_MAPPINGS: 'inputMappings'
+  INPUT_MAPPINGS: 'inputMappings',
 };
 const ITERATOR_TAB_INFO = { name: TASK_TABS.ITERATOR, labelKey: 'TASK-CONFIGURATOR:TABS:ITERATOR' };
 const SUBFLOW_TAB_INFO = { name: TASK_TABS.SUBFLOW, labelKey: 'TASK-CONFIGURATOR:TABS:SUB-FLOW' };
@@ -35,21 +40,13 @@ const MAPPINGS_TAB_INFO = { name: TASK_TABS.INPUT_MAPPINGS, labelKey: 'TASK-CONF
 
 @Component({
   selector: 'flogo-flow-task-configurator',
-  styleUrls: [
-    '../../../assets/_mapper-modal.less',
-    'task-configurator.component.less'
-  ],
+  styleUrls: ['../../../assets/_mapper-modal.less', 'task-configurator.component.less'],
   templateUrl: 'task-configurator.component.html',
   animations: [
     trigger('dialog', [
-      transition('void => *', [
-        style({ transform: 'translateY(-100%)', opacity: 0 }),
-        animate('250ms ease-in')
-      ]),
-      transition('* => void', [
-        animate('250ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 }))
-      ]),
-    ])
+      transition('void => *', [style({ transform: 'translateY(-100%)', opacity: 0 }), animate('250ms ease-in')]),
+      transition('* => void', [animate('250ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 }))]),
+    ]),
   ],
 })
 export class TaskConfiguratorComponent implements OnInit, OnDestroy {
@@ -91,7 +88,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     private store: Store<AppState>,
     private _flowService: FlowsService,
     private mapperControllerFactory: MapperControllerFactory,
-    private notificationsService: NotificationsService,
+    private notificationsService: NotificationsService
   ) {
     this.isSubflowType = false;
     this.resetState();
@@ -100,8 +97,12 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store
       .pipe(
-        getStateWhenConfigureChanges([FLOGO_TASK_TYPE.TASK, FLOGO_TASK_TYPE.TASK_SUB_PROC, FLOGO_TASK_TYPE.TASK_ITERATOR]),
-        takeUntil(this.destroy$),
+        getStateWhenConfigureChanges([
+          FLOGO_TASK_TYPE.TASK,
+          FLOGO_TASK_TYPE.TASK_SUB_PROC,
+          FLOGO_TASK_TYPE.TASK_ITERATOR,
+        ]),
+        takeUntil(this.destroy$)
       )
       .subscribe(state => {
         if (state) {
@@ -121,7 +122,9 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
 
   selectSubFlow() {
     this._flowService.listFlowsForApp(this.appId).then(flows => {
-      this.subflowList = flows.filter(flow => !(flow.id === this.actionId || flow.id === this.currentTile.settings.flowPath));
+      this.subflowList = flows.filter(
+        flow => !(flow.id === this.actionId || flow.id === this.currentTile.settings.flowPath)
+      );
       this.showSubflowList = true;
     });
   }
@@ -163,8 +166,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
         iterableValue: isIterable ? this.iterableValue : undefined,
       },
       inputMappings: MapperTranslator.translateMappingsOut(this.inputMapperController.getCurrentState().mappings),
-    })
-    .subscribe(action => {
+    }).subscribe(action => {
       this.store.dispatch(action);
     });
   }
@@ -274,14 +276,12 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     }
 
     if (this.iteratorController) {
-      this.iteratorController.state$
-        .pipe(takeUntil(this.contextChange$))
-        .subscribe((mapperState) => {
-          const iterableMapping = mapperState.mappings[ITERABLE_VALUE_KEY];
-          if (iterableMapping) {
-            this.onIteratorValueChange(iterableMapping.expression, mapperState.isValid);
-          }
-        });
+      this.iteratorController.state$.pipe(takeUntil(this.contextChange$)).subscribe(mapperState => {
+        const iterableMapping = mapperState.mappings[ITERABLE_VALUE_KEY];
+        if (iterableMapping) {
+          this.onIteratorValueChange(iterableMapping.expression, mapperState.isValid);
+        }
+      });
     }
     this.open();
   }
@@ -331,7 +331,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     flowMetadata,
     activitySchema,
     subflowSchema,
-                               }): { propsToMap: any[], mappings: any[] } {
+  }): { propsToMap: any[]; mappings: any[] } {
     let propsToMap = [];
     let mappings = [];
     const isOutputMapper = isMapperActivity(activitySchema);
@@ -362,7 +362,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
         skip(1),
         takeUntil(this.contextChange$)
       )
-      .subscribe(({isValid, isDirty}) => {
+      .subscribe(({ isValid, isDirty }) => {
         const inputMappingsTab = this.tabs.get(TASK_TABS.INPUT_MAPPINGS);
         inputMappingsTab.isValid = isValid;
         inputMappingsTab.isDirty = isDirty;
@@ -374,7 +374,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       name: subflowSchema.name,
       description: subflowSchema.description,
       createdAt: subflowSchema.createdAt,
-      flowPath: subflowSchema.id
+      flowPath: subflowSchema.id,
     };
   }
 
@@ -414,5 +414,4 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       this.contextChange$.emitAndComplete();
     }
   }
-
 }

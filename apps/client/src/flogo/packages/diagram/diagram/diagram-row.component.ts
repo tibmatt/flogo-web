@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  HostBinding,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { NodeType } from '@flogo-web/client/core';
 import { Tile, TaskTile, TileType, DiagramAction, DiagramSelection } from '../interfaces';
 import { actionEventFactory } from '../action-event-factory';
@@ -23,14 +32,13 @@ export class DiagramRowComponent implements OnChanges {
   nodeTypes = NodeType;
   tiles: Tile[];
 
-  constructor(private rowIndexService: RowIndexService) {
-  }
+  constructor(private rowIndexService: RowIndexService) {}
 
   trackTileBy(index, tile: Tile) {
     if (isTaskTile(tile)) {
       return tile.task.id;
     } else if (isInsertTile(tile)) {
-        return `insert::${tile.parentId}`;
+      return `insert::${tile.parentId}`;
     } else {
       return tile.type;
     }
@@ -59,5 +67,4 @@ export class DiagramRowComponent implements OnChanges {
   onTaskAction(action: DiagramAction) {
     this.action.emit(action);
   }
-
 }

@@ -11,7 +11,7 @@ export interface Task {
 }
 
 interface Attribute {
-  id: number|string;
+  id: number | string;
   name?: string;
   from: string;
   to: string;

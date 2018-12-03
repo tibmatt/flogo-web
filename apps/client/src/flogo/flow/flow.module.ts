@@ -14,7 +14,7 @@ import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
 
 import { CoreModule as FlowCoreModule } from './core';
 
-import {TriggersModule as FlogoFlowTriggersModule} from '@flogo-web/client/flow/triggers';
+import { TriggersModule as FlogoFlowTriggersModule } from '@flogo-web/client/flow/triggers';
 import { TaskMapperModule as FlogoTaskMapperModule } from './task-configurator';
 import { BranchMapperModule } from './branch-configurator';
 import { ParamsSchemaModule } from './params-schema';
@@ -36,9 +36,7 @@ import { TaskAddModule } from './task-add';
     CommonModule,
     ScrollDispatchModule,
     StoreModule.forFeature('flow', featureReducer),
-    EffectsModule.forFeature([
-      SaveEffects,
-    ]),
+    EffectsModule.forFeature([SaveEffects]),
     FlogoSharedModule,
     FlogoLogsModule,
     DiagramModule,
@@ -54,18 +52,8 @@ import { TaskAddModule } from './task-add';
     DebugPanelModule,
     BranchMapperModule,
   ],
-  declarations: [
-    FlogoRunFlowComponent,
-    FlowComponent,
-    FlogoFlowDiagramComponent,
-    FlowTabsComponent,
-  ],
-  providers: [
-    FlowDataResolver,
-  ],
-  bootstrap: [
-    FlowComponent
-  ]
+  declarations: [FlogoRunFlowComponent, FlowComponent, FlogoFlowDiagramComponent, FlowTabsComponent],
+  providers: [FlowDataResolver],
+  bootstrap: [FlowComponent],
 })
-export class FlowModule {
-}
+export class FlowModule {}

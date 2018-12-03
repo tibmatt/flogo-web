@@ -16,12 +16,10 @@ export function formatResource(fromAction, taskLinkGroup) {
 }
 
 function formatMetadata(actionMetadata = {}) {
-  return ['input', 'output']
-    .reduce((formattedMetadata, type) => {
-      if (!isEmpty(actionMetadata[type])) {
-        formattedMetadata[type] = [...actionMetadata[type]];
-      }
-      return formattedMetadata;
-    }, {});
+  return ['input', 'output'].reduce((formattedMetadata, type) => {
+    if (!isEmpty(actionMetadata[type])) {
+      formattedMetadata[type] = [...actionMetadata[type]];
+    }
+    return formattedMetadata;
+  }, {});
 }
-

@@ -3,7 +3,6 @@ import { TASK_HANDLER_NAME_ROOT, TASK_HANDLER_NAME_ERROR } from '../constants';
 
 describe('common.utils.flow', () => {
   describe('getInternalTasksPath()', () => {
-
     it('should return path of tasks for root handler', () => {
       expect(getInternalTasksPath(TASK_HANDLER_NAME_ROOT)).toEqual('tasks');
     });

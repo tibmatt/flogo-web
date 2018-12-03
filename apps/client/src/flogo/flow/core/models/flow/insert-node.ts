@@ -19,6 +19,6 @@ export function insertNode(flowGraph: FlowGraph, node: GraphNode, parentId?: str
     nodes: {
       ...nodes,
       [node.id]: node,
-    }
+    },
   };
 }

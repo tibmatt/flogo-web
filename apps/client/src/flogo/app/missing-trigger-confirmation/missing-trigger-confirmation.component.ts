@@ -14,7 +14,7 @@ export interface ConfirmationResult {
   selector: 'flogo-missing-trigger-confirmation',
   templateUrl: './missing-trigger-confirmation.component.html',
   styleUrls: ['./missing-trigger-confirmation.component.less'],
-  animations: modalAnimate
+  animations: modalAnimate,
 })
 export class MissingTriggerConfirmationComponent {
   @HostBinding('@modalAnimate') public modalAnimate = true;
@@ -39,5 +39,4 @@ export class MissingTriggerConfirmationComponent {
   cancel() {
     this.control.close(null);
   }
-
 }
