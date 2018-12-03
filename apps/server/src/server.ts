@@ -18,7 +18,7 @@ export default ensureDefaultDirs()
   })
   .catch(err => {
     logger.error(err);
-    throw err;
+    process.exit(1);
   });
 
 function initWebSocketApi(newServer) {

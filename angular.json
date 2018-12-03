@@ -59,7 +59,7 @@
           }
         },
         "serve": {
-          "builder": "@nrwl/builders:node-execute",
+          "builder": "./tools/builders:dev-server",
           "options": {
             "buildTarget": "server:build"
           }

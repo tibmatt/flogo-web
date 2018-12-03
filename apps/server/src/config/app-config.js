@@ -4,7 +4,7 @@ import './load-env';
 
 const rootPath = path.resolve(__dirname, '..');
 const PUBLIC_DIR = process.env.FLOGO_WEB_PUBLICDIR || path.resolve(rootPath, '..', 'client');
-const LOCAL_DIR = process.env.FLOGO_WEB_LOCALDIR || path.resolve(rootPath, '..', '..', 'dist', 'local');
+const LOCAL_DIR = process.env.FLOGO_WEB_LOCALDIR || path.resolve(rootPath, '..', '..', '..', 'dist', 'local');
 
 const FLOW_SERVICE_HOST = process.env.FLOGO_FLOW_SERVICE_HOST || 'localhost';
 const FLOW_STATE_SERVICE_HOST = process.env.FLOGO_FLOW_STATE_SERVICE_HOST || 'localhost';
