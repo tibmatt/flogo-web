@@ -1,6 +1,6 @@
 {
   "name": "flogo-web-client",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "Wonderful web application for Flogo",
   "angular-cli": {},
   "repository": {
