@@ -1,10 +1,11 @@
-import { resolve, normalize, Path } from '@angular-devkit/core';
+import { resolve, normalize, Path, getSystemPath } from '@angular-devkit/core';
 import { BuildEvent, Builder, BuilderConfiguration, BuilderContext } from '@angular-devkit/architect';
-import { ChildProcess, spawn } from 'child_process';
+import { ChildProcess } from 'child_process';
 import { relative } from 'path';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
+const { spawn } = require('cross-spawn');
 const treeKill = require('tree-kill');
 
 interface BuildOptions {
@@ -15,9 +16,6 @@ interface BuildOptions {
 const TSNODE_BINARY = './node_modules/.bin/ts-node';
 const TSNODE_DEV_BINARY = './node_modules/.bin/tsnd';
 const DEFAULT_ARGS = ['--respawn', '--transpileOnly', '-r', 'tsconfig-paths/register'];
-
-const normalizeTsConfig = (pathToTsConfig: string) =>
-  pathToTsConfig.startsWith('..') || pathToTsConfig.startsWith('/') ? pathToTsConfig : `./${pathToTsConfig}`;
 
 export default class ServerBuilder implements Builder<BuildOptions> {
   private subprocess: ChildProcess;
@@ -38,7 +36,9 @@ export default class ServerBuilder implements Builder<BuildOptions> {
   }
 
   private resolveBinary(watch: boolean) {
-    return resolve(this.builderContext.workspace.root, normalize(watch ? TSNODE_DEV_BINARY : TSNODE_BINARY));
+    return getSystemPath(
+      resolve(this.builderContext.workspace.root, normalize(watch ? TSNODE_DEV_BINARY : TSNODE_BINARY))
+    );
   }
 
   private runProcess(binary: string | Path, { cwd, main, tsconfig }: { cwd: string; main: string; tsconfig: string }) {
