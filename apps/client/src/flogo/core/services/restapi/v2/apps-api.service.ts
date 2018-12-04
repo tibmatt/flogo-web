@@ -22,7 +22,7 @@ export class AppsApiService {
     return this.restApi.get('actions/recent').toPromise();
   }
 
-  createNewApp(profileDetails): Promise<any> {
+  createNewApp(): Promise<any> {
     return this.determineUniqueName(UNTITLED_APP).then(appName => {
       const application: any = {
         type: 'flogo:app',
@@ -30,13 +30,6 @@ export class AppsApiService {
         version: '',
         description: '',
       };
-      if (profileDetails.profileType === FLOGO_PROFILE_TYPE.DEVICE) {
-        application.type = 'flogo:device';
-        application.device = {};
-        application.device.profile = profileDetails.profile;
-        application.device.deviceType = profileDetails.deviceType;
-        application.device.settings = profileDetails.settings || {};
-      }
       return this.restApi.post('apps', application).toPromise();
     });
   }

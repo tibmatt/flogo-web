@@ -10,7 +10,6 @@ import { HttpUtilsService } from '../../core/services/restapi/http-utils.service
 import { FlogoDeletePopupComponent } from '../../shared/components/delete.popup.component';
 import { FlogoAppImportComponent } from '../app-import/app-import.component';
 import { BsModalComponent } from 'ng2-bs3-modal';
-import { FlogoNewAppComponent } from '../new-app/new-app.component';
 import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
 import { ProfilesAPIService } from '@flogo-web/client/core/services/restapi/v2/profiles-api.service';
 import { MockProfilesAPIService } from '@flogo-web/client/core/services/restapi/v2/profiles-api.service.mock';
@@ -62,8 +61,7 @@ describe('FlogoAppList component', () => {
         FlogoDeletePopupComponent,
         TimeFromNowPipe,
         FlogoAppImportComponent,
-        BsModalComponent,
-        FlogoNewAppComponent,
+        BsModalComponent
       ], // declare the test component
       providers: [
         HttpUtilsService,
