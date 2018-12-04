@@ -35,6 +35,7 @@ const config = {
   db: 'http://localhost:5984/flogo-web',
   rootPath,
   publicPath: PUBLIC_DIR,
+  logsPath: path.join(LOCAL_DIR, 'logs'),
   logLevel,
   localPath: LOCAL_DIR,
   defaultAppJsonPath: path.join(rootPath, 'config', 'sample-app.json'),

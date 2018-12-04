@@ -3,7 +3,7 @@ import path from 'path';
 import { config } from '../../config/app-config';
 import { ensureDir } from '../../common/utils/file';
 
-const DIRS = [['engines'], ['db']];
+const DIRS = [['engines'], ['db'], ['logs']];
 
 export function ensureDefaultDirs() {
   return DIRS.reduce(
