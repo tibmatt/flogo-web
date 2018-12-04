@@ -118,7 +118,8 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
     if (!this.popoverRef || !this.popoverRef.hasAttached) {
       return;
     }
-    const keyCode = event.keyCode;
+    // tslint:disable-next-line:deprecation https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key#Browser_compatibility
+    const keyCode = event.key !== undefined ? event.key : event.keyCode;
     if (keyCode === TAB) {
       this.close();
     }

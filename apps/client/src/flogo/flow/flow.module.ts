@@ -6,7 +6,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared';
 import { LogsModule as FlogoLogsModule } from '@flogo-web/client/logs';
 import { DiagramModule } from '@flogo-web/client/packages/diagram';
-import { ScrollDispatchModule } from '@angular/cdk/scrolling';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { MonacoEditorModule } from './shared/monaco-editor';
 import { FormBuilderModule as FlogoCommonFormBuilderModule } from './shared/dynamic-form';
@@ -34,7 +34,7 @@ import { TaskAddModule } from './task-add';
 @NgModule({
   imports: [
     CommonModule,
-    ScrollDispatchModule,
+    ScrollingModule,
     StoreModule.forFeature('flow', featureReducer),
     EffectsModule.forFeature([SaveEffects]),
     FlogoSharedModule,

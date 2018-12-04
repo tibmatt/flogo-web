@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 
@@ -60,17 +60,22 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
 
     this.tabs$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTabs);
     this.store
-      .select(TriggerConfigureSelectors.getCurrentTabType)
-      .pipe(takeUntil(this.ngDestroy$))
+      .pipe(
+        select(TriggerConfigureSelectors.getCurrentTabType),
+        takeUntil(this.ngDestroy$)
+      )
       .subscribe(currentTabType => {
         this.currentTabType = currentTabType;
       });
 
     this.isSaving$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTriggerIsSaving);
-    this.getCurrentTriggerState = this.store.select(TriggerConfigureSelectors.getConfigureState).pipe(take(1));
+    this.getCurrentTriggerState = this.store.pipe(
+      select(TriggerConfigureSelectors.getConfigureState),
+      take(1)
+    );
     this.store
-      .select(TriggerConfigureSelectors.selectCurrentTriggerId)
       .pipe(
+        select(TriggerConfigureSelectors.selectCurrentTriggerId),
         filter(currentTriggerId => !!currentTriggerId),
         switchMap(() => this.getCurrentTriggerState),
         takeUntil(this.ngDestroy$)

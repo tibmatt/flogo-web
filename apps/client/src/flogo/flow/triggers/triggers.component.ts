@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { from } from 'rxjs';
 import { takeUntil, mergeMap, reduce } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 
 import { LanguageService, FlowMetadata, TriggerSchema, Dictionary } from '@flogo-web/client/core';
 import { TriggersApiService } from '@flogo-web/client/core/services';
@@ -50,8 +50,10 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store
-      .select(getTriggersState)
-      .pipe(takeUntil(this.ngDestroy$))
+      .pipe(
+        select(getTriggersState),
+        takeUntil(this.ngDestroy$)
+      )
       .subscribe(triggerState => {
         this.currentTrigger = triggerState.currentTrigger;
         this.actionId = triggerState.actionId;

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 
@@ -39,8 +39,8 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.isConfiguratorInitialized$ = this.store.select(TriggerConfigureSelectors.getHasTriggersConfigure);
-    const triggerStatuses$ = this.store.select(TriggerConfigureSelectors.getTriggerStatuses);
+    this.isConfiguratorInitialized$ = this.store.pipe(select(TriggerConfigureSelectors.getHasTriggersConfigure));
+    const triggerStatuses$ = this.store.pipe(select(TriggerConfigureSelectors.getTriggerStatuses));
     this.triggerStatuses$ = this.observeWhileConfiguratorIsActive(triggerStatuses$, []);
 
     this.isConfiguratorInitialized$.pipe(takeUntil(this.ngDestroy$)).subscribe(isConfigInitialized => {
@@ -59,7 +59,7 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
         this.currentTriggerDetailStatus = status;
       });
 
-    const currentTriggerId$ = this.store.select(TriggerConfigureSelectors.selectCurrentTriggerId);
+    const currentTriggerId$ = this.store.pipe(select(TriggerConfigureSelectors.selectCurrentTriggerId));
     this.observeWhileConfiguratorIsActive(currentTriggerId$, null).subscribe(currentTriggerId => {
       this.selectedTriggerId = currentTriggerId;
     });

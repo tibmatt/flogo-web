@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
-import { ScrollDispatchModule } from '@angular/cdk/scrolling';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { ModalService } from '@flogo-web/client/core/modal/modal.service';
 
@@ -33,7 +33,7 @@ import { MissingTriggerConfirmationComponent } from './missing-trigger-confirmat
     AppRoutingModule,
     OverlayModule,
     PortalModule,
-    ScrollDispatchModule,
+    ScrollingModule,
   ],
   declarations: [
     FlogoApplicationDetailComponent,

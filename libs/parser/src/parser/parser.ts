@@ -388,12 +388,12 @@ export const allTokens: TokenType[] = [...Object.values(Token)];
 // instead of functions, so all the functions are properties
 // tslint:disable:member-ordering
 export class MappingParser extends Parser {
-  constructor(input: IToken[]) {
-    super(input, lexerDefinition, {
+  constructor() {
+    super(lexerDefinition, {
       recoveryEnabled: true,
       outputCst: true,
     });
-    Parser.performSelfAnalysis(this);
+    this.performSelfAnalysis();
   }
 
   public mappingExpression = this.RULE('mappingExpression', () => {

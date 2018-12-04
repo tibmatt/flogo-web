@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule as NgCommonModule } from '@angular/common';
-import { ScrollDispatchModule } from '@angular/cdk/scrolling';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
 
@@ -34,7 +34,7 @@ import {
   imports: [
     NgCommonModule,
     ReactiveFormsModule,
-    ScrollDispatchModule,
+    ScrollingModule,
     OverlayModule,
     PortalModule,
     FlogoSharedModule,

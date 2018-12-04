@@ -1,6 +1,6 @@
 import { Injectable, InjectionToken, Injector } from '@angular/core';
 import { FlowActions, FlowSelectors, FlowState } from '@flogo-web/client/flow/core/state';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { TaskAddComponent, TASKADD_OPTIONS } from './task-add.component';
@@ -22,8 +22,8 @@ export class AddActivityService {
   constructor(private store: Store<FlowState>, private injector: Injector, private overlay: Overlay) {}
 
   startSubscriptions() {
-    this.installedActivities$ = this.store.select(FlowSelectors.getInstalledActivities);
-    this.appAndFlowInfo$ = this.store.select(FlowSelectors.selectAppAndFlowInfo);
+    this.installedActivities$ = this.store.pipe(select(FlowSelectors.getInstalledActivities));
+    this.appAndFlowInfo$ = this.store.pipe(select(FlowSelectors.selectAppAndFlowInfo));
   }
 
   cancel() {

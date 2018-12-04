@@ -43,11 +43,18 @@ export default class ServerBuilder implements Builder<BuildOptions> {
 
   private runProcess(binary: string | Path, { cwd, main, tsconfig }: { cwd: string; main: string; tsconfig: string }) {
     return new Observable(observer => {
-      this.subprocess = spawn(binary, [...DEFAULT_ARGS, '-P', tsconfig, main], {
+      const subprocess = spawn(binary, [...DEFAULT_ARGS, '-P', tsconfig, main], {
         cwd,
         env: process.env,
         stdio: 'inherit',
       });
+      this.subprocess = subprocess;
+      const killSubProcess = () => {
+        if (!subprocess.killed) {
+          treeKill(this.subprocess.pid, 'SIGKILL');
+        }
+      };
+      process.on('exit', killSubProcess);
 
       this.subprocess.on('error', err => {
         this.builderContext.logger.fatal(err.message);
@@ -62,11 +69,7 @@ export default class ServerBuilder implements Builder<BuildOptions> {
           observer.error(new Error(`Failed with exit code: ${code}`));
         }
       });
-      return () => {
-        if (this.subprocess.connected) {
-          treeKill(this.subprocess.pid, 'SIGKILL');
-        }
-      };
+      return killSubProcess;
     });
   }
 

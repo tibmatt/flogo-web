@@ -5,7 +5,7 @@ import { ParseResult } from './parser/parse-result';
 
 const lexer = new Lexer(lexerDefinition);
 // reuse the same parser instance.
-const parserInstance = new MappingParser([]);
+const parserInstance = new MappingParser();
 const BaseCstVisitor = parserInstance.getBaseCstVisitorConstructor();
 // const BaseCstVisitor = parserInstance.getBaseCstVisitorConstructorWithDefaults();
 const AstCreator = astCreatorFactory(BaseCstVisitor);

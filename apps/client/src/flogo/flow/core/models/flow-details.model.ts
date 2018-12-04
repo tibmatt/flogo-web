@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { distinctUntilChanged } from 'rxjs/operators';
 
 import { GraphNode, Item, UiFlow } from '@flogo-web/client/core';
@@ -24,19 +24,22 @@ export class FlogoFlowDetails {
   }
 
   get runnableState$() {
-    return this.store.select(FlowSelectors.getRunnableState);
+    return this.store.pipe(select(FlowSelectors.getRunnableState));
   }
 
   get itemsChange$() {
-    return this.store.select(FlowSelectors.getAllItems);
+    return this.store.pipe(select(FlowSelectors.getAllItems));
   }
 
   get flowState$() {
-    return this.store.select(FlowSelectors.selectFlowState);
+    return this.store.pipe(select(FlowSelectors.selectFlowState));
   }
 
   get selectionChange$() {
-    return this.store.select(FlowSelectors.selectCurrentSelection).pipe(distinctUntilChanged(isEqual));
+    return this.store.pipe(
+      select(FlowSelectors.selectCurrentSelection),
+      distinctUntilChanged(isEqual)
+    );
   }
 
   removeItem(handlerType: HandlerType, itemId: string) {

@@ -76,7 +76,7 @@ const selectCurrentTabs = createSelector(
 
 export const getCurrentTabs = (store: Store<FlowState>) => {
   const empty$ = observableOf([]);
-  const currentTabs$ = store.select(selectCurrentTabs);
+  const currentTabs$ = store.pipe(select(selectCurrentTabs));
   return store.pipe(
     select(getHasTriggersConfigure),
     switchMap(isTriggerInitialized => (isTriggerInitialized ? currentTabs$ : empty$))
@@ -89,11 +89,13 @@ export const getHasTriggersConfigure = createSelector(
 );
 
 export const getCurrentTriggerIsSaving = (store: Store<FlowState>) => {
-  const currentSavingState$ = store.select(
-    createSelector(
-      selectTriggerConfigureTriggers,
-      selectCurrentTriggerId,
-      (triggers, triggerId) => triggers[triggerId].isSaving
+  const currentSavingState$ = store.pipe(
+    select(
+      createSelector(
+        selectTriggerConfigureTriggers,
+        selectCurrentTriggerId,
+        (triggers, triggerId) => triggers[triggerId].isSaving
+      )
     )
   );
   return store.pipe(
