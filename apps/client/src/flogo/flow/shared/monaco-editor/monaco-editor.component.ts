@@ -269,7 +269,6 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
 
     // Close possibly loaded editor component
     if (this.editor) {
-      // this._monacoLoader.restoreGlobals();
       this.editor.dispose();
     }
     this.editor = null;
@@ -335,9 +334,6 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
     monaco.languages.register({ id: languageId });
 
     // Register a tokens provider for the language
-    // monaco.languages.setMonarchTokensProvider(languageId, this.getGrammar());
-    this.registerHoverProvider();
-    this.registerCompletionProvider();
     this.editor = monaco.editor.create(this.editorRef.nativeElement, editorOptions);
     this.setupResizeObserver();
 
@@ -347,7 +343,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
       this.editor.onDidChangeModelContent(ngZone(() => this.onDidChangeContent())),
       this.editor.onDidChangeCursorPosition(ngZone(event => this.onDidChangeCursorPosition(event))),
       this.editor.onDidChangeCursorSelection(ngZone(event => this.onDidChangeCursorSelection(event))),
-      this.editor.onDidBlurEditor(ngZone(() => this.blur.emit()))
+      this.editor.onDidBlurEditorWidget(ngZone(() => this.blur.emit()))
     );
 
     const didScrollChangeDisposable = this.editor.onDidScrollChange(event => {
@@ -384,56 +380,6 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
     const offsetEnd = model.getOffsetAt(endPosition);
 
     this.selectionChange.next(event);
-  }
-
-  private registerHoverProvider() {
-    const _provideHover = (model: IReadOnlyModel, position, cancellationToken) => {
-      if (!this.hoverProvider) {
-        return null;
-      }
-
-      const { lineNumber, column } = position;
-      const offset = model.getOffsetAt(position);
-
-      // wrapping on Promise.resolve for the case where it doesn't return a promise
-      return Promise.resolve(this.hoverProvider.provideHover({ lineNumber, column, offset }, cancellationToken)).then(
-        hover => {
-          const { contents, range } = hover;
-          const monacoRange = this.createMonacoRangeInstance(range);
-          return {
-            contents,
-            range: monacoRange,
-          };
-        }
-      );
-    };
-
-    const hoverDisposable = monaco.languages.registerHoverProvider(this.getLanguageId(), {
-      provideHover(model, position, token) {
-        return _provideHover(model, position, token);
-      },
-    });
-    this._disposables.add(hoverDisposable);
-  }
-
-  private registerCompletionProvider() {
-    const _provideCompletion = (model, position, cancellationToken) => {
-      if (!this.completionProvider) {
-        return [];
-      }
-
-      const { lineNumber, column } = position;
-      const offset = model.getOffsetAt(position);
-
-      return this.completionProvider.provideCompletionItems({ lineNumber, column, offset }, cancellationToken);
-    };
-
-    const disposable = monaco.languages.registerCompletionItemProvider(this.getLanguageId(), {
-      provideCompletionItems(model, position, cancellationToken) {
-        return _provideCompletion(model, position, cancellationToken);
-      },
-    });
-    this._disposables.add(disposable);
   }
 
   private createMonacoRangeInstance(range: OffsetRange | LineRange) {
