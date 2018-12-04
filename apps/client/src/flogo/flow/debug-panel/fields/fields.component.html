@@ -1,4 +1,4 @@
-<ng-container *ngIf="fields?.form && (fields.form.get('input') || fields.form.get('output')); else: noFields">
+<ng-container *ngIf="fields?.form && (fields.form.get('input') || fields.form.get('output')); else noFields">
   <div *ngIf="fields?.form?.get('input.formFields'); let fieldGroup" class="activity__field-group">
     <div class="fields-title">{{ 'DEBUGGER:INPUT' | translate }}</div>
     <flogo-flow-dynamic-field-group

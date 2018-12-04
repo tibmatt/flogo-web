@@ -7,7 +7,7 @@
     <i *ngIf="settingControl.disabled" class="flogo-icon-edit settings-icon__edit" (click)="enableField()"></i>
   </label>
   <monaco-editor
-    *ngIf="useCodeEditor; else: regularField"
+    *ngIf="useCodeEditor; else regularField"
     class="settings-field settings-field--code-editor"
     #field
     [formValueChangeTransformerFn]="editorOut"

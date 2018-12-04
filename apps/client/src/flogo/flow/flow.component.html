@@ -80,7 +80,7 @@
   </div>
 
   <flogo-flow-debug-panel
-    *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE; else: deviceDiagram"
+    *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE; else deviceDiagram"
     class="debug-panel-container"
   >
     <ng-container *ngTemplateOutlet="flowContent"></ng-container>

@@ -1,6 +1,6 @@
 <div class="fields-title" translate="DEBUGGER:ERROR-TITLE"></div>
 <div class="form-group">
-  <ng-container *ngIf="renderableError?.translate; else: emptyError">
+  <ng-container *ngIf="renderableError?.translate; else emptyError">
     <textarea disabled class="form-control tc-text-areas tc-text-area field">
       {{ renderableError.msg | translate }}</textarea
     >

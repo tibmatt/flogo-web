@@ -1,4 +1,4 @@
-<div *ngIf="status && status.isDirty; else: noChanges" class="buttons qa-buttons">
+<div *ngIf="status && status.isDirty; else noChanges" class="buttons qa-buttons">
   <button
     class="flogo-button--secondary action qa-action-discard"
     [disabled]="isSaving"

@@ -15,7 +15,7 @@
       <span>{{ 'FLOWS-DETAILS-TASKS:INSTALL-NEW-ACTIVITY' | translate }}</span>
     </div>
   </div>
-  <div *ngIf="activities.length > 0; else: emptyCase" class="activities-list">
+  <div *ngIf="activities.length > 0; else emptyCase" class="activities-list">
     <div
       class="list-item activity qa-activities"
       [class.activity--subflow]="activity.ref === SUBFLOW_REF"

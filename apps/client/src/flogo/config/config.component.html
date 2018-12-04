@@ -20,7 +20,7 @@
             type="text"
             name="server-protocol"
             class="form-control"
-            placeholder="{{location.protocol.replace( ':', '' )}}"
+            placeholder="{{ location.protocol.replace(':', '') }}"
             [value]="server.config.protocol"
           />
           <div class="input-group-addon">://</div>
@@ -29,7 +29,7 @@
             type="text"
             name="server-host"
             class="form-control"
-            placeholder="{{location.hostname}}"
+            placeholder="{{ location.hostname }}"
             [value]="server.config.host"
           />
           <div class="input-group-addon">:</div>

@@ -16,12 +16,12 @@
         >
           <div class="checkbox flogo-checkbox flogo-checkbox-primary">
             <input
-              id="flowCheckbox_{{index}}"
+              id="flowCheckbox_{{ index }}"
               type="checkbox"
               [checked]="checkAllFlows.indexOf(index) != -1"
               (change)="flowSelect(flow.id, $event.target.checked, index)"
             />
-            <label for="flowCheckbox_{{index}}"></label>
+            <label for="flowCheckbox_{{ index }}"></label>
           </div>
           <div class="flogo-export-flow-name">{{ flow.name }}</div>
           <div>

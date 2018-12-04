@@ -211,7 +211,7 @@
         aria-haspopup="true"
         [attr.aria-expanded]="isBuildBoxShown"
       >
-        <ng-container *ngIf="!isBuilding; else: buildIndicator">
+        <ng-container *ngIf="!isBuilding; else buildIndicator">
           <span class="menu-dropdown__button-label">{{ 'DETAILS:BUILD' | translate }}</span>
           <span class="flogo-icon flogo-icon-back flogo-button-dropdown-caret"></span>
         </ng-container>
@@ -311,7 +311,7 @@
   <button class="flogo-button--default" (click)="openCreateFlow()">{{ 'DETAILS:CREATE-A-FLOW' | translate }}</button>
 </div>
 
-<ng-container *ngIf="isFlowsViewActive; else: flowsGroupedByFlow">
+<ng-container *ngIf="isFlowsViewActive; else flowsGroupedByFlow">
   <flogo-apps-flows-trigger-group
     *ngFor="let triggerGroup of triggerGroups"
     [triggers]="triggerGroup.triggers"

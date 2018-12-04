@@ -6,7 +6,7 @@
   [ngClass]="{ 'is-success': notification.type === 'success', 'is-error': notification.type === 'error' }"
 >
   <svg
-    *ngIf="notification.type === 'success'; else: errorIcon"
+    *ngIf="notification.type === 'success'; else errorIcon"
     class="uxpl-notification__icon"
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -22,7 +22,7 @@
     />
   </svg>
 
-  <span class="uxpl-notification__text" *ngIf="!notification?.message?.key; else: translatable">
+  <span class="uxpl-notification__text" *ngIf="!notification?.message?.key; else translatable">
     {{ notification.message }}
   </span>
   <ng-template #translatable>

@@ -27,7 +27,7 @@
       </ng-template>
       <ng-template #tileWithBranch>
         <g
-          *ngIf="!isTerminal; else: terminalShape"
+          *ngIf="!isTerminal; else terminalShape"
           class="tile__branch"
           fill="none"
           fill-rule="evenodd"
@@ -61,13 +61,13 @@
     <div class="content__items">
       <img
         class=" content__icon content__icon-subflow"
-        *ngIf="tile.task?.features?.subflow; else: defaultActivityIcon"
+        *ngIf="tile.task?.features?.subflow; else defaultActivityIcon"
         src="/assets/svg/subflow.svg"
         alt="Subflow"
       />
       <ng-template #defaultActivityIcon>
         <i
-          *ngIf="!isTerminal; else: returnActivityIcon"
+          *ngIf="!isTerminal; else returnActivityIcon"
           class="content__icon content__icon-activity flogo-icon-activity-gear"
         ></i>
       </ng-template>
