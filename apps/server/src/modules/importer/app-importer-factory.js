@@ -33,7 +33,6 @@ export class AppImporterFactory {
                 name: 'standard',
                 properties: { type: 'flogo:app', appModel: '1.0.0' },
               },
-              { name: 'device', properties: { type: 'flogo:app:device' } },
               {
                 name: 'legacy',
                 properties: { type: 'flogo:app', appModel: null },
@@ -55,18 +54,8 @@ export class AppImporterFactory {
       dependenciesFactory = this.standardDependenciesFactory();
     } else if (this.isLegacyApp(rawApp)) {
       dependenciesFactory = this.legacyDependenciesFactory();
-    } else if (this.isDeviceApp(rawApp)) {
-      dependenciesFactory = this.deviceDependenciesFactory();
     }
     return dependenciesFactory;
-  }
-
-  isDeviceApp(rawApp) {
-    return getProfileType(rawApp) === FLOGO_PROFILE_TYPES.DEVICE;
-  }
-
-  deviceDependenciesFactory() {
-    return new DeviceAppImporterFactory(this.resourceStorageRegistry);
   }
 
   isLegacyApp(rawApp) {

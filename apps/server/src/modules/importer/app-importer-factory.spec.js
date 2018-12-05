@@ -1,5 +1,4 @@
 import sinon from 'sinon';
-import { DeviceAppImporterFactory } from './device/factory';
 import { LegacyAppImporterFactory } from './legacy/factory';
 import { AppImporterFactory } from './app-importer-factory';
 import { AppImporter } from './app-importer';
@@ -52,18 +51,6 @@ describe('importer.AppImporterFactory', () => {
     });
   });
 
-  describe('when given a device app', () => {
-    const deviceApp = { device: 'devicetype' };
-
-    test('#isDeviceApp should correctly determine it is a device app', async () => {
-      expect(appImporterFactory.isDeviceApp(deviceApp)).toBe(true);
-    });
-
-    test('#dependenciesFactory should select the device dependencies factory', () => {
-      assertFactorySelected('deviceDependenciesFactory', deviceApp);
-    });
-  });
-
   function assertFactorySelected(factorySelector, testApp) {
     const dependenciesFactoryCreator = sandbox
       .stub(appImporterFactory, factorySelector)
@@ -75,9 +62,6 @@ describe('importer.AppImporterFactory', () => {
 
   function createTestContext(sandboxInstance) {
     const stubs = {
-      deviceDependenciesFactory: sandboxInstance.createStubInstance(
-        DeviceAppImporterFactory
-      ),
       legacyDependenciesFactory: sandboxInstance.createStubInstance(
         LegacyAppImporterFactory
       ),
