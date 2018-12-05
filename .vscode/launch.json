@@ -73,5 +73,22 @@
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     },
+    {
+      "name": "Debug Server",
+      "type": "node",
+      "request": "launch",
+      "env": {
+         "TS_NODE_PROJECT": "tsconfig.app.json"
+      },
+      "args": ["./src/server.ts"],
+      "runtimeArgs": [
+        "--nolazy",
+        "-r", "ts-node/register",
+        "-r", "tsconfig-paths/register"
+      ],
+      "sourceMaps": true,
+      "cwd": "${workspaceRoot}/apps/server",
+      "protocol": "inspector"
+    }
   ]
 }
