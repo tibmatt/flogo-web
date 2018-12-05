@@ -15,7 +15,6 @@ export class FlogoAppsListComponent implements OnInit {
 
   showValidationErrors: boolean;
   importValidationErrors: any;
-  showProfileSeclectionDialog = false;
 
   public applications: Array<App> = [];
 
@@ -92,17 +91,8 @@ export class FlogoAppsListComponent implements OnInit {
     this.importValidationErrors = [];
   }
 
-  openProfileSelect() {
-    this.showProfileSeclectionDialog = true;
-  }
-
-  closeModal() {
-    this.showProfileSeclectionDialog = false;
-  }
-
-  onAdd(profileDetails) {
-    this.apiApplications.createNewApp(profileDetails).then((application: App) => {
-      this.closeModal();
+  addNewApp() {
+    this.apiApplications.createNewApp().then((application: App) => {
       this.emitAppSelected(application);
     });
   }
