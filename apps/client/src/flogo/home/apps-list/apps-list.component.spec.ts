@@ -61,7 +61,7 @@ describe('FlogoAppList component', () => {
         FlogoDeletePopupComponent,
         TimeFromNowPipe,
         FlogoAppImportComponent,
-        BsModalComponent
+        BsModalComponent,
       ], // declare the test component
       providers: [
         HttpUtilsService,
