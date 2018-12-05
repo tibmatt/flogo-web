@@ -7,8 +7,8 @@ export const selectMapperStatus = pipe(
     isDirty: state.isDirty,
     isValid: state.isValid,
   })),
-  // tslint:disable-next-line:triple-equals -- no strict equality needed, "truthy" and "falsy" values are okay
   distinctUntilChanged(
+    // tslint:disable-next-line:triple-equals -- no strict equality needed, "truthy" and "falsy" values are okay
     (prev, next) => prev.isDirty == next.isDirty && prev.isValid == next.isValid
   )
 );
