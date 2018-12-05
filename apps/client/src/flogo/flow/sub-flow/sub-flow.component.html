@@ -5,5 +5,8 @@
   (onDismiss)="onModalCloseOrDismiss()"
 >
   <i class="flogo-icon-close flows-list__close" (click)="closeModal()"></i>
-  <flogo-flow-flows-list [list]="flowsList" (flowSelected)="selectedFlow($event)"></flogo-flow-flows-list>
+  <flogo-flow-flows-list
+    [list]="flowsList"
+    (flowSelected)="selectedFlow($event)"
+  ></flogo-flow-flows-list>
 </bs-modal>

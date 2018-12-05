@@ -58,7 +58,16 @@ import {
     ConfirmEditionComponent,
   ],
   exports: [ConfiguratorComponent],
-  providers: [ConfiguratorService, ConfigureDetailsService, SettingsFormBuilder, TriggerNameValidatorService],
-  entryComponents: [AutoCompleteContentComponent, ConfirmationComponent, ConfirmEditionComponent],
+  providers: [
+    ConfiguratorService,
+    ConfigureDetailsService,
+    SettingsFormBuilder,
+    TriggerNameValidatorService,
+  ],
+  entryComponents: [
+    AutoCompleteContentComponent,
+    ConfirmationComponent,
+    ConfirmEditionComponent,
+  ],
 })
 export class ConfiguratorModule {}

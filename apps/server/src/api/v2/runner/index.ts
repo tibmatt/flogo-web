@@ -4,7 +4,8 @@ import { createProcessesRouter } from './processes';
 
 const RouterConstructor = require('koa-router');
 
-const createRouter = (opts?: Router.IRouterOptions): Router => new RouterConstructor(opts);
+const createRouter = (opts?: Router.IRouterOptions): Router =>
+  new RouterConstructor(opts);
 
 export function mountTestRunner(appRouter: Router) {
   const runner = createRouter({ prefix: '/runner' });

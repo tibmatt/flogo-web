@@ -10,7 +10,9 @@ export class ActionsImporter extends AbstractActionsImporter {
   formatAction(action) {
     const formattedAction = omit(action, ['data']);
     formattedAction.name = get(action, 'data.flow.name', action.name || action.id);
-    formattedAction.tasks = get(action, 'data.flow.tasks', []).map(task => this.mapTask(task));
+    formattedAction.tasks = get(action, 'data.flow.tasks', []).map(task =>
+      this.mapTask(task)
+    );
     formattedAction.links = get(action, 'data.flow.links', []);
     return formattedAction;
   }
@@ -26,6 +28,9 @@ export class ActionsImporter extends AbstractActionsImporter {
   }
 
   getSettingsSchema(activityRef) {
-    return this.activitySchemas.find(activitySchema => activitySchema.ref === activityRef).settings || [];
+    return (
+      this.activitySchemas.find(activitySchema => activitySchema.ref === activityRef)
+        .settings || []
+    );
   }
 }

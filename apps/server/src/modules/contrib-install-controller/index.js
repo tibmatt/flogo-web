@@ -48,7 +48,9 @@ export class ContribInstallController {
       .then(() => this.removeBackup())
       .then(() => results)
       .catch(err => {
-        logger.error(`[error] Encountered error while installing the '${url}' to the engine: `);
+        logger.error(
+          `[error] Encountered error while installing the '${url}' to the engine: `
+        );
         logger.error(err);
         logger.debug(`Installation of '${url}' failed in '${this.installState}' step.`);
         logger.debug(`Starting engine recovery.`);

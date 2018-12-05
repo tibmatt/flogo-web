@@ -56,7 +56,9 @@ describe('FlogoSelectTrigger component', () => {
       };
       comp.loadInstalledTriggers().then(() => {
         fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.trigger__content'));
+        const res: Array<DebugElement> = fixture.debugElement.queryAll(
+          By.css('.trigger__content')
+        );
         expect(res.length).toEqual(4);
         done();
       });
@@ -76,7 +78,9 @@ describe('FlogoSelectTrigger component', () => {
       comp.getExistingTriggers = existing;
       comp.loadInstalledTriggers().then(() => {
         fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.arrow-div li'));
+        const res: Array<DebugElement> = fixture.debugElement.queryAll(
+          By.css('.arrow-div li')
+        );
         expect(res.length).toEqual(2);
         done();
       });
@@ -100,7 +104,9 @@ describe('FlogoSelectTrigger component', () => {
       comp.getExistingTriggers = existing;
       comp.loadInstalledTriggers().then(() => {
         fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.trigger__content'));
+        const res: Array<DebugElement> = fixture.debugElement.queryAll(
+          By.css('.trigger__content')
+        );
         res[0].nativeElement.click(res[0]);
       });
     });
@@ -117,13 +123,17 @@ describe('FlogoSelectTrigger component', () => {
         return Promise.resolve(existingMock);
       };
       comp.addTriggerToAction.subscribe(data => {
-        expect(data.triggerData.description).toEqual('Description of Simple COAP Trigger');
+        expect(data.triggerData.description).toEqual(
+          'Description of Simple COAP Trigger'
+        );
         done();
       });
       comp.getExistingTriggers = existing;
       comp.loadInstalledTriggers().then(() => {
         fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.arrow-div li'));
+        const res: Array<DebugElement> = fixture.debugElement.queryAll(
+          By.css('.arrow-div li')
+        );
         res[0].nativeElement.click(res[0]);
       });
     });

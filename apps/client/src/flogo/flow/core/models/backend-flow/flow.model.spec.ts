@@ -23,7 +23,9 @@ describe('flow.model', function() {
           mapTo: 'myField',
         })
       );
-      expect(Object.keys(parsedMappings[0])).not.toEqual(jasmine.arrayContaining(['somethingElse']));
+      expect(Object.keys(parsedMappings[0])).not.toEqual(
+        jasmine.arrayContaining(['somethingElse'])
+      );
     });
 
     it('Ignores empty strings', function() {
@@ -48,7 +50,10 @@ describe('flow.model', function() {
               mapTo: 'myThing',
             },
           ]).length
-        ).toEqual(1, `Expected ${JSON.stringify(value)} to be treated as non-empty string`);
+        ).toEqual(
+          1,
+          `Expected ${JSON.stringify(value)} to be treated as non-empty string`
+        );
       });
     });
 

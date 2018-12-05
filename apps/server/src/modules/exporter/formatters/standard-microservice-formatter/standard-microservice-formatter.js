@@ -5,7 +5,16 @@ import { formatTaskLinkGroups } from './format-task-link-group';
 import { formatResource } from './format-resource';
 
 const APP_MODEL_VERSION = '1.0.0';
-const APP_KEY_ORDER = ['name', 'type', 'version', 'appModel', 'description', 'properties', 'triggers', 'resources'];
+const APP_KEY_ORDER = [
+  'name',
+  'type',
+  'version',
+  'appModel',
+  'description',
+  'properties',
+  'triggers',
+  'resources',
+];
 const TRIGGER_KEY_ORDER = ['id', 'ref', 'name', 'description', 'settings', 'handlers'];
 
 export class StandardMicroServiceFormatter {

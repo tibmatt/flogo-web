@@ -15,7 +15,10 @@ import { runnerReducer } from './runner.reducer';
 
 const ActionType = actions.ActionType;
 
-export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.ActionsUnion): FlowState {
+export function flowReducer(
+  state: FlowState = INITIAL_STATE,
+  action: actions.ActionsUnion
+): FlowState {
   state = runnerReducer(state, action);
   switch (action.type) {
     case ActionType.Init: {
@@ -27,13 +30,19 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
     case ActionType.SelectItem: {
       return {
         ...state,
-        currentSelection: selectionFactory.makeTaskSelection(action.payload.handlerType, action.payload.itemId),
+        currentSelection: selectionFactory.makeTaskSelection(
+          action.payload.handlerType,
+          action.payload.itemId
+        ),
       };
     }
     case ActionType.SelectCreateItem: {
       return {
         ...state,
-        currentSelection: selectionFactory.makeInsertSelection(action.payload.handlerType, action.payload.parentItemId),
+        currentSelection: selectionFactory.makeInsertSelection(
+          action.payload.handlerType,
+          action.payload.parentItemId
+        ),
       };
     }
     case ActionType.ClearSelection: {
@@ -111,7 +120,11 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
     }
     case ActionType.CancelCreateItem: {
       const selection = state.currentSelection;
-      if (selection && selection.type === SelectionType.InsertTask && selection.parentId === action.payload.parentId) {
+      if (
+        selection &&
+        selection.type === SelectionType.InsertTask &&
+        selection.parentId === action.payload.parentId
+      ) {
         return {
           ...state,
           currentSelection: null,

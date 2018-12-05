@@ -96,12 +96,18 @@ describe('JSONSchema: Trigger', () => {
       });
 
       test('should accept input mappings', () => {
-        const action = { ...actionWithoutMappings, mappings: { input: [{ ...validMapping }] } };
+        const action = {
+          ...actionWithoutMappings,
+          mappings: { input: [{ ...validMapping }] },
+        };
         expect(validator.validate(action)).toBe(true);
       });
 
       test('should accept output mappings', () => {
-        const action = { ...actionWithoutMappings, mappings: { output: [{ ...validMapping }] } };
+        const action = {
+          ...actionWithoutMappings,
+          mappings: { output: [{ ...validMapping }] },
+        };
         expect(validator.validate(action)).toBe(true);
       });
 
@@ -125,7 +131,10 @@ describe('JSONSchema: Trigger', () => {
       });
 
       test('should accept empty settings', () => {
-        const isValid = validator.validate({ action: { ...validAction }, settings: {} });
+        const isValid = validator.validate({
+          action: { ...validAction },
+          settings: {},
+        });
         expect(isValid).toBe(true);
       });
 

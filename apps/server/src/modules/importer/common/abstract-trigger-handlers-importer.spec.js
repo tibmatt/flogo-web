@@ -39,7 +39,10 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
     let reconcileHandlerStub;
     beforeAll(() => {
       const mockHandlers = Array(4).fill('mockhandler');
-      const mockTriggers = [{ id: 'trigger1', handlers: mockHandlers }, { id: 'trigger2', handlers: mockHandlers }];
+      const mockTriggers = [
+        { id: 'trigger1', handlers: mockHandlers },
+        { id: 'trigger2', handlers: mockHandlers },
+      ];
       const responsesPerHandler = [
         { actionId: 'actionA', handler: {} },
         { handler: {} },
@@ -64,8 +67,11 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
     });
 
     test('should omit dangling handlers (not linked to an action)', () => {
-      const pluckActionIdsFromHandlers = handlerGroup => handlerGroup.map(h => h.actionId);
-      const actionIdGroups = result.map(group => pluckActionIdsFromHandlers(group.reconciledHandlers));
+      const pluckActionIdsFromHandlers = handlerGroup =>
+        handlerGroup.map(h => h.actionId);
+      const actionIdGroups = result.map(group =>
+        pluckActionIdsFromHandlers(group.reconciledHandlers)
+      );
       expect(actionIdGroups).toHaveLength(2);
       actionIdGroups.forEach(group => {
         expect(group).toEqual(['actionA', 'actionB']);
@@ -75,7 +81,11 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
 
   describe('#reconcileHandlerWithAction', () => {
     test('should correctly map old handler links to new actions', () => {
-      const linkedHandlers = [{ id: 'a-1', actionId: 'a' }, { id: 'b-1', actionId: 'b' }, { id: 'a-2', actionId: 'a' }];
+      const linkedHandlers = [
+        { id: 'a-1', actionId: 'a' },
+        { id: 'b-1', actionId: 'b' },
+        { id: 'a-2', actionId: 'a' },
+      ];
       linkedHandlers.forEach(handler => {
         const reconciledHandler = importer.reconcileHandlerWithAction(handler);
         expect(reconciledHandler).toBeTruthy();
@@ -93,15 +103,23 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
     const storeHandlersStub = sandbox.stub(importer, 'storeHandlers');
     const storeTriggersSpy = sandbox.spy(triggerStorage, 'create');
     await importer.storeTriggersAndHandlers([
-      { trigger: { id: 'trigger1' }, reconciledHandlers: [{ actionId: 'a-stored', handler: {} }] },
-      { trigger: { id: 'trigger2' }, reconciledHandlers: [{ actionId: 'b-stored', handler: {} }] },
+      {
+        trigger: { id: 'trigger1' },
+        reconciledHandlers: [{ actionId: 'a-stored', handler: {} }],
+      },
+      {
+        trigger: { id: 'trigger2' },
+        reconciledHandlers: [{ actionId: 'b-stored', handler: {} }],
+      },
     ]);
     expect(storeTriggersSpy.callCount).toBe(2);
     const callArgs = storeHandlersStub.getCalls().map(call => {
       const [triggerId, [handlerInfo]] = call.args;
       return [triggerId, handlerInfo.actionId];
     });
-    expect(callArgs).toEqual(expect.arrayContaining([['trigger1', 'a-stored'], ['trigger2', 'b-stored']]));
+    expect(callArgs).toEqual(
+      expect.arrayContaining([['trigger1', 'a-stored'], ['trigger2', 'b-stored']])
+    );
   });
 
   test('#storeHandlers', async () => {
@@ -116,7 +134,10 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
       return [triggerId, actionId, handlerId];
     });
     expect(callArgs).toEqual(
-      expect.arrayContaining([['triggerX', 'actionA', 'handlerA'], ['triggerX', 'actionB', 'handlerB']])
+      expect.arrayContaining([
+        ['triggerX', 'actionA', 'handlerA'],
+        ['triggerX', 'actionB', 'handlerB'],
+      ])
     );
   });
 });

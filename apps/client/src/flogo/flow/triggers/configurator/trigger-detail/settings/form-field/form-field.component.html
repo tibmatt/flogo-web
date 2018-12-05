@@ -4,7 +4,11 @@
     <i *ngIf="!settingInformation.required" class="settings-label__optional">
       {{ 'TRIGGER-CONFIGURATOR:SETTINGS:OPTIONAL' | translate }}
     </i>
-    <i *ngIf="settingControl.disabled" class="flogo-icon-edit settings-icon__edit" (click)="enableField()"></i>
+    <i
+      *ngIf="settingControl.disabled"
+      class="flogo-icon-edit settings-icon__edit"
+      (click)="enableField()"
+    ></i>
   </label>
   <monaco-editor
     *ngIf="useCodeEditor; else regularField"
@@ -25,6 +29,9 @@
       [autoCompleteAllowedSource]="settingInformation.allowed"
     />
   </ng-template>
-  <flogo-configuration-settings-field-error *ngIf="settingControl?.errors" [validationErrors]="settingControl?.errors">
+  <flogo-configuration-settings-field-error
+    *ngIf="settingControl?.errors"
+    [validationErrors]="settingControl?.errors"
+  >
   </flogo-configuration-settings-field-error>
 </div>

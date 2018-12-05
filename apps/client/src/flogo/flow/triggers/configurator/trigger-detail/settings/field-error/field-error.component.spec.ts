@@ -58,7 +58,9 @@ describe('Component: FieldErrorComponent', () => {
       },
     };
     fixture.detectChanges();
-    expect(fixture.debugElement.nativeElement.innerText).toEqual('Value not allowed, expected one of: a, b, c.');
+    expect(fixture.debugElement.nativeElement.innerText).toEqual(
+      'Value not allowed, expected one of: a, b, c.'
+    );
   });
 
   it('Should show proper message for ErrorTypes.SyntaxError', () => {
@@ -80,7 +82,9 @@ describe('Component: FieldErrorComponent', () => {
       },
     };
     fixture.detectChanges();
-    expect(fixture.debugElement.nativeElement.innerText).toEqual('Missing property name for resolver "$unknown".');
+    expect(fixture.debugElement.nativeElement.innerText).toEqual(
+      'Missing property name for resolver "$unknown".'
+    );
   });
 
   it('Should show proper message for ErrorTypes.MissingResolvableProperty env resolver', () => {
@@ -90,7 +94,9 @@ describe('Component: FieldErrorComponent', () => {
       },
     };
     fixture.detectChanges();
-    expect(fixture.debugElement.nativeElement.innerText).toEqual('Missing variable name, use: $env[VAR_NAME].');
+    expect(fixture.debugElement.nativeElement.innerText).toEqual(
+      'Missing variable name, use: $env[VAR_NAME].'
+    );
   });
 
   it('Should show proper message for ErrorTypes.MissingResolvableProperty property resolver', () => {

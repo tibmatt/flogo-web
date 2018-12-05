@@ -3,9 +3,16 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { FlowState, FlowActions, FlowSelectors } from '../core/state';
-import { DiagramAction, DiagramActionType, DiagramSelection } from '@flogo-web/client/packages/diagram';
+import {
+  DiagramAction,
+  DiagramActionType,
+  DiagramSelection,
+} from '@flogo-web/client/packages/diagram';
 import { HandlerType } from '@flogo-web/client/flow/core/models';
-import { DiagramActionChild, DiagramActionSelf } from '@flogo-web/client/packages/diagram/interfaces';
+import {
+  DiagramActionChild,
+  DiagramActionSelf,
+} from '@flogo-web/client/packages/diagram/interfaces';
 import { takeUntil } from 'rxjs/operators';
 import { SingleEmissionSubject } from '@flogo-web/client/core/models';
 import { newBranchId } from '@flogo-web/client/flow/core/models/flow/id-generator';
@@ -26,7 +33,10 @@ import { FlowGraph } from '@flogo-web/client/core';
   ],
 })
 export class FlogoFlowDiagramComponent {
-  @Output() deleteTask = new EventEmitter<{ handlerType: HandlerType; itemId: string }>();
+  @Output() deleteTask = new EventEmitter<{
+    handlerType: HandlerType;
+    itemId: string;
+  }>();
   items$: Observable<FlowGraph>;
   currentSelection$: Observable<DiagramSelection>;
   currentDiagramId: HandlerType;

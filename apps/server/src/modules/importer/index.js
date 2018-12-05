@@ -5,7 +5,10 @@ import { IMPORT_ERRORS } from './errors';
 
 export async function importApp(rawApp, resourceStorageRegistry) {
   if (isEmpty(rawApp)) {
-    throw ErrorManager.createCustomValidationError('Cannot import an empty application', IMPORT_ERRORS.EMPTY_APP);
+    throw ErrorManager.createCustomValidationError(
+      'Cannot import an empty application',
+      IMPORT_ERRORS.EMPTY_APP
+    );
   }
   const importerFactory = new AppImporterFactory(resourceStorageRegistry);
   const importer = await importerFactory.create(rawApp);

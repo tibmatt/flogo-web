@@ -9,8 +9,12 @@ export class FormBuilderService {
   constructor(private ngFB: FormBuilder, private formService: FormFieldService) {}
 
   toFormGroup(fields: SchemaAttribute[], { requireAll } = { requireAll: false }) {
-    const fieldsWithControlType = fields.map(f => this.formService.mapFieldsToControlType(f, requireAll));
-    const formGroup = this.ngFB.group({ formFields: this.makeFormFieldsArray(fieldsWithControlType) });
+    const fieldsWithControlType = fields.map(f =>
+      this.formService.mapFieldsToControlType(f, requireAll)
+    );
+    const formGroup = this.ngFB.group({
+      formFields: this.makeFormFieldsArray(fieldsWithControlType),
+    });
     return { formGroup, fieldsWithControlType };
   }
 

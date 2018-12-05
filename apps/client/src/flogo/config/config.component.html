@@ -42,13 +42,18 @@
             [value]="server.config.port"
           />
           <div class="input-group-addon">
-            <flogo-config-service-status-indicator [urlConfig]="server.config"></flogo-config-service-status-indicator>
+            <flogo-config-service-status-indicator
+              [urlConfig]="server.config"
+            ></flogo-config-service-status-indicator>
           </div>
         </div>
       </div>
       <button
         class="col-lg-2 col-md-2 col-sm-3"
-        [ngClass]="{ 'flogo-display': server._display, 'flogo-hide': !server._display }"
+        [ngClass]="{
+          'flogo-display': server._display,
+          'flogo-hide': !server._display
+        }"
         style="float:left;"
         type="button"
         class="btn btn-default"

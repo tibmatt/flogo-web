@@ -7,7 +7,8 @@
   </div>
   <div class="subflow-description">{{ subFlow.description }}</div>
   <div class="subflow-createdAt">
-    {{ 'TASK-CONFIGURATOR:SUB-FLOW:CREATED' | translate }} {{ subFlow.createdAt | timeFromNow }}
+    {{ 'TASK-CONFIGURATOR:SUB-FLOW:CREATED' | translate }}
+    {{ subFlow.createdAt | timeFromNow }}
   </div>
   <div>
     <a href="/flows/{{ subFlow.flowPath }}" class="flogo-link" target="_blank">{{

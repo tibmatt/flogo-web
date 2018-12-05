@@ -23,7 +23,11 @@ describe('debug-panel.utils.matchFormWithExecutionResult()', function() {
           { name: 'notFound', value: 'hello' },
         ]
       )
-    ).toEqual([{ name: 'otherval', value: 33 }, { name: 'message', value: 'foo' }, { name: 'notFound', value: null }]);
+    ).toEqual([
+      { name: 'otherval', value: 33 },
+      { name: 'message', value: 'foo' },
+      { name: 'notFound', value: null },
+    ]);
   });
 });
 

@@ -13,7 +13,10 @@ describe('exporter.utils.DanglingSubflowReferencesCleaner', () => {
       input: [{ name: 'foo', type: 'string' }, { name: 'bar', type: 'string' }],
     },
   };
-  const cleanMappings = DanglingSubflowReferencesCleaner.create().cleanMappings(task, linkedFlow);
+  const cleanMappings = DanglingSubflowReferencesCleaner.create().cleanMappings(
+    task,
+    linkedFlow
+  );
 
   test('should remove dangling references', () => {
     expect(cleanMappings.find(mapping => mapping.name === 'dangling')).toBeFalsy();
@@ -22,7 +25,10 @@ describe('exporter.utils.DanglingSubflowReferencesCleaner', () => {
   test('valid mappings should stay', () => {
     expect(cleanMappings).toHaveLength(2);
     expect(cleanMappings).toEqual(
-      expect.arrayContaining([{ mapTo: 'foo', value: 'oof', type: 2 }, { mapTo: 'bar', value: 'rab', type: 2 }])
+      expect.arrayContaining([
+        { mapTo: 'foo', value: 'oof', type: 2 },
+        { mapTo: 'bar', value: 'rab', type: 2 },
+      ])
     );
   });
 });

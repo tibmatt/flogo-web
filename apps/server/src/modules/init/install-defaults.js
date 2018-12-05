@@ -5,7 +5,10 @@ import { installDeviceContributions } from '../init/install-device-contribs';
 import { ResourceStorageRegistry } from '../resource-storage-registry';
 
 export function installDefaults() {
-  return Promise.resolve([installDefaultApps().catch(err => Promise.reject(err)), installDeviceContributions()]);
+  return Promise.resolve([
+    installDefaultApps().catch(err => Promise.reject(err)),
+    installDeviceContributions(),
+  ]);
 }
 
 export function installDefaultApps() {

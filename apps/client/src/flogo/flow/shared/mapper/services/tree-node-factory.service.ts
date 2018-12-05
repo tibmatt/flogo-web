@@ -9,12 +9,21 @@ import { ArrayMappingInfo } from '../models/array-mapping';
 export class TreeNodeFactoryService {
   fromJsonSchema(
     schema: any,
-    visitor?: (treeNode: TreeNode, level: number, path: string, parents: MapperTreeNode[]) => any
+    visitor?: (
+      treeNode: TreeNode,
+      level: number,
+      path: string,
+      parents: MapperTreeNode[]
+    ) => any
   ): MapperTreeNode[] {
     if (!schema) {
       return [];
     }
-    return this.makeTreeNodes(schema, visitor, { level: 0, path: null, parents: [] });
+    return this.makeTreeNodes(schema, visitor, {
+      level: 0,
+      path: null,
+      parents: [],
+    });
   }
 
   applyArrayFilterToJsonSchema(
@@ -95,7 +104,11 @@ export class TreeNodeFactoryService {
     const pushToCategory = (categoryId, value) => {
       let category = categoryMap.get(categoryId);
       if (!category) {
-        category = { label: categoryId, children: [], styleClass: 'node--has-children' };
+        category = {
+          label: categoryId,
+          children: [],
+          styleClass: 'node--has-children',
+        };
         categoryMap.set(categoryId, category);
       }
       category.children.push(value);
@@ -175,7 +188,12 @@ export class TreeNodeFactoryService {
 
     return Object.keys(properties).reduce((nodes, propName) => {
       const property = properties[propName];
-      const node: { name: string; type: string; children?: any; memberType?: string } = {
+      const node: {
+        name: string;
+        type: string;
+        children?: any;
+        memberType?: string;
+      } = {
         name: propName,
         type: property.type,
       };
@@ -221,11 +239,17 @@ export class TreeNodeFactoryService {
       if (currentFunction.type === 'namespace') {
         Object.keys(currentFunction.functions).forEach(subFunc => {
           const currentChildFunction = currentFunction.functions[subFunc];
-          const node = Object.assign({}, currentChildFunction, { name, type: 'function' });
+          const node = Object.assign({}, currentChildFunction, {
+            name,
+            type: 'function',
+          });
           pushToCategory(func, node);
         });
       } else if (currentFunction.type === 'function') {
-        const node = Object.assign({}, currentFunction.function, { name, type: 'function' });
+        const node = Object.assign({}, currentFunction.function, {
+          name,
+          type: 'function',
+        });
         nodes.push(node);
       } else {
         console.error(`Not a recognized type of function: ${currentFunction.type}`);
@@ -250,7 +274,12 @@ export class TreeNodeFactoryService {
 
   private makeTreeNodes(
     from: any,
-    visitor: (node: MapperTreeNode, level, path, parents: MapperTreeNode[]) => MapperTreeNode,
+    visitor: (
+      node: MapperTreeNode,
+      level,
+      path,
+      parents: MapperTreeNode[]
+    ) => MapperTreeNode,
     params: { level; path; parents }
   ): MapperTreeNode[] {
     let properties = {};
@@ -280,7 +309,10 @@ export class TreeNodeFactoryService {
       const nodePath = (path ? `${path}.` : '') + propName;
       let dataType: string = property.type;
 
-      if (dataType === 'string' && (property.format === 'date' || property.format === 'date-time')) {
+      if (
+        dataType === 'string' &&
+        (property.format === 'date' || property.format === 'date-time')
+      ) {
         dataType = 'date';
       }
 
@@ -321,7 +353,10 @@ export class TreeNodeFactoryService {
 
         const hasChildren = node.children && node.children.length;
         node.isSelectable = true;
-        node.styleClass = node.styleClass + ' ' + (hasChildren ? 'node--has-children' : 'node--has-no-children');
+        node.styleClass =
+          node.styleClass +
+          ' ' +
+          (hasChildren ? 'node--has-children' : 'node--has-no-children');
       } else {
         node.styleClass = node.styleClass + ' node--has-no-children';
       }

@@ -13,10 +13,14 @@ export class RESTAPIHandlersService {
   }
 
   getHandler(triggerId, actionId) {
-    return this.restApiService.get(`triggers/${triggerId}/handlers/${actionId}`).toPromise();
+    return this.restApiService
+      .get(`triggers/${triggerId}/handlers/${actionId}`)
+      .toPromise();
   }
 
   deleteHandler(actionId, triggerId) {
-    return this.restApiService.delete(`triggers/${triggerId}/handlers/${actionId}`).toPromise();
+    return this.restApiService
+      .delete(`triggers/${triggerId}/handlers/${actionId}`)
+      .toPromise();
   }
 }

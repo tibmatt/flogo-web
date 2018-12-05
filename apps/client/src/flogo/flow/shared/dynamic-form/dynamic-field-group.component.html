@@ -37,7 +37,10 @@
       [hideOptionalLabel]="readonly"
     ></flogo-fb-textbox>
     <flogo-flow-dynamic-field-error
-      *ngIf="field.get('value').invalid && (field.get('value').touched || field.get('value').dirty)"
+      *ngIf="
+        field.get('value').invalid &&
+        (field.get('value').touched || field.get('value').dirty)
+      "
       [validationErrors]="field.get('value').errors"
     ></flogo-flow-dynamic-field-error>
   </div>

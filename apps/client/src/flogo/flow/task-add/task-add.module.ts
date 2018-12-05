@@ -10,7 +10,14 @@ import { InstallerModule } from '../shared/installer';
 import { SubFlowModule } from '../sub-flow';
 
 @NgModule({
-  imports: [CommonModule, OverlayModule, PortalModule, TranslateModule, InstallerModule, SubFlowModule],
+  imports: [
+    CommonModule,
+    OverlayModule,
+    PortalModule,
+    TranslateModule,
+    InstallerModule,
+    SubFlowModule,
+  ],
   declarations: [AddActivityDirective, TaskAddComponent],
   providers: [AddActivityService],
   entryComponents: [TaskAddComponent],

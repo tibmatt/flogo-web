@@ -16,7 +16,8 @@ import {
 import { DOCUMENT } from '@angular/common';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
-const isEmptyValue = (value): boolean => value === undefined || value === null || value.trim().length === 0;
+const isEmptyValue = (value): boolean =>
+  value === undefined || value === null || value.trim().length === 0;
 
 @Directive({
   selector: '[fgContentEditable]',
@@ -155,7 +156,9 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
     if (this.placeholderEl) {
       return;
     }
-    Array.from(this.elementRef.nativeElement.children).forEach(this.removeChild.bind(this));
+    Array.from(this.elementRef.nativeElement.children).forEach(
+      this.removeChild.bind(this)
+    );
     const placeholderText = this.renderer.createText(this.placeholder);
     this.placeholderEl = this.renderer.createElement('span');
     this.renderer.setStyle(this.placeholderEl, 'pointer-events', 'none');

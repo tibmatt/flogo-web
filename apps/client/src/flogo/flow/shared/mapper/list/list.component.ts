@@ -37,7 +37,10 @@ export class ListComponent implements OnChanges, AfterViewInit {
 
   @ViewChildren(ScrollbarDirective) scrollbars: QueryList<ScrollbarDirective>;
 
-  constructor(private draggingService: DraggingService, private iconsService: IconsService) {}
+  constructor(
+    private draggingService: DraggingService,
+    private iconsService: IconsService
+  ) {}
 
   trackNodeByFn(index, node: MapperTreeNode) {
     return node.path;

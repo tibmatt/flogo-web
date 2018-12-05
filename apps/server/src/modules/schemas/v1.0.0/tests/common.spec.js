@@ -17,7 +17,9 @@ describe('JSONSchema: Common', () => {
     const tests = ['valueType', 'mappingType'];
     tests.forEach(defName => {
       test(`#/definitions/${defName} rejects unknown types`, () => {
-        const validateValueType = testContext.ajvContext.compileDefinitionSubschema(defName);
+        const validateValueType = testContext.ajvContext.compileDefinitionSubschema(
+          defName
+        );
         const isValid = validateValueType('somethingelse');
         expect(isValid).toBe(false);
       });
@@ -48,7 +50,9 @@ describe('JSONSchema: Common', () => {
         { type: '', mapTo: '', value: null },
         { type: 'expression', mapTo: 3, value: null },
       ];
-      incompleteMappings.forEach((mapping, i) => expect(isValidMapping(mapping)).toBe(false));
+      incompleteMappings.forEach((mapping, i) =>
+        expect(isValidMapping(mapping)).toBe(false)
+      );
     });
   });
 
@@ -69,7 +73,12 @@ describe('JSONSchema: Common', () => {
     });
 
     test('should reject incorrect mappings', () => {
-      expect(validate([{ type: 'expression', mapTo: 'someProp', value: 'someexpr' }, { im: 'incorrect' }])).toBe(false);
+      expect(
+        validate([
+          { type: 'expression', mapTo: 'someProp', value: 'someexpr' },
+          { im: 'incorrect' },
+        ])
+      ).toBe(false);
     });
 
     test('should accept empty collections', () => {

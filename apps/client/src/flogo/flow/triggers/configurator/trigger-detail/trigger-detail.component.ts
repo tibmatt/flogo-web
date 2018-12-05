@@ -12,13 +12,19 @@ import {
   TriggerConfigureActions,
 } from '@flogo-web/client/flow/core/state/triggers-configure';
 import { FlowState } from '@flogo-web/client/flow/core/state';
-import { TriggerConfigureTabType, TriggerConfigureTab } from '@flogo-web/client/flow/core/interfaces';
+import {
+  TriggerConfigureTabType,
+  TriggerConfigureTab,
+} from '@flogo-web/client/flow/core/interfaces';
 
 import { CurrentTriggerState, TriggerInformation } from '../interfaces';
 import { ConfigureDetailsService } from './details.service';
 import { ConfiguratorService } from '../services/configurator.service';
 
-type MapperSubscriberFn = (controller: MapperController, groupType: TriggerConfigureTabType) => void;
+type MapperSubscriberFn = (
+  controller: MapperController,
+  groupType: TriggerConfigureTabType
+) => void;
 
 const isFieldValid = (form: FormGroup, controlName: string) =>
   !form.contains(controlName) || form.get(controlName).valid;
@@ -56,7 +62,9 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.overallStatus$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTriggerOverallStatus);
+    this.overallStatus$ = this.store.pipe(
+      TriggerConfigureSelectors.getCurrentTriggerOverallStatus
+    );
 
     this.tabs$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTabs);
     this.store
@@ -93,7 +101,8 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
 
   save() {
     const currentTriggerId = this.selectedTriggerId;
-    const isUpdateStillApplicable = () => this.selectedTriggerId !== currentTriggerId || !this.ngDestroy$.closed;
+    const isUpdateStillApplicable = () =>
+      this.selectedTriggerId !== currentTriggerId || !this.ngDestroy$.closed;
     this.configuratorService
       .save()
       .pipe(
@@ -106,7 +115,8 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
         this.updateSettingsStatus({
           // TODO: replace manual valid check when async validation bug is fixed in ng forms -> github.com/angular/angular/issues/20424
           isValid:
-            isFieldValid(this.settingsForm, 'triggerSettings') && isFieldValid(this.settingsForm, 'handlerSettings'),
+            isFieldValid(this.settingsForm, 'triggerSettings') &&
+            isFieldValid(this.settingsForm, 'handlerSettings'),
           isDirty: this.settingsForm.dirty,
           isPending: false,
         });
@@ -126,7 +136,11 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateSettingsStatus(settingsStatus: { isValid: boolean; isDirty: boolean; isPending?: boolean }) {
+  updateSettingsStatus(settingsStatus: {
+    isValid: boolean;
+    isDirty: boolean;
+    isPending?: boolean;
+  }) {
     this.updateTabState(TriggerConfigureTabType.Settings, settingsStatus);
   }
 
@@ -138,7 +152,12 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
 
   private reconfigure(state: CurrentTriggerState) {
     this.selectedTriggerId = state.trigger.id;
-    const { settings, flowInputMapper, replyMapper, triggerInformation } = this.detailsService.build(state);
+    const {
+      settings,
+      flowInputMapper,
+      replyMapper,
+      triggerInformation,
+    } = this.detailsService.build(state);
     if (this.settingsForm) {
       this.settingsForm.enable();
     }
@@ -146,7 +165,9 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
     this.settingsTriggerInformation = triggerInformation;
     this.updateSettingsStatus({
       // TODO: replace manual valid check when async validation bug is fixed in ng forms -> https://github.com/angular/angular/issues/20424
-      isValid: isFieldValid(this.settingsForm, 'triggerSettings') && isFieldValid(this.settingsForm, 'handlerSettings'),
+      isValid:
+        isFieldValid(this.settingsForm, 'triggerSettings') &&
+        isFieldValid(this.settingsForm, 'handlerSettings'),
       isDirty: this.settingsForm.dirty,
       isPending: false,
     });
@@ -168,7 +189,9 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
     );
 
     this.appProperties = state.appProperties
-      ? state.appProperties.map(prop => (prop && prop.name ? `$property[${prop.name}]` : null)).filter(Boolean)
+      ? state.appProperties
+          .map(prop => (prop && prop.name ? `$property[${prop.name}]` : null))
+          .filter(Boolean)
       : null;
 
     this.configuratorService.setParams({
@@ -187,7 +210,12 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
       subscribeToUpdates(controller, groupType);
       this.updateTabState(groupType, { isEnabled: true });
     } else {
-      this.updateTabState(groupType, { isDirty: false, isValid: true, isEnabled: false, isPending: false });
+      this.updateTabState(groupType, {
+        isDirty: false,
+        isValid: true,
+        isEnabled: false,
+        isPending: false,
+      });
     }
   }
 
@@ -203,7 +231,9 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
 
   private createMapperStatusUpdateSubscriber(): MapperSubscriberFn {
     return (controller: MapperController, groupType: TriggerConfigureTabType) => {
-      controller.status$.pipe(takeUntil(this.ngDestroy$)).subscribe(status => this.updateTabState(groupType, status));
+      controller.status$
+        .pipe(takeUntil(this.ngDestroy$))
+        .subscribe(status => this.updateTabState(groupType, status));
     };
   }
 }

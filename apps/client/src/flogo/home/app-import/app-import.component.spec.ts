@@ -11,7 +11,10 @@ import { NoDependenciesFakeLanguageModule } from '@flogo-web/client/core/languag
   selector: 'flogo-container-component',
   template: `
     <div class="flows">
-      <flogo-home-app-import [importValidationErrors]="errors" (modalClose)="closeModal()"></flogo-home-app-import>
+      <flogo-home-app-import
+        [importValidationErrors]="errors"
+        (modalClose)="closeModal()"
+      ></flogo-home-app-import>
     </div>
   `,
 })
@@ -46,7 +49,9 @@ describe('Component: FlogoAppImportComponent', () => {
       comp = fixture.componentInstance;
       comp.errors = mockImportErrorResponse[0].meta.details;
       fixture.detectChanges();
-      const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-error__list'));
+      const res: Array<DebugElement> = fixture.debugElement.queryAll(
+        By.css('.flogo-error__list')
+      );
       expect(res.length).toEqual(3);
       done();
     });

@@ -3,8 +3,11 @@ import * as path from 'path';
 import './load-env';
 
 const rootPath = path.resolve(__dirname, '..');
-const PUBLIC_DIR = process.env.FLOGO_WEB_PUBLICDIR || path.resolve(rootPath, '..', 'client');
-const LOCAL_DIR = process.env.FLOGO_WEB_LOCALDIR || path.resolve(rootPath, '..', '..', '..', 'dist', 'local');
+const PUBLIC_DIR =
+  process.env.FLOGO_WEB_PUBLICDIR || path.resolve(rootPath, '..', 'client');
+const LOCAL_DIR =
+  process.env.FLOGO_WEB_LOCALDIR ||
+  path.resolve(rootPath, '..', '..', '..', 'dist', 'local');
 
 const FLOW_SERVICE_HOST = process.env.FLOGO_FLOW_SERVICE_HOST || 'localhost';
 const FLOW_STATE_SERVICE_HOST = process.env.FLOGO_FLOW_STATE_SERVICE_HOST || 'localhost';
@@ -41,7 +44,8 @@ const config = {
   defaultAppJsonPath: path.join(rootPath, 'config', 'sample-app.json'),
   defaultContribsPath: path.join(rootPath, 'config', 'default-devices-contrib.json'),
   defaultFlogoDescriptorPath:
-    process.env.FLOGO_WEB_DEFAULT_DESCRIPTOR || path.join(rootPath, 'config', 'default-flogo.json'),
+    process.env.FLOGO_WEB_DEFAULT_DESCRIPTOR ||
+    path.join(rootPath, 'config', 'default-flogo.json'),
   libVersion,
   app: {
     basePath: '/v1/api',

@@ -36,7 +36,10 @@ export class Exporter {
     app = this.applyDefaultAppAttributes(app);
 
     const { actions, previousActionIdsLinker } = this.humanizeActionIds(app.actions);
-    app.actions = this.updateSubflowReferencesAndDanglingMappings(actions, previousActionIdsLinker);
+    app.actions = this.updateSubflowReferencesAndDanglingMappings(
+      actions,
+      previousActionIdsLinker
+    );
 
     app.triggers = this.processTriggers(app.triggers, previousActionIdsLinker);
 
@@ -76,12 +79,17 @@ export class Exporter {
       }
     });
 
-    return compact([...finalActionIds.values()].map(actionId => actionRegistry.get(actionId)));
+    return compact(
+      [...finalActionIds.values()].map(actionId => actionRegistry.get(actionId))
+    );
   }
 
   processTriggers(triggers, humanizedActions) {
     if (this.isFullAppExportMode) {
-      const { triggers: humanizedTriggers, handlers } = this.humanizeTriggerNamesAndExtractHandlers(triggers);
+      const {
+        triggers: humanizedTriggers,
+        handlers,
+      } = this.humanizeTriggerNamesAndExtractHandlers(triggers);
       triggers = humanizedTriggers;
       this.reconcileHandlersAndActions(handlers, humanizedActions);
     } else {

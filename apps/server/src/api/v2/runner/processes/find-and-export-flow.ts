@@ -7,7 +7,9 @@ import { LegacyMicroServiceFormatter } from '../../../../modules/exporter/format
 export const findAndExportFlow = async (context: Context, next) => {
   const action = await ActionsManager.findOne(context.request.body.actionId);
   if (!action) {
-    return context.throw(ErrorManager.createRestNotFoundError('Now flow with specified id'));
+    return context.throw(
+      ErrorManager.createRestNotFoundError('Now flow with specified id')
+    );
   }
   context.state.flow = await transformToProcess(action);
   return next();

@@ -38,22 +38,30 @@ describe('NotificationsComponent', () => {
   });
 
   it('should render all notifications', () => {
-    const notifications = fixture.nativeElement.querySelectorAll('[data-notification-type]');
+    const notifications = fixture.nativeElement.querySelectorAll(
+      '[data-notification-type]'
+    );
     expect(notifications.length).toEqual(3);
   });
 
   it('should render success notifications', () => {
-    const notifications = fixture.nativeElement.querySelectorAll('[data-notification-type="success"]');
+    const notifications = fixture.nativeElement.querySelectorAll(
+      '[data-notification-type="success"]'
+    );
     expect(notifications.length).toEqual(2);
   });
 
   it('should render error notifications', () => {
-    const notifications = fixture.nativeElement.querySelectorAll('[data-notification-type="error"]');
+    const notifications = fixture.nativeElement.querySelectorAll(
+      '[data-notification-type="error"]'
+    );
     expect(notifications.length).toEqual(1);
   });
 
   it('should close a notification when clicking on close button', () => {
-    const closeErrorNotification = fixture.nativeElement.querySelector('[data-notification-type="error"] .qa-close');
+    const closeErrorNotification = fixture.nativeElement.querySelector(
+      '[data-notification-type="error"] .qa-close'
+    );
     closeErrorNotification.click();
     const mockMethod = mockNotificationService.removeNotification as jasmine.Spy;
     expect(mockMethod).toHaveBeenCalledTimes(1);

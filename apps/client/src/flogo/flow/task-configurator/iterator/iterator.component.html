@@ -5,18 +5,23 @@
     <div class="flogo-toggle-switch_container">
       <span *ngIf="iteratorModeOn">On</span> <span *ngIf="!iteratorModeOn">Off</span>
       <label class="flogo-toggle-switch">
-        <input type="checkbox" [checked]="iteratorModeOn" (change)="onChangeIteratorMode()" />
+        <input
+          type="checkbox"
+          [checked]="iteratorModeOn"
+          (change)="onChangeIteratorMode()"
+        />
         <span class="flogo-toggle-switch_slider toggle-switch_round"></span>
       </label>
     </div>
   </div>
   <div class="description">
     <p class="description__lead">
-      Use an iterator when you want to loop over an array or if you want to invoke this activity <i>n</i> times. The
-      input of the iterator should be an array or a number.
+      Use an iterator when you want to loop over an array or if you want to invoke this
+      activity <i>n</i> times. The input of the iterator should be an array or a number.
     </p>
     <p>
-      For example, the value <code>10</code> would indicate that this activity should be invoked <code>10</code> times.
+      For example, the value <code>10</code> would indicate that this activity should be
+      invoked <code>10</code> times.
     </p>
     <p>
       When looping over an array, you can access the iterator value and index using

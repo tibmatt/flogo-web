@@ -16,7 +16,9 @@ export class DanglingSubflowReferencesCleaner {
     const linkedFlowInputNames = linkedFlowInputMetadata.map(input => input.name);
     const finalMappingNames = intersection(mappedPropNamesInTask, linkedFlowInputNames);
 
-    return task.inputMappings.filter(inputMapping => finalMappingNames.includes(inputMapping.mapTo));
+    return task.inputMappings.filter(inputMapping =>
+      finalMappingNames.includes(inputMapping.mapTo)
+    );
   }
 
   getFlowMetadata(linkedFlow) {

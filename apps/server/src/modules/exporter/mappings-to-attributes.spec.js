@@ -51,7 +51,10 @@ describe('exporter.mappings-to-attributes', () => {
         {
           id: 'task1',
           activityRef: 'activityschema1',
-          attributes: [{ name: 'attr1', type: 'double' }, { name: 'attr2', type: 'complex_object' }],
+          attributes: [
+            { name: 'attr1', type: 'double' },
+            { name: 'attr2', type: 'complex_object' },
+          ],
           inputMappings: [
             {
               mapTo: 'attr1',
@@ -82,7 +85,10 @@ describe('exporter.mappings-to-attributes', () => {
         {
           id: 'task1',
           activityRef: 'activityschema1',
-          attributes: [{ name: 'attr1', type: 'double' }, { name: 'attr2', type: 'complex_object' }],
+          attributes: [
+            { name: 'attr1', type: 'double' },
+            { name: 'attr2', type: 'complex_object' },
+          ],
           inputMappings: [
             {
               mapTo: 'attr1',

@@ -15,9 +15,13 @@ describe('JSONSchema: App', () => {
 
   const validSchemas = generateValidSchemas();
   beforeEach(() => {
-    testContext.ajvContext = makeAjvContext('app', [commonSchema, triggerSchema, flowSchema, appSchema], {
-      removeAdditional: true,
-    });
+    testContext.ajvContext = makeAjvContext(
+      'app',
+      [commonSchema, triggerSchema, flowSchema, appSchema],
+      {
+        removeAdditional: true,
+      }
+    );
     testContext.validator = testContext.ajvContext.createValidator();
     testContext.app = {
       name: 'my app',
@@ -51,7 +55,9 @@ describe('JSONSchema: App', () => {
     describe('/resources', () => {
       let resourceValidator;
       beforeEach(() => {
-        resourceValidator = testContext.ajvContext.createValidatorForSubschema('resource');
+        resourceValidator = testContext.ajvContext.createValidatorForSubschema(
+          'resource'
+        );
       });
       ['data', 'id'].forEach(requiredProp => {
         test(`should require ${requiredProp}`, () => {
@@ -74,7 +80,10 @@ describe('JSONSchema: App', () => {
     });
   });
   function generateValidSchemas() {
-    const trigger = { id: 'trigger1', ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli' };
+    const trigger = {
+      id: 'trigger1',
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli',
+    };
     const resource = { id: 'flow:test', data: {} };
 
     return {

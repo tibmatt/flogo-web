@@ -22,7 +22,10 @@ export class MissingTriggerConfirmationComponent {
   public readonly i18nMessage: string;
   public readonly i18nConfirmBtn: string;
 
-  constructor(public control: ModalControl, @Inject(MODAL_TOKEN) { type }: ConfirmationParams) {
+  constructor(
+    public control: ModalControl,
+    @Inject(MODAL_TOKEN) { type }: ConfirmationParams
+  ) {
     const msgType = type === 'export' ? 'EXPORT' : 'BUILD';
     this.i18nMessage = `APP.MISSING_TRIGGER.MESSAGE-${msgType}`;
     this.i18nConfirmBtn = `APP.MISSING_TRIGGER.CONFIRM-${msgType}`;

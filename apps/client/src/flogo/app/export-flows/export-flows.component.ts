@@ -76,11 +76,20 @@ export class FlogoExportFlowsComponent {
           ];
         })
         .catch(errRsp => {
-          if (errRsp && errRsp.errors && errRsp.errors[0] && errRsp.errors[0].code === ERROR_CODE.HAS_SUBFLOW) {
-            this.notificationsService.error({ key: 'DETAILS-EXPORT:CANNOT-EXPORT' });
+          if (
+            errRsp &&
+            errRsp.errors &&
+            errRsp.errors[0] &&
+            errRsp.errors[0].code === ERROR_CODE.HAS_SUBFLOW
+          ) {
+            this.notificationsService.error({
+              key: 'DETAILS-EXPORT:CANNOT-EXPORT',
+            });
           } else {
             console.error(errRsp.errors);
-            this.notificationsService.error({ key: 'DETAILS-EXPORT:ERROR_UNKNOWN' });
+            this.notificationsService.error({
+              key: 'DETAILS-EXPORT:ERROR_UNKNOWN',
+            });
           }
         });
   }

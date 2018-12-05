@@ -4,7 +4,11 @@ import { flowReducer } from './flow/flow.reducer';
 import { triggersReducer } from './triggers/triggers.reducer';
 import { reducer as triggerConfigureReducer } from './triggers-configure/trigger-configure.reducer';
 
-const reducers: ActionReducer<FlowState, Action>[] = [flowReducer, triggersReducer, triggerConfigureReducer];
+const reducers: ActionReducer<FlowState, Action>[] = [
+  flowReducer,
+  triggersReducer,
+  triggerConfigureReducer,
+];
 export function featureReducer(state = INITIAL_STATE, action: Action) {
   return reducers.reduce((nextState, reducer) => reducer(nextState, action), state);
 }

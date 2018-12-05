@@ -55,16 +55,27 @@ export class RestApiService {
     return this.httpUtils.apiPrefix(path);
   }
 
-  private request<T>(verb, url, options: RestApiOptions & { body?: any } = {}): Observable<T> {
+  private request<T>(
+    verb,
+    url,
+    options: RestApiOptions & { body?: any } = {}
+  ): Observable<T> {
     return this.http
-      .request<RestApiResponseBody<T> | T>(verb, this.apiPrefix(url), this.mergeOptions(verb, options))
+      .request<RestApiResponseBody<T> | T>(
+        verb,
+        this.apiPrefix(url),
+        this.mergeOptions(verb, options)
+      )
       .pipe(map(response => (isStdResponseBody(response) ? response.data : response)));
   }
 
   private mergeOptions(verb: string, options: RestApiOptions = {}) {
     options = { ...options };
     if (this.requestForVerbHasBody(verb)) {
-      options.headers = { 'Content-Type': 'application/json', ...options.headers };
+      options.headers = {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      };
     }
     const headers = this.mergeWithDefaultHeaders(options.headers);
     return { ...options, headers };

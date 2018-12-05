@@ -14,10 +14,15 @@ describe('importer.device.TriggersHandlersImporter', () => {
     const extractedTriggerSequence = importer.extractTriggers({
       triggers: [1, 2, 3],
     });
-    expect(extractedTriggerSequence).toEqual(expect.arrayContaining([{ param: 1 }, { param: 2 }, { param: 3 }]));
+    expect(extractedTriggerSequence).toEqual(
+      expect.arrayContaining([{ param: 1 }, { param: 2 }, { param: 3 }])
+    );
 
     expect(triggerFormatterStub.callCount).toBe(3);
-    const argsSequence = triggerFormatterStub.args.reduce((all, argsOnNthCall) => all.concat(argsOnNthCall), []);
+    const argsSequence = triggerFormatterStub.args.reduce(
+      (all, argsOnNthCall) => all.concat(argsOnNthCall),
+      []
+    );
     expect(argsSequence).toEqual([1, 2, 3]);
     sandbox.restore();
   });
@@ -44,7 +49,9 @@ describe('importer.device.TriggersHandlersImporter', () => {
       });
     });
     test('should format the settings', () => {
-      expect(Object.keys(formattedTrigger.settings)).toEqual(expect.arrayContaining(['pin', 'digital', 'condition']));
+      expect(Object.keys(formattedTrigger.settings)).toEqual(
+        expect.arrayContaining(['pin', 'digital', 'condition'])
+      );
     });
     test('should correctly define a handler', () => {
       const [handler] = formattedTrigger.handlers;

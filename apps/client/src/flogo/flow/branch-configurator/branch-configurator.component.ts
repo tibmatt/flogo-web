@@ -3,8 +3,16 @@ import { Store } from '@ngrx/store';
 import { FlowState } from '@flogo-web/client/flow/core/state';
 import { AppState } from '@flogo-web/client/flow/core/state/app.state';
 import { FlogoFlowService as FlowsService } from '@flogo-web/client/flow/core';
-import { FLOGO_TASK_TYPE, GraphNode, ItemBranch, LanguageService } from '@flogo-web/client/core';
-import { MapperController, MapperControllerFactory } from '@flogo-web/client/flow/shared/mapper';
+import {
+  FLOGO_TASK_TYPE,
+  GraphNode,
+  ItemBranch,
+  LanguageService,
+} from '@flogo-web/client/core';
+import {
+  MapperController,
+  MapperControllerFactory,
+} from '@flogo-web/client/flow/shared/mapper';
 import { getStateWhenConfigureChanges } from '@flogo-web/client/flow/shared/configurator/configurator.selector';
 import { skip, takeUntil } from 'rxjs/operators';
 import { SingleEmissionSubject } from '@flogo-web/client/core/models';
@@ -22,8 +30,13 @@ import { createBranchMappingContext } from '@flogo-web/client/flow/branch-config
   templateUrl: 'branch-configurator.component.html',
   animations: [
     trigger('dialog', [
-      transition('void => *', [style({ transform: 'translateY(-100%)', opacity: 0 }), animate('250ms ease-in')]),
-      transition('* => void', [animate('250ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 }))]),
+      transition('void => *', [
+        style({ transform: 'translateY(-100%)', opacity: 0 }),
+        animate('250ms ease-in'),
+      ]),
+      transition('* => void', [
+        animate('250ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 })),
+      ]),
     ]),
   ],
 })
@@ -66,7 +79,9 @@ export class BranchConfiguratorComponent implements OnInit {
     this.itemId = state.taskConfigure;
     this.ensurePreviousContextCleanup();
     this.contextChange$ = SingleEmissionSubject.create();
-    const selectedItem = <ItemBranch>cloneDeep(state.mainItems[this.itemId] || state.errorItems[this.itemId]);
+    const selectedItem = <ItemBranch>(
+      cloneDeep(state.mainItems[this.itemId] || state.errorItems[this.itemId])
+    );
     this.createActivityLinksInfo(state);
     this.isSaveDisabled = true;
     this.inputScope = getInputContext(this.itemId, state);
@@ -86,10 +101,12 @@ export class BranchConfiguratorComponent implements OnInit {
       cloneDeep(state.mainGraph.nodes[this.itemId] || state.errorGraph.nodes[this.itemId])
     );
     const selectedLinksParentItem = cloneDeep(
-      state.mainItems[selectedLinksGraph.parents[0]] || state.errorItems[selectedLinksGraph.parents[0]]
+      state.mainItems[selectedLinksGraph.parents[0]] ||
+        state.errorItems[selectedLinksGraph.parents[0]]
     );
     const selectedLinksChildItem = cloneDeep(
-      state.mainItems[selectedLinksGraph.children[0]] || state.errorItems[selectedLinksGraph.children[0]]
+      state.mainItems[selectedLinksGraph.children[0]] ||
+        state.errorItems[selectedLinksGraph.children[0]]
     );
     this.childActivity = selectedLinksChildItem ? selectedLinksChildItem.name : null;
     this.parentActivity = selectedLinksParentItem ? selectedLinksParentItem.name : null;
@@ -99,7 +116,11 @@ export class BranchConfiguratorComponent implements OnInit {
     if (this.inputMapperStateSubscription && !this.inputMapperStateSubscription.closed) {
       this.inputMapperStateSubscription.unsubscribe();
     }
-    this.inputMapperController = this.mapperControllerFactory.createController(propsToMap, inputScope, mappings);
+    this.inputMapperController = this.mapperControllerFactory.createController(
+      propsToMap,
+      inputScope,
+      mappings
+    );
     this.inputMapperStateSubscription = this.inputMapperController.state$
       .pipe(
         skip(1),
@@ -125,7 +146,8 @@ export class BranchConfiguratorComponent implements OnInit {
   save() {
     createSaveBranchAction(this.store, {
       id: this.itemId,
-      condition: this.inputMapperController.getCurrentState().mappings.condition.expression,
+      condition: this.inputMapperController.getCurrentState().mappings.condition
+        .expression,
     }).subscribe(action => {
       this.store.dispatch(action);
       this.isActive = false;

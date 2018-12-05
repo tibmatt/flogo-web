@@ -60,19 +60,21 @@ export const loader = {
     return determinePathToVendor(enginePath)
       .then(vendorPath => {
         return Promise.all([
-          _readTasks(vendorPath, 'trigger', triggersToRead.map(refToPath)).then(triggers =>
-            triggers.map(trigger => {
-              // rt === schema of the trigger
-              trigger.rt = normalizeContribSchema(trigger.rt);
-              return trigger;
-            })
+          _readTasks(vendorPath, 'trigger', triggersToRead.map(refToPath)).then(
+            triggers =>
+              triggers.map(trigger => {
+                // rt === schema of the trigger
+                trigger.rt = normalizeContribSchema(trigger.rt);
+                return trigger;
+              })
           ),
-          _readTasks(vendorPath, 'activity', activitiesToRead.map(refToPath)).then(activities =>
-            activities.map(activity => {
-              // rt === schema of the activity
-              activity.rt = normalizeContribSchema(activity.rt);
-              return activity;
-            })
+          _readTasks(vendorPath, 'activity', activitiesToRead.map(refToPath)).then(
+            activities =>
+              activities.map(activity => {
+                // rt === schema of the activity
+                activity.rt = normalizeContribSchema(activity.rt);
+                return activity;
+              })
           ),
         ]);
       })

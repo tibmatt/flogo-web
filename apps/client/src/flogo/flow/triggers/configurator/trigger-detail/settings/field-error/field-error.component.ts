@@ -27,10 +27,12 @@ const errorFormatters: { [errorType: string]: (error?: any) => string } = {
   },
   [ErrorTypes.UnknownResolverName]: (error: ErrorUnknownResolverName) =>
     `Resolver "$${error.name}" is not allowed, expecting $env or $property`,
-  [ErrorTypes.TypeMismatch]: (error: ErrorTypeMismatch) => `Expected ${error.expectedType} type`,
+  [ErrorTypes.TypeMismatch]: (error: ErrorTypeMismatch) =>
+    `Expected ${error.expectedType} type`,
 };
 
-const formatErrorMessage = ([errorName, error]: [string, any]) => errorFormatters[errorName](error);
+const formatErrorMessage = ([errorName, error]: [string, any]) =>
+  errorFormatters[errorName](error);
 
 @Component({
   selector: 'flogo-configuration-settings-field-error',

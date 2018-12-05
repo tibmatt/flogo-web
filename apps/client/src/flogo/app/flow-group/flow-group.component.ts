@@ -1,5 +1,13 @@
 import { sortBy } from 'lodash';
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, HostBinding } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+  HostBinding,
+} from '@angular/core';
 import { Trigger, FlowSummary } from '@flogo-web/client/core';
 import { DeleteEvent } from '../shared/delete-event';
 
@@ -11,8 +19,12 @@ import { DeleteEvent } from '../shared/delete-event';
 export class FlowGroupComponent implements OnChanges {
   @Input() public flows: Array<FlowSummary> = [];
   @Input() public trigger: Trigger;
-  @Output() public flowSelected: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
-  @Output() public deleteFlow: EventEmitter<DeleteEvent> = new EventEmitter<DeleteEvent>();
+  @Output() public flowSelected: EventEmitter<FlowSummary> = new EventEmitter<
+    FlowSummary
+  >();
+  @Output() public deleteFlow: EventEmitter<DeleteEvent> = new EventEmitter<
+    DeleteEvent
+  >();
   @Output() public addFlow: EventEmitter<Trigger> = new EventEmitter<Trigger>();
   @HostBinding('class.flogo-group') hostClass = true;
 
@@ -31,7 +43,10 @@ export class FlowGroupComponent implements OnChanges {
   }
 
   onDeleteFlow(flow: FlowSummary) {
-    this.deleteFlow.emit({ triggerId: this.trigger ? this.trigger.id : null, flow: flow });
+    this.deleteFlow.emit({
+      triggerId: this.trigger ? this.trigger.id : null,
+      flow: flow,
+    });
   }
 
   onAddFlow() {

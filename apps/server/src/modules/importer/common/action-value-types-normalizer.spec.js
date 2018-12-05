@@ -5,13 +5,20 @@ import { actionValueTypesNormalizer } from './action-value-type-normalizer';
 describe('importer.common.actionValueTypesNormalizer', () => {
   const actionUnderTest = {
     metadata: {
-      input: [{ name: 'in1', type: 'any' }, { name: 'in2', type: 'integer' }, { name: 'in3', type: 'string' }],
+      input: [
+        { name: 'in1', type: 'any' },
+        { name: 'in2', type: 'integer' },
+        { name: 'in3', type: 'string' },
+      ],
       output: [{ name: 'out1', type: 'int' }, { name: 'out2', type: 'long' }],
     },
     tasks: [
       {
         id: 'task1',
-        attributes: [{ name: 'attr1', type: 'double' }, { name: 'attr2', type: 'complex_object' }],
+        attributes: [
+          { name: 'attr1', type: 'double' },
+          { name: 'attr2', type: 'complex_object' },
+        ],
       },
       {
         id: 'task2',
@@ -45,23 +52,39 @@ describe('importer.common.actionValueTypesNormalizer', () => {
   test('should correctly normalize metadata inputs and outputs', () => {
     const inputs = extractValues(normalizedAction.metadata.input);
     const outputs = extractValues(normalizedAction.metadata.output);
-    expect(inputs).toEqual(expect.arrayContaining([{ in1: 'any' }, { in2: 'integer' }, { in3: 'string' }]));
-    expect(outputs).toEqual(expect.arrayContaining([{ out1: 'integer' }, { out2: 'long' }]));
+    expect(inputs).toEqual(
+      expect.arrayContaining([{ in1: 'any' }, { in2: 'integer' }, { in3: 'string' }])
+    );
+    expect(outputs).toEqual(
+      expect.arrayContaining([{ out1: 'integer' }, { out2: 'long' }])
+    );
   });
 
   test('should correctly normalize task value types for root task', () => {
     const taskAttributeTypes = extractTaskHandlerAttributeTypes('rootTask');
     const [task1Types, task2Types] = taskAttributeTypes;
-    expect(task1Types).toEqual(expect.arrayContaining([{ attr1: 'double' }, { attr2: 'complexObject' }]));
+    expect(task1Types).toEqual(
+      expect.arrayContaining([{ attr1: 'double' }, { attr2: 'complexObject' }])
+    );
     expect(task2Types).toEqual(
-      expect.arrayContaining([{ attr1: 'double' }, { attr2: 'complexObject' }, { attr3: 'any' }])
+      expect.arrayContaining([
+        { attr1: 'double' },
+        { attr2: 'complexObject' },
+        { attr3: 'any' },
+      ])
     );
   });
 
   test('should correctly normalize task value types for error task', () => {
     const taskAttributeTypes = extractTaskHandlerAttributeTypes('errorHandler');
     const [taskTypes] = taskAttributeTypes;
-    expect(taskTypes).toEqual(expect.arrayContaining([{ attr1: 'array' }, { attr2: 'params' }, { attr3: 'integer' }]));
+    expect(taskTypes).toEqual(
+      expect.arrayContaining([
+        { attr1: 'array' },
+        { attr2: 'params' },
+        { attr3: 'integer' },
+      ])
+    );
   });
 
   function extractTaskHandlerAttributeTypes(handlerName) {

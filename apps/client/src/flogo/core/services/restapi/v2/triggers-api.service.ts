@@ -13,7 +13,8 @@ export class TriggersApiService {
   constructor(private restApi: RestApiService) {}
 
   listTriggersForApp(appId, filters?: { name?: string }) {
-    const options: RestApiOptions = filters && filters.name ? { params: { 'filter[name]': filters.name } } : null;
+    const options: RestApiOptions =
+      filters && filters.name ? { params: { 'filter[name]': filters.name } } : null;
     return this.restApi.get<any>(`apps/${appId}/triggers`, options).toPromise();
   }
 

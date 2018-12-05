@@ -1,8 +1,25 @@
-import { Component, EventEmitter, Input, OnDestroy, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { Mappings } from './models/mappings';
 
 import { merge, Subject } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, first, map, share, takeUntil } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  first,
+  map,
+  share,
+  takeUntil,
+} from 'rxjs/operators';
 
 import { MonacoEditorLoaderService } from '../monaco-editor';
 import { load as loadMonacoLangPlugin } from '../mapper-language/monaco-contribution';
@@ -11,7 +28,11 @@ import { SingleEmissionSubject } from './shared/single-emission-subject';
 
 import { MapperService } from './services/mapper.service';
 import { EditorService } from './editor/editor.service';
-import { DraggingService, TYPE_PARAM_FUNCTION, TYPE_PARAM_OUTPUT } from './services/dragging.service';
+import {
+  DraggingService,
+  TYPE_PARAM_FUNCTION,
+  TYPE_PARAM_OUTPUT,
+} from './services/dragging.service';
 import { selectCurrentNode, selectMappings } from './services/selectors';
 import { MapperTreeNode } from './models/mapper-treenode.model';
 import { MapperController } from './services/mapper-controller/mapper-controller';
@@ -111,7 +132,10 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private isDragAcceptable() {
-    return this.draggingService.accepts(TYPE_PARAM_OUTPUT) || this.draggingService.accepts(TYPE_PARAM_FUNCTION);
+    return (
+      this.draggingService.accepts(TYPE_PARAM_OUTPUT) ||
+      this.draggingService.accepts(TYPE_PARAM_FUNCTION)
+    );
   }
 
   private initContext() {

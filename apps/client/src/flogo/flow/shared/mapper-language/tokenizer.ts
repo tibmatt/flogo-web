@@ -60,7 +60,11 @@ export function load() {
 
       whitespace: [[/[ \t\r\n]+/, 'white']],
 
-      templateExpr: [{ include: '@baseExpr' }, [/[()\[\]]/, '@brackets'], [/}}/, { token: '@rematch', next: '@pop' }]],
+      templateExpr: [
+        { include: '@baseExpr' },
+        [/[()\[\]]/, '@brackets'],
+        [/}}/, { token: '@rematch', next: '@pop' }],
+      ],
 
       json: [
         { include: '@whitespace' },
@@ -128,7 +132,10 @@ export function load() {
           },
         ],
 
-        [/(\$)(@resolvers)(\[\w+\])/, ['resolver.symbol', 'resolver.name', 'resolver.selector']],
+        [
+          /(\$)(@resolvers)(\[\w+\])/,
+          ['resolver.symbol', 'resolver.name', 'resolver.selector'],
+        ],
         [/(\$)(@resolvers)/, ['resolver.symbol', 'resolver.name']],
         [/(\$)(\.)/, ['resolver.symbol', 'delimiter']],
 

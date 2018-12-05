@@ -36,16 +36,16 @@ export class ExpressionProcessorService {
     const langTree = parseResult.getParseTree().getTree();
 
     if (langTree) {
-      const { errors: semanticErrors, structureDetails: extractedDetails } = this.validate(
-        langTree,
-        expectedResultDataType,
-        symbolTable,
-        relativeMapsTo
-      );
+      const {
+        errors: semanticErrors,
+        structureDetails: extractedDetails,
+      } = this.validate(langTree, expectedResultDataType, symbolTable, relativeMapsTo);
       structureDetails = extractedDetails;
       if (semanticErrors && semanticErrors.length > 0) {
         hasSemanticErrors = true;
-        errors = errors.concat(this.processSemanticErrors(semanticErrors, expression.length));
+        errors = errors.concat(
+          this.processSemanticErrors(semanticErrors, expression.length)
+        );
       }
     } else {
       const syntaxErrors = parseResult.getErrors();
@@ -106,7 +106,10 @@ export class ExpressionProcessorService {
 
   private getSemanticErrorLocation(e: ValidationError, maxOffset: number) {
     if (e.position) {
-      return { startOffset: e.position.start.offset, endOffset: e.position.end.offset };
+      return {
+        startOffset: e.position.start.offset,
+        endOffset: e.position.end.offset,
+      };
     } else {
       return { startOffset: 0, endOffset: maxOffset };
     }

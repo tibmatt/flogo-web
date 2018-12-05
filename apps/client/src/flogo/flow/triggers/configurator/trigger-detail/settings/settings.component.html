@@ -17,7 +17,9 @@
         <span>{{ 'TRIGGER-CONFIGURATOR:SETTINGS:NAME' | translate }}</span>
       </label>
       <span class="field-error-message" *ngIf="settingsForm.controls.name.errors">
-        <ng-container *ngIf="settingsForm.controls.name.hasError('required')">Name cannot be empty.</ng-container>
+        <ng-container *ngIf="settingsForm.controls.name.hasError('required')"
+          >Name cannot be empty.</ng-container
+        >
         <ng-container *ngIf="settingsForm.controls.name.hasError('nameNotUnique')"
           >There is another trigger with this name.</ng-container
         >
@@ -30,7 +32,9 @@
   <div class="settings-block">
     <label class="settings-label" for="triggerDescription">
       <span>{{ 'TRIGGER-CONFIGURATOR:SETTINGS:DESCRIPTION' | translate }}</span>
-      <i class="settings-label__optional"> {{ 'TRIGGER-CONFIGURATOR:SETTINGS:OPTIONAL' | translate }} </i>
+      <i class="settings-label__optional">
+        {{ 'TRIGGER-CONFIGURATOR:SETTINGS:OPTIONAL' | translate }}
+      </i>
       <i
         *ngIf="settingsForm.controls.description.disabled"
         class="flogo-icon-edit settings-icon__edit"
@@ -45,28 +49,40 @@
     ></textarea>
   </div>
   <div class="settings-group">
-    <div *ngIf="triggerSettings" class="settings-group__content" [formGroup]="settingsForm.controls.triggerSettings">
+    <div
+      *ngIf="triggerSettings"
+      class="settings-group__content"
+      [formGroup]="settingsForm.controls.triggerSettings"
+    >
       <div class="settings-group__header">
         <i class="flogo-icon-settings settings-group__icon"></i>
         {{ 'TRIGGER-CONFIGURATOR:SETTINGS:TRIGGER-SETTINGS' | translate }}
       </div>
       <flogo-configuration-settings-field
         *ngFor="let settingName of triggerSettings"
-        [settingInformation]="(triggerInformation?.settingsControls.triggerSettings)[settingName]"
+        [settingInformation]="
+          (triggerInformation?.settingsControls.triggerSettings)[settingName]
+        "
         [settingControl]="settingsForm.controls.triggerSettings.controls[settingName]"
         [appProperties]="appProperties"
         (enableSettings)="onEnableSettings($event)"
       >
       </flogo-configuration-settings-field>
     </div>
-    <div *ngIf="handlerSettings" class="settings-group__content" [formGroup]="settingsForm.controls.handlerSettings">
+    <div
+      *ngIf="handlerSettings"
+      class="settings-group__content"
+      [formGroup]="settingsForm.controls.handlerSettings"
+    >
       <div class="settings-group__header">
         <i class="flogo-icon-flag settings-group__icon"></i>
         {{ 'TRIGGER-CONFIGURATOR:SETTINGS:HANDLER-SETTINGS' | translate }}
       </div>
       <flogo-configuration-settings-field
         *ngFor="let settingName of handlerSettings"
-        [settingInformation]="(triggerInformation?.settingsControls.handlerSettings)[settingName]"
+        [settingInformation]="
+          (triggerInformation?.settingsControls.handlerSettings)[settingName]
+        "
         [settingControl]="settingsForm.controls.handlerSettings.controls[settingName]"
         [appProperties]="appProperties"
         (enableSettings)="onEnableSettings($event)"

@@ -70,7 +70,10 @@ export class TaskFormatter {
     const attributes = this.sourceTask.attributes || {};
     return attributes.reduce((input, attribute) => {
       let value = attribute.value;
-      if (isOutputMapperField(this.schemaInputsByName[attribute.name]) && isArray(attribute.value)) {
+      if (
+        isOutputMapperField(this.schemaInputsByName[attribute.name]) &&
+        isArray(attribute.value)
+      ) {
         value = portAndFormatMappings({ output: value }).output;
       }
       input[attribute.name] = value;
@@ -79,6 +82,8 @@ export class TaskFormatter {
   }
 
   convertInputMappings() {
-    return portAndFormatMappings({ input: this.sourceTask.inputMappings || [] });
+    return portAndFormatMappings({
+      input: this.sourceTask.inputMappings || [],
+    });
   }
 }

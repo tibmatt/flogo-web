@@ -1,4 +1,10 @@
-import { BaseItemTask, GraphNode, Item, ItemBranch, NodeType } from '@flogo-web/client/core';
+import {
+  BaseItemTask,
+  GraphNode,
+  Item,
+  ItemBranch,
+  NodeType,
+} from '@flogo-web/client/core';
 import { isBranchConfigured, isIterableTask } from '@flogo-web/client/shared/utils';
 import { FlowState } from '../flow.state';
 import { getGraphName, getItemsDictionaryName } from '../../utils';
@@ -6,7 +12,10 @@ import { HandlerType } from '@flogo-web/client/flow/core/models/handler-type';
 
 export function nodeUpdate(
   state: FlowState,
-  payload: { handlerType: HandlerType; item?: { id: string } & Partial<ItemBranch> }
+  payload: {
+    handlerType: HandlerType;
+    item?: { id: string } & Partial<ItemBranch>;
+  }
 ) {
   const { handlerType, item } = payload;
   if (!item) {
@@ -56,7 +65,10 @@ export function itemUpdate(
 
 export function graphUpdate(
   state: FlowState,
-  payload: { handlerType: HandlerType; item?: { id: string } & Partial<BaseItemTask> }
+  payload: {
+    handlerType: HandlerType;
+    item?: { id: string } & Partial<BaseItemTask>;
+  }
 ) {
   const { handlerType, item } = payload;
   if (!item) {

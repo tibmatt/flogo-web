@@ -6,7 +6,8 @@ import { RunOptions } from './run-orchestrator.service';
 export function createRunOptionsForRoot(flowState: FlowState) {
   const initData = getInitDataForRoot(flowState);
   const runOptions: RunOptions = { attrsData: initData };
-  const shouldUpdateFlow = flowState.configChangedSinceLastExecution || !flowState.lastFullExecution.processId;
+  const shouldUpdateFlow =
+    flowState.configChangedSinceLastExecution || !flowState.lastFullExecution.processId;
   if (shouldUpdateFlow) {
     runOptions.useFlowId = flowState.id;
   } else {
@@ -15,7 +16,9 @@ export function createRunOptionsForRoot(flowState: FlowState) {
   return runOptions;
 }
 
-function getInitDataForRoot(flowState: FlowState): undefined | ((MetadataAttribute & { value: any })[]) {
+function getInitDataForRoot(
+  flowState: FlowState
+): undefined | ((MetadataAttribute & { value: any })[]) {
   const flowInput = get(flowState, 'metadata.input') as MetadataAttribute[];
   if (isEmpty(flowInput)) {
     return undefined;

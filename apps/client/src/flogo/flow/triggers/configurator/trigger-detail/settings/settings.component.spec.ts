@@ -10,7 +10,10 @@ describe('Component: ConfigureSettingsComponent', function(this: {
   confirmationService: ConfirmationService;
 }) {
   beforeEach(() => {
-    this.confirmationService = jasmine.createSpyObj<ConfirmationService>('confirmationService', ['openPopover']);
+    this.confirmationService = jasmine.createSpyObj<ConfirmationService>(
+      'confirmationService',
+      ['openPopover']
+    );
     this.testComponent = new ConfigureSettingsComponent(this.confirmationService);
     this.testComponent.triggerInformation = {
       settingsControls: null,

@@ -29,9 +29,15 @@ export class AppImporterFactory {
         {
           params: {
             knownTypes: [
-              { name: 'standard', properties: { type: 'flogo:app', appModel: '1.0.0' } },
+              {
+                name: 'standard',
+                properties: { type: 'flogo:app', appModel: '1.0.0' },
+              },
               { name: 'device', properties: { type: 'flogo:app:device' } },
-              { name: 'legacy', properties: { type: 'flogo:app', appModel: null } },
+              {
+                name: 'legacy',
+                properties: { type: 'flogo:app', appModel: null },
+              },
             ],
           },
         }
@@ -80,7 +86,12 @@ export class AppImporterFactory {
   }
 
   createAppImporter({ validator, actionsImporter, triggersHandlersImporter }) {
-    return new AppImporter(validator, this.getAppsManager(), actionsImporter, triggersHandlersImporter);
+    return new AppImporter(
+      validator,
+      this.getAppsManager(),
+      actionsImporter,
+      triggersHandlersImporter
+    );
   }
 
   isMicroserviceprofile(rawApp) {

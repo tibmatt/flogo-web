@@ -1,6 +1,20 @@
-import { Injectable, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  Injectable,
+  EventEmitter,
+  HostBinding,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { SvgRefFixerService } from '@flogo-web/client/core';
-import { DiagramSelection, TaskTile, DiagramActionSelf, DiagramActionChild, DiagramSelectionType } from '../interfaces';
+import {
+  DiagramSelection,
+  TaskTile,
+  DiagramActionSelf,
+  DiagramActionChild,
+  DiagramSelectionType,
+} from '../interfaces';
 import { actionEventFactory } from '../action-event-factory';
 
 @Injectable()
@@ -79,7 +93,8 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
     this.isSelected = false;
     if (this.currentSelection) {
       const { type, taskId } = this.currentSelection;
-      this.isSelected = type === DiagramSelectionType.Node && taskId === this.tile.task.id;
+      this.isSelected =
+        type === DiagramSelectionType.Node && taskId === this.tile.task.id;
     }
   }
 }

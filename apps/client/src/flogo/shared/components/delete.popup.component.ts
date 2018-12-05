@@ -1,4 +1,13 @@
-import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output, Inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Input,
+  Output,
+  Inject,
+} from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
 const POPOVER_WIDTH = 344;
@@ -17,12 +26,17 @@ const POPOVER_WIDTH = 344;
         <span *ngIf="deleteContentType == 'application'">{{
           'APP-LIST-POPUP:CONFIRM-MESSAGE-DELETE' | translate
         }}</span>
-        <span *ngIf="deleteContentType == 'flow'">{{ 'APP-DETAIL-POPUP:CONFIRM-MESSAGE-DELETE' | translate }}</span>
+        <span *ngIf="deleteContentType == 'flow'">{{
+          'APP-DETAIL-POPUP:CONFIRM-MESSAGE-DELETE' | translate
+        }}</span>
       </p>
       <button class="flogo-button--secondary" (click)="cancelDelete($event)">
         {{ 'APP-LIST-POPUP:DELETE-CANCEL' | translate | uppercase }}
       </button>
-      <button class="popup-btn-confirm flogo-button--default" (click)="confirmDelete($event)">
+      <button
+        class="popup-btn-confirm flogo-button--default"
+        (click)="confirmDelete($event)"
+      >
         {{ 'APP-LIST-POPUP:DELETE-CONFIRM' | translate | uppercase }}
       </button>
     </div>
@@ -81,7 +95,10 @@ export class FlogoDeletePopupComponent {
 
   @HostListener('document:click', ['$event'])
   onClick(event: Event) {
-    if (event.target !== this.nativeElement && !this.nativeElement.contains(event.target)) {
+    if (
+      event.target !== this.nativeElement &&
+      !this.nativeElement.contains(event.target)
+    ) {
       this.isPopupOpen = false;
     }
   }

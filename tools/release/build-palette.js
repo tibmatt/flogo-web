@@ -17,12 +17,16 @@ const ignoreRefs = [
   'github.com/TIBCOSoftware/flogo-contrib/activity/mongodb',
 ];
 
-const pathToContrib = process.env.FLOGO_WEB_BUILD_CONTRIB_PATH || path.resolve('/flogo', 'flogo-contrib');
+const pathToContrib =
+  process.env.FLOGO_WEB_BUILD_CONTRIB_PATH || path.resolve('/flogo', 'flogo-contrib');
 console.log('Will look for flogo-contrib in: ', pathToContrib);
 buildPalette();
 
 export async function buildPalette() {
-  const [activities, triggers] = await Promise.all([getAll('activity'), getAll('trigger')]);
+  const [activities, triggers] = await Promise.all([
+    getAll('activity'),
+    getAll('trigger'),
+  ]);
 
   const contribs = [...activities, ...triggers]
     .filter(contrib => !ignoreRefs.includes(contrib.ref))
@@ -36,7 +40,10 @@ export async function buildPalette() {
   const palette = makePalette(contribs);
   console.log('** Generated new default palette **');
   console.log(inspect(palette));
-  return writeJsonFile(path.resolve(Sources.server, 'src', 'config', DEFAULT_PALETTE_FILENAME), palette);
+  return writeJsonFile(
+    path.resolve(Sources.server, 'src', 'config', DEFAULT_PALETTE_FILENAME),
+    palette
+  );
 }
 
 function makePalette(extensions) {
@@ -52,9 +59,13 @@ function makePalette(extensions) {
 async function getAll(type) {
   const dirPath = path.join(pathToContrib, type);
   const files = await getFiles(dirPath);
-  let descriptorPaths = files.filter(file => file.isDir).map(file => path.join(file.path, `${type}.json`));
+  let descriptorPaths = files
+    .filter(file => file.isDir)
+    .map(file => path.join(file.path, `${type}.json`));
   const descriptors = await Promise.all(
-    descriptorPaths.map(contribDescriptorPath => readContribDescriptor(contribDescriptorPath))
+    descriptorPaths.map(contribDescriptorPath =>
+      readContribDescriptor(contribDescriptorPath)
+    )
   );
   return descriptors.filter(descriptor => !!descriptor).map(({ ref }) => ({ type, ref }));
 }

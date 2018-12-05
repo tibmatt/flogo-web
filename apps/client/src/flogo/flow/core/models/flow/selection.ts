@@ -1,7 +1,16 @@
-import { SelectionType, CurrentSelection, InsertTaskSelection, TaskSelection, TriggerSelection } from '../selection';
+import {
+  SelectionType,
+  CurrentSelection,
+  InsertTaskSelection,
+  TaskSelection,
+  TriggerSelection,
+} from '../selection';
 import { HandlerType } from '../handler-type';
 
-export function makeTaskSelection(handlerType: HandlerType, taskId: string): TaskSelection {
+export function makeTaskSelection(
+  handlerType: HandlerType,
+  taskId: string
+): TaskSelection {
   return {
     type: SelectionType.Task,
     taskId,
@@ -9,7 +18,10 @@ export function makeTaskSelection(handlerType: HandlerType, taskId: string): Tas
   };
 }
 
-export function makeInsertSelection(handlerType: HandlerType, parentId: string): InsertTaskSelection {
+export function makeInsertSelection(
+  handlerType: HandlerType,
+  parentId: string
+): InsertTaskSelection {
   return {
     type: SelectionType.InsertTask,
     parentId,
@@ -24,6 +36,8 @@ export function makeTriggerSelection(triggerId: string): TriggerSelection {
   };
 }
 
-export function isTriggerSelection(selection: null | CurrentSelection): selection is TriggerSelection {
+export function isTriggerSelection(
+  selection: null | CurrentSelection
+): selection is TriggerSelection {
   return selection && selection.type === SelectionType.Trigger;
 }

@@ -16,7 +16,10 @@
           <div class="triggers-container__header">
             <div>{{ 'SELECT-TRIGGER:TRIGGER-TYPES' | translate }}</div>
             <div>
-              <button (click)="openInstallTriggerDialog()" class="flogo-button--secondary">
+              <button
+                (click)="openInstallTriggerDialog()"
+                class="flogo-button--secondary"
+              >
                 {{ 'SELECT-TRIGGER:INSTALL-NEW' | translate }}
               </button>
             </div>
@@ -46,7 +49,10 @@
 
         <div *ngIf="displayExisting" class="triggers-container__existing-triggers">
           <ul class="arrow-div">
-            <li *ngFor="let trigger of existingTriggers" (click)="sendAddTriggerMsg(trigger, 'existing')">
+            <li
+              *ngFor="let trigger of existingTriggers"
+              (click)="sendAddTriggerMsg(trigger, 'existing')"
+            >
               <div class="icon"><i class="flogo-icon-trigger"></i></div>
               <div class="label-icon">{{ trigger.name }}</div>
             </li>

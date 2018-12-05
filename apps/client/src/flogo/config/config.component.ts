@@ -19,11 +19,20 @@ export class FlogoConfigComponent {
   public location = location;
   public logs: Array<{ label: string; url: string }>;
 
-  constructor(private _router: Router, private _configurationService: ConfigurationService) {
+  constructor(
+    private _router: Router,
+    private _configurationService: ConfigurationService
+  ) {
     this.init();
     this.logs = [
-      { label: 'View Test Engine Log', url: `${environment.hostname}/_logs/engine.log` },
-      { label: 'View Flogo Web App Log', url: `${environment.hostname}/_logs/app.log` },
+      {
+        label: 'View Test Engine Log',
+        url: `${environment.hostname}/_logs/engine.log`,
+      },
+      {
+        label: 'View Flogo Web App Log',
+        url: `${environment.hostname}/_logs/app.log`,
+      },
     ];
   }
 

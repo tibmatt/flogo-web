@@ -4,7 +4,11 @@ import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { Store, StoreModule } from '@ngrx/store';
 import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
-import { featureReducer, FlowState, INITIAL_STATE } from '@flogo-web/client/flow/core/state';
+import {
+  featureReducer,
+  FlowState,
+  INITIAL_STATE,
+} from '@flogo-web/client/flow/core/state';
 import { ConfiguratorModule } from './configurator.module';
 import { TriggersMock } from './mocks/triggers.mock';
 import { ConfiguratorStatus } from './interfaces';
@@ -168,7 +172,9 @@ xdescribe('ConfiguratorComponent component', () => {
   });
 
   beforeEach(function() {
-    store.dispatch(new OpenConfigureWithSelection({ triggerId: 'trigger1', triggerSchemas }));
+    store.dispatch(
+      new OpenConfigureWithSelection({ triggerId: 'trigger1', triggerSchemas })
+    );
   });
 
   it('Should be instantiated without any error', () => {
@@ -189,7 +195,9 @@ xdescribe('ConfiguratorComponent component', () => {
   xit('Should select at least one trigger by default', () => {
     // component.onNextStatus(MockData);
     fixture.detectChanges();
-    const triggerElements = fixture.debugElement.queryAll(By.css('.js-trigger-element.is-selected'));
+    const triggerElements = fixture.debugElement.queryAll(
+      By.css('.js-trigger-element.is-selected')
+    );
     expect(triggerElements.length).toEqual(1);
   });
 
@@ -270,7 +278,8 @@ xdescribe('ConfiguratorComponent component', () => {
       version: '0.0.1',
       title: 'Timer',
       description: 'Simple Timer trigger',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer',
+      homepage:
+        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer',
       settings: [],
       output: [
         {

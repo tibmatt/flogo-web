@@ -11,9 +11,13 @@
     class="flogo-button--primary action qa-action-save"
     (click)="save.emit()"
   >
-    {{ (isSaving ? 'TRIGGER-CONFIGURATOR:SAVING' : 'TRIGGER-CONFIGURATOR:SAVE') | translate }}
+    {{
+      (isSaving ? 'TRIGGER-CONFIGURATOR:SAVING' : 'TRIGGER-CONFIGURATOR:SAVE') | translate
+    }}
   </button>
 </div>
 <ng-template #noChanges>
-  <span class="default-text qa-default-text">{{ 'TRIGGER-CONFIGURATOR:NO-PENDING-CHANGES' | translate }}</span>
+  <span class="default-text qa-default-text">{{
+    'TRIGGER-CONFIGURATOR:NO-PENDING-CHANGES' | translate
+  }}</span>
 </ng-template>

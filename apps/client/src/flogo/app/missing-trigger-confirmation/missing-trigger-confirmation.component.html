@@ -1,6 +1,7 @@
 <div class="body">
   <div class="lead">
-    <i class="flogo-icon-info lead__icon"></i> <span>{{ 'APP.MISSING_TRIGGER.TITLE' | translate }}</span>
+    <i class="flogo-icon-info lead__icon"></i>
+    <span>{{ 'APP.MISSING_TRIGGER.TITLE' | translate }}</span>
   </div>
   <p class="message" [innerHTML]="i18nMessage | translate"></p>
 </div>
@@ -22,6 +23,10 @@
       'APP.MISSING_TRIGGER.DONT_SHOW_AGAIN' | translate
     }}</label>
   </div>
-  <button class="flogo-button--secondary" (click)="cancel()">{{ 'APP.MISSING_TRIGGER.CANCEL' | translate }}</button>
-  <button class="flogo-button--primary" (click)="confirm()">{{ i18nConfirmBtn | translate }}</button>
+  <button class="flogo-button--secondary" (click)="cancel()">
+    {{ 'APP.MISSING_TRIGGER.CANCEL' | translate }}
+  </button>
+  <button class="flogo-button--primary" (click)="confirm()">
+    {{ i18nConfirmBtn | translate }}
+  </button>
 </div>

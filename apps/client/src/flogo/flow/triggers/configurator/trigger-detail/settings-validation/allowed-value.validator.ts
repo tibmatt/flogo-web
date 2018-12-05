@@ -14,7 +14,11 @@ export function getAllowedValueValidator(allowedValues: any[]) {
     /* tslint:disable-next-line:triple-equals */
     const isAllowedValue = !allowedValues.find(val => val == userValue);
     return isAllowedValue
-      ? { [ErrorTypes.ValueNotAllowed]: { allowedValues: allowedValues } as ErrorValueNotAllowed }
+      ? {
+          [ErrorTypes.ValueNotAllowed]: {
+            allowedValues: allowedValues,
+          } as ErrorValueNotAllowed,
+        }
       : null;
   };
 }

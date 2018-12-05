@@ -1,8 +1,18 @@
 <nav>
   <div class="flogo-header">
-    <a [routerLink]="['/']"><img class="flogo-header__logo" src="/assets/svg/flogo.logo.svg" alt=""/></a>
-    <div class="flogo-header__help-menu navbar-right" [class.--active]="isOpenMenu" (fgClickOutside)="closeNavMenu()">
-      <button class="flogo-btn-link flogo-header__help-menu-btn" type="button" (click)="toggleNavMenu()">
+    <a [routerLink]="['/']"
+      ><img class="flogo-header__logo" src="/assets/svg/flogo.logo.svg" alt=""
+    /></a>
+    <div
+      class="flogo-header__help-menu navbar-right"
+      [class.--active]="isOpenMenu"
+      (fgClickOutside)="closeNavMenu()"
+    >
+      <button
+        class="flogo-btn-link flogo-header__help-menu-btn"
+        type="button"
+        (click)="toggleNavMenu()"
+      >
         <i class="flogo-icon-help"></i>
       </button>
       <div class="flogo-header__help-menu-content">
@@ -35,22 +45,33 @@
         <div class="flogo-header__divider"></div>
         <ul (click)="closeNavMenu()">
           <li>
-            <a href="http://www.tibco.com/company/privacy-cma" target="_new" class="flogo-privacyText"
+            <a
+              href="http://www.tibco.com/company/privacy-cma"
+              target="_new"
+              class="flogo-privacyText"
               >{{ 'FLOGO:LINK-PRIVACY-POLICY' | translate }}</a
             >
           </li>
           <li>
-            <a href="http://www.tibco.com/company/termsofuse" target="_new" class="flogo-privacyText"
+            <a
+              href="http://www.tibco.com/company/termsofuse"
+              target="_new"
+              class="flogo-privacyText"
               >{{ 'FLOGO:LINK-TERMS-OF-USE' | translate }}</a
             >
           </li>
           <li>
-            <a href="http://www.tibco.com/trademarks" target="_new" class="flogo-privacyText"
+            <a
+              href="http://www.tibco.com/trademarks"
+              target="_new"
+              class="flogo-privacyText"
               >{{ 'FLOGO:LINK-TRADEMARKS' | translate }}</a
             >
           </li>
         </ul>
-        <p class="secondary-text copy-notice">{{ 'FLOGO:COPYRIGHT-NOTICE' | translate:{ year: currentYear } }}</p>
+        <p class="secondary-text copy-notice">
+          {{ 'FLOGO:COPYRIGHT-NOTICE' | translate:{ year: currentYear } }}
+        </p>
       </div>
     </div>
   </div>

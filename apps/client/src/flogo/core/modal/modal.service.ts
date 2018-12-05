@@ -13,7 +13,10 @@ export interface ModalContent {
 export class ModalService {
   constructor(private injector: Injector, private overlay: Overlay) {}
 
-  openModal<T>(contentComponent: ComponentType<ModalContent>, componentData: T): ModalControl {
+  openModal<T>(
+    contentComponent: ComponentType<ModalContent>,
+    componentData: T
+  ): ModalControl {
     const data = new WeakMap<any, any>();
     data.set(MODAL_TOKEN, componentData);
     const overlayRef = this.createModalOverlay();
@@ -32,12 +35,19 @@ export class ModalService {
     return control;
   }
 
-  private createPortal<T>(componentType: ComponentType<T>, customTokens: WeakMap<any, any>, control: ModalControl) {
+  private createPortal<T>(
+    componentType: ComponentType<T>,
+    customTokens: WeakMap<any, any>,
+    control: ModalControl
+  ) {
     const injector = this.createInjector(customTokens, control);
     return new ComponentPortal(componentType, null, injector);
   }
 
-  private createInjector(customTokens: WeakMap<any, any>, control: ModalControl): PortalInjector {
+  private createInjector(
+    customTokens: WeakMap<any, any>,
+    control: ModalControl
+  ): PortalInjector {
     const injectionTokens = customTokens || new WeakMap<any, any>();
     injectionTokens.set(ModalControl, control);
     return new PortalInjector(this.injector, injectionTokens);

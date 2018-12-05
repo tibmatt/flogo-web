@@ -52,7 +52,10 @@ export function importSettings(settings: any) {
       });
 
       if (!hostCategory) {
-        const newCategory: SettingGroup = { key: category, settings: { [fieldName]: settings[key] } };
+        const newCategory: SettingGroup = {
+          key: category,
+          settings: { [fieldName]: settings[key] },
+        };
         convertedSettings.push(newCategory);
       } else {
         hostCategory.settings[fieldName] = settings[key];

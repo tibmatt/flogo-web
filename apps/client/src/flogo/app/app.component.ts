@@ -26,22 +26,26 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
-    this.route.params.pipe(map((params: RouteParams) => params['appId'])).subscribe((appId: string) => {
-      this.appService.load(appId);
-    });
+    this.route.params
+      .pipe(map((params: RouteParams) => params['appId']))
+      .subscribe((appId: string) => {
+        this.appService.load(appId);
+      });
 
-    this.appObserverSubscription = this.appService.currentApp().subscribe((appDetail: ApplicationDetail) => {
-      if (!appDetail) {
-        // not initialized yet
-        this.appDetail = null;
-        return;
-      } else if (!appDetail.app) {
-        // no app anymore, good bye
-        this.router.navigate(['/']);
-        return;
-      }
-      this.appDetail = cloneDeep(appDetail);
-    });
+    this.appObserverSubscription = this.appService
+      .currentApp()
+      .subscribe((appDetail: ApplicationDetail) => {
+        if (!appDetail) {
+          // not initialized yet
+          this.appDetail = null;
+          return;
+        } else if (!appDetail.app) {
+          // no app anymore, good bye
+          this.router.navigate(['/']);
+          return;
+        }
+        this.appDetail = cloneDeep(appDetail);
+      });
   }
 
   public ngOnDestroy() {
@@ -56,21 +60,38 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
   }
 
   public onFlowDeleted(eventData) {
-    this.flowsService.deleteFlowWithTrigger(eventData.flow.id, eventData.triggerId).then(() => {
-      this.appService.reload();
-    });
+    this.flowsService
+      .deleteFlowWithTrigger(eventData.flow.id, eventData.triggerId)
+      .then(() => {
+        this.appService.reload();
+      });
   }
 
-  public onFlowAdded({ triggerId, name, description }: { triggerId?: string; name: string; description?: string }) {
+  public onFlowAdded({
+    triggerId,
+    name,
+    description,
+  }: {
+    triggerId?: string;
+    name: string;
+    description?: string;
+  }) {
     const appId = this.appDetail.app.id;
     const profileType = this.appDetail.app.profileType;
     this.flowsService
       .createFlow(appId, { name, description: description }, triggerId, profileType)
-      .then(() => this.notificationsService.success({ key: 'FLOWS:SUCCESS-MESSAGE-FLOW-CREATED' }))
+      .then(() =>
+        this.notificationsService.success({
+          key: 'FLOWS:SUCCESS-MESSAGE-FLOW-CREATED',
+        })
+      )
       .then(() => this.appService.reload())
       .catch(err => {
         console.error(err);
-        this.notificationsService.error({ key: 'FLOWS:CREATE_FLOW_ERROR', params: err });
+        this.notificationsService.error({
+          key: 'FLOWS:CREATE_FLOW_ERROR',
+          params: err,
+        });
       });
   }
 }

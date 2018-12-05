@@ -13,9 +13,23 @@ import { TriggerManager as ContribTriggersManager } from '../triggers';
 import { findGreatestNameIndex } from '../../common/utils/collection';
 import { prepareUpdateQuery } from './prepare-update-query';
 
-const EDITABLE_FIELDS_CREATION = ['name', 'description', 'metadata', 'tasks', 'links', 'errorHandler'];
+const EDITABLE_FIELDS_CREATION = [
+  'name',
+  'description',
+  'metadata',
+  'tasks',
+  'links',
+  'errorHandler',
+];
 
-const EDITABLE_FIELDS_UPDATE = ['name', 'description', 'metadata', 'tasks', 'links', 'errorHandler'];
+const EDITABLE_FIELDS_UPDATE = [
+  'name',
+  'description',
+  'metadata',
+  'tasks',
+  'links',
+  'errorHandler',
+];
 
 const RECENT_ACTIONS_ID = 'actions:recent';
 const MAX_RECENT = 10;
@@ -23,19 +37,27 @@ const MAX_RECENT = 10;
 export class ActionsManager {
   static create(appId, actionData) {
     if (!appId) {
-      return Promise.reject(ErrorManager.makeError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND }));
+      return Promise.reject(
+        ErrorManager.makeError('App not found', {
+          type: ERROR_TYPES.COMMON.NOT_FOUND,
+        })
+      );
     }
 
     return appsDb
       .findOne({ _id: appId }, { actions: 1 })
       .then(app => {
         if (!app) {
-          throw ErrorManager.makeError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
+          throw ErrorManager.makeError('App not found', {
+            type: ERROR_TYPES.COMMON.NOT_FOUND,
+          });
         }
 
         const errors = Validator.validate(actionData);
         if (errors) {
-          throw ErrorManager.createValidationError('Validation error', { details: errors });
+          throw ErrorManager.createValidationError('Validation error', {
+            details: errors,
+          });
         }
 
         actionData.name = ensureUniqueName(app.actions, actionData.name);
@@ -59,7 +81,9 @@ export class ActionsManager {
   static update(actionId, actionData) {
     return ActionsManager.findOne(actionId).then(existingAction => {
       if (!existingAction) {
-        throw ErrorManager.makeError('Action not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
+        throw ErrorManager.makeError('Action not found', {
+          type: ERROR_TYPES.COMMON.NOT_FOUND,
+        });
       }
       const appId = existingAction.appId;
       actionData = cleanInput(actionData, EDITABLE_FIELDS_UPDATE);
@@ -73,7 +97,9 @@ export class ActionsManager {
           return null;
         }
 
-        return ActionsManager.findOne(actionId).then(action => storeAsRecent(action).then(() => action));
+        return ActionsManager.findOne(actionId).then(action =>
+          storeAsRecent(action).then(() => action)
+        );
       });
     });
   }
@@ -115,26 +141,33 @@ export class ActionsManager {
   }
 
   static listRecent() {
-    return indexerDb.findOne({ _id: RECENT_ACTIONS_ID }).then(all => (all && all.actions ? all.actions : []));
+    return indexerDb
+      .findOne({ _id: RECENT_ACTIONS_ID })
+      .then(all => (all && all.actions ? all.actions : []));
   }
 
   static remove(actionId) {
-    return appsDb.update({ 'actions.id': actionId }, { $pull: { actions: { id: actionId } } }).then(numRemoved => {
-      const wasDeleted = numRemoved > 0;
-      if (wasDeleted) {
-        return Promise.all([removeFromRecent('id', actionId), HandlersManager.removeByActionId(actionId)]).then(
-          () => wasDeleted
-        );
-      }
-      return wasDeleted;
-    });
+    return appsDb
+      .update({ 'actions.id': actionId }, { $pull: { actions: { id: actionId } } })
+      .then(numRemoved => {
+        const wasDeleted = numRemoved > 0;
+        if (wasDeleted) {
+          return Promise.all([
+            removeFromRecent('id', actionId),
+            HandlersManager.removeByActionId(actionId),
+          ]).then(() => wasDeleted);
+        }
+        return wasDeleted;
+      });
   }
 
   /* @deprecated - Using old model of action JSON and not being used in the application*/
   static exportToFlow(actionId) {
     return ActionsManager.findOne(actionId).then(action => {
       if (!action) {
-        throw ErrorManager.makeError('Action not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
+        throw ErrorManager.makeError('Action not found', {
+          type: ERROR_TYPES.COMMON.NOT_FOUND,
+        });
       }
 
       const flow = get(action, 'data.flow', {});
@@ -201,13 +234,19 @@ function atomicUpdate(actionFields, actionId, appId) {
       if (err) {
         return reject(err);
       } else if (!app) {
-        return reject(ErrorManager.makeError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND }));
+        return reject(
+          ErrorManager.makeError('App not found', {
+            type: ERROR_TYPES.COMMON.NOT_FOUND,
+          })
+        );
       }
 
       if (actionFields.name) {
         const nameExists = actions => {
           const comparableName = actionFields.name.trim().toLowerCase();
-          return !!actions.find(t => t.name.trim().toLowerCase() === comparableName && t.id !== actionId);
+          return !!actions.find(
+            t => t.name.trim().toLowerCase() === comparableName && t.id !== actionId
+          );
         };
         if (nameExists(app.actions)) {
           // do nothing
@@ -231,7 +270,10 @@ function atomicUpdate(actionFields, actionId, appId) {
 
       const actionIndex = app.actions.findIndex(t => t.id === actionId);
       actionFields.updatedAt = dbUtils.ISONow();
-      Object.assign(updateQuery, prepareUpdateQuery(actionFields, app.actions[actionIndex], actionIndex));
+      Object.assign(
+        updateQuery,
+        prepareUpdateQuery(actionFields, app.actions[actionIndex], actionIndex)
+      );
       return null;
     };
 

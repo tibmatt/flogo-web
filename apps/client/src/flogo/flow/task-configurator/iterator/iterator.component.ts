@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output, OnInit, HostBinding } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnInit,
+  HostBinding,
+} from '@angular/core';
 import { MapperController } from '../../shared/mapper';
 
 @Component({

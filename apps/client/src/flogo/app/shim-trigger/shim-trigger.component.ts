@@ -25,10 +25,15 @@ export class TriggerShimBuildComponent {
     public control: ModalControl,
     public translate: LanguageService
   ) {
-    this.shimTriggerData.shimTriggersList = flatMap(this.shimTriggerData.shimTriggersList, shimTriggerList =>
-      map(shimTriggerList.flows, flow =>
-        defaults({ configuredTrigger: shimTriggerList.trigger }, { configuredFlow: flow })
-      )
+    this.shimTriggerData.shimTriggersList = flatMap(
+      this.shimTriggerData.shimTriggersList,
+      shimTriggerList =>
+        map(shimTriggerList.flows, flow =>
+          defaults(
+            { configuredTrigger: shimTriggerList.trigger },
+            { configuredFlow: flow }
+          )
+        )
     );
     if (this.shimTriggerData.shimTriggersList.length === 1) {
       this.displayOptions = {
@@ -60,6 +65,9 @@ export class TriggerShimBuildComponent {
   }
 
   onBuildEnvSelection(env, triggerId) {
-    this.control.close({ triggerId: triggerId, env: { os: env.os, arch: env.arch } });
+    this.control.close({
+      triggerId: triggerId,
+      env: { os: env.os, arch: env.arch },
+    });
   }
 }

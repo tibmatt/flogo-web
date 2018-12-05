@@ -138,7 +138,9 @@ describe('Application flows', () => {
   });
 
   it('Should display the flow description', () => {
-    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.qa-flow-description'));
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(
+      By.css('.qa-flow-description')
+    );
     el = res[3].nativeElement;
     expect(el.innerText).toEqual('A basic flow for apietusam');
   });

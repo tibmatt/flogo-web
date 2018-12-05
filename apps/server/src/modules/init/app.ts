@@ -69,7 +69,9 @@ function initRouter(logsRoot: string) {
     bodyParser({
       multipart: true,
       onError() {
-        throw ErrorManager.createRestError('Body parse error', { type: ERROR_TYPES.COMMON.BAD_SYNTAX });
+        throw ErrorManager.createRestError('Body parse error', {
+          type: ERROR_TYPES.COMMON.BAD_SYNTAX,
+        });
       },
     })
   );
@@ -85,7 +87,8 @@ function stripTrailingSlash(): Koa.Middleware {
   return function stripTrailingSlashMiddleware(ctx: Koa.Context, next) {
     let { path } = ctx.request;
     path = path.endsWith('/') ? path.substring(0, path.length - 1) : path;
-    const isRestApiRoute = !REST_API_ROUTE.test(path) && path.toLowerCase().search('/api/') === -1;
+    const isRestApiRoute =
+      !REST_API_ROUTE.test(path) && path.toLowerCase().search('/api/') === -1;
     if (isRestApiRoute) {
       ctx.request.path = '/';
     }

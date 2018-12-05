@@ -19,8 +19,21 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { TAB } from '@angular/cdk/keycodes';
 
-import { Observable, ReplaySubject, of as observableOf, concat, combineLatest, merge } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import {
+  Observable,
+  ReplaySubject,
+  of as observableOf,
+  concat,
+  combineLatest,
+  merge,
+} from 'rxjs';
+import {
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  switchMap,
+  takeUntil,
+} from 'rxjs/operators';
 
 import {
   AUTOCOMPLETE_OPTIONS,
@@ -46,7 +59,9 @@ const ensureObservable = value => {
 };
 
 const coerceSettingValueToString = (settingValue: SettingValue) =>
-  isString(settingValue.viewValue) ? settingValue.viewValue : JSON.stringify(settingValue.viewValue);
+  isString(settingValue.viewValue)
+    ? settingValue.viewValue
+    : JSON.stringify(settingValue.viewValue);
 
 @Directive({
   selector: '[fgTriggersConfigAutoComplete]',
@@ -82,15 +97,19 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
   ngOnInit() {
     this.filterTerm$ = this.valueSources.pipe(
       switchMap<Observable<any>, any>(newValueSource => newValueSource),
-      map((value: string | SettingValue) => (!isString(value) ? coerceSettingValueToString(value) : value)),
+      map((value: string | SettingValue) =>
+        !isString(value) ? coerceSettingValueToString(value) : value
+      ),
       shareReplay()
     );
-    this.filteredAllowedValues$ = filterSourceBy(this.allowedValuesSources, this.filterTerm$).pipe(
-      takeUntil(this.destroy$)
-    );
-    this.filteredVariableOptions$ = filterSourceBy(this.variablesSources, this.filterTerm$).pipe(
-      takeUntil(this.destroy$)
-    );
+    this.filteredAllowedValues$ = filterSourceBy(
+      this.allowedValuesSources,
+      this.filterTerm$
+    ).pipe(takeUntil(this.destroy$));
+    this.filteredVariableOptions$ = filterSourceBy(
+      this.variablesSources,
+      this.filterTerm$
+    ).pipe(takeUntil(this.destroy$));
   }
 
   @HostListener('focus')
@@ -127,7 +146,9 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
 
   ngOnChanges(changes: { [P in keyof this]?: SimpleChange }) {
     if (changes.formControl) {
-      this.valueSources.next(concat(observableOf(this.formControl.value), this.formControl.valueChanges));
+      this.valueSources.next(
+        concat(observableOf(this.formControl.value), this.formControl.valueChanges)
+      );
     }
     if (changes.autoCompleteAllowedSource) {
       this.allowedValuesSources.next(ensureObservable(this.autoCompleteAllowedSource));
@@ -212,8 +233,20 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
       .withGrowAfterOpen(true)
       .withPush(false)
       .withPositions([
-        { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 6 },
-        { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -6 },
+        {
+          originX: 'start',
+          originY: 'bottom',
+          overlayX: 'start',
+          overlayY: 'top',
+          offsetY: 6,
+        },
+        {
+          originX: 'start',
+          originY: 'top',
+          overlayX: 'start',
+          overlayY: 'bottom',
+          offsetY: -6,
+        },
       ]);
   }
 
@@ -233,7 +266,10 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
       appVariables: this.filteredVariableOptions$,
       onOptionSelected: option => this.optionSelected(option),
     };
-    const injector = new PortalInjector(this.parentInjector, new WeakMap<any, any>([[AUTOCOMPLETE_OPTIONS, sources]]));
+    const injector = new PortalInjector(
+      this.parentInjector,
+      new WeakMap<any, any>([[AUTOCOMPLETE_OPTIONS, sources]])
+    );
     return new ComponentPortal(AutoCompleteContentComponent, null, injector);
   }
 }

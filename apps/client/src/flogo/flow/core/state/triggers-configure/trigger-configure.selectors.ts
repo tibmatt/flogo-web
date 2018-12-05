@@ -4,8 +4,16 @@ import { of as observableOf } from 'rxjs';
 
 import { FlowState, selectActionId, selectApp } from '@flogo-web/client/flow/core/state';
 // todo: move to shared location
-import { TriggerStatus, CurrentTriggerState } from '../../../triggers/configurator/interfaces';
-import { selectFlowMetadata, selectHandlers, selectTriggerConfigure, selectTriggers } from '../flow/flow.selectors';
+import {
+  TriggerStatus,
+  CurrentTriggerState,
+} from '../../../triggers/configurator/interfaces';
+import {
+  selectFlowMetadata,
+  selectHandlers,
+  selectTriggerConfigure,
+  selectTriggers,
+} from '../flow/flow.selectors';
 
 import { createTriggerConfigureFields } from './cases/create-trigger-configure-fields';
 
@@ -31,7 +39,8 @@ const getConfigurableTriggerDetails = createSelector(
 
 export const selectCurrentTriggerId = createSelector(
   selectTriggerConfigure,
-  triggerConfigureState => (triggerConfigureState ? triggerConfigureState.selectedTriggerId : null)
+  triggerConfigureState =>
+    triggerConfigureState ? triggerConfigureState.selectedTriggerId : null
 );
 
 const selectTriggerConfigureTriggers = createSelector(
@@ -100,7 +109,9 @@ export const getCurrentTriggerIsSaving = (store: Store<FlowState>) => {
   );
   return store.pipe(
     select(getHasTriggersConfigure),
-    switchMap(isTriggerInitialized => (isTriggerInitialized ? currentSavingState$ : observableOf(false)))
+    switchMap(isTriggerInitialized =>
+      isTriggerInitialized ? currentSavingState$ : observableOf(false)
+    )
   );
 };
 

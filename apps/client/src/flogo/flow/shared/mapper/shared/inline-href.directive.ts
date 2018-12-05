@@ -36,10 +36,15 @@ export class InlineHrefDirective implements OnInit {
       this.element.nativeElement.href = this.inlineHref;
     }
 
-    const fixedHref = window.location.href.replace(window.location.hash, '') + this.inlineHref;
+    const fixedHref =
+      window.location.href.replace(window.location.hash, '') + this.inlineHref;
 
     if (this.element.nativeElement.tagName === InlineHrefDirective.SVG_USE_TAG) {
-      this.element.nativeElement.setAttributeNS(InlineHrefDirective.XLINK_NS, InlineHrefDirective.HREF_ATTR, fixedHref);
+      this.element.nativeElement.setAttributeNS(
+        InlineHrefDirective.XLINK_NS,
+        InlineHrefDirective.HREF_ATTR,
+        fixedHref
+      );
     } else {
       this.element.nativeElement.href = fixedHref;
     }

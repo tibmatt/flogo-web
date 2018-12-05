@@ -17,23 +17,33 @@
   <div *ngFor="let flow of filteredFlows" class="flogo-list__card">
     <div class="card-details">
       <h4 class="card-header">{{ flow.name }}</h4>
-      <span class="card-date">{{ 'FLOWS-LIST:CREATED' | translate }} {{ flow.createdAt | timeFromNow }}</span>
+      <span class="card-date"
+        >{{ 'FLOWS-LIST:CREATED' | translate }} {{ flow.createdAt | timeFromNow }}</span
+      >
       <p class="card-description">
         <span *ngIf="flow.description"> {{ flow.description }} </span>
-        <span *ngIf="!flow.description"> {{ 'FLOWS-LIST:NODESCRIPTION' | translate }} </span>
+        <span *ngIf="!flow.description">
+          {{ 'FLOWS-LIST:NODESCRIPTION' | translate }}
+        </span>
       </p>
     </div>
     <div>
-      <a href="/flows/{{ flow.id }}" class="flogo-link flows-list-new-tab-link " target="_blank">{{
-        'FLOWS-LIST:LINK-TEXT' | translate
-      }}</a>
+      <a
+        href="/flows/{{ flow.id }}"
+        class="flogo-link flows-list-new-tab-link "
+        target="_blank"
+        >{{ 'FLOWS-LIST:LINK-TEXT' | translate }}</a
+      >
       <button class="flogo-button--secondary select-button" (click)="selectFlow(flow)">
         {{ 'FLOWS-LIST:SELECT' | translate }}
       </button>
     </div>
   </div>
 </div>
-<div class="flogo-list__container --empty" *ngIf="filteredFlows && filteredFlows.length === 0">
+<div
+  class="flogo-list__container --empty"
+  *ngIf="filteredFlows && filteredFlows.length === 0"
+>
   <div class="flogo-list--empty"></div>
   <p>{{ 'FLOWS-LIST:NOFLOW' | translate }}</p>
 </div>

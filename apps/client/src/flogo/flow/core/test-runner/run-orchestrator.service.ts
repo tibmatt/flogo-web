@@ -133,7 +133,9 @@ export class RunOrchestratorService {
    * @see RunOrchestratorService#monitorProcessStatus
    */
   runFromRoot(opts: RunOptions): RunProgressStore {
-    return this.startAndMonitor(opts, processId => this.runService.startProcess(processId, opts.attrsData));
+    return this.startAndMonitor(opts, processId =>
+      this.runService.startProcess(processId, opts.attrsData)
+    );
   }
 
   /**
@@ -192,7 +194,9 @@ export class RunOrchestratorService {
     const querySteps = this.queryForSteps(instanceStatus).pipe(startWith(null));
 
     // merge all into a single state
-    const state: Observable<RunProgress> = shareObservable(this.mergeState(instanceStatus, querySteps, registered));
+    const state: Observable<RunProgress> = shareObservable(
+      this.mergeState(instanceStatus, querySteps, registered)
+    );
 
     const steps = shareObservable(this.streamSteps(registered, state));
 
@@ -201,7 +205,9 @@ export class RunOrchestratorService {
     return {
       registered,
       state,
-      processStatus: instanceStatus.pipe(distinctUntilChanged((prev, next) => isEqual(prev, next))),
+      processStatus: instanceStatus.pipe(
+        distinctUntilChanged((prev, next) => isEqual(prev, next))
+      ),
       steps,
       completed,
     };
@@ -276,11 +282,19 @@ export class RunOrchestratorService {
           return this.runService.getStatusByInstanceId(processInstanceID);
         }
         // or fail when we exhaust the maximum number of attempts
-        return _throw(this.errorService.makeOperationalError(ERRORS.MAX_TRIALS_REACHED, 'Max trials reached'));
+        return _throw(
+          this.errorService.makeOperationalError(
+            ERRORS.MAX_TRIALS_REACHED,
+            'Max trials reached'
+          )
+        );
       }),
       map((response: StatusResponse | null, index: number) => {
         response = response || { id: null, status: null };
-        if (response.status !== RunStatusCode.Cancelled && response.status !== RunStatusCode.Failed) {
+        if (
+          response.status !== RunStatusCode.Cancelled &&
+          response.status !== RunStatusCode.Failed
+        ) {
           const runStatus = <RunStatus>Object.assign({}, response);
           runStatus.trial = index + 1;
           return runStatus;
@@ -311,14 +325,23 @@ export class RunOrchestratorService {
     startFlow: StartFlowFn
   ): Observable<{ processId: string; instanceId: string }> {
     return this.registerFlowIfNeeded(opts).pipe(
-      switchMap(processId => startFlow(processId).pipe(map(instance => ({ processId, instanceId: instance.id }))))
+      switchMap(processId =>
+        startFlow(processId).pipe(
+          map(instance => ({ processId, instanceId: instance.id }))
+        )
+      )
     );
   }
 
-  registerFlowIfNeeded(opts: { useFlowId?: string; useProcessId?: string }): Observable<string> {
+  registerFlowIfNeeded(opts: {
+    useFlowId?: string;
+    useProcessId?: string;
+  }): Observable<string> {
     let registered;
     if (opts.useFlowId) {
-      registered = this.runService.storeProcess(opts.useFlowId).pipe(map(storedProcess => storedProcess.id));
+      registered = this.runService
+        .storeProcess(opts.useFlowId)
+        .pipe(map(storedProcess => storedProcess.id));
     } else if (opts.useProcessId) {
       registered = of(opts.useProcessId);
     } else {
@@ -328,7 +351,8 @@ export class RunOrchestratorService {
   }
 
   queryForSteps(processStatusMonitor: Observable<RunStatus>) {
-    const shouldQuery = status => status === RunStatusCode.Active || status === RunStatusCode.Completed;
+    const shouldQuery = status =>
+      status === RunStatusCode.Active || status === RunStatusCode.Completed;
     return processStatusMonitor.pipe(
       filter(runState => runState && shouldQuery(runState.status)),
       switchMap(runState => this.runService.getStepsByInstanceId(runState.id)),
@@ -336,7 +360,10 @@ export class RunOrchestratorService {
     );
   }
 
-  streamSteps(registered: Observable<{ instanceId: string }>, stateStream: Observable<RunProgress>) {
+  streamSteps(
+    registered: Observable<{ instanceId: string }>,
+    stateStream: Observable<RunProgress>
+  ) {
     return registered.pipe(
       exhaustMap(registerInfo => {
         return stateStream.pipe(
@@ -374,7 +401,9 @@ export class RunOrchestratorService {
     return stateStream.pipe(
       last(),
       switchMap(state =>
-        this.runService.getInstance(state.instanceId).pipe(map(lastInstance => ({ ...state, lastInstance })))
+        this.runService
+          .getInstance(state.instanceId)
+          .pipe(map(lastInstance => ({ ...state, lastInstance })))
       )
     );
   }

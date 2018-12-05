@@ -19,10 +19,16 @@ export class AddActivityService {
   private contentPortal: ComponentPortal<TaskAddComponent>;
   private parentId: string;
 
-  constructor(private store: Store<FlowState>, private injector: Injector, private overlay: Overlay) {}
+  constructor(
+    private store: Store<FlowState>,
+    private injector: Injector,
+    private overlay: Overlay
+  ) {}
 
   startSubscriptions() {
-    this.installedActivities$ = this.store.pipe(select(FlowSelectors.getInstalledActivities));
+    this.installedActivities$ = this.store.pipe(
+      select(FlowSelectors.getInstalledActivities)
+    );
     this.appAndFlowInfo$ = this.store.pipe(select(FlowSelectors.selectAppAndFlowInfo));
   }
 
@@ -45,8 +51,18 @@ export class AddActivityService {
       .withPositions([
         { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
         { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' },
-        { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' },
-        { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' },
+        {
+          originX: 'end',
+          originY: 'bottom',
+          overlayX: 'start',
+          overlayY: 'bottom',
+        },
+        {
+          originX: 'start',
+          originY: 'bottom',
+          overlayX: 'end',
+          overlayY: 'bottom',
+        },
       ]);
     if (!this.contentPortal) {
       const customTokens = this.createInjectorTokens();
@@ -72,20 +88,30 @@ export class AddActivityService {
     }
   }
 
-  private createInjectorTokens(): WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions> {
+  private createInjectorTokens(): WeakMap<
+    InjectionToken<TaskAddOptions>,
+    TaskAddOptions
+  > {
     const taskAddOptions: TaskAddOptions = {
       activities$: this.installedActivities$,
       appAndFlowInfo$: this.appAndFlowInfo$,
-      selectActivity: (ref: string, selectedSubFlow?: ActionBase) => this.selectedActivity(ref, selectedSubFlow),
-      installedActivity: (schema: ActivitySchema) => this.store.dispatch(new FlowActions.ActivityInstalled(schema)),
+      selectActivity: (ref: string, selectedSubFlow?: ActionBase) =>
+        this.selectedActivity(ref, selectedSubFlow),
+      installedActivity: (schema: ActivitySchema) =>
+        this.store.dispatch(new FlowActions.ActivityInstalled(schema)),
       updateActiveState: (isOpen: boolean) => (this.shouldKeepPopoverActive = isOpen),
     };
-    return new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>().set(TASKADD_OPTIONS, taskAddOptions);
+    return new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>().set(
+      TASKADD_OPTIONS,
+      taskAddOptions
+    );
   }
 
   private selectedActivity(ref: string, flowData?: ActionBase) {
-    createTaskAddAction(this.store, { ref, flowData }).subscribe((action: FlowActions.TaskItemCreated) => {
-      this.store.dispatch(action);
-    });
+    createTaskAddAction(this.store, { ref, flowData }).subscribe(
+      (action: FlowActions.TaskItemCreated) => {
+        this.store.dispatch(action);
+      }
+    );
   }
 }

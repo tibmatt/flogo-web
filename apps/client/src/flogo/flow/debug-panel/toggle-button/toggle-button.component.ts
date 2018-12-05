@@ -1,4 +1,11 @@
-import { Component, HostBinding, ElementRef, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  ElementRef,
+  AfterViewInit,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Subscription, interval, of } from 'rxjs';
 import { delayWhen } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
@@ -18,13 +25,19 @@ export class ToggleButtonComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostBinding('class.is-open') isPanelOpen: boolean;
   private panelStateSubscription: Subscription;
 
-  constructor(private elementRef: ElementRef, private store: Store<FlowState>, private togglerRef: TogglerRefService) {}
+  constructor(
+    private elementRef: ElementRef,
+    private store: Store<FlowState>,
+    private togglerRef: TogglerRefService
+  ) {}
 
   ngOnInit() {
     this.panelStateSubscription = this.store
       .pipe(
         select(FlowSelectors.selectDebugPanelOpen),
-        delayWhen(isOpen => (!isOpen ? interval(CLOSE_WRAPPER_ANIMATION_DURATION) : of(0)))
+        delayWhen(isOpen =>
+          !isOpen ? interval(CLOSE_WRAPPER_ANIMATION_DURATION) : of(0)
+        )
       )
       .subscribe(isOpen => (this.isPanelOpen = isOpen));
   }

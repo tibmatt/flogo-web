@@ -5,7 +5,10 @@ import { TaskItemCreated } from '../flow.actions';
 import { addNewNode } from '../../../models/flow/add-new-node';
 import { makeTaskSelection } from '../../../models/flow/selection';
 
-export function taskItemCreated(state: FlowState, payload: PayloadOf<TaskItemCreated>): FlowState {
+export function taskItemCreated(
+  state: FlowState,
+  payload: PayloadOf<TaskItemCreated>
+): FlowState {
   const { handlerType, item, node } = payload;
   const graphName = getGraphName(handlerType);
   const itemsDictionaryName = getItemsDictionaryName(handlerType);
@@ -23,7 +26,10 @@ export function taskItemCreated(state: FlowState, payload: PayloadOf<TaskItemCre
   return state;
 }
 
-function registerSubflowSchema(state: FlowState, subflowSchema?: ActionSchema): FlowState {
+function registerSubflowSchema(
+  state: FlowState,
+  subflowSchema?: ActionSchema
+): FlowState {
   if (subflowSchema) {
     state = {
       ...state,

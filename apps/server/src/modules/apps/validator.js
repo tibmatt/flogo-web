@@ -19,7 +19,10 @@ function validate(schema, data, options = {}, customValidations) {
 
   if (customValidations) {
     customValidations.forEach(validator =>
-      ajv.addKeyword(validator.keyword, { validate: validator.validate, errors: true })
+      ajv.addKeyword(validator.keyword, {
+        validate: validator.validate,
+        errors: true,
+      })
     );
   }
 
@@ -35,38 +38,69 @@ export class Validator {
     } else {
       validationSchema = appSchema;
     }
-    return validate(validationSchema, data, { removeAdditional: true, useDefaults: true, allErrors: true });
+    return validate(validationSchema, data, {
+      removeAdditional: true,
+      useDefaults: true,
+      allErrors: true,
+    });
   }
 
   static validateTriggerCreate(data) {
-    return validate(triggerSchemaCreate, data, { removeAdditional: true, useDefaults: true, allErrors: true });
+    return validate(triggerSchemaCreate, data, {
+      removeAdditional: true,
+      useDefaults: true,
+      allErrors: true,
+    });
   }
 
   static validateTriggerDeviceCreate(data) {
-    return validate(triggerDeviceSchemaCreate, data, { removeAdditional: true, useDefaults: true, allErrors: true });
+    return validate(triggerDeviceSchemaCreate, data, {
+      removeAdditional: true,
+      useDefaults: true,
+      allErrors: true,
+    });
   }
 
   static validateActivityDeviceCreate(data) {
-    return validate(activityDeviceSchemaCreate, data, { removeAdditional: true, useDefaults: true, allErrors: true });
+    return validate(activityDeviceSchemaCreate, data, {
+      removeAdditional: true,
+      useDefaults: true,
+      allErrors: true,
+    });
   }
 
   static validateTriggerUpdate(data) {
-    return validate(triggerSchemaUpdate, data, { removeAdditional: true, useDefaults: true, allErrors: true });
+    return validate(triggerSchemaUpdate, data, {
+      removeAdditional: true,
+      useDefaults: true,
+      allErrors: true,
+    });
   }
 
   static validateHandler(data) {
-    return validate(handlerEditableSchema, data, { removeAdditional: true, useDefaults: true, allErrors: true });
+    return validate(handlerEditableSchema, data, {
+      removeAdditional: true,
+      useDefaults: true,
+      allErrors: true,
+    });
   }
 
   static validateFullApp(profileType, data, contribVerify, options) {
-    options = defaults({}, options, { removeAdditional: false, useDefaults: false, allErrors: true, verbose: true });
+    options = defaults({}, options, {
+      removeAdditional: false,
+      useDefaults: false,
+      allErrors: true,
+      verbose: true,
+    });
     let customValidations;
     if (contribVerify) {
       const makeInstalledValidator = (keyword, collection, type) =>
         function validator(schema, vData) {
           const isInstalled = collection.includes(vData);
           if (!isInstalled) {
-            validator.errors = [{ keyword, message: `${type} "${vData}" is not installed`, data }];
+            validator.errors = [
+              { keyword, message: `${type} "${vData}" is not installed`, data },
+            ];
           }
           return isInstalled;
         };
@@ -74,11 +108,19 @@ export class Validator {
       customValidations = [
         {
           keyword: 'trigger-installed',
-          validate: makeInstalledValidator('trigger-installed', contribVerify.triggers || [], 'Trigger'),
+          validate: makeInstalledValidator(
+            'trigger-installed',
+            contribVerify.triggers || [],
+            'Trigger'
+          ),
         },
         {
           keyword: 'activity-installed',
-          validate: makeInstalledValidator('activity-installed', contribVerify.activities || [], 'Activity'),
+          validate: makeInstalledValidator(
+            'activity-installed',
+            contribVerify.activities || [],
+            'Activity'
+          ),
         },
       ];
     }

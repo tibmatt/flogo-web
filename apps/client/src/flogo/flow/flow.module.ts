@@ -52,7 +52,12 @@ import { TaskAddModule } from './task-add';
     DebugPanelModule,
     BranchMapperModule,
   ],
-  declarations: [FlogoRunFlowComponent, FlowComponent, FlogoFlowDiagramComponent, FlowTabsComponent],
+  declarations: [
+    FlogoRunFlowComponent,
+    FlowComponent,
+    FlogoFlowDiagramComponent,
+    FlowTabsComponent,
+  ],
   providers: [FlowDataResolver],
   bootstrap: [FlowComponent],
 })

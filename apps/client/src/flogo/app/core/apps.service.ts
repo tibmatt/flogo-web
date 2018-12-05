@@ -30,7 +30,10 @@ export class AppDetailService {
   private currentApp$ = new BehaviorSubject<ApplicationDetail>(undefined);
   private fetching: boolean;
 
-  constructor(private appsApiService: AppsApiService, private errorService: ErrorService) {}
+  constructor(
+    private appsApiService: AppsApiService,
+    private errorService: ErrorService
+  ) {}
 
   public currentApp(): Observable<ApplicationDetail> {
     return this.currentApp$.asObservable();
@@ -139,7 +142,9 @@ export class AppDetailService {
 
   public toEngineSpec(isLegacyExport?: boolean) {
     const appModel = isLegacyExport ? APP_MODELS.LEGACY : APP_MODELS.STANDARD;
-    return this.appsApiService.exportApp(this.currentApp$.getValue().app.id, { appModel });
+    return this.appsApiService.exportApp(this.currentApp$.getValue().app.id, {
+      appModel,
+    });
   }
 
   public exportFlow(flowids, isLegacyExport?: boolean) {
@@ -147,7 +152,11 @@ export class AppDetailService {
     if (isLegacyExport) {
       appModel = APP_MODELS.LEGACY;
     }
-    return this.appsApiService.exportFlows(this.currentApp$.getValue().app.id, flowids, appModel);
+    return this.appsApiService.exportFlows(
+      this.currentApp$.getValue().app.id,
+      flowids,
+      appModel
+    );
   }
 
   public build(appId, opts: { os: string; arch: string }) {
@@ -226,11 +235,14 @@ export class AppDetailService {
       .map(action => {
         return {
           flow: action,
-          triggers: triggers.filter(t => !!t.handlers.find(h => h.actionId === action.id)),
+          triggers: triggers.filter(
+            t => !!t.handlers.find(h => h.actionId === action.id)
+          ),
         };
       })
       .map(actionGroup => {
-        actionGroup.triggers = actionGroup.triggers.length > 0 ? actionGroup.triggers : null;
+        actionGroup.triggers =
+          actionGroup.triggers.length > 0 ? actionGroup.triggers : null;
         return actionGroup;
       });
   }

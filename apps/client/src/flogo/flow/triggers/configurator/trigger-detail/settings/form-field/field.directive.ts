@@ -1,4 +1,11 @@
-import { Directive, ElementRef, forwardRef, HostListener, Input, Renderer2 } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  forwardRef,
+  HostListener,
+  Input,
+  Renderer2,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ValueType } from '@flogo-web/client/core';
 import { SettingValue } from '../../settings-value';
@@ -29,7 +36,8 @@ export class FieldValueAccesorDirective implements ControlValueAccessor {
   }
 
   writeValue(value: SettingValue): void {
-    const normalizedValue = value == null || value.viewValue == null ? '' : value.viewValue;
+    const normalizedValue =
+      value == null || value.viewValue == null ? '' : value.viewValue;
     this.renderer.setProperty(this.elementRef.nativeElement, 'value', normalizedValue);
   }
 

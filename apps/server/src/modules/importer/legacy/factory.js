@@ -35,7 +35,10 @@ export class LegacyAppImporterFactory {
   }
 
   async loadContributions() {
-    return loadMicroserviceContribs(this.getActivitiesManager(), this.getTriggersManager());
+    return loadMicroserviceContribs(
+      this.getActivitiesManager(),
+      this.getTriggersManager()
+    );
   }
 
   getTriggersManager() {

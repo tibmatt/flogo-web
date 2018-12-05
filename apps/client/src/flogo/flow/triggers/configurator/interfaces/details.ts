@@ -28,7 +28,9 @@ export interface SettingControlInfo extends SchemaAttribute {
 }
 
 export interface TriggerInformation {
-  settingsControls: { [groupType in SettingControlGroupType]: Dictionary<SettingControlInfo> };
+  settingsControls: {
+    [groupType in SettingControlGroupType]: Dictionary<SettingControlInfo>
+  };
   trigger: {
     handlersCount: number;
     homePage: string;

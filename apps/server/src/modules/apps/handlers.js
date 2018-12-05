@@ -19,7 +19,9 @@ export class HandlersManager {
     const findQuery = { 'triggers.id': triggerId, 'actions.id': actionId };
     return appsDb.findOne(findQuery, { actions: 1, triggers: 1, device: 1 }).then(app => {
       if (!app) {
-        throw ErrorManager.makeError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
+        throw ErrorManager.makeError('App not found', {
+          type: ERROR_TYPES.COMMON.NOT_FOUND,
+        });
       }
 
       const errors = Validator.validateHandler(handlerData);
@@ -34,12 +36,18 @@ export class HandlersManager {
       let updateQuery = {};
       const now = dbUtils.ISONow();
 
-      const existingHandlerIndex = trigger.handlers.findIndex(h => h.actionId === actionId);
+      const existingHandlerIndex = trigger.handlers.findIndex(
+        h => h.actionId === actionId
+      );
       if (existingHandlerIndex >= 0) {
         const existingHandler = trigger.handlers[existingHandlerIndex];
         handler = defaults(handler, existingHandler);
         handler.updatedAt = now;
-        updateQuery = { $set: { [`triggers.${triggerIndex}.handlers.${existingHandlerIndex}`]: handler } };
+        updateQuery = {
+          $set: {
+            [`triggers.${triggerIndex}.handlers.${existingHandlerIndex}`]: handler,
+          },
+        };
       } else {
         handler = defaults(handler, {
           actionId,
@@ -57,7 +65,9 @@ export class HandlersManager {
             },
           });
         }
-        updateQuery = { $push: { [`triggers.${triggerIndex}.handlers`]: handler } };
+        updateQuery = {
+          $push: { [`triggers.${triggerIndex}.handlers`]: handler },
+        };
       }
 
       return appsDb
@@ -92,7 +102,10 @@ export class HandlersManager {
       throw new TypeError('Params triggerId and actionId are required');
     }
     return appsDb
-      .findOne({ 'triggers.id': triggerId, 'actions.id': actionId }, { triggers: 1, actions: 1 })
+      .findOne(
+        { 'triggers.id': triggerId, 'actions.id': actionId },
+        { triggers: 1, actions: 1 }
+      )
       .then(app => {
         const triggerIndex = app.triggers.findIndex(t => t.id === triggerId);
         return appsDb.update(
@@ -112,14 +125,20 @@ export class HandlersManager {
           return null;
         }
         const pull = app.triggers.reduce((result, trigger, index) => {
-          const existingHandlers = trigger.handlers.findIndex(handler => handler.actionId === actionId);
+          const existingHandlers = trigger.handlers.findIndex(
+            handler => handler.actionId === actionId
+          );
           if (existingHandlers >= 0) {
             result['triggers.' + index + '.handlers'] = { actionId: actionId };
           }
           return result;
         }, {});
         if (!isEmpty(pull)) {
-          return appsDb.update({ 'triggers.handlers.actionId': actionId }, { $pull: pull }, {});
+          return appsDb.update(
+            { 'triggers.handlers.actionId': actionId },
+            { $pull: pull },
+            {}
+          );
         }
         return null;
       })

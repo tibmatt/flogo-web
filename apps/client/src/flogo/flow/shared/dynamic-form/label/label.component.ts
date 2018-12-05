@@ -1,4 +1,10 @@
-import { Component, Input, ChangeDetectionStrategy, ViewEncapsulation, HostBinding } from '@angular/core';
+import {
+  Component,
+  Input,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+  HostBinding,
+} from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { BaseField } from '../field-base';
 

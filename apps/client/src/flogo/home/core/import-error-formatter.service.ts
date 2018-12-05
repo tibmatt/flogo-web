@@ -46,7 +46,8 @@ export class ImportErrorFormatterService {
       case 'required':
       case 'pattern':
       case 'minLength':
-        errorMessage = this.getErrorContext(detail.dataPath, detail.keyword) + detail.message;
+        errorMessage =
+          this.getErrorContext(detail.dataPath, detail.keyword) + detail.message;
         break;
       case 'enum':
         errorMessage =
@@ -58,7 +59,9 @@ export class ImportErrorFormatterService {
       case 'const':
         errorMessage =
           this.getErrorContext(detail.dataPath, detail.keyword) +
-          this._translate.instant('IMPORT-ERROR:CONSTANT_CONTENT', { val: detail.params.allowedValue });
+          this._translate.instant('IMPORT-ERROR:CONSTANT_CONTENT', {
+            val: detail.params.allowedValue,
+          });
         break;
       case 'app-empty':
         errorMessage = detail.message;
@@ -67,10 +70,14 @@ export class ImportErrorFormatterService {
         errorMessage = this._translate.instant('IMPORT-ERROR:UNKNOWN_APP_TYPE_DETAIL');
         break;
       case 'activity-installed':
-        errorMessage = this._translate.instant('IMPORT-ERROR:ACTIVITY_MISSING_CONTENT', { ref: detail.params.ref });
+        errorMessage = this._translate.instant('IMPORT-ERROR:ACTIVITY_MISSING_CONTENT', {
+          ref: detail.params.ref,
+        });
         break;
       case 'trigger-installed':
-        errorMessage = this._translate.instant('IMPORT-ERROR:TRIGGER_MISSING_CONTENT', { ref: detail.params.ref });
+        errorMessage = this._translate.instant('IMPORT-ERROR:TRIGGER_MISSING_CONTENT', {
+          ref: detail.params.ref,
+        });
         break;
       default:
         errorMessage = this._translate.instant('APP-LIST:BROKEN_RULE_UNKNOWN');

@@ -1,4 +1,12 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, HostBinding } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+  HostBinding,
+} from '@angular/core';
 import { Trigger, FlowSummary } from '@flogo-web/client/core';
 import { DeleteEvent } from '../shared/delete-event';
 
@@ -10,8 +18,12 @@ import { DeleteEvent } from '../shared/delete-event';
 export class FlowTriggerGroupComponent implements OnChanges {
   @Input() public flow: FlowSummary;
   @Input() public triggers: Trigger[] | null;
-  @Output() public flowSelected: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
-  @Output() public deleteFlow: EventEmitter<DeleteEvent> = new EventEmitter<DeleteEvent>();
+  @Output() public flowSelected: EventEmitter<FlowSummary> = new EventEmitter<
+    FlowSummary
+  >();
+  @Output() public deleteFlow: EventEmitter<DeleteEvent> = new EventEmitter<
+    DeleteEvent
+  >();
   @HostBinding('class.flogo-group') hostClass = true;
 
   flows: FlowSummary[] = [];
@@ -23,7 +35,11 @@ export class FlowTriggerGroupComponent implements OnChanges {
       this.flows.push(this.flow);
     }
 
-    if (changes['triggers'] && changes['triggers'].currentValue && changes['triggers'].currentValue.length > 1) {
+    if (
+      changes['triggers'] &&
+      changes['triggers'].currentValue &&
+      changes['triggers'].currentValue.length > 1
+    ) {
       this.triggerCountDisplay = '+' + (this.triggers.length - 1);
     } else {
       this.triggerCountDisplay = null;

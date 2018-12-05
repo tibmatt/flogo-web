@@ -1,6 +1,11 @@
 import { isEqual } from 'lodash';
 import { Observable, OperatorFunction, combineLatest, pipe } from 'rxjs';
-import { distinctUntilChanged, distinctUntilKeyChanged, map, shareReplay } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  map,
+  shareReplay,
+} from 'rxjs/operators';
 
 import { MapExpression, MapperState, TreeState } from '../../models';
 
@@ -72,7 +77,10 @@ export const selectCurrentEditingExpression = (
   source: Observable<MapperState>
 ): Observable<null | EditingExpression> => {
   const sharedSource: Observable<MapperState> = source.pipe(shareReplay());
-  return combineLatest(sharedSource.pipe(selectedInputKey), sharedSource.pipe(selectMappings)).pipe(
+  return combineLatest(
+    sharedSource.pipe(selectedInputKey),
+    sharedSource.pipe(selectMappings)
+  ).pipe(
     map(([currentKey, mappings]) => {
       if (!currentKey) {
         return null;
@@ -89,8 +97,13 @@ export const selectCurrentEditingExpression = (
 
 export const selectCurrentNode = (source: Observable<MapperState>) => {
   const sharedSource = source.pipe(shareReplay());
-  return combineLatest(sharedSource.pipe(selectedInputKey), sharedSource.pipe(selectInputNodes)).pipe(
-    map(([currentNodeKey, nodes]) => (currentNodeKey && nodes ? nodes[currentNodeKey] : null)),
+  return combineLatest(
+    sharedSource.pipe(selectedInputKey),
+    sharedSource.pipe(selectInputNodes)
+  ).pipe(
+    map(([currentNodeKey, nodes]) =>
+      currentNodeKey && nodes ? nodes[currentNodeKey] : null
+    ),
     distinctUntilChanged()
   );
 };
@@ -98,20 +111,27 @@ export const selectCurrentNode = (source: Observable<MapperState>) => {
 export const getCurrentNodeValueHints = (source: Observable<MapperState>) => {
   return source.pipe(
     selectCurrentNode,
-    map(currentTreeNode => (currentTreeNode && currentTreeNode.hintOptions ? currentTreeNode.hintOptions : null)),
+    map(currentTreeNode =>
+      currentTreeNode && currentTreeNode.hintOptions ? currentTreeNode.hintOptions : null
+    ),
     distinctUntilChanged()
   );
 };
 
 export const selectFilteredNodes = (source: Observable<MapperState>) => {
   const sharedSource = source.pipe(shareReplay());
-  return combineLatest(sharedSource.pipe(selectInputFilter), sharedSource.pipe(selectInputsList)).pipe(
+  return combineLatest(
+    sharedSource.pipe(selectInputFilter),
+    sharedSource.pipe(selectInputsList)
+  ).pipe(
     map(([filterTerm, inputs]) => {
       if (!filterTerm || !filterTerm.trim()) {
         return inputs;
       }
       filterTerm = filterTerm.trim().toLowerCase();
-      return inputs.filter(inputNode => inputNode.label.toLowerCase().includes(filterTerm));
+      return inputs.filter(inputNode =>
+        inputNode.label.toLowerCase().includes(filterTerm)
+      );
     })
   );
 };

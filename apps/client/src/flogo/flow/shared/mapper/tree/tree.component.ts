@@ -37,7 +37,10 @@ export class TreeComponent implements OnChanges, AfterViewInit {
 
   private selectedBranch: MapperTreeNode[] | null;
 
-  constructor(private draggingService: DraggingService, private iconsService: IconsService) {}
+  constructor(
+    private draggingService: DraggingService,
+    private iconsService: IconsService
+  ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selected'] && this.selected) {

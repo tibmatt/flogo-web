@@ -7,7 +7,10 @@ import { CurrentSelection, SelectionType } from '../../../models/selection';
 import { getLinkedSubflow } from './get-linked-subflow';
 import { removeSubschemaIfNotUsed } from './remove-subschema';
 
-export function removeItem(prevState: FlowState, payload: PayloadOf<RemoveItem>): FlowState {
+export function removeItem(
+  prevState: FlowState,
+  payload: PayloadOf<RemoveItem>
+): FlowState {
   const { handlerType, itemId } = payload;
   const itemToRemove = getItem(prevState, handlerType, itemId);
 
@@ -28,7 +31,10 @@ function applyRemoveItem(state: FlowState, payload: PayloadOf<RemoveItem>): Flow
   const { handlerType, itemId } = payload;
   const graphName = getGraphName(handlerType);
   const itemDictionaryName = getItemsDictionaryName(handlerType);
-  const result = removeNode({ flowGraph: state[graphName], items: state[itemDictionaryName] }, itemId);
+  const result = removeNode(
+    { flowGraph: state[graphName], items: state[itemDictionaryName] },
+    itemId
+  );
   if (result.flowGraph !== state[graphName]) {
     state = {
       ...state,
@@ -40,10 +46,15 @@ function applyRemoveItem(state: FlowState, payload: PayloadOf<RemoveItem>): Flow
 }
 
 function cleanUpCurrentSelection(state: FlowState, itemId): FlowState {
-  return shouldClearCurrentSelection(state.currentSelection, itemId) ? { ...state, currentSelection: null } : state;
+  return shouldClearCurrentSelection(state.currentSelection, itemId)
+    ? { ...state, currentSelection: null }
+    : state;
 }
 
-function shouldClearCurrentSelection(selection: CurrentSelection, taskIdToRemove: string): boolean {
+function shouldClearCurrentSelection(
+  selection: CurrentSelection,
+  taskIdToRemove: string
+): boolean {
   if (!selection) {
     return false;
   }

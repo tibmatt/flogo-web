@@ -10,5 +10,7 @@ const run = (cmd, opts = {}) =>
   });
 
 export async function buildSubmodule({ submoduleName, outputPath }) {
-  await run('build {1} --output-path={2}', { arguments: [submoduleName, outputPath] });
+  await run('build {1} --output-path={2}', {
+    arguments: [submoduleName, outputPath],
+  });
 }

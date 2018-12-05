@@ -26,7 +26,9 @@ export class JsonDownloaderDirective {
       let outputs = [];
 
       if (result) {
-        outputs = <{ fileName: string; data: any }[]>(result.constructor === Array ? result : [result]);
+        outputs = <{ fileName: string; data: any }[]>(
+          (result.constructor === Array ? result : [result])
+        );
 
         this._link = document.createElement('a');
         this._link.setAttribute('download', 'flow.json');
@@ -36,7 +38,9 @@ export class JsonDownloaderDirective {
 
       outputs.forEach(output => {
         const jsonString = JSON.stringify(output.data, null, 2);
-        const dataString = `data:text/json;charset=utf-8,${encodeURIComponent(jsonString)}`;
+        const dataString = `data:text/json;charset=utf-8,${encodeURIComponent(
+          jsonString
+        )}`;
 
         this._link.setAttribute('href', dataString);
         this._link.setAttribute('download', output.fileName || 'flow.json');

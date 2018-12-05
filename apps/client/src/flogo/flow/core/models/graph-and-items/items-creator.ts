@@ -3,8 +3,13 @@ import { ActivitySchema, flow as backendFlow } from '../../../../core/index';
 
 import { ItemFactory } from './item-factory';
 
-export function makeTaskItems(tasks: backendFlow.Task[], getActivitySchema: (task) => Partial<ActivitySchema>) {
-  return fromPairs(tasks.map(task => [task.id, makeTaskItem(task, getActivitySchema(task))]));
+export function makeTaskItems(
+  tasks: backendFlow.Task[],
+  getActivitySchema: (task) => Partial<ActivitySchema>
+) {
+  return fromPairs(
+    tasks.map(task => [task.id, makeTaskItem(task, getActivitySchema(task))])
+  );
 }
 
 export function makeBranchItem(id: string, link: backendFlow.Link) {

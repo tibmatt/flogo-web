@@ -50,7 +50,9 @@ describe('Importer: Standard', () => {
       testContext.testOptions.depsConstructors.triggersHandlersImporter.prototype,
       'extractHandlers'
     );
-    const assert = await testContext.importerContext.importAndCreateAssert(testContext.appToImport);
+    const assert = await testContext.importerContext.importAndCreateAssert(
+      testContext.appToImport
+    );
     assert
       .assertIsSuccessful()
       .assertMethodReturnedWithDataAsExpected(spyingHandlersExtract.returnValues[0], [

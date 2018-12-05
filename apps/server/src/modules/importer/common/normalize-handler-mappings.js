@@ -22,7 +22,8 @@ export function normalizeHandlerMappings(handler) {
  * @return {object} mapping
  * */
 export function normalizeSingleHandlerMapping(mapping) {
-  const isProcessable = isString(mapping.value) && mapping.type === MAPPING_EXPRESSION_TYPE.ASSIGN;
+  const isProcessable =
+    isString(mapping.value) && mapping.type === MAPPING_EXPRESSION_TYPE.ASSIGN;
   if (isProcessable && shouldPrefixWithScopeResolver(mapping.value)) {
     const value = `${CURRENT_SCOPE_RESOLVER}.${mapping.value.trim()}`;
     return { ...mapping, value };

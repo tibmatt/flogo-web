@@ -15,18 +15,23 @@ describe('Service: Flow', function(this: {
   utilsService: HttpUtilsService;
 }) {
   beforeEach(() => {
-    this.modelConverter = jasmine.createSpyObj<UIModelConverterService>('converterService', [
-      'getWebFlowModel',
-      'setProfile',
+    this.modelConverter = jasmine.createSpyObj<UIModelConverterService>(
+      'converterService',
+      ['getWebFlowModel', 'setProfile']
+    );
+    this.commonFlowsService = jasmine.createSpyObj<FlowsService>('commonFlowsService', [
+      'deleteFlowWithTrigger',
     ]);
-    this.commonFlowsService = jasmine.createSpyObj<FlowsService>('commonFlowsService', ['deleteFlowWithTrigger']);
     this.mockRESTAPI = new MockAPIFlowsService();
     const storeMock = {
       dispatch() {},
     };
-    this.service = new FlogoFlowService(<any>this.mockRESTAPI, this.modelConverter, this.commonFlowsService, <any>(
-      storeMock
-    ));
+    this.service = new FlogoFlowService(
+      <any>this.mockRESTAPI,
+      this.modelConverter,
+      this.commonFlowsService,
+      <any>storeMock
+    );
   });
 
   it('Should get the Flow Details and convert it to work with flow component', done => {

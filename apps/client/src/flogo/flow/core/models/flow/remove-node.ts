@@ -6,7 +6,10 @@ interface Collections {
   items: Dictionary<Item>;
 }
 
-export function removeNode({ flowGraph, items }: Collections, nodeId: string): Collections {
+export function removeNode(
+  { flowGraph, items }: Collections,
+  nodeId: string
+): Collections {
   const { [nodeId]: nodeToRemove, ...resultNodes } = flowGraph.nodes;
   const { [nodeId]: itemToRemove, ...resultItems } = items;
   if (!nodeToRemove) {
@@ -90,8 +93,14 @@ function deleteChildren(collections: Collections, node: GraphNode): Collections 
   return collections;
 }
 
-function linkParentWithChildren(flowGraph: FlowGraph, parent: GraphNode, childNodes: GraphNode[]): FlowGraph {
-  const updatedNodes = fromPairs(childNodes.map(child => [child.id, { ...child, parents: [parent.id] }]));
+function linkParentWithChildren(
+  flowGraph: FlowGraph,
+  parent: GraphNode,
+  childNodes: GraphNode[]
+): FlowGraph {
+  const updatedNodes = fromPairs(
+    childNodes.map(child => [child.id, { ...child, parents: [parent.id] }])
+  );
   const nodes = {
     ...flowGraph.nodes,
     ...updatedNodes,

@@ -4,7 +4,8 @@
  * @return {{input: any[], output: any[]}}
  */
 export function portMappings(mappingTypesDictionary, mappings = {}) {
-  const convertSingleMapping = mapping => portMappingType(mappingTypesDictionary, mapping);
+  const convertSingleMapping = mapping =>
+    portMappingType(mappingTypesDictionary, mapping);
   return {
     input: (mappings.input || []).map(convertSingleMapping),
     output: (mappings.output || []).map(convertSingleMapping),

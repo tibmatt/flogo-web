@@ -74,7 +74,13 @@ class Engine {
     console.time('engine:create');
     return commander
       .create(this.path, options)
-      .then(() => Promise.all([DIR_TEST_BIN, DIR_BUILD_BIN].map(dir => ensureDir(path.resolve(this.path, dir)))))
+      .then(() =>
+        Promise.all(
+          [DIR_TEST_BIN, DIR_BUILD_BIN].map(dir =>
+            ensureDir(path.resolve(this.path, dir))
+          )
+        )
+      )
       .then((result: any) => {
         console.timeEnd('engine:create');
         return result;
@@ -143,7 +149,9 @@ class Engine {
   }
 
   buildPlugin(options: Options) {
-    return ensureDir(path.join(this.path, DIR_BUILD_BIN)).then(() => buildPlugin(this.path, options));
+    return ensureDir(path.join(this.path, DIR_BUILD_BIN)).then(() =>
+      buildPlugin(this.path, options)
+    );
   }
 
   buildOnly(options: Options) {
@@ -253,7 +261,9 @@ class Engine {
   }
 
   _hasItem(where: { name?: string; path?: string }[], nameOrPath: string) {
-    const foundItem = (where || []).find(item => item.name === nameOrPath || item.path === nameOrPath);
+    const foundItem = (where || []).find(
+      item => item.name === nameOrPath || item.path === nameOrPath
+    );
     return !!foundItem;
   }
 

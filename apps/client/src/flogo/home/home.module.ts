@@ -10,7 +10,13 @@ import { ImportErrorFormatterService } from './core/import-error-formatter.servi
 import { HomeRoutingModule } from './home-routing.module';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, BsModalModule, FlogoSharedModule, HomeRoutingModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    BsModalModule,
+    FlogoSharedModule,
+    HomeRoutingModule,
+  ],
   declarations: [FlogoHomeComponent, FlogoAppsListComponent, FlogoAppImportComponent],
   bootstrap: [FlogoHomeComponent],
   providers: [ImportErrorFormatterService],

@@ -8,8 +8,18 @@ import { validatorFactory as commonValidatorFactory } from '../../../common/vali
  */
 export function validatorFactory(schema, contributionRefs, options = {}) {
   const validator = commonValidatorFactory(schema, options);
-  addContributionRule(validator, 'trigger-installed', 'Trigger', contributionRefs.triggers);
-  addContributionRule(validator, 'activity-installed', 'Activity', contributionRefs.activities);
+  addContributionRule(
+    validator,
+    'trigger-installed',
+    'Trigger',
+    contributionRefs.triggers
+  );
+  addContributionRule(
+    validator,
+    'activity-installed',
+    'Activity',
+    contributionRefs.activities
+  );
   return validator;
 }
 
@@ -21,7 +31,10 @@ export function validatorFactory(schema, contributionRefs, options = {}) {
  * @param refs
  */
 function addContributionRule(validator, keyword, type, refs) {
-  validator.addValidationRule(keyword, contributionRuleFactory(keyword, type, refs || []));
+  validator.addValidationRule(
+    keyword,
+    contributionRuleFactory(keyword, type, refs || [])
+  );
 }
 
 function contributionRuleFactory(keyword, type, refs) {

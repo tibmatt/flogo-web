@@ -8,7 +8,9 @@
     <i class="flogo-installer-modal-close" (click)="closeModal()"></i>
     <div *ngIf="_status == showBlock.standByMode">
       <header class="container-fluid">
-        <h3 class="flogo-installer-modal-title">{{ 'INSTALLER:DOWNLOAD-TITLE' | translate }}</h3>
+        <h3 class="flogo-installer-modal-title">
+          {{ 'INSTALLER:DOWNLOAD-TITLE' | translate }}
+        </h3>
       </header>
 
       <section class="container-fluid">
@@ -35,7 +37,10 @@
       </div>
       <p>{{ 'INSTALLER:IN-PROGRESS-INSTALLATION' | translate }}</p>
     </div>
-    <div *ngIf="_status == showBlock.installSuccessMode" class="flogo-installer__modal-content">
+    <div
+      *ngIf="_status == showBlock.installSuccessMode"
+      class="flogo-installer__modal-content"
+    >
       <div class="flogo-installer__information-img">
         <object data="/assets/svg/flogo-installer-success.svg" type="image/svg+xml">
           <img src="/assets/svg/flogo-installer-success.svg" />
@@ -43,7 +48,9 @@
       </div>
       <span> {{ 'INSTALLER:SUCCESS-MESSAGE-INSTALLATION' | translate }} </span>
       <div class="flogo-installer__button-container">
-        <button class="flogo-button--default" (click)="closeModal()">{{ 'MODAL:OKAY' | translate }}</button>
+        <button class="flogo-button--default" (click)="closeModal()">
+          {{ 'MODAL:OKAY' | translate }}
+        </button>
       </div>
     </div>
     <div
@@ -55,9 +62,13 @@
           <img src="/assets/svg/flogo-installer-error.svg" />
         </object>
       </div>
-      <span class="flogo-installer__information-text"> {{ 'INSTALLER:ERROR-MESSAGE-INSTALLATION' | translate }} </span>
+      <span class="flogo-installer__information-text">
+        {{ 'INSTALLER:ERROR-MESSAGE-INSTALLATION' | translate }}
+      </span>
       <div class="flogo-installer__button-container">
-        <button class="flogo-button--default" (click)="closeModal()">{{ 'MODAL:OKAY' | translate }}</button>
+        <button class="flogo-button--default" (click)="closeModal()">
+          {{ 'MODAL:OKAY' | translate }}
+        </button>
       </div>
     </div>
   </bs-modal-body>

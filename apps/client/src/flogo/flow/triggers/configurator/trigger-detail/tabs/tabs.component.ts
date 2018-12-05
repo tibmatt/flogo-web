@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { TriggerConfigureTab, TriggerConfigureTabType } from '../../../../core/interfaces';
+import {
+  TriggerConfigureTab,
+  TriggerConfigureTabType,
+} from '../../../../core/interfaces';
 
 @Component({
   selector: 'flogo-flow-triggers-configurator-tabs',

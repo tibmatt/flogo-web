@@ -1,4 +1,9 @@
-import { FLOGO_TASK_TYPE, TASK_HANDLER_NAME_ERROR, TASK_HANDLER_NAME_ROOT, REF_SUBFLOW } from '../constants';
+import {
+  FLOGO_TASK_TYPE,
+  TASK_HANDLER_NAME_ERROR,
+  TASK_HANDLER_NAME_ROOT,
+  REF_SUBFLOW,
+} from '../constants';
 import { safeGetTasksInHandler } from './flow';
 
 export function appHasSubflowTasks(app) {
@@ -22,7 +27,8 @@ export function isSubflowTask(task) {
  * @param {Function} onSubflowTask
  */
 export function forEachSubflowTaskInAction(action, onSubflowTask) {
-  const iterateOn = taskArray => taskArray.filter(isSubflowTask).forEach(task => onSubflowTask(task));
+  const iterateOn = taskArray =>
+    taskArray.filter(isSubflowTask).forEach(task => onSubflowTask(task));
   iterateOn(safeGetTasksInHandler(action, TASK_HANDLER_NAME_ROOT));
   iterateOn(safeGetTasksInHandler(action, TASK_HANDLER_NAME_ERROR));
 }

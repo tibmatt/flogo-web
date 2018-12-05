@@ -11,7 +11,10 @@ import { NodeMatrix } from './matrix';
 // └── B6⟶C6
 // |   └──C7
 // └──B8
-function makeTestData(): { root: GraphNode; nodeDictionary: GraphNodeDictionary } {
+function makeTestData(): {
+  root: GraphNode;
+  nodeDictionary: GraphNodeDictionary;
+} {
   const nodes = [
     {
       id: 'root',
@@ -165,9 +168,15 @@ describe('diagram.nodesToNodeMatrix', function() {
   });
   beforeAll(function() {
     jasmine.addMatchers({
-      toMatchNodeMatrix: (util: jasmine.MatchersUtil, customEqualityTesters: Array<jasmine.CustomEqualityTester>) => {
+      toMatchNodeMatrix: (
+        util: jasmine.MatchersUtil,
+        customEqualityTesters: Array<jasmine.CustomEqualityTester>
+      ) => {
         return {
-          compare: (actualMatrix: NodeMatrix, expectedMatrix: string[][]): jasmine.CustomMatcherResult => {
+          compare: (
+            actualMatrix: NodeMatrix,
+            expectedMatrix: string[][]
+          ): jasmine.CustomMatcherResult => {
             const result: jasmine.CustomMatcherResult = {
               pass: false,
               message: '',
@@ -185,7 +194,9 @@ describe('diagram.nodesToNodeMatrix', function() {
               const expectedValues = expectedMatrix[i];
               if (!isEqual(actualValues, expectedValues)) {
                 result.message = `Actual row at index ${i} doesn't match expectation.
-                  Expected ${JSON.stringify(expectedValues)}. Actual: ${JSON.stringify(actualValues)}`;
+                  Expected ${JSON.stringify(expectedValues)}. Actual: ${JSON.stringify(
+                  actualValues
+                )}`;
               }
             }
             result.pass = true;

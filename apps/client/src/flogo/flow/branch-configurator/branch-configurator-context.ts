@@ -2,7 +2,9 @@ import { ValueType } from '@flogo-web/client/core';
 
 export const CONDITION_KEY = 'condition';
 
-export function createBranchMappingContext(condition: string): { propsToMap: any[]; mappings: any[] } {
+export function createBranchMappingContext(
+  condition: string
+): { propsToMap: any[]; mappings: any[] } {
   let propsToMap = [];
   let mappings = [];
   propsToMap = [

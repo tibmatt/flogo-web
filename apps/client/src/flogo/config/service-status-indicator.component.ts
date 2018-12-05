@@ -1,4 +1,10 @@
-import { throwError as observableThrowError, combineLatest, BehaviorSubject, interval, Subscription } from 'rxjs';
+import {
+  throwError as observableThrowError,
+  combineLatest,
+  BehaviorSubject,
+  interval,
+  Subscription,
+} from 'rxjs';
 import { catchError, distinctUntilChanged, retry, switchMap } from 'rxjs/operators';
 import { Component, Input, OnInit, DoCheck, OnDestroy } from '@angular/core';
 
@@ -16,7 +22,8 @@ const PING_INTERVAL_MS = 5000;
       class="fa"
       [style.color]="color"
       [ngClass]="{
-        'fa-circle': status == 'online' || status == 'offline' || status == 'online-warning',
+        'fa-circle':
+          status == 'online' || status == 'offline' || status == 'online-warning',
         'fa-circle-o': !status
       }"
     >
@@ -48,7 +55,9 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
 
     this.subscription = combineLatest(configChangeStream, interval(PING_INTERVAL_MS))
       .pipe(
-        switchMap(([config]: [ServiceUrlConfig, any]) => this.configService.pingService(config)),
+        switchMap(([config]: [ServiceUrlConfig, any]) =>
+          this.configService.pingService(config)
+        ),
         catchError((error: any) => {
           this.statusCode = error.status;
           if (error.status === 500 || error.status === 502) {

@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ROOT_TYPES } from '../../constants';
-import { MapperContext, MapperTreeNode, Mappings, MapExpression, MapperState, OutputContext } from '../../models';
+import {
+  MapperContext,
+  MapperTreeNode,
+  Mappings,
+  MapExpression,
+  MapperState,
+  OutputContext,
+} from '../../models';
 import { ArrayMappingHelper, ArrayMappingInfo } from '../../models/array-mapping';
 import { AttributeDescriptor } from '../../utils';
 import { TreeService } from '../tree.service';
@@ -11,11 +18,22 @@ import { MapperSchema } from '@flogo-web/client/flow/task-configurator/models';
 
 @Injectable()
 export class MapperControllerFactory {
-  constructor(private nodeFactory: TreeNodeFactoryService, private treeService: TreeService) {}
+  constructor(
+    private nodeFactory: TreeNodeFactoryService,
+    private treeService: TreeService
+  ) {}
 
-  createController(input: AttributeDescriptor[], output: AttributeDescriptor[], mappings: any[]): MapperController {
+  createController(
+    input: AttributeDescriptor[],
+    output: AttributeDescriptor[],
+    mappings: any[]
+  ): MapperController {
     const context = createMapperContext(input, output, mappings);
-    return new MapperController(this.createStateFromContext(context), this.nodeFactory, this.treeService);
+    return new MapperController(
+      this.createStateFromContext(context),
+      this.nodeFactory,
+      this.treeService
+    );
   }
 
   createNodeFromSchema(schema: MapperSchema): MapperTreeNode {
@@ -40,7 +58,11 @@ export class MapperControllerFactory {
     newState.mappingKey = firstNode ? firstNode.path : null;
     if (firstNode) {
       newState.mappingKey = firstNode.path;
-      const { outputs, functions } = this.getSelectionContext(firstNode, newState.mappings, context);
+      const { outputs, functions } = this.getSelectionContext(
+        firstNode,
+        newState.mappings,
+        context
+      );
       newState.outputs.nodes = outputs;
       newState.functions.nodes = functions;
     }
@@ -70,7 +92,11 @@ export class MapperControllerFactory {
     }
   }
 
-  private makeOutputContext(selectedNode: MapperTreeNode, outputSchemas: any, allMappings: Mappings): OutputContext {
+  private makeOutputContext(
+    selectedNode: MapperTreeNode,
+    outputSchemas: any,
+    allMappings: Mappings
+  ): OutputContext {
     const arrayParentsOfSelectedNode = this.treeService.extractArrayParents(selectedNode);
     let mappings = allMappings;
     // const mappedOutputArrays = this.extractLinkedOutputArrays(arrayParents, allMappings);
@@ -78,15 +104,25 @@ export class MapperControllerFactory {
     const isMappedParent = (p: ArrayMappingInfo) => p.isForEach; // && p.params.length > 0;
 
     let mappingKey = selectedNode.path;
-    const selectedNodeHasArrayParents = arrayParentsOfSelectedNode && arrayParentsOfSelectedNode.length > 0;
+    const selectedNodeHasArrayParents =
+      arrayParentsOfSelectedNode && arrayParentsOfSelectedNode.length > 0;
     let hasMappedArrayParents = false;
-    let mappedOutputArrays = this.extractLinkedOutputArrayPaths(arrayParentsOfSelectedNode, allMappings);
+    let mappedOutputArrays = this.extractLinkedOutputArrayPaths(
+      arrayParentsOfSelectedNode,
+      allMappings
+    );
     let lastMappedParent = null;
     if (selectedNodeHasArrayParents) {
-      const closestArrayParent = arrayParentsOfSelectedNode[arrayParentsOfSelectedNode.length - 1];
-      mappedOutputArrays = this.extractLinkedOutputArrayPaths(arrayParentsOfSelectedNode, allMappings);
+      const closestArrayParent =
+        arrayParentsOfSelectedNode[arrayParentsOfSelectedNode.length - 1];
+      mappedOutputArrays = this.extractLinkedOutputArrayPaths(
+        arrayParentsOfSelectedNode,
+        allMappings
+      );
       hasMappedArrayParents =
-        mappedOutputArrays && mappedOutputArrays.length > 0 && mappedOutputArrays.some(p => isMappedParent(p));
+        mappedOutputArrays &&
+        mappedOutputArrays.length > 0 &&
+        mappedOutputArrays.some(p => isMappedParent(p));
       mappingKey = this.makeRelativeNodePath(selectedNode, closestArrayParent);
       const closestArrayParentExpression = closestArrayParent.data.expression || '';
       if (!hasMappedArrayParents || !closestArrayParentExpression.trim()) {
@@ -94,9 +130,14 @@ export class MapperControllerFactory {
       }
       if (hasMappedArrayParents) {
         // outputSchemas = this.nodeFactory.applyArrayFilterToJsonSchema(outputSchemas, mappedOutputArrays);
-        lastMappedParent = <ArrayMappingInfo>[...mappedOutputArrays].reverse().find(p => isMappedParent(p));
+        lastMappedParent = <ArrayMappingInfo>(
+          [...mappedOutputArrays].reverse().find(p => isMappedParent(p))
+        );
       }
-      mappings = this.getSubMappings(arrayParentsOfSelectedNode.concat(selectedNode), mappings);
+      mappings = this.getSubMappings(
+        arrayParentsOfSelectedNode.concat(selectedNode),
+        mappings
+      );
     }
     const tree = this.createOutputTree(outputSchemas);
 
@@ -114,7 +155,12 @@ export class MapperControllerFactory {
   private createOutputTree(outputSchemas: MapperSchema) {
     return this.nodeFactory.fromJsonSchema(
       outputSchemas,
-      (treeNode: MapperTreeNode, level: number, path: string, parents: MapperTreeNode[]): MapperTreeNode => {
+      (
+        treeNode: MapperTreeNode,
+        level: number,
+        path: string,
+        parents: MapperTreeNode[]
+      ): MapperTreeNode => {
         const parentsAndCurrentNode = parents.concat(treeNode);
         treeNode.snippet = this.makeSnippet(parentsAndCurrentNode);
         return treeNode;
@@ -127,7 +173,10 @@ export class MapperControllerFactory {
     return '$' + childNode.path.slice(parentNode.path.length);
   }
 
-  private extractLinkedOutputArrayPaths(arrayNodes: MapperTreeNode[], mappings: Mappings): ArrayMappingInfo[] {
+  private extractLinkedOutputArrayPaths(
+    arrayNodes: MapperTreeNode[],
+    mappings: Mappings
+  ): ArrayMappingInfo[] {
     if (!arrayNodes || arrayNodes.length <= 0 || !mappings) {
       return [];
     }
@@ -144,18 +193,25 @@ export class MapperControllerFactory {
     let node = nodes.shift();
 
     const linkedArrayPaths = [];
-    let processedExpression = ArrayMappingHelper.processExpressionForEach(<string>mapping.expression);
+    let processedExpression = ArrayMappingHelper.processExpressionForEach(<string>(
+      mapping.expression
+    ));
     processedExpression.node = rootArrayNode;
-    processedExpression.fullLinkedPath = mapping.parsedExpressionDetails.memberReferences[0];
+    processedExpression.fullLinkedPath =
+      mapping.parsedExpressionDetails.memberReferences[0];
     linkedArrayPaths.push(processedExpression);
 
     while (mapping && node) {
       const relativePath = this.makeRelativeNodePath(node, prevNode);
       mapping = mapping.mappings ? mapping.mappings[relativePath] : null;
       if (mapping && !isEmptyExpression(mapping)) {
-        processedExpression = ArrayMappingHelper.processExpressionForEach(<string>mapping.expression);
+        processedExpression = ArrayMappingHelper.processExpressionForEach(<string>(
+          mapping.expression
+        ));
         processedExpression.node = node;
-        const hasMemberReferences = mapping.parsedExpressionDetails && mapping.parsedExpressionDetails.memberReferences;
+        const hasMemberReferences =
+          mapping.parsedExpressionDetails &&
+          mapping.parsedExpressionDetails.memberReferences;
         processedExpression.fullLinkedPath = hasMemberReferences
           ? mapping.parsedExpressionDetails.memberReferences[0]
           : relativePath;
@@ -180,7 +236,12 @@ export class MapperControllerFactory {
       })
       .reverse()
       .reduce<{ mappings: Mappings }>(
-        (submapping: { mappings: Mappings }, arrayPath: string, currentIndex: number, paths: string[]) => {
+        (
+          submapping: { mappings: Mappings },
+          arrayPath: string,
+          currentIndex: number,
+          paths: string[]
+        ) => {
           if (paths[currentIndex + 1]) {
             if (!submapping.mappings[arrayPath]) {
               submapping.mappings[arrayPath] = <any>{
@@ -223,7 +284,9 @@ export class MapperControllerFactory {
       expressionHead = nodeName.indexOf('$') === -1 ? '$.' + nodeName : nodeName;
       expressionTailParts = nodes.slice(1);
     }
-    return [expressionHead].concat(expressionTailParts.map(n => n.data.nodeName)).join('.');
+    return [expressionHead]
+      .concat(expressionTailParts.map(n => n.data.nodeName))
+      .join('.');
   }
 
   private getInitialState(): MapperState {

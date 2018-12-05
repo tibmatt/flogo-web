@@ -1,6 +1,18 @@
-import { Directive, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  HostListener,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { AddActivityService } from './add-activity.service';
-import { DiagramSelection, DiagramSelectionType } from '@flogo-web/client/packages/diagram/interfaces';
+import {
+  DiagramSelection,
+  DiagramSelectionType,
+} from '@flogo-web/client/packages/diagram/interfaces';
 import { isEqual } from 'lodash';
 import { BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS } from '@flogo-web/client/core';
 

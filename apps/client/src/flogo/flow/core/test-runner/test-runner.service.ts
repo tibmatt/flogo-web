@@ -15,7 +15,16 @@ import {
 import { Observable, Subject, throwError } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { catchError, filter, map, mergeMap, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import {
+  catchError,
+  filter,
+  map,
+  mergeMap,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 
 import {
   Dictionary,
@@ -120,7 +129,9 @@ export class TestRunnerService implements OnDestroy {
         if (stepNumber < 0) {
           // TODO
           //  handling the case that trying to start from the middle of a path without run from the trigger for the first time.
-          throw new Error(`Cannot start from task ${(<any>selectedTask).name} (${selectedTask.id})`);
+          throw new Error(
+            `Cannot start from task ${(<any>selectedTask).name} (${selectedTask.id})`
+          );
         }
 
         this.store.dispatch(new FlowActions.RunFromTask());
@@ -165,7 +176,11 @@ export class TestRunnerService implements OnDestroy {
   private getStepNumberFromSteps(taskId: string) {
     // try to get steps from the last process instance running from the beginning,
     // otherwise use some defaults
-    const steps = get(this.runState.lastProcessInstanceFromBeginning, 'steps', this.runState.steps || []);
+    const steps = get(
+      this.runState.lastProcessInstanceFromBeginning,
+      'steps',
+      this.runState.steps || []
+    );
     /* tslint:disable-next-line:triple-equals - allowing double equals for legacy ids that were of type number */
     return steps.findIndex(step => step.taskId == taskId);
   }
@@ -189,7 +204,9 @@ export class TestRunnerService implements OnDestroy {
           return !!steps;
         }),
         mergeMap(steps =>
-          this.getFlowStateOnce().pipe(map(flowState => this.updateTaskRunStatus(flowState, steps, {})))
+          this.getFlowStateOnce().pipe(
+            map(flowState => this.updateTaskRunStatus(flowState, steps, {}))
+          )
         )
       )
       .subscribe(noop, noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180
@@ -235,13 +252,17 @@ export class TestRunnerService implements OnDestroy {
 
   private observeProcessRegistration(runner: RunProgressStore) {
     runner.registered.subscribe(({ processId, instanceId }) => {
-      this.store.dispatch(new FlowActions.NewRunFromStartProcess({ processId, instanceId }));
+      this.store.dispatch(
+        new FlowActions.NewRunFromStartProcess({ processId, instanceId })
+      );
     }, noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180);
   }
 
   private updateTaskRunStatus(flowState: FlowState, steps: Step[], rsp: any) {
     let isErrorHandlerTouched = false;
-    const { isFlowDone, runTasks, runTaskIds, errors } = this.extractExecutionStatus(steps);
+    const { isFlowDone, runTasks, runTaskIds, errors } = this.extractExecutionStatus(
+      steps
+    );
 
     let allStatusChanges = {
       mainGraphNodes: {} as Dictionary<GraphNode>,
@@ -263,7 +284,9 @@ export class TestRunnerService implements OnDestroy {
           status: {
             ...node.status,
             executed: true,
-            executionErrored: !isUndefined(taskErrors) ? Object.values(taskErrors).map(err => err.msg) : null,
+            executionErrored: !isUndefined(taskErrors)
+              ? Object.values(taskErrors).map(err => err.msg)
+              : null,
           },
         };
       }
@@ -289,11 +312,17 @@ export class TestRunnerService implements OnDestroy {
     allStatusChanges = {
       mainGraphNodes: {
         ...allStatusChanges.mainGraphNodes,
-        ...branchUpdates({ ...flowState.mainGraph.nodes, ...allStatusChanges.mainGraphNodes }),
+        ...branchUpdates({
+          ...flowState.mainGraph.nodes,
+          ...allStatusChanges.mainGraphNodes,
+        }),
       },
       errorGraphNodes: {
         ...allStatusChanges.errorGraphNodes,
-        ...branchUpdates({ ...flowState.errorGraph.nodes, ...allStatusChanges.errorGraphNodes }),
+        ...branchUpdates({
+          ...flowState.errorGraph.nodes,
+          ...allStatusChanges.errorGraphNodes,
+        }),
       },
     };
 
@@ -304,8 +333,14 @@ export class TestRunnerService implements OnDestroy {
       runTasksIDs: runTaskIds,
     });
 
-    this.store.dispatch(new FlowActions.ExecutionStateUpdated({ changes: allStatusChanges }));
-    this.store.dispatch(new FlowActions.ExecutionStepsUpdated({ steps: mapValues(runTasks, task => task.attrs) }));
+    this.store.dispatch(
+      new FlowActions.ExecutionStateUpdated({ changes: allStatusChanges })
+    );
+    this.store.dispatch(
+      new FlowActions.ExecutionStepsUpdated({
+        steps: mapValues(runTasks, task => task.attrs),
+      })
+    );
 
     // when the flow is done on error, throw an error
     // the error is the response with `__status` provisioned.

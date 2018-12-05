@@ -12,13 +12,22 @@ import { ActionBase } from '@flogo-web/client/core';
 export class UIModelConverterService {
   private converterModelInstance: AbstractModelConverter;
 
-  constructor(public contribService: RESTAPIContributionsService, public errorService: ErrorService) {}
+  constructor(
+    public contribService: RESTAPIContributionsService,
+    public errorService: ErrorService
+  ) {}
 
   setProfile(profile: FLOGO_PROFILE_TYPE) {
     if (profile === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
-      this.converterModelInstance = new MicroServiceModelConverter(this.contribService, this.errorService);
+      this.converterModelInstance = new MicroServiceModelConverter(
+        this.contribService,
+        this.errorService
+      );
     } else {
-      this.converterModelInstance = new DeviceModelConverter(this.contribService, this.errorService);
+      this.converterModelInstance = new DeviceModelConverter(
+        this.contribService,
+        this.errorService
+      );
     }
   }
 
@@ -51,9 +60,11 @@ export class UIModelConverterService {
   }
 
   getTriggerTask(trigger) {
-    return this.converterModelInstance.getTriggerSchema(trigger).then(installedTrigger => {
-      return this.converterModelInstance.makeTriggerTask(trigger, installedTrigger);
-    });
+    return this.converterModelInstance
+      .getTriggerSchema(trigger)
+      .then(installedTrigger => {
+        return this.converterModelInstance.makeTriggerTask(trigger, installedTrigger);
+      });
   }
 
   getTriggerSchema(triggerRef) {

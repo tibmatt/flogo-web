@@ -14,7 +14,11 @@ import {
 } from '@flogo-web/client/core';
 import { ErrorService } from '@flogo-web/client/core/services/error.service';
 import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
-import { flogoGenTriggerID, flogoGenNodeID, isSubflowTask } from '@flogo-web/client/shared/utils';
+import {
+  flogoGenTriggerID,
+  flogoGenNodeID,
+  isSubflowTask,
+} from '@flogo-web/client/shared/utils';
 
 import { ItemFactory } from './graph-and-items/item-factory';
 import { makeGraphAndItems } from './graph-and-items';
@@ -33,7 +37,10 @@ export abstract class AbstractModelConverter {
   errorService: ErrorService;
   contribService: RESTAPIContributionsService;
 
-  constructor(contributionService: RESTAPIContributionsService, errorService: ErrorService) {
+  constructor(
+    contributionService: RESTAPIContributionsService,
+    errorService: ErrorService
+  ) {
     this.contribService = contributionService;
     this.errorService = errorService;
   }
@@ -46,13 +53,17 @@ export abstract class AbstractModelConverter {
 
   getTriggerSchema(trigger) {
     if (!trigger.ref) {
-      throw this.errorService.makeOperationalError('Trigger: Wrong input json file', 'Cannot get ref for trigger', {
-        type: 'ValidationError',
-        title: 'Wrong input json file',
-        detail: 'Cannot get ref for trigger:',
-        property: 'trigger',
-        value: trigger,
-      });
+      throw this.errorService.makeOperationalError(
+        'Trigger: Wrong input json file',
+        'Cannot get ref for trigger',
+        {
+          type: 'ValidationError',
+          title: 'Wrong input json file',
+          detail: 'Cannot get ref for trigger:',
+          property: 'trigger',
+          value: trigger,
+        }
+      );
     } else {
       return this.contribService
         .getContributionDetails(this.getProfileType(), trigger.ref)
@@ -63,7 +74,9 @@ export abstract class AbstractModelConverter {
   convertToWebFlowModel(flowObj, subflowSchema: Dictionary<ActionBase>) {
     this.subflowSchemaRegistry = subflowSchema;
     this.hasProperTasks(flowObj);
-    return this.getAllActivitySchemas().then(installedActivities => this.processFlowObj(flowObj, installedActivities));
+    return this.getAllActivitySchemas().then(installedActivities =>
+      this.processFlowObj(flowObj, installedActivities)
+    );
   }
 
   hasProperTasks(flow: any) {
@@ -100,9 +113,16 @@ export abstract class AbstractModelConverter {
     const links = (flowJSON && flowJSON.links) || [];
     const branchIdGenerator = () => uniqueId('::branch::');
 
-    const mainComponents = makeGraphAndItems(tasks, links, installedContribs, branchIdGenerator);
-    const errorHandlerTasks = (flowJSON && flowJSON.errorHandler && flowJSON.errorHandler.tasks) || [];
-    const errorHandlerLinks = (flowJSON && flowJSON.errorHandler && flowJSON.errorHandler.links) || [];
+    const mainComponents = makeGraphAndItems(
+      tasks,
+      links,
+      installedContribs,
+      branchIdGenerator
+    );
+    const errorHandlerTasks =
+      (flowJSON && flowJSON.errorHandler && flowJSON.errorHandler.tasks) || [];
+    const errorHandlerLinks =
+      (flowJSON && flowJSON.errorHandler && flowJSON.errorHandler.links) || [];
     const errorHandlerComponents = makeGraphAndItems(
       errorHandlerTasks,
       errorHandlerLinks,
@@ -167,7 +187,8 @@ export abstract class AbstractModelConverter {
   }
 
   private cleanDanglingSubflowMappings(items: Dictionary<Item>) {
-    const subflowInputExists = (subflowInputs, propName) => !!subflowInputs.find(i => i.name === propName);
+    const subflowInputExists = (subflowInputs, propName) =>
+      !!subflowInputs.find(i => i.name === propName);
     Object.values(items).forEach(item => {
       if (!this.isSubflowItem(item) || !item.inputMappings) {
         return;
@@ -175,10 +196,13 @@ export abstract class AbstractModelConverter {
       // If the flow is still available get the inputs of a subflow from its latest definition
       // else consider an empty array as flow inputs.
       const subflowSchema = this.subflowSchemaRegistry[item.settings.flowPath];
-      const subflowInputs = (subflowSchema && subflowSchema.metadata && subflowSchema.metadata.input) || [];
+      const subflowInputs =
+        (subflowSchema && subflowSchema.metadata && subflowSchema.metadata.input) || [];
       // Remove the dangling inputMappings of old flow inputs. This won't save to the database yet
       // but it will make sure it won't maintain the dangling mappings when next time flow is saved.
-      item.inputMappings = item.inputMappings.filter(mapping => subflowInputExists(subflowInputs, mapping.mapTo));
+      item.inputMappings = item.inputMappings.filter(mapping =>
+        subflowInputExists(subflowInputs, mapping.mapTo)
+      );
     });
     return items;
   }
@@ -214,7 +238,10 @@ class NodeFactory {
 
   static getSharedProperties() {
     const status = { isSelected: false };
-    return Object.assign({}, { id: flogoGenNodeID(), __status: status, children: [], parents: [] });
+    return Object.assign(
+      {},
+      { id: flogoGenNodeID(), __status: status, children: [], parents: [] }
+    );
   }
 
   static makeBranch() {

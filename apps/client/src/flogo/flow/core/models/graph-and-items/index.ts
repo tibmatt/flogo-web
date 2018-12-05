@@ -31,7 +31,12 @@ export function makeGraphAndItems(
   const taskItems = makeTaskItems(tasks, getActivitySchema);
   const taskNodes = makeTaskNodes(tasks, taskItems);
 
-  const { nodes, items } = createAndAppendBranches(links, getNewBranchId, taskItems, taskNodes);
+  const { nodes, items } = createAndAppendBranches(
+    links,
+    getNewBranchId,
+    taskItems,
+    taskNodes
+  );
   const [rootTask] = tasks;
   return {
     items,

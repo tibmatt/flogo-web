@@ -65,9 +65,16 @@ function createEngine(engine, defaultFlogoDescriptorPath, useVendor) {
         return Promise.resolve(true);
       }
       // TODO: add palette version
-      const palettePath = path.resolve('src', 'config', config.defaultEngine.defaultPalette);
+      const palettePath = path.resolve(
+        'src',
+        'config',
+        config.defaultEngine.defaultPalette
+      );
       logger.info(`Will install palette at ${palettePath}`);
-      return Promise.all([engine.installPalette(palettePath), installDeviceContributions()]);
+      return Promise.all([
+        engine.installPalette(palettePath),
+        installDeviceContributions(),
+      ]);
     })
     .catch(error => {
       logger.error('Found error while initializing engine:');
@@ -113,7 +120,8 @@ export function initEngine(engine, options) {
         return true;
       }
       return engine.load().then(installedContribs => {
-        const mapContribs = collection => collection.map(c => ({ path: c.path, version: c.version }));
+        const mapContribs = collection =>
+          collection.map(c => ({ path: c.path, version: c.version }));
         logger.info('installedContributions', {
           triggers: mapContribs(installedContribs.triggers),
           activities: mapContribs(installedContribs.activities),

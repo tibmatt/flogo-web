@@ -3,8 +3,16 @@ import { of, from, throwError as _throw, concat } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import Spy = jasmine.Spy;
 
-import { RunApiService, StatusResponse, ErrorService } from '@flogo-web/client/core/services';
-import { ERRORS, RunStatusCode, RunOrchestratorService } from './run-orchestrator.service';
+import {
+  RunApiService,
+  StatusResponse,
+  ErrorService,
+} from '@flogo-web/client/core/services';
+import {
+  ERRORS,
+  RunStatusCode,
+  RunOrchestratorService,
+} from './run-orchestrator.service';
 
 describe('Service: RunOrchestratorService', function(this: {
   DEFAULT_PROCESS_ID: string;
@@ -33,8 +41,13 @@ describe('Service: RunOrchestratorService', function(this: {
     });
 
     it('Should complete when flow execution is completed', done => {
-      const expectedSequence = genStatusResponseSequence(this.DEFAULT_PROCESS_ID, [RunStatusCode.Completed]);
-      setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, expectedSequence);
+      const expectedSequence = genStatusResponseSequence(this.DEFAULT_PROCESS_ID, [
+        RunStatusCode.Completed,
+      ]);
+      setUpResponseSequence(
+        <Spy>this.runServiceMock.getStatusByInstanceId,
+        expectedSequence
+      );
       expectSequenceCompleted(this.service, this.runServiceMock, expectedSequence, done);
     });
 
@@ -45,7 +58,10 @@ describe('Service: RunOrchestratorService', function(this: {
         RunStatusCode.Active,
         RunStatusCode.Completed,
       ]);
-      setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, expectedSequence);
+      setUpResponseSequence(
+        <Spy>this.runServiceMock.getStatusByInstanceId,
+        expectedSequence
+      );
       expectSequenceCompleted(this.service, this.runServiceMock, expectedSequence, done);
     });
 
@@ -57,7 +73,10 @@ describe('Service: RunOrchestratorService', function(this: {
         'unknown',
         RunStatusCode.Completed,
       ]);
-      setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, expectedSequence);
+      setUpResponseSequence(
+        <Spy>this.runServiceMock.getStatusByInstanceId,
+        expectedSequence
+      );
       expectSequenceCompleted(this.service, this.runServiceMock, expectedSequence, done);
     });
 
@@ -69,7 +88,10 @@ describe('Service: RunOrchestratorService', function(this: {
         RunStatusCode.Active,
         RunStatusCode.Active,
       ]);
-      setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, responseSequence);
+      setUpResponseSequence(
+        <Spy>this.runServiceMock.getStatusByInstanceId,
+        responseSequence
+      );
 
       expectSequenceWithError(
         this.service,
@@ -89,7 +111,10 @@ describe('Service: RunOrchestratorService', function(this: {
         RunStatusCode.Active,
         RunStatusCode.Failed,
       ]);
-      setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, responseSequence);
+      setUpResponseSequence(
+        <Spy>this.runServiceMock.getStatusByInstanceId,
+        responseSequence
+      );
 
       expectSequenceWithError(
         this.service,
@@ -99,7 +124,9 @@ describe('Service: RunOrchestratorService', function(this: {
           expect(error.name).toEqual(ERRORS.PROCESS_NOT_COMPLETED);
           expect(error.status).toEqual(
             RunStatusCode.Failed,
-            `Expected error.status to be ${RunStatusCode.Failed} but found ${error.status}`
+            `Expected error.status to be ${RunStatusCode.Failed} but found ${
+              error.status
+            }`
           );
         },
         done
@@ -112,7 +139,10 @@ describe('Service: RunOrchestratorService', function(this: {
         RunStatusCode.Active,
         RunStatusCode.Cancelled,
       ]);
-      setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, responseSequence);
+      setUpResponseSequence(
+        <Spy>this.runServiceMock.getStatusByInstanceId,
+        responseSequence
+      );
 
       expectSequenceWithError(
         this.service,
@@ -137,7 +167,9 @@ describe('Service: RunOrchestratorService', function(this: {
         state => {
           expect(state.status).toEqual(
             sequence[count].status,
-            `Trial ${count} expected status ${sequence[count].status} but found ${state.status}`
+            `Trial ${count} expected status ${sequence[count].status} but found ${
+              state.status
+            }`
           );
           count++;
         },
@@ -145,7 +177,9 @@ describe('Service: RunOrchestratorService', function(this: {
           console.error('Expect sequence caught error:', err.stack);
         },
         () => {
-          const queryCount = (<jasmine.Spy>runServiceMock.getStatusByInstanceId).calls.count();
+          const queryCount = (<jasmine.Spy>(
+            runServiceMock.getStatusByInstanceId
+          )).calls.count();
           expect(queryCount <= sequence.length).toBeTruthy();
           expect(count).toEqual(sequence.length);
           done();
@@ -168,7 +202,10 @@ describe('Service: RunOrchestratorService', function(this: {
       spyOn(subscriber, 'onError').and.callThrough();
 
       service
-        .monitorProcessStatus('123', { queryInterval: 1, maxTrials: maxAttempts })
+        .monitorProcessStatus('123', {
+          queryInterval: 1,
+          maxTrials: maxAttempts,
+        })
         .pipe(
           finalize(() => {
             expect(subscriber.onError).toHaveBeenCalled();
@@ -182,7 +219,9 @@ describe('Service: RunOrchestratorService', function(this: {
           state => {
             expect(state.status).toEqual(
               sequence[count].status,
-              `Trial ${count} expected status ${sequence[count].status} but found ${state.status}`
+              `Trial ${count} expected status ${sequence[count].status} but found ${
+                state.status
+              }`
             );
             count++;
           },
@@ -194,10 +233,12 @@ describe('Service: RunOrchestratorService', function(this: {
 
   describe('::registerFlowIfNeeded', () => {
     it('When useProcessId option is provided it should just return that processId', done => {
-      this.service.registerFlowIfNeeded({ useProcessId: 'custom-flow' }).subscribe(result => {
-        expect(result).toEqual('custom-flow');
-        done();
-      });
+      this.service
+        .registerFlowIfNeeded({ useProcessId: 'custom-flow' })
+        .subscribe(result => {
+          expect(result).toEqual('custom-flow');
+          done();
+        });
     });
 
     it('When useFlowId option is provided it should register the flow and return the process id', done => {
@@ -236,7 +277,12 @@ describe('Service: RunOrchestratorService', function(this: {
     it('Should fetch steps one time more after process failed', done => {
       const setupData = setup(
         [{ steps: [1] }, { steps: [1, 2] }],
-        _throw(this.errorService.makeOperationalError(ERRORS.PROCESS_NOT_COMPLETED, 'Run failed'))
+        _throw(
+          this.errorService.makeOperationalError(
+            ERRORS.PROCESS_NOT_COMPLETED,
+            'Run failed'
+          )
+        )
       );
       const { stateSeq, registeredStream, stateStream } = setupData;
 
@@ -267,7 +313,10 @@ describe('Service: RunOrchestratorService', function(this: {
     });
 
     it('Should stop after process failed for an unknown reason', done => {
-      const setupData = setup([{ steps: [1] }, { steps: [1, 2] }], _throw(new Error('unknown error')));
+      const setupData = setup(
+        [{ steps: [1] }, { steps: [1, 2] }],
+        _throw(new Error('unknown error'))
+      );
       const { stateSeq, registeredStream, stateStream } = setupData;
 
       const receivedSteps = [];
@@ -280,7 +329,9 @@ describe('Service: RunOrchestratorService', function(this: {
         .pipe(
           finalize(() => {
             expect(receivedSteps).toEqual(expectedSteps);
-            const mockStepsByInstance = <jasmine.Spy>this.runServiceMock.getStepsByInstanceId;
+            const mockStepsByInstance = <jasmine.Spy>(
+              this.runServiceMock.getStepsByInstanceId
+            );
             expect(subscriber.onError).toHaveBeenCalled();
             expect(mockStepsByInstance).not.toHaveBeenCalled();
             done();
@@ -297,7 +348,10 @@ describe('Service: RunOrchestratorService', function(this: {
         RunStatusCode.Active,
         RunStatusCode.Completed,
       ]);
-      setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, statusSequence);
+      setUpResponseSequence(
+        <Spy>this.runServiceMock.getStatusByInstanceId,
+        statusSequence
+      );
 
       const stepSequence = [1, 2, 3, 4, 5].map(n => ({ steps: n }));
       setUpResponseSequence(<Spy>this.runServiceMock.getStepsByInstanceId, stepSequence);
@@ -318,16 +372,26 @@ describe('Service: RunOrchestratorService', function(this: {
       spyOn(subscriber, 'onComplete');
       spyOn(subscriber, 'onError').and.callThrough();
 
-      spyOn(this.service, 'registerAndStartFlow').and.returnValue(of({ instanceId: '123', processId: '456' }));
-      (<jasmine.Spy>this.runServiceMock.getInstance).and.returnValue(of({ name: 'instance mock' }));
+      spyOn(this.service, 'registerAndStartFlow').and.returnValue(
+        of({ instanceId: '123', processId: '456' })
+      );
+      (<jasmine.Spy>this.runServiceMock.getInstance).and.returnValue(
+        of({ name: 'instance mock' })
+      );
 
       this.service
-        .startAndMonitor({ useProcessId: '456', queryInterval: 1, maxTrials: 10 }, processId => of({ id: '456' }))
+        .startAndMonitor(
+          { useProcessId: '456', queryInterval: 1, maxTrials: 10 },
+          processId => of({ id: '456' })
+        )
         .state.pipe(
           finalize(() => {
             const mockedMethod = <Spy>this.runServiceMock.getStepsByInstanceId;
             expect(mockedMethod).toHaveBeenCalledTimes(2);
-            expect(mockedMethod.calls.allArgs()).toEqual([[this.DEFAULT_PROCESS_ID], [this.DEFAULT_PROCESS_ID]]);
+            expect(mockedMethod.calls.allArgs()).toEqual([
+              [this.DEFAULT_PROCESS_ID],
+              [this.DEFAULT_PROCESS_ID],
+            ]);
             expect(this.service.registerAndStartFlow).toHaveBeenCalledTimes(1);
 
             expect(emittedSteps).toEqual([null, 1, 2]);
@@ -348,7 +412,10 @@ describe('Service: RunOrchestratorService', function(this: {
         RunStatusCode.Active,
         RunStatusCode.Completed,
       ]);
-      setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, statusSequence);
+      setUpResponseSequence(
+        <Spy>this.runServiceMock.getStatusByInstanceId,
+        statusSequence
+      );
 
       const stepSequence = [1, 2, 3, 4, 5].map(n => ({ steps: n }));
       setUpResponseSequence(<Spy>this.runServiceMock.getStepsByInstanceId, stepSequence);
@@ -369,16 +436,26 @@ describe('Service: RunOrchestratorService', function(this: {
       spyOn(subscriber, 'onComplete');
       spyOn(subscriber, 'onError').and.callThrough();
 
-      spyOn(this.service, 'registerAndStartFlow').and.returnValue(of({ instanceId: '123', processId: '456' }));
-      (<jasmine.Spy>this.runServiceMock.getInstance).and.returnValue(of({ name: 'instance mock' }));
+      spyOn(this.service, 'registerAndStartFlow').and.returnValue(
+        of({ instanceId: '123', processId: '456' })
+      );
+      (<jasmine.Spy>this.runServiceMock.getInstance).and.returnValue(
+        of({ name: 'instance mock' })
+      );
 
       this.service
-        .startAndMonitor({ useProcessId: '456', queryInterval: 1, maxTrials: 10 }, processId => of({ id: '456' }))
+        .startAndMonitor(
+          { useProcessId: '456', queryInterval: 1, maxTrials: 10 },
+          processId => of({ id: '456' })
+        )
         .state.pipe(
           finalize(() => {
             const mockedMethod = <Spy>this.runServiceMock.getStepsByInstanceId;
             expect(mockedMethod).toHaveBeenCalledTimes(2);
-            expect(mockedMethod.calls.allArgs()).toEqual([[this.DEFAULT_PROCESS_ID], [this.DEFAULT_PROCESS_ID]]);
+            expect(mockedMethod.calls.allArgs()).toEqual([
+              [this.DEFAULT_PROCESS_ID],
+              [this.DEFAULT_PROCESS_ID],
+            ]);
             expect(this.service.registerAndStartFlow).toHaveBeenCalledTimes(1);
 
             expect(emittedSteps).toEqual([null, 1, 2]);
@@ -399,11 +476,16 @@ describe('Service: RunOrchestratorService', function(this: {
         RunStatusCode.Active,
         RunStatusCode.Failed,
       ]);
-      setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, statusSequence);
+      setUpResponseSequence(
+        <Spy>this.runServiceMock.getStatusByInstanceId,
+        statusSequence
+      );
 
       const stepSequence = [1, 2, 3, 4, 5].map(n => ({ steps: n }));
       setUpResponseSequence(<Spy>this.runServiceMock.getStepsByInstanceId, stepSequence);
-      spyOn(this.service, 'registerAndStartFlow').and.returnValue(of({ instanceId: '123', processId: '456' }));
+      spyOn(this.service, 'registerAndStartFlow').and.returnValue(
+        of({ instanceId: '123', processId: '456' })
+      );
 
       const emittedSteps = [];
       const subscriber = {
@@ -421,7 +503,10 @@ describe('Service: RunOrchestratorService', function(this: {
       spyOn(subscriber, 'onError').and.callThrough();
 
       this.service
-        .startAndMonitor({ useProcessId: '456', queryInterval: 1, maxTrials: 10 }, processId => of({ id: '456' }))
+        .startAndMonitor(
+          { useProcessId: '456', queryInterval: 1, maxTrials: 10 },
+          processId => of({ id: '456' })
+        )
         .state.pipe(
           finalize(() => {
             const mockedMethod = <Spy>this.runServiceMock.getStepsByInstanceId;

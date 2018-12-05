@@ -16,9 +16,13 @@ describe('JSONSchema: Flow', () => {
   const validSchemas = generateValidSchemas();
 
   beforeEach(() => {
-    testContext.ajvContext = makeAjvContext('flow', [commonSchema, triggerSchema, flowSchema], {
-      removeAdditional: true,
-    });
+    testContext.ajvContext = makeAjvContext(
+      'flow',
+      [commonSchema, triggerSchema, flowSchema],
+      {
+        removeAdditional: true,
+      }
+    );
     testContext.validator = testContext.ajvContext.createValidator();
   });
 
@@ -44,11 +48,15 @@ describe('JSONSchema: Flow', () => {
     describe('/metadataItem', () => {
       let metadataItemValidator;
       beforeEach(() => {
-        metadataItemValidator = testContext.ajvContext.createValidatorForSubschema('metadataItem');
+        metadataItemValidator = testContext.ajvContext.createValidatorForSubschema(
+          'metadataItem'
+        );
       });
 
       test('should allow correct metadata items', () => {
-        metadataItemValidator.validateAndCreateAsserter({ ...validSchemas.metadataItem }).assertIsValid();
+        metadataItemValidator
+          .validateAndCreateAsserter({ ...validSchemas.metadataItem })
+          .assertIsValid();
       });
 
       test('should require name', () => {
@@ -76,7 +84,9 @@ describe('JSONSchema: Flow', () => {
     describe('/metadata', () => {
       let metadataValidator;
       beforeEach(() => {
-        metadataValidator = testContext.ajvContext.createValidatorForSubschema('metadata');
+        metadataValidator = testContext.ajvContext.createValidatorForSubschema(
+          'metadata'
+        );
       });
 
       test('should accept input mappings', () => {
@@ -98,10 +108,14 @@ describe('JSONSchema: Flow', () => {
     describe('/activity', () => {
       let activityValidator;
       beforeEach(() => {
-        activityValidator = testContext.ajvContext.createValidatorForSubschema('activity');
+        activityValidator = testContext.ajvContext.createValidatorForSubschema(
+          'activity'
+        );
       });
       test('should allow correct activities', () => {
-        activityValidator.validateAndCreateAsserter({ ...validSchemas.activity }).assertIsValid();
+        activityValidator
+          .validateAndCreateAsserter({ ...validSchemas.activity })
+          .assertIsValid();
       });
       test('should require ref', () => {
         activityValidator

@@ -18,7 +18,11 @@ export class FlogoHomeComponent implements OnInit, OnDestroy {
   isFlying = false;
   private flynnFlightSubscription: Subscription;
 
-  constructor(private router: Router, public applicationServiceAPI: AppsApiService, private ngZone: NgZone) {}
+  constructor(
+    private router: Router,
+    public applicationServiceAPI: AppsApiService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit() {
     this.loadFlows();

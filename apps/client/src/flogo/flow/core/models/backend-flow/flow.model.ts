@@ -11,10 +11,17 @@ import {
   isUndefined,
   trim,
 } from 'lodash';
-import { convertTaskID, getDefaultValue, isSubflowTask } from '@flogo-web/client/shared/utils';
+import {
+  convertTaskID,
+  getDefaultValue,
+  isSubflowTask,
+} from '@flogo-web/client/shared/utils';
 
 import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '@flogo-web/client/core/constants';
-import { FlowMetadata, MetadataAttribute } from '@flogo-web/client/core/interfaces/flow/index';
+import {
+  FlowMetadata,
+  MetadataAttribute,
+} from '@flogo-web/client/core/interfaces/flow/index';
 import { mergeItemWithSchema } from '@flogo-web/client/core/models';
 
 import {
@@ -53,7 +60,11 @@ const generateDiagramTraverser = schemas => {
   let idCounter = 0;
   const _genLinkId = () => ++idCounter;
 
-  function _traversalDiagramChildren(node: GraphNode, nodes: Dictionary<GraphNode>, tasks: Dictionary<Item>) {
+  function _traversalDiagramChildren(
+    node: GraphNode,
+    nodes: Dictionary<GraphNode>,
+    tasks: Dictionary<Item>
+  ) {
     // if haven't visited
     if (!includes(visited, node.id)) {
       visited.push(node.id);
@@ -136,11 +147,15 @@ const generateDiagramTraverser = schemas => {
         taskInfo.activityRef = task.ref;
       }
 
-      taskInfo.attributes = _parseFlowAttributes(<DiagramTaskAttribute[]>get(task, 'attributes.inputs'));
+      taskInfo.attributes = _parseFlowAttributes(<DiagramTaskAttribute[]>(
+        get(task, 'attributes.inputs')
+      ));
 
       /* add inputMappings */
 
-      const inputMappings = parseFlowMappings(<DiagramTaskAttributeMapping[]>get(task, 'inputMappings'));
+      const inputMappings = parseFlowMappings(<DiagramTaskAttributeMapping[]>(
+        get(task, 'inputMappings')
+      ));
 
       if (!isEmpty(inputMappings)) {
         taskInfo.inputMappings = inputMappings;
@@ -148,7 +163,9 @@ const generateDiagramTraverser = schemas => {
 
       /* add outputMappings */
 
-      const outputMappings = parseFlowMappings(<DiagramTaskAttributeMapping[]>get(task, 'outputMappings'));
+      const outputMappings = parseFlowMappings(<DiagramTaskAttributeMapping[]>(
+        get(task, 'outputMappings')
+      ));
 
       if (!isEmpty(outputMappings)) {
         taskInfo.ouputMappings = outputMappings;
@@ -277,7 +294,8 @@ export function savableFlow(inFlow: UiFlow): Action {
   const errorPathRoot = errorPath.rootId;
   const errorPathNodes = errorPath.nodes;
   const isMainFlowEmpty = isEmpty(flowPath) || !flowPathRoot || isEmpty(flowPathNodes);
-  const isErrorFlowEmpty = isEmpty(errorPath) || !errorPathRoot || isEmpty(errorPathNodes);
+  const isErrorFlowEmpty =
+    isEmpty(errorPath) || !errorPathRoot || isEmpty(errorPathNodes);
 
   flowJSON.id = flowID;
   flowJSON.name = inFlow.name || '';
@@ -363,7 +381,8 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
   const errorPathRoot = errorPath.rootId;
   const errorPathNodes = errorPath.nodes;
   const isMainFlowEmpty = isEmpty(flowPath) || !flowPathRoot || isEmpty(flowPathNodes);
-  const isErrorFlowEmpty = isEmpty(errorPath) || !errorPathRoot || isEmpty(errorPathNodes);
+  const isErrorFlowEmpty =
+    isEmpty(errorPath) || !errorPathRoot || isEmpty(errorPathNodes);
 
   flowJSON.id = flowID;
   flowJSON.name = inFlow.name || '';
@@ -466,7 +485,11 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
     return flow;
   })();
 
-  if (_hasExplicitReply(flowJSON.flow && flowJSON.flow.rootTask && flowJSON.flow.rootTask.tasks)) {
+  if (
+    _hasExplicitReply(
+      flowJSON.flow && flowJSON.flow.rootTask && flowJSON.flow.rootTask.tasks
+    )
+  ) {
     flowJSON.flow.explicitReply = true;
   }
 
@@ -483,7 +506,11 @@ function _hasExplicitReply(tasks?: any): boolean {
 
   // hardcoding the activity type, for now
   // TODO: maybe the activity should expose a property so we know it can reply?
-  return !!find(tasks, task => (<any>task).activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
+  return !!find(
+    tasks,
+    task =>
+      (<any>task).activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply'
+  );
 }
 
 function _parseMetadata(metadata: FlowMetadata): FlowMetadata {

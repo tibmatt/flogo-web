@@ -47,12 +47,21 @@ describe('Service: FlowsService', function(this: {
   let spyDelete;
   let spyDeleteTrigger;
   beforeAll(() => {
-    this.mockContribTriggerAPIService = jasmine.createSpyObj<RESTAPIContributionsService>('contribTriggersService', [
-      'getContributionDetails',
+    this.mockContribTriggerAPIService = jasmine.createSpyObj<RESTAPIContributionsService>(
+      'contribTriggersService',
+      ['getContributionDetails']
+    );
+    this.mockFlowsAPIService = jasmine.createSpyObj<APIFlowsService>('flowsAPIService', [
+      'deleteFlow',
     ]);
-    this.mockFlowsAPIService = jasmine.createSpyObj<APIFlowsService>('flowsAPIService', ['deleteFlow']);
-    this.mockTriggersService = jasmine.createSpyObj('triggersService', ['getTrigger', 'deleteTrigger']);
-    this.mockHandlersAPIService = jasmine.createSpyObj<RESTAPIHandlersService>('handlersAPIService', ['updateHandler']);
+    this.mockTriggersService = jasmine.createSpyObj('triggersService', [
+      'getTrigger',
+      'deleteTrigger',
+    ]);
+    this.mockHandlersAPIService = jasmine.createSpyObj<RESTAPIHandlersService>(
+      'handlersAPIService',
+      ['updateHandler']
+    );
     this.testService = new FlowsService(
       this.mockHandlersAPIService,
       this.mockFlowsAPIService,
@@ -70,10 +79,12 @@ describe('Service: FlowsService', function(this: {
     specTriggerData.handlers.pop();
     const spyGetTrigger = <Spy>this.mockTriggersService.getTrigger;
     spyGetTrigger.and.returnValue(Promise.resolve(specTriggerData));
-    this.testService.deleteFlowWithTrigger('some_flow_id_1', 'some_trigger_id_1').then(data => {
-      expect(_.isEqual(data, {})).toEqual(true);
-      done();
-    });
+    this.testService
+      .deleteFlowWithTrigger('some_flow_id_1', 'some_trigger_id_1')
+      .then(data => {
+        expect(_.isEqual(data, {})).toEqual(true);
+        done();
+      });
   });
 
   it('Should delete and also the Trigger', done => {
@@ -82,10 +93,12 @@ describe('Service: FlowsService', function(this: {
     specTriggerData.handlers.pop();
     const spyGetTrigger = <Spy>this.mockTriggersService.getTrigger;
     spyGetTrigger.and.returnValue(Promise.resolve(specTriggerData));
-    this.testService.deleteFlowWithTrigger('some_flow_id_2', 'some_trigger_id_2').then(data => {
-      expect(_.isEqual(data, {})).toEqual(true);
-      expect(spyDeleteTrigger).toHaveBeenCalledTimes(1);
-      done();
-    });
+    this.testService
+      .deleteFlowWithTrigger('some_flow_id_2', 'some_trigger_id_2')
+      .then(data => {
+        expect(_.isEqual(data, {})).toEqual(true);
+        expect(spyDeleteTrigger).toHaveBeenCalledTimes(1);
+        done();
+      });
   });
 });

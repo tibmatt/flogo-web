@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChange, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnChanges,
+  SimpleChange,
+  ViewChild,
+} from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
 
 @Component({
@@ -14,10 +22,26 @@ export class WalkthroughComponent implements OnChanges {
   @Output()
   closedModal = new EventEmitter();
   steps = [
-    { title: 'Configure the trigger', description: '', screenshot: 'flogo.instructions.screen-1@3x.png' },
-    { title: 'Add and configure activities', description: '', screenshot: 'flogo.instructions.screen-2@3x.png' },
-    { title: 'Run and test at any time', description: '', screenshot: 'flogo.instructions.screen-3@3x.png' },
-    { title: 'Build and run', description: '', screenshot: 'flogo.instructions.screen-4@3x.png' },
+    {
+      title: 'Configure the trigger',
+      description: '',
+      screenshot: 'flogo.instructions.screen-1@3x.png',
+    },
+    {
+      title: 'Add and configure activities',
+      description: '',
+      screenshot: 'flogo.instructions.screen-2@3x.png',
+    },
+    {
+      title: 'Run and test at any time',
+      description: '',
+      screenshot: 'flogo.instructions.screen-3@3x.png',
+    },
+    {
+      title: 'Build and run',
+      description: '',
+      screenshot: 'flogo.instructions.screen-4@3x.png',
+    },
   ];
   currentIndex: number;
   currentStep: any;

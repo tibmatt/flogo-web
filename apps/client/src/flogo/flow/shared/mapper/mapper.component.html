@@ -1,12 +1,22 @@
 <div class="mapper">
   <flogo-mapper-icons></flogo-mapper-icons>
   <div *ngIf="!isSingleInputMode" class="mapper__left-panel">
-    <flogo-mapper-input-list [searchPlaceholder]="inputsSearchPlaceHolder"></flogo-mapper-input-list>
+    <flogo-mapper-input-list
+      [searchPlaceholder]="inputsSearchPlaceHolder"
+    ></flogo-mapper-input-list>
   </div>
-  <div class="mapper__right-panel" [class.mapper__right-panel--working-input]="currentInput">
+  <div
+    class="mapper__right-panel"
+    [class.mapper__right-panel--working-input]="currentInput"
+  >
     <div *ngIf="!currentInput" class="editor-container editor-container--empty">
       <p class="editor-container-empty__message">
-        <svg class="editor-container-empty__image" width="46" height="23" viewBox="0 0 46 23">
+        <svg
+          class="editor-container-empty__image"
+          width="46"
+          height="23"
+          viewBox="0 0 46 23"
+        >
           <path
             fill="#FF7800"
             fill-rule="evenodd"
@@ -29,7 +39,10 @@
         (dragenter)="onDragEnter()"
         (dragleave)="onDragLeave()"
       >
-        <flogo-mapper-editor class="workspace__editor" *loadMonacoEditor></flogo-mapper-editor>
+        <flogo-mapper-editor
+          class="workspace__editor"
+          *loadMonacoEditor
+        ></flogo-mapper-editor>
       </div>
 
       <div class="workspace__parameters parameters">

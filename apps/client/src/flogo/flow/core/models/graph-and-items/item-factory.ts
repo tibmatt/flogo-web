@@ -29,10 +29,19 @@ export class ItemFactory {
       },
       __status: {},
     };
-    return Object.assign({}, defaults, pick(installed, ['name', 'version', 'homepage', 'description', 'ref']));
+    return Object.assign(
+      {},
+      defaults,
+      pick(installed, ['name', 'version', 'homepage', 'description', 'ref'])
+    );
   }
 
-  static makeTrigger(trigger: { installed: any; cli: any; handlerSetting: any; node: any }): any {
+  static makeTrigger(trigger: {
+    installed: any;
+    cli: any;
+    handlerSetting: any;
+    node: any;
+  }): any {
     // todo: what does cli means in this context??
     const { installed, cli, handlerSetting } = trigger;
     const item = Object.assign(
@@ -52,7 +61,10 @@ export class ItemFactory {
     item.settings = mergeAttributesWithSchema(settings, triggerSchemaSettings);
 
     const handlerSettings = get(installed, 'handler.settings', []);
-    item.handler.settings = mergeAttributesWithSchema(handlerSetting.settings || {}, handlerSettings);
+    item.handler.settings = mergeAttributesWithSchema(
+      handlerSetting.settings || {},
+      handlerSettings
+    );
 
     const mapType = prop => ({
       name: prop.name,
@@ -99,7 +111,10 @@ export class ItemFactory {
   }
 }
 
-function mergeAttributesWithSchema(properties: { [key: string]: any }, schemaAttributes: any[]) {
+function mergeAttributesWithSchema(
+  properties: { [key: string]: any },
+  schemaAttributes: any[]
+) {
   return schemaAttributes.map(attribute => {
     const mappedAttribute = cloneDeep(attribute);
     if (properties[attribute.name]) {

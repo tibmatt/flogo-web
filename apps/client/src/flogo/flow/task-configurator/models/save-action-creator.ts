@@ -3,7 +3,14 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 
-import { Action, ActionBase, ItemActivityTask, ItemBranch, ItemSubflow, ItemTask } from '@flogo-web/client/core';
+import {
+  Action,
+  ActionBase,
+  ItemActivityTask,
+  ItemBranch,
+  ItemSubflow,
+  ItemTask,
+} from '@flogo-web/client/core';
 import { isMapperActivity } from '@flogo-web/client/shared/utils';
 
 import { AppState } from '@flogo-web/client/flow/core/state/app.state';
@@ -35,7 +42,10 @@ export function createSaveAction(
   return store.pipe(
     select(FlowSelectors.selectFlowState),
     take(1),
-    map(flowState => new FlowActions.CommitItemConfiguration(getChanges(flowState, saveData)))
+    map(
+      flowState =>
+        new FlowActions.CommitItemConfiguration(getChanges(flowState, saveData))
+    )
   );
 }
 export function createSaveBranchAction(
@@ -72,7 +82,11 @@ function getChanges(
     settings: tile.settings,
   };
   if (changedSubflowSchema && tileAsSubflow.settings.flowPath !== saveData.subflowPath) {
-    itemChanges.name = uniqueTaskName(changedSubflowSchema.name, flowState.mainItems, flowState.errorItems);
+    itemChanges.name = uniqueTaskName(
+      changedSubflowSchema.name,
+      flowState.mainItems,
+      flowState.errorItems
+    );
     itemChanges.description = changedSubflowSchema.description;
     itemChanges.settings = {
       ...itemChanges.settings,
@@ -94,7 +108,11 @@ function getChanges(
     ...itemChanges.settings,
     iterate: iteratorInfo.isIterable ? saveData.iterator.iterableValue : undefined,
   };
-  return { handlerType, item: itemChanges, newSubflowSchema: changedSubflowSchema as Action };
+  return {
+    handlerType,
+    item: itemChanges,
+    newSubflowSchema: changedSubflowSchema as Action,
+  };
 }
 
 function getBranchChanges(

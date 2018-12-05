@@ -53,7 +53,13 @@ export class FlogoFlowDetails {
 
   updateItem(
     handlerType: HandlerType,
-    { item, node }: { item: { id: string } & Partial<Item>; node?: { id: string } & Partial<GraphNode> }
+    {
+      item,
+      node,
+    }: {
+      item: { id: string } & Partial<Item>;
+      node?: { id: string } & Partial<GraphNode>;
+    }
   ) {
     this.store.dispatch(
       new FlowActions.ItemUpdated({

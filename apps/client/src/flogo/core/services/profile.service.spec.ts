@@ -12,7 +12,8 @@ describe('Service: FlogoProfileService', function(this: {
       name: 'sendWSMessage',
       version: '0.0.1',
       title: 'Send WebSocket Message',
-      description: 'This activity sends a message to a WebSocket enabled server like TIBCO eFTL',
+      description:
+        'This activity sends a message to a WebSocket enabled server like TIBCO eFTL',
       inputs: [
         {
           name: 'Server',
@@ -73,7 +74,15 @@ describe('Service: FlogoProfileService', function(this: {
         {
           name: 'type',
           type: 'string',
-          allowed: ['string', 'integer', 'number', 'boolean', 'object', 'array', 'params'],
+          allowed: [
+            'string',
+            'integer',
+            'number',
+            'boolean',
+            'object',
+            'array',
+            'params',
+          ],
         },
         {
           name: 'value',
@@ -163,7 +172,8 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Increment Counter',
       description: 'Simple Global Counter Activity',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+      homepage:
+        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
       inputs: [
         {
           name: 'counterName',
@@ -191,7 +201,8 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Throw Error',
       description: 'Simple Error Activity',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/error',
+      homepage:
+        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/error',
       inputs: [
         {
           name: 'message',
@@ -209,7 +220,8 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Control GPIO',
       description: 'Control raspberry gpio',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/gpio',
+      homepage:
+        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/gpio',
       inputs: [
         {
           name: 'method',
@@ -280,7 +292,8 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Reply To Trigger',
       description: 'Simple Reply Activity',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/reply',
+      homepage:
+        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/reply',
       inputs: [
         {
           name: 'code',
@@ -299,7 +312,8 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Invoke REST Service',
       description: 'Simple REST Activity',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/rest',
+      homepage:
+        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/rest',
       inputs: [
         {
           name: 'method',
@@ -337,7 +351,8 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Send SMS Via Twilio',
       description: 'Simple Twilio Activity',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/twilio',
+      homepage:
+        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/twilio',
       inputs: [
         {
           name: 'accountSID',
@@ -370,7 +385,8 @@ describe('Service: FlogoProfileService', function(this: {
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow',
       title: 'Start a SubFlow',
       description: 'Simple SubFlow Activity',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/subflow',
+      homepage:
+        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/subflow',
       dynamicIO: true,
       settings: [
         {
@@ -383,7 +399,10 @@ describe('Service: FlogoProfileService', function(this: {
   }
 
   beforeAll(() => {
-    this.contribServiceMock = jasmine.createSpyObj<RESTAPIContributionsService>('contribService', ['listContribs']);
+    this.contribServiceMock = jasmine.createSpyObj<RESTAPIContributionsService>(
+      'contribService',
+      ['listContribs']
+    );
     this.testService = new FlogoProfileService(this.contribServiceMock);
   });
 

@@ -3,7 +3,10 @@
   @notificationAnim
   [attr.data-notification-type]="notification.type"
   class="uxpl-notification"
-  [ngClass]="{ 'is-success': notification.type === 'success', 'is-error': notification.type === 'error' }"
+  [ngClass]="{
+    'is-success': notification.type === 'success',
+    'is-error': notification.type === 'error'
+  }"
 >
   <svg
     *ngIf="notification.type === 'success'; else errorIcon"
@@ -22,7 +25,10 @@
     />
   </svg>
 
-  <span class="uxpl-notification__text" *ngIf="!notification?.message?.key; else translatable">
+  <span
+    class="uxpl-notification__text"
+    *ngIf="!notification?.message?.key; else translatable"
+  >
     {{ notification.message }}
   </span>
   <ng-template #translatable>
@@ -33,7 +39,12 @@
     ></span>
   </ng-template>
 
-  <button class="uxpl-notification__close qa-close" type="button" (click)="close(notification)" aria-label="Close">
+  <button
+    class="uxpl-notification__close qa-close"
+    type="button"
+    (click)="close(notification)"
+    aria-label="Close"
+  >
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="12"
@@ -52,7 +63,13 @@
 </div>
 
 <ng-template #errorIcon>
-  <svg class="uxpl-notification__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <svg
+    class="uxpl-notification__icon"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+  >
     <path
       fill="currentColor"
       fill-rule="evenodd"

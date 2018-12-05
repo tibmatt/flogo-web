@@ -101,7 +101,8 @@ describe('MapperTranslator', function() {
       exprAssignment: { expression: '$activity[myActivity].attr >= 4' },
       objectTemplate: { expression: '{ "myThing": 44 }' },
     });
-    const getMappingFor = (forProperty: string) => translatedMappings.find(m => m.mapTo === forProperty);
+    const getMappingFor = (forProperty: string) =>
+      translatedMappings.find(m => m.mapTo === forProperty);
     it('Parses all mappings', function() {
       expect(translatedMappings.length).toEqual(6);
     });
@@ -204,24 +205,15 @@ describe('MapperTranslator', function() {
     });
 
     describe('For correctly formed expressions', function() {
-      ['$a.b.c', '$activity[name]', 'singleProp', '25.6', '"my string"', '$activity[hello].something > 555'].forEach(
-        expr => {
-          it(`Treats ${expr} as valid`, () =>
-            expect(
-              isValidExpression({
-                testMapping: {
-                  expression: expr,
-                  mappings: {},
-                },
-              })
-            ).toBeTruthy());
-        }
-      );
-    });
-
-    describe('For incorrectly formed expressions', function() {
-      ['$a.', '1.5.2', '$activity[.d', '$activity[hello].something >+ 555'].forEach(expr => {
-        it(`Treats ${expr} as invalid`, () =>
+      [
+        '$a.b.c',
+        '$activity[name]',
+        'singleProp',
+        '25.6',
+        '"my string"',
+        '$activity[hello].something > 555',
+      ].forEach(expr => {
+        it(`Treats ${expr} as valid`, () =>
           expect(
             isValidExpression({
               testMapping: {
@@ -229,8 +221,24 @@ describe('MapperTranslator', function() {
                 mappings: {},
               },
             })
-          ).toBeFalsy());
+          ).toBeTruthy());
       });
+    });
+
+    describe('For incorrectly formed expressions', function() {
+      ['$a.', '1.5.2', '$activity[.d', '$activity[hello].something >+ 555'].forEach(
+        expr => {
+          it(`Treats ${expr} as invalid`, () =>
+            expect(
+              isValidExpression({
+                testMapping: {
+                  expression: expr,
+                  mappings: {},
+                },
+              })
+            ).toBeFalsy());
+        }
+      );
     });
   });
 });

@@ -15,7 +15,15 @@ export class APIFlowsService {
     return this.restApi.get<Action>(`actions/${flowId}`).toPromise();
   }
 
-  createFlow(appId, flow: { name: string; description?: string; version?: string; data?: { flow: any } }) {
+  createFlow(
+    appId,
+    flow: {
+      name: string;
+      description?: string;
+      version?: string;
+      data?: { flow: any };
+    }
+  ) {
     return this.restApi.post<Action>(`apps/${appId}/actions`, flow).toPromise();
   }
 
@@ -33,7 +41,9 @@ export class APIFlowsService {
   }
 
   findFlowsByName(flowName: string, appId: string): Observable<any[]> {
-    return this.restApi.get(`apps/${appId}/actions`, { params: { 'filter[name]': flowName } });
+    return this.restApi.get(`apps/${appId}/actions`, {
+      params: { 'filter[name]': flowName },
+    });
   }
 
   getSubFlows(appId: string, flowIds?: string[]) {

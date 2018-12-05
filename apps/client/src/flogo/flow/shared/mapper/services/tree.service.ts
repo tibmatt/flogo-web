@@ -53,7 +53,11 @@ export class TreeService {
     }
   }
 
-  applyFilter(nodes: MapperTreeNode[], searchText: string = null, selectedPath: string = null) {
+  applyFilter(
+    nodes: MapperTreeNode[],
+    searchText: string = null,
+    selectedPath: string = null
+  ) {
     const searchTextLower = searchText ? searchText.toLowerCase() : '';
     const isMatch = (node: MapperTreeNode) => {
       const nodeLabel = node && node.label ? node.label.toLowerCase() : node.label;
@@ -79,23 +83,33 @@ export class TreeService {
     let hasMappedChild = false;
     if (node.children) {
       hasMappedChild = node.children.reduce(
-        (hasMappings, childNode) => this.updateTreeMappingStatus(childNode) || hasMappings,
+        (hasMappings, childNode) =>
+          this.updateTreeMappingStatus(childNode) || hasMappings,
         false
       );
     }
 
     const hasMapping = hasExpression || hasMappedChild;
-    this.updateStyleClass(node, { [CLASSES.hasMapping]: hasMapping, [CLASSES.invalid]: node.isInvalid });
+    this.updateStyleClass(node, {
+      [CLASSES.hasMapping]: hasMapping,
+      [CLASSES.invalid]: node.isInvalid,
+    });
     return hasMapping;
   }
 
-  public propagateMappingStatusToParents(node: MapperTreeNode, callingChildHasMapping: boolean = false) {
+  public propagateMappingStatusToParents(
+    node: MapperTreeNode,
+    callingChildHasMapping: boolean = false
+  ) {
     let hasMapping = this.isMappedNode(node) || callingChildHasMapping;
     if (!hasMapping && node.children) {
       hasMapping = node.children.some(child => this.isMappedNode(child));
     }
 
-    this.updateStyleClass(node, { [CLASSES.hasMapping]: hasMapping, [CLASSES.invalid]: node.isInvalid });
+    this.updateStyleClass(node, {
+      [CLASSES.hasMapping]: hasMapping,
+      [CLASSES.invalid]: node.isInvalid,
+    });
     if (node.parent) {
       this.propagateMappingStatusToParents(node.parent, hasMapping);
     }
@@ -111,7 +125,8 @@ export class TreeService {
     if (node.children) {
       hasVisibleChild = node.children.reduce(
         (foundVisibleChild: boolean, childNode) =>
-          this.applyFilterToNode(childNode, matchDiscriminator, selectedPath) || foundVisibleChild,
+          this.applyFilterToNode(childNode, matchDiscriminator, selectedPath) ||
+          foundVisibleChild,
         false
       );
     }
@@ -119,7 +134,10 @@ export class TreeService {
     const isVisible = isMatch || hasVisibleChild || node.path === selectedPath;
     node.expanded = isVisible;
     node.isVisible = isVisible;
-    this.updateStyleClass(node, { [CLASSES.visible]: isVisible, [CLASSES.isFilterMatch]: isMatch });
+    this.updateStyleClass(node, {
+      [CLASSES.visible]: isVisible,
+      [CLASSES.isFilterMatch]: isMatch,
+    });
     return isVisible;
   }
 
@@ -131,7 +149,10 @@ export class TreeService {
     return expression && expression.trim();
   }
 
-  private updateStyleClass(node: MapperTreeNode, classMap: { [className: string]: boolean }) {
+  private updateStyleClass(
+    node: MapperTreeNode,
+    classMap: { [className: string]: boolean }
+  ) {
     const currentClasses: string[] = (node.styleClass || '').trim().split(' ');
     Object.keys(classMap).forEach(className => {
       if (classMap[className]) {
@@ -160,7 +181,10 @@ export class TreeService {
     return node;
   }
 
-  private traverseParents(node: MapperTreeNode, onParent: (node: MapperTreeNode) => void) {
+  private traverseParents(
+    node: MapperTreeNode,
+    onParent: (node: MapperTreeNode) => void
+  ) {
     let parent = node ? node.parent : null;
     while (parent) {
       onParent(parent);

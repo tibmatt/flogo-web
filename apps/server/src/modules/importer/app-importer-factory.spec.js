@@ -28,7 +28,9 @@ describe('importer.AppImporterFactory', () => {
 
     test('#isStandardApp should accept only appModel 1.0.0', async () => {
       ['', '1.2.4', undefined, 1, 'xyx'].forEach(appModelTestVal =>
-        expect(appImporterFactory.isStandardApp({ appModel: appModelTestVal })).not.toBe(true)
+        expect(appImporterFactory.isStandardApp({ appModel: appModelTestVal })).not.toBe(
+          true
+        )
       );
       expect(appImporterFactory.isStandardApp({})).not.toBe(true);
     });
@@ -73,8 +75,12 @@ describe('importer.AppImporterFactory', () => {
 
   function createTestContext(sandboxInstance) {
     const stubs = {
-      deviceDependenciesFactory: sandboxInstance.createStubInstance(DeviceAppImporterFactory),
-      legacyDependenciesFactory: sandboxInstance.createStubInstance(LegacyAppImporterFactory),
+      deviceDependenciesFactory: sandboxInstance.createStubInstance(
+        DeviceAppImporterFactory
+      ),
+      legacyDependenciesFactory: sandboxInstance.createStubInstance(
+        LegacyAppImporterFactory
+      ),
       appImporter: sandboxInstance.createStubInstance(AppImporter),
     };
 

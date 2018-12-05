@@ -38,7 +38,10 @@ export class StandardAppImporterFactory {
   }
 
   async loadContributions() {
-    return loadMicroserviceContribs(this.getActivitiesManager(), this.getTriggersManager());
+    return loadMicroserviceContribs(
+      this.getActivitiesManager(),
+      this.getTriggersManager()
+    );
   }
 
   getTriggersManager() {
@@ -60,7 +63,11 @@ export class StandardAppImporterFactory {
   }
 
   createActionsImporter(actionsManager, activitySchemas) {
-    return new StandardActionsImporter(actionsManager, StandardTaskConverter, activitySchemas);
+    return new StandardActionsImporter(
+      actionsManager,
+      StandardTaskConverter,
+      activitySchemas
+    );
   }
 
   createTriggersHandlersImporter(appsTriggersManager, handlersManager) {

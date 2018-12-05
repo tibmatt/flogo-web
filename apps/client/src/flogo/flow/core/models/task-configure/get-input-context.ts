@@ -1,7 +1,17 @@
 import { defaultsDeep, get } from 'lodash';
 import { FlowState } from '@flogo-web/client/flow/core/state';
-import { Dictionary, GraphNode, Item, ItemSubflow, ItemTask, NodeType } from '@flogo-web/client/core';
-import { mergeItemWithSchema, PartialActivitySchema } from '@flogo-web/client/core/models';
+import {
+  Dictionary,
+  GraphNode,
+  Item,
+  ItemSubflow,
+  ItemTask,
+  NodeType,
+} from '@flogo-web/client/core';
+import {
+  mergeItemWithSchema,
+  PartialActivitySchema,
+} from '@flogo-web/client/core/models';
 import { isSubflowTask } from '@flogo-web/client/shared/utils';
 import { makeErrorTask } from '../make-error-task';
 import { FlowMetadata } from '@flogo-web/client/flow/task-configurator/models/flow-metadata';
@@ -17,12 +27,20 @@ export function getInputContext(taskId: string, state: FlowState): any[] {
 }
 
 export function getFlowMetadata(flowState: FlowState): FlowMetadata {
-  return defaultsDeep({ type: 'metadata' }, flowState.metadata, { input: [], output: [] });
+  return defaultsDeep({ type: 'metadata' }, flowState.metadata, {
+    input: [],
+    output: [],
+  });
 }
 
 function getPrecedingTasksForMainHandler(taskId: string, state: FlowState) {
   const { mainGraph, mainItems: items } = state;
-  return findPrecedingTasks(mainGraph.rootId, taskId, { nodes: mainGraph.nodes, items }, state);
+  return findPrecedingTasks(
+    mainGraph.rootId,
+    taskId,
+    { nodes: mainGraph.nodes, items },
+    state
+  );
 }
 
 export function getPrecedingTasksForErrorHandler(itemId: string, state: FlowState) {
@@ -35,7 +53,12 @@ export function getPrecedingTasksForErrorHandler(itemId: string, state: FlowStat
   return [
     ...allItemsInMainHandler,
     makeErrorTask(),
-    ...findPrecedingTasks(errorGraph.rootId, itemId, { nodes: errorGraph.nodes, items: errorItems }, state),
+    ...findPrecedingTasks(
+      errorGraph.rootId,
+      itemId,
+      { nodes: errorGraph.nodes, items: errorItems },
+      state
+    ),
   ];
 }
 
@@ -63,7 +86,11 @@ function isItemInErrorHandlerPath(taskId: string, state: FlowState) {
  * @param {Dictionary<GraphNode>} nodes
  * @returns string[] list of node ids
  */
-export function findPathToNode(startNodeId: string, targetNodeId: string, nodes: Dictionary<GraphNode>) {
+export function findPathToNode(
+  startNodeId: string,
+  targetNodeId: string,
+  nodes: Dictionary<GraphNode>
+) {
   let queue = [[startNodeId]];
 
   while (queue.length > 0) {

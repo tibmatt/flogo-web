@@ -34,13 +34,22 @@ const modalControlStub = {
 describe('Component: FlogoNewFlow', () => {
   let component: FlogoNewFlowComponent;
   let fixture: ComponentFixture<FlogoNewFlowComponent>;
-  let elements: { submitBtn: DebugElement; nameInput: DebugElement; descriptionInput: DebugElement };
+  let elements: {
+    submitBtn: DebugElement;
+    nameInput: DebugElement;
+    descriptionInput: DebugElement;
+  };
 
   let submitBtn: DebugElement;
 
   beforeEach(done => {
     TestBed.configureTestingModule({
-      imports: [FakeRootLanguageModule, BsModalModule, FlogoCoreModule, FlogoSharedModule],
+      imports: [
+        FakeRootLanguageModule,
+        BsModalModule,
+        FlogoCoreModule,
+        FlogoSharedModule,
+      ],
       declarations: [FlogoNewFlowComponent], // declare the test component
       providers: [
         { provide: APIFlowsService, useValue: flowsServiceStub },
@@ -104,13 +113,17 @@ describe('Component: FlogoNewFlow', () => {
       })
       .then(() => {
         expect(component.flow.valid).toBe(true, 'form is invalid');
-        expect(submitBtn.nativeElement.disabled).toBeFalsy('Submit button is not enabled');
+        expect(submitBtn.nativeElement.disabled).toBeFalsy(
+          'Submit button is not enabled'
+        );
         submitBtn.nativeElement.click();
         fixture.detectChanges();
         return fixture.whenStable();
       })
       .then(() => {
-        const [mostRecentCallParams] = (<jasmine.Spy>component.control.close).calls.mostRecent().args;
+        const [mostRecentCallParams] = (<jasmine.Spy>(
+          component.control.close
+        )).calls.mostRecent().args;
         const { name, description } = mostRecentCallParams;
         expect(component.control.close).toHaveBeenCalledTimes(1);
         expect({ name, description }).toEqual(testFlow);

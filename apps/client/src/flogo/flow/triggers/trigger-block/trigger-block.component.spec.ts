@@ -82,7 +82,9 @@ describe('Component: TriggerBlockComponent', () => {
   it('When initiated trigger is not selected', () => {
     comp = fixture.componentInstance;
     fixture.detectChanges();
-    const triggerBlock: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.trigger_block--selected'));
+    const triggerBlock: Array<DebugElement> = fixture.debugElement.queryAll(
+      By.css('.trigger_block--selected')
+    );
     expect(triggerBlock.length).toEqual(0);
   });
 

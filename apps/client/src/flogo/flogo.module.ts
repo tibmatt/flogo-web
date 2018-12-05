@@ -53,7 +53,12 @@ import { environment } from '../environments/environment';
   bootstrap: [FlogoAppComponent],
   providers: [
     { provide: LanguageService, useExisting: TranslateService },
-    { provide: APP_INITIALIZER, useFactory: initializer, deps: [TranslateService], multi: true },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializer,
+      deps: [TranslateService],
+      multi: true,
+    },
     { provide: APP_BASE_HREF, useValue: '/' },
     appRoutingProviders,
   ],

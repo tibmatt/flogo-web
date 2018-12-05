@@ -22,7 +22,10 @@ export class AppImporter {
 
     this.app = await this.appStorage.create(rawApp);
 
-    const actionsByOriginalId = await this.actionsImporter.importAll(this.app.id, this.rawData);
+    const actionsByOriginalId = await this.actionsImporter.importAll(
+      this.app.id,
+      this.rawData
+    );
 
     this.triggerHandlersImporter.setAppId(this.app.id);
     this.triggerHandlersImporter.setActionsByOriginalId(actionsByOriginalId);

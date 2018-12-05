@@ -55,7 +55,9 @@ export class ContribsManager {
                 : Validator.validateActivityDeviceCreate;
             const errors = validateFunction(cleanContribution);
             installPromises.push(
-              errors ? Promise.resolve({ ref: contribution.ref, status: 'fail' }) : installContrib(contribution)
+              errors
+                ? Promise.resolve({ ref: contribution.ref, status: 'fail' })
+                : installContrib(contribution)
             );
           } else {
             installPromises.push({ ref: contribution.ref, status: 'fail' });
@@ -63,8 +65,12 @@ export class ContribsManager {
         });
         Promise.all(installPromises).then(results => {
           const installResults = { success: [], fail: [] };
-          installResults.success = results.filter(result => result.status == 'success').map(item => item.ref);
-          installResults.fail = results.filter(result => result.status == 'fail').map(item => item.ref);
+          installResults.success = results
+            .filter(result => result.status == 'success')
+            .map(item => item.ref);
+          installResults.fail = results
+            .filter(result => result.status == 'fail')
+            .map(item => item.ref);
           resolve(installResults);
         });
       });

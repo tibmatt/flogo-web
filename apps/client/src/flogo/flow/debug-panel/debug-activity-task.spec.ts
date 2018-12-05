@@ -9,7 +9,11 @@ describe('debug-panel.debug-activity-task.combineToDebugActivity', function() {
 
   it('A merged debug activity tasks', async () => {
     const result = await emitAndCombine([
-      { id: 'my-schema', name: 'my-schema', homepage: 'https://my.activity.homepage.com' },
+      {
+        id: 'my-schema',
+        name: 'my-schema',
+        homepage: 'https://my.activity.homepage.com',
+      },
       { id: 'activity1', name: 'my activity', return: true },
     ]);
     expect<Partial<DebugActivityTask>>(result).toEqual({
@@ -32,7 +36,11 @@ describe('debug-panel.debug-activity-task.combineToDebugActivity', function() {
 
   it('Returns null when activity task is empty', async () => {
     const result = await emitAndCombine([
-      { id: 'my-schema', name: 'my-schema', homepage: 'https://my.activity.homepage.com' },
+      {
+        id: 'my-schema',
+        name: 'my-schema',
+        homepage: 'https://my.activity.homepage.com',
+      },
       null,
     ]);
     expect(result).toBeFalsy();

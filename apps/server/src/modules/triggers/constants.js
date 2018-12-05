@@ -1,4 +1,11 @@
-export const PUBLISH_FIELDS_SHORT = ['id', 'name', 'version', 'title', 'description', 'homepage'];
+export const PUBLISH_FIELDS_SHORT = [
+  'id',
+  'name',
+  'version',
+  'title',
+  'description',
+  'homepage',
+];
 
 // same for now
 export const PUBLISH_FIELDS_LONG = [

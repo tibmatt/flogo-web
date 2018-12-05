@@ -7,7 +7,8 @@ const filterList = (activities, filterText) => {
   if (filterText && !isEmpty(filterText)) {
     return lodashFilter(
       activities,
-      (activity: Activity) => activity.title.toLowerCase().indexOf(filterText.toLowerCase()) >= 0
+      (activity: Activity) =>
+        activity.title.toLowerCase().indexOf(filterText.toLowerCase()) >= 0
     );
   } else {
     return activities;

@@ -38,7 +38,10 @@ export function readJSONFile(JSONPath) {
         }
       });
     } else {
-      console.error("[error][utils.js->readJSONFile] path doesn't exist. path: ", JSONPath);
+      console.error(
+        "[error][utils.js->readJSONFile] path doesn't exist. path: ",
+        JSONPath
+      );
       throw new Error(`Path [${JSONPath}] doesn't exist.`);
     }
   });

@@ -1,9 +1,17 @@
-import { isNaN as isNotaNumber, isBoolean, isPlainObject, isArray, isNumber } from 'lodash';
+import {
+  isNaN as isNotaNumber,
+  isBoolean,
+  isPlainObject,
+  isArray,
+  isNumber,
+} from 'lodash';
 import { ValueType } from '@flogo-web/client/core';
 import { ValidationErrors } from '@angular/forms';
 import { ErrorTypeMismatch, ErrorTypes } from './error-types';
 
-export function getStrictTypeValidator(schemaType: ValueType): (value: any) => (ValidationErrors | null) | null {
+export function getStrictTypeValidator(
+  schemaType: ValueType
+): (value: any) => (ValidationErrors | null) | null {
   switch (schemaType) {
     case ValueType.Integer:
     case ValueType.Long:
@@ -21,12 +29,15 @@ export function getStrictTypeValidator(schemaType: ValueType): (value: any) => (
   return null;
 }
 
-function makeMismatchError(expectedType: ValueType): { [type: string]: ErrorTypeMismatch } {
+function makeMismatchError(
+  expectedType: ValueType
+): { [type: string]: ErrorTypeMismatch } {
   return { [ErrorTypes.TypeMismatch]: { expectedType } };
 }
 
 export function getNumberValidator(expectedType: ValueType) {
-  return value => (isNotaNumber(value) || !isNumber(value) ? makeMismatchError(expectedType) : null);
+  return value =>
+    isNotaNumber(value) || !isNumber(value) ? makeMismatchError(expectedType) : null;
 }
 
 export function booleanValidator(value: any) {

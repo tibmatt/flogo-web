@@ -37,7 +37,8 @@ export function getFunctions() {
             },
           ],
           help: {
-            description: 'Returns the concatenation of the arguments. You can concatenate two or more strings.',
+            description:
+              'Returns the concatenation of the arguments. You can concatenate two or more strings.',
             example: "string.concat('Hello',' ', 'World')\nReturns\nHello World",
             usage: 'string.concat(<< string1 >>, << string2,... >>)\nReturn Type\nstring',
           },
@@ -118,7 +119,8 @@ export function getFunctions() {
             description:
               'Returns a substring starting at the position specified by the second argument. Character positions are numbered from 0.',
             usage: 'string.substring(<<string>>, <<position>>, <<length>>)',
-            example: 'string.substring("Flogo is the most awesome project ever", 18, 7) \nReturns "awesome"',
+            example:
+              'string.substring("Flogo is the most awesome project ever", 18, 7) \nReturns "awesome"',
           },
         },
       },
@@ -136,7 +138,8 @@ export function getFunctions() {
           ],
           return: { type: 'integer' },
           help: {
-            description: 'Generates a pseudo-random integer number between 0 and the specified limit.',
+            description:
+              'Generates a pseudo-random integer number between 0 and the specified limit.',
             usage: 'number.random(<< limit >>)\nReturn Type\nint',
             example: 'number.random(10)\nReturns 9',
           },

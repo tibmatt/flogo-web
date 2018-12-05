@@ -1,6 +1,11 @@
 import { TriggerConfigureState, TriggerConfigureTab } from '@flogo-web/client/flow/core';
 
-const COMPARABLE_PROPERTIES: Array<keyof TriggerConfigureTab> = ['isValid', 'isDirty', 'isEnabled', 'isPending'];
+const COMPARABLE_PROPERTIES: Array<keyof TriggerConfigureTab> = [
+  'isValid',
+  'isDirty',
+  'isEnabled',
+  'isPending',
+];
 function didStateChange(prevTab: TriggerConfigureTab, nextTab: TriggerConfigureTab) {
   // tslint:disable-next-line:triple-equals - we care if values are truthy or falsy, we're okay with non strict equality
   return COMPARABLE_PROPERTIES.some(prop => prevTab[prop] != nextTab[prop]);
@@ -9,7 +14,12 @@ function didStateChange(prevTab: TriggerConfigureTab, nextTab: TriggerConfigureT
 export function tabStatusReducer(
   state: TriggerConfigureState,
   groupId: string,
-  nextStatus: { isValid?: boolean; isDirty?: boolean; isEnabled?: boolean; isPending?: boolean }
+  nextStatus: {
+    isValid?: boolean;
+    isDirty?: boolean;
+    isEnabled?: boolean;
+    isPending?: boolean;
+  }
 ) {
   const prevTab = state.tabs[groupId];
   const nextTab = {

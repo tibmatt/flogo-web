@@ -9,10 +9,17 @@ const filterList = (collection: string[], term: string) => {
   return collection.filter(element => element.toLowerCase().startsWith(term));
 };
 
-export function filterSourceBy(subjectSrc: Observable<Observable<string[]>>, filterTerm$: Observable<string>) {
-  const mapToFiltered = map(([currentInputValue, allowedValues]) => filterList(allowedValues, currentInputValue));
+export function filterSourceBy(
+  subjectSrc: Observable<Observable<string[]>>,
+  filterTerm$: Observable<string>
+) {
+  const mapToFiltered = map(([currentInputValue, allowedValues]) =>
+    filterList(allowedValues, currentInputValue)
+  );
   return filterTerm$.pipe(
-    withLatestFrom(subjectSrc.pipe(switchMap<Observable<any>, any>(newValueSource => newValueSource))),
+    withLatestFrom(
+      subjectSrc.pipe(switchMap<Observable<any>, any>(newValueSource => newValueSource))
+    ),
     mapToFiltered
   );
 }

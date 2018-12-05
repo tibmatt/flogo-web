@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, ViewChild, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+  Output,
+} from '@angular/core';
 import { TriggersApiService } from '@flogo-web/client/core/services';
 import { FlogoProfileService } from '@flogo-web/client/core/services/profile.service';
 import { BsModalComponent } from 'ng2-bs3-modal';
@@ -21,7 +30,10 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   public existingTriggers = [];
   private _isActivated = false;
 
-  constructor(private profileService: FlogoProfileService, private triggersApiService: TriggersApiService) {
+  constructor(
+    private profileService: FlogoProfileService,
+    private triggersApiService: TriggersApiService
+  ) {
     this.displayExisting = true;
   }
 

@@ -14,7 +14,9 @@ export function consolidateFlowsAndTriggers(flowsData = []) {
 
   // same trigger if same ref and same settings
   const findExistingTriggerEntry = trigger =>
-    triggers.find(entry => entry.ref === trigger.ref && isEqual(trigger.settings, entry.settings));
+    triggers.find(
+      entry => entry.ref === trigger.ref && isEqual(trigger.settings, entry.settings)
+    );
 
   flowsData.forEach(flowData => {
     const { trigger, flow } = flowData;

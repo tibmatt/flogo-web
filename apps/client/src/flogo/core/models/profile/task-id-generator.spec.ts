@@ -117,7 +117,11 @@ describe('taskIdGenerator', () => {
   let generatedTaskID;
 
   it('Should generate the task ID for Microservice profile in "ref_num" format', () => {
-    generatedTaskID = taskIdGenerator(FLOGO_PROFILE_TYPE.MICRO_SERVICE, mockTasksAvailable, mockSelectedTask);
+    generatedTaskID = taskIdGenerator(
+      FLOGO_PROFILE_TYPE.MICRO_SERVICE,
+      mockTasksAvailable,
+      mockSelectedTask
+    );
     expect(generatedTaskID).toEqual('counter_2');
   });
 

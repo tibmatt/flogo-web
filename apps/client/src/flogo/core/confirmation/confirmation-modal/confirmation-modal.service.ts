@@ -12,7 +12,10 @@ export class ConfirmationModalService {
 
   openModal({ title, textMessage }) {
     const data = new WeakMap<any, any>();
-    data.set(CONFIRMATION_MODAL_TOKEN, { title, textMessage } as ConfirmationModal);
+    data.set(CONFIRMATION_MODAL_TOKEN, {
+      title,
+      textMessage,
+    } as ConfirmationModal);
     return this.confirmationService.openModal(ConfirmationModalComponent, data);
   }
 }

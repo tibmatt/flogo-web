@@ -55,7 +55,9 @@ describe('Component: FlowsListComponent', () => {
       done();
     });
     fixture.detectChanges();
-    const firstSelectFlowButton = de.queryAll(By.css('.flogo-list__card .flogo-button--secondary'))[0].nativeElement;
+    const firstSelectFlowButton = de.queryAll(
+      By.css('.flogo-list__card .flogo-button--secondary')
+    )[0].nativeElement;
     firstSelectFlowButton.click();
   });
 

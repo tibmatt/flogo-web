@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChange } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnChanges,
+  SimpleChange,
+} from '@angular/core';
 import { FLOGO_INSTALLER_STATUS_INSTALLING } from '../constants';
 
 @Component({

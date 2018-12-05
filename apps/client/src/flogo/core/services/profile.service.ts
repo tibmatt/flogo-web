@@ -1,28 +1,38 @@
 import { Injectable } from '@angular/core';
-import { FLOGO_PROFILE_TYPE, CONTRIB_REF_PLACEHOLDER, FLOGO_CONTRIB_TYPE } from '../constants';
+import {
+  FLOGO_PROFILE_TYPE,
+  CONTRIB_REF_PLACEHOLDER,
+  FLOGO_CONTRIB_TYPE,
+} from '../constants';
 import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
-import { activitySchemaToTask, activitySchemaToTrigger, createSubFlowTask } from '../../shared/utils';
+import {
+  activitySchemaToTask,
+  activitySchemaToTrigger,
+  createSubFlowTask,
+} from '../../shared/utils';
 
 @Injectable()
 export class FlogoProfileService {
   constructor(private contribService: RESTAPIContributionsService) {}
 
   getTriggers(profile) {
-    return this.contribService.listContribs(profile, FLOGO_CONTRIB_TYPE.TRIGGER).then(response => {
-      const data = response || [];
-      return _.map(data, (trigger: any) => {
-        if (profile === FLOGO_PROFILE_TYPE.DEVICE) {
-          trigger.handler = {
-            settings: [],
-          };
-        }
-        return _.assign(activitySchemaToTrigger(trigger), {
-          // TODO fix this installed status.
-          // as of now, whatever can be read from db, should have been installed.
-          installed: true,
+    return this.contribService
+      .listContribs(profile, FLOGO_CONTRIB_TYPE.TRIGGER)
+      .then(response => {
+        const data = response || [];
+        return _.map(data, (trigger: any) => {
+          if (profile === FLOGO_PROFILE_TYPE.DEVICE) {
+            trigger.handler = {
+              settings: [],
+            };
+          }
+          return _.assign(activitySchemaToTrigger(trigger), {
+            // TODO fix this installed status.
+            // as of now, whatever can be read from db, should have been installed.
+            installed: true,
+          });
         });
       });
-    });
   }
 
   /*****

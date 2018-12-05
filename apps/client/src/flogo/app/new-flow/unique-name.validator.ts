@@ -9,7 +9,10 @@ export class UniqueNameValidator {
   }
 }
 
-function createUniqueNameValidator(flowsService: APIFlowsService, appId: string): AsyncValidatorFn {
+function createUniqueNameValidator(
+  flowsService: APIFlowsService,
+  appId: string
+): AsyncValidatorFn {
   return (control: AbstractControl): Observable<any> | Promise<any> => {
     return timer(400).pipe(
       switchMap(() => {

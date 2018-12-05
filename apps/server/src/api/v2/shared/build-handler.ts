@@ -4,7 +4,10 @@ export interface BuildOptions {
   compile: { os?: string; arch?: string };
 }
 
-export type BuilderFn = (ctx: Koa.Context, options: BuildOptions) => Promise<{ fileName: string; content: any }>;
+export type BuilderFn = (
+  ctx: Koa.Context,
+  options: BuildOptions
+) => Promise<{ fileName: string; content: any }>;
 
 export function buildHandler(performBuild: BuilderFn): Koa.Middleware {
   return async function build(context) {

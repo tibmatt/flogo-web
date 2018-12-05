@@ -2,7 +2,11 @@ import { NgModule, ModuleWithProviders, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MonacoEditorComponent } from './monaco-editor.component';
-import { MonacoEditorLoaderService, MonacoEditorLoaderDirective, factory as loaderFactory } from './loader';
+import {
+  MonacoEditorLoaderService,
+  MonacoEditorLoaderDirective,
+  factory as loaderFactory,
+} from './loader';
 
 export interface ModuleConfig {
   pathToMonacoSrc?: string;

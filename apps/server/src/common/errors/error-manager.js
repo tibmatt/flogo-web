@@ -53,7 +53,9 @@ export class ErrorManager {
       params: params || {},
     };
 
-    return ErrorManager.createValidationError('Validation error', { details: [error] });
+    return ErrorManager.createValidationError('Validation error', {
+      details: [error],
+    });
   }
 
   /**
@@ -93,7 +95,11 @@ export class ErrorManager {
       },
       details
     );
-    return ErrorManager.createRestError(message, details, ErrorManager.createRestNotFoundError);
+    return ErrorManager.createRestError(
+      message,
+      details,
+      ErrorManager.createRestNotFoundError
+    );
   }
 
   static validationToRestErrors(validationErrors = []) {

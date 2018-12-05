@@ -23,7 +23,9 @@ import { TASK_HANDLER_NAME_ROOT } from '../constants';
  * @return {boolean}
  */
 export function isMapperActivity(activitySchema) {
-  const hasOutputMapperDefinition = get(activitySchema, 'inputs', []).find(isOutputMapperField);
+  const hasOutputMapperDefinition = get(activitySchema, 'inputs', []).find(
+    isOutputMapperField
+  );
   return Boolean(hasOutputMapperDefinition);
 }
 

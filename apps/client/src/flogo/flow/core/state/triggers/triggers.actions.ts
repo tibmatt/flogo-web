@@ -28,7 +28,12 @@ export class RemoveHandler implements Action {
 
 export class SelectTrigger implements Action {
   readonly type = TriggerActionType.SelectTrigger;
-  constructor(public payload: { triggerId: string; triggerSchemas: Dictionary<TriggerSchema> }) {}
+  constructor(
+    public payload: {
+      triggerId: string;
+      triggerSchemas: Dictionary<TriggerSchema>;
+    }
+  ) {}
 }
 
 export class AddTrigger implements Action {
@@ -38,7 +43,13 @@ export class AddTrigger implements Action {
 
 export class CopyTrigger implements Action {
   readonly type = TriggerActionType.CopyTrigger;
-  constructor(public payload: { copiedTriggerId: string; newTrigger: Trigger; newHandler: TriggerHandler }) {}
+  constructor(
+    public payload: {
+      copiedTriggerId: string;
+      newTrigger: Trigger;
+      newHandler: TriggerHandler;
+    }
+  ) {}
 }
 
 export type TriggerActionsUnion =

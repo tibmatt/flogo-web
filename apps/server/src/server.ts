@@ -9,7 +9,11 @@ import { syncTasks } from './modules/contrib-install-controller/sync-tasks';
 export default ensureDefaultDirs()
   .then(() => initEngine(config.defaultEngine.path))
   .then(() =>
-    createServerApp({ port: config.app.port as string, staticPath: config.publicPath, logsRoot: config.localPath })
+    createServerApp({
+      port: config.app.port as string,
+      staticPath: config.publicPath,
+      logsRoot: config.localPath,
+    })
   )
   .then(newServer => initWebSocketApi(newServer))
   .then(() => {

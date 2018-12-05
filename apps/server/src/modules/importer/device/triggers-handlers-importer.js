@@ -40,6 +40,9 @@ export class TriggersHandlersImporter extends AbstractTriggersHandlersImporter {
   }
 
   getSettingsSchema(triggerRef) {
-    return this.triggerSchemas.find(triggerSchema => triggerSchema.ref === triggerRef).settings || [];
+    return (
+      this.triggerSchemas.find(triggerSchema => triggerSchema.ref === triggerRef)
+        .settings || []
+    );
   }
 }

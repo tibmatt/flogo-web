@@ -68,7 +68,10 @@ describe('FlogoAppList component', () => {
         { provide: ProfilesAPIService, useClass: MockProfilesAPIService },
         { provide: ErrorService, useClass: ErrorService },
         { provide: AppsApiService, useClass: AppsApiServiceMock },
-        { provide: NotificationsService, useValue: new NotificationsServiceMock() },
+        {
+          provide: NotificationsService,
+          useValue: new NotificationsServiceMock(),
+        },
       ],
     });
     return TestBed.compileComponents();
@@ -98,7 +101,9 @@ describe('FlogoAppList component', () => {
       },
     ];
     fixture.detectChanges();
-    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.qa-app-name'));
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(
+      By.css('.qa-app-name')
+    );
     el = res[0].nativeElement;
     expect(el.innerText.trim()).toEqual('Sample Application');
   });

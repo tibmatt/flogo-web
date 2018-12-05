@@ -16,7 +16,11 @@ import { SingleEmissionSubject } from '../shared/single-emission-subject';
 
 import { MapperState } from '../models';
 import { MapperService } from '../services/mapper.service';
-import { selectCurrentEditingExpression, selectedInputKey, getCurrentNodeValueHints } from '../services/selectors';
+import {
+  selectCurrentEditingExpression,
+  selectedInputKey,
+  getCurrentNodeValueHints,
+} from '../services/selectors';
 import { EditorService, InsertEvent } from './editor.service';
 
 function distinctAndDebounce(obs) {
@@ -44,24 +48,35 @@ export class EditorComponent implements OnInit, OnDestroy {
   private currentMapKey: string;
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
 
-  constructor(private editorService: EditorService, private mapperService: MapperService) {}
+  constructor(
+    private editorService: EditorService,
+    private mapperService: MapperService
+  ) {}
 
   ngOnInit() {
     const mapperState$ = this.mapperService.state$.pipe(shareReplay());
     this.setupExternalModelChanges(mapperState$);
 
     const editorContext$ = mapperState$.pipe(selectedInputKey);
-    this.valueHints$ = this.createHintsStream(editorContext$, mapperState$.pipe(getCurrentNodeValueHints));
+    this.valueHints$ = this.createHintsStream(
+      editorContext$,
+      mapperState$.pipe(getCurrentNodeValueHints)
+    );
     this.subscribeToValueChanges(editorContext$);
 
-    this.editorService.insert$.pipe(takeUntil(this.ngDestroy)).subscribe((event: InsertEvent) => {
-      if (event.replaceTokenAtPosition) {
-        this.editor.replaceTokenAtClientPosition(event.text, event.replaceTokenAtPosition);
-      } else {
-        this.editor.insert(event.text);
-      }
-      this.editor.focus();
-    });
+    this.editorService.insert$
+      .pipe(takeUntil(this.ngDestroy))
+      .subscribe((event: InsertEvent) => {
+        if (event.replaceTokenAtPosition) {
+          this.editor.replaceTokenAtClientPosition(
+            event.text,
+            event.replaceTokenAtPosition
+          );
+        } else {
+          this.editor.insert(event.text);
+        }
+        this.editor.focus();
+      });
 
     this.editorService.dragOver$.pipe(takeUntil(this.ngDestroy)).subscribe(position => {
       this.editor.selectTokenAtClientPosition(position);
@@ -112,10 +127,18 @@ export class EditorComponent implements OnInit, OnDestroy {
       });
   }
 
-  private createHintsStream(editorContext$, currentNodeValueHints$: Observable<null | any[]>) {
+  private createHintsStream(
+    editorContext$,
+    currentNodeValueHints$: Observable<null | any[]>
+  ) {
     const hasValues = a => a && a.length >= 0;
     const nodeHintsToEditorHints = nodeHints =>
-      hasValues(nodeHints) ? nodeHints.map(value => ({ label: value, value: JSON.stringify(value) })) : [];
+      hasValues(nodeHints)
+        ? nodeHints.map(value => ({
+            label: value,
+            value: JSON.stringify(value),
+          }))
+        : [];
     return this.editor.ready.pipe(
       switchMap(() => editorContext$),
       switchMap(() =>

@@ -1,10 +1,22 @@
 import { isEqual } from 'lodash';
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, ElementRef } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  ElementRef,
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { TriggerInformation } from '../../interfaces';
 import { ConfirmationService, ConfirmationResult } from '@flogo-web/client/core';
-import { ConfirmEditionComponent, EDITION_DATA_TOKEN, EditionData } from './confirm-edition/confirm-edition.component';
+import {
+  ConfirmEditionComponent,
+  EDITION_DATA_TOKEN,
+  EditionData,
+} from './confirm-edition/confirm-edition.component';
 
 const COMMON_FIELDS_TO_ENABLE = ['name', 'description', 'triggerSettings'];
 
@@ -54,12 +66,16 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
 
   onEnableSettings(ref: ElementRef) {
     const data = new WeakMap<any, any>();
-    data.set(EDITION_DATA_TOKEN, { flowCount: this.triggerInformation.trigger.handlersCount } as EditionData);
-    this.confirmationService.openPopover(ref, ConfirmEditionComponent, data).result.subscribe(result => {
-      if (result === ConfirmationResult.Confirm) {
-        this.enableAllSettings();
-      }
-    });
+    data.set(EDITION_DATA_TOKEN, {
+      flowCount: this.triggerInformation.trigger.handlersCount,
+    } as EditionData);
+    this.confirmationService
+      .openPopover(ref, ConfirmEditionComponent, data)
+      .result.subscribe(result => {
+        if (result === ConfirmationResult.Confirm) {
+          this.enableAllSettings();
+        }
+      });
   }
 
   enableAllSettings() {

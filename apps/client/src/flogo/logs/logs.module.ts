@@ -11,7 +11,12 @@ import { ExternalWindowComponent } from './external-window/external-window.compo
     // module dependencies
     SharedModule,
   ],
-  declarations: [SearchPipe, LogsComponent, LogsContentComponent, ExternalWindowComponent],
+  declarations: [
+    SearchPipe,
+    LogsComponent,
+    LogsContentComponent,
+    ExternalWindowComponent,
+  ],
   exports: [LogsComponent, ExternalWindowComponent],
 })
 export class LogsModule {}

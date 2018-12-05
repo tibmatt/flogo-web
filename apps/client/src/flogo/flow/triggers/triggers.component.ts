@@ -5,9 +5,17 @@ import { from } from 'rxjs';
 import { takeUntil, mergeMap, reduce } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
-import { LanguageService, FlowMetadata, TriggerSchema, Dictionary } from '@flogo-web/client/core';
+import {
+  LanguageService,
+  FlowMetadata,
+  TriggerSchema,
+  Dictionary,
+} from '@flogo-web/client/core';
 import { TriggersApiService } from '@flogo-web/client/core/services';
-import { FLOGO_PROFILE_TYPE, TRIGGER_MENU_OPERATION } from '@flogo-web/client/core/constants';
+import {
+  FLOGO_PROFILE_TYPE,
+  TRIGGER_MENU_OPERATION,
+} from '@flogo-web/client/core/constants';
 import { objectFromArray } from '@flogo-web/client/shared/utils';
 import { RESTAPIHandlersService } from '@flogo-web/client/core/services/restapi/v2/handlers-api.service';
 
@@ -30,7 +38,11 @@ import * as TriggerConfigureActions from '../core/state/triggers-configure/trigg
 })
 export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   actionId: string;
-  appDetails: { appId: string; appProfileType: FLOGO_PROFILE_TYPE; metadata?: FlowMetadata };
+  appDetails: {
+    appId: string;
+    appProfileType: FLOGO_PROFILE_TYPE;
+    metadata?: FlowMetadata;
+  };
   triggersList: RenderableTrigger[] = [];
   allowMultipleTriggers = true;
   currentTrigger: RenderableTrigger;

@@ -41,12 +41,20 @@ export class ConfiguratorService {
     return this.store.pipe(
       select(TriggerConfigureSelectors.getSaveInfo),
       take(1),
-      tap(({ triggerId }) => this.store.dispatch(new TriggerConfigureActions.SaveTriggerStarted({ triggerId }))),
+      tap(({ triggerId }) =>
+        this.store.dispatch(new TriggerConfigureActions.SaveTriggerStarted({ triggerId }))
+      ),
       mergeMap(({ triggerId, actionId, handler }) => {
         return forkJoin(
           this.saveTriggerSettings(triggerId, saveParams.settings),
           this.saveHandlerSettings({ triggerId, actionId }, handler, saveParams)
-        ).pipe(tap(() => this.store.dispatch(new TriggerConfigureActions.SaveTriggerCompleted({ triggerId }))));
+        ).pipe(
+          tap(() =>
+            this.store.dispatch(
+              new TriggerConfigureActions.SaveTriggerCompleted({ triggerId })
+            )
+          )
+        );
       })
     );
   }
@@ -58,14 +66,16 @@ export class ConfiguratorService {
   ) {
     const changes = extractHandlerChanges(currentHandler, saveParams);
     if (changes) {
-      return this.handlersService.updateHandler(triggerId, actionId, changes).then(updatedHandler => {
-        this.store.dispatch(
-          new TriggerActions.UpdateHandler({
-            triggerId,
-            handler: { triggerId, ...updatedHandler },
-          })
-        );
-      });
+      return this.handlersService
+        .updateHandler(triggerId, actionId, changes)
+        .then(updatedHandler => {
+          this.store.dispatch(
+            new TriggerActions.UpdateHandler({
+              triggerId,
+              handler: { triggerId, ...updatedHandler },
+            })
+          );
+        });
     }
     return observableOf(null);
   }
@@ -73,9 +83,11 @@ export class ConfiguratorService {
   private saveTriggerSettings(triggerId: string, allSettingsForm: FormGroup) {
     const changes = extractTriggerChanges(allSettingsForm);
     if (changes) {
-      return this.triggerService.updateTrigger(triggerId, changes).then(updatedTrigger => {
-        this.store.dispatch(new TriggerActions.UpdateTrigger(updatedTrigger));
-      });
+      return this.triggerService
+        .updateTrigger(triggerId, changes)
+        .then(updatedTrigger => {
+          this.store.dispatch(new TriggerActions.UpdateTrigger(updatedTrigger));
+        });
     }
     return observableOf(null);
   }

@@ -68,7 +68,10 @@ export const execController = {
                   reject(new Error(killErr));
                   return;
                 }
-                console.log('[info] Stop engine Process %s has been killed!', process.pid);
+                console.log(
+                  '[info] Stop engine Process %s has been killed!',
+                  process.pid
+                );
                 resolve(true);
               }
             );

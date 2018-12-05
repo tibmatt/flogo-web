@@ -11,7 +11,10 @@ const BaseCstVisitor = parserInstance.getBaseCstVisitorConstructor();
 const AstCreator = astCreatorFactory(BaseCstVisitor);
 
 export type StartingRuleName = 'mappingExpression' | 'resolver';
-export function parse(text, startingRule: StartingRuleName = 'mappingExpression'): ParseResult {
+export function parse(
+  text,
+  startingRule: StartingRuleName = 'mappingExpression'
+): ParseResult {
   const lexResult = lexer.tokenize(text);
   // setting a new input will RESET the parser instance's state.
   parserInstance.input = lexResult.tokens;

@@ -324,7 +324,11 @@ export interface ILocatable {
 }
 
 export abstract class BaseNode implements INode {
-  constructor(private name: string, private parentNode: INode, private location?: ILocation) {}
+  constructor(
+    private name: string,
+    private parentNode: INode,
+    private location?: ILocation
+  ) {}
 
   getName() {
     return this.name;
@@ -409,7 +413,8 @@ export class ArgumentNode implements INode {
   }
 }
 
-export class CallExpressionNode extends BaseExpressionNode implements ICallExpressionNode {
+export class CallExpressionNode extends BaseExpressionNode
+  implements ICallExpressionNode {
   expression: INode;
 
   constructor(private callee: any, private args: any, parentNode: INode) {
@@ -472,7 +477,8 @@ export class CallExpressionNode extends BaseExpressionNode implements ICallExpre
   }
 }
 
-export class MemberExpressionNode extends BaseExpressionNode implements IMemberExpressionNode {
+export class MemberExpressionNode extends BaseExpressionNode
+  implements IMemberExpressionNode {
   expression: INode;
 
   constructor(
@@ -596,7 +602,13 @@ export class NodeFactory {
     } else if (obj.type === 'Argument') {
       return new ArgumentNode(obj.arg, parent);
     } else if (obj.type === 'MemberExpression') {
-      return new MemberExpressionNode(obj.object, obj.property, obj.computed, parent, obj.location);
+      return new MemberExpressionNode(
+        obj.object,
+        obj.property,
+        obj.computed,
+        parent,
+        obj.location
+      );
     } else if (obj.type === 'Identifier') {
       return new IdentifierNode(obj.name, parent, obj.location);
     } else if (obj.type === 'Literal') {
@@ -687,7 +699,9 @@ export class CodeVisitor extends NodeVisitor {
   }
 
   visitEnterMemberExpression(node: MemberExpressionNode) {
-    console.log('Enter Member Expression...' + node.getName() + '  ' + node.getMemberExpression());
+    console.log(
+      'Enter Member Expression...' + node.getName() + '  ' + node.getMemberExpression()
+    );
     // console.log(node);
   }
 

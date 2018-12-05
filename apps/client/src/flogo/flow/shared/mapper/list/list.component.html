@@ -11,8 +11,14 @@
     <use fgMapperInlineHref="#flogo-mapper-icon-search"></use>
   </svg>
   <!-- todo: should be a button -->
-  <span [hidden]="!searchTerm" (click)="clearSearch()" class="search__command search__command--active">
-    <svg class="flogo-mapper-icon search__command"><use fgMapperInlineHref="#flogo-mapper-icon-close"></use></svg>
+  <span
+    [hidden]="!searchTerm"
+    (click)="clearSearch()"
+    class="search__command search__command--active"
+  >
+    <svg class="flogo-mapper-icon search__command">
+      <use fgMapperInlineHref="#flogo-mapper-icon-close"></use>
+    </svg>
   </span>
 </div>
 

@@ -19,10 +19,15 @@ const applyChanges = (graph: FlowGraph, nodeChanges: Dictionary<GraphNode>) => {
 };
 
 function hasExecutedNodes(nodes: Dictionary<GraphNode>) {
-  return nodes && !!Object.values(nodes).find(node => node.status && node.status.executed);
+  return (
+    nodes && !!Object.values(nodes).find(node => node.status && node.status.executed)
+  );
 }
 
-export function executionUpdate(state: FlowState, { changes }: PayloadOf<ExecutionStateUpdated>) {
+export function executionUpdate(
+  state: FlowState,
+  { changes }: PayloadOf<ExecutionStateUpdated>
+) {
   return {
     ...state,
     mainGraph: applyChanges(state.mainGraph, changes.mainGraphNodes),

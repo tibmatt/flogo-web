@@ -34,6 +34,8 @@ export class FlogoAppComponent implements OnInit {
       }
     );
 
-    this.activatedRoute.queryParams.subscribe((params: Params) => (this.showNav = !params['nonav']));
+    this.activatedRoute.queryParams.subscribe(
+      (params: Params) => (this.showNav = !params['nonav'])
+    );
   }
 }

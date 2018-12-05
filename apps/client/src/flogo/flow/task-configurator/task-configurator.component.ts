@@ -6,16 +6,34 @@ import { Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 import { ActivitySchema, Task } from '@flogo-web/client/core/interfaces';
-import { mergeItemWithSchema, SingleEmissionSubject } from '@flogo-web/client/core/models';
+import {
+  mergeItemWithSchema,
+  SingleEmissionSubject,
+} from '@flogo-web/client/core/models';
 import { NotificationsService } from '@flogo-web/client/core/notifications';
 
-import { MapperTranslator, MapperControllerFactory, MapperController } from '../shared/mapper';
+import {
+  MapperTranslator,
+  MapperControllerFactory,
+  MapperController,
+} from '../shared/mapper';
 
 import { FlogoFlowService as FlowsService } from '@flogo-web/client/flow/core';
 import { Tabs } from '../shared/tabs/models/tabs.model';
 import { SubFlowConfig } from './subflow-config';
-import { isIterableTask, isMapperActivity, isSubflowTask } from '@flogo-web/client/shared/utils';
-import { ActionBase, FLOGO_TASK_TYPE, Item, ItemActivityTask, ItemSubflow, ItemTask } from '@flogo-web/client/core';
+import {
+  isIterableTask,
+  isMapperActivity,
+  isSubflowTask,
+} from '@flogo-web/client/shared/utils';
+import {
+  ActionBase,
+  FLOGO_TASK_TYPE,
+  Item,
+  ItemActivityTask,
+  ItemSubflow,
+  ItemTask,
+} from '@flogo-web/client/core';
 import {
   createIteratorMappingContext,
   getIteratorOutputSchema,
@@ -23,7 +41,10 @@ import {
   ITERATOR_OUTPUT_KEY,
 } from './models';
 import { FlowState, FlowActions } from '@flogo-web/client/flow/core/state';
-import { getFlowMetadata, getInputContext } from '@flogo-web/client/flow/core/models/task-configure/get-input-context';
+import {
+  getFlowMetadata,
+  getInputContext,
+} from '@flogo-web/client/flow/core/models/task-configure/get-input-context';
 import { getStateWhenConfigureChanges } from '../shared/configurator/configurator.selector';
 import { createSaveAction } from '@flogo-web/client/flow/task-configurator/models/save-action-creator';
 import { hasTaskWithSameName } from '@flogo-web/client/flow/core/models/unique-task-name';
@@ -34,9 +55,18 @@ const TASK_TABS = {
   ITERATOR: 'iterator',
   INPUT_MAPPINGS: 'inputMappings',
 };
-const ITERATOR_TAB_INFO = { name: TASK_TABS.ITERATOR, labelKey: 'TASK-CONFIGURATOR:TABS:ITERATOR' };
-const SUBFLOW_TAB_INFO = { name: TASK_TABS.SUBFLOW, labelKey: 'TASK-CONFIGURATOR:TABS:SUB-FLOW' };
-const MAPPINGS_TAB_INFO = { name: TASK_TABS.INPUT_MAPPINGS, labelKey: 'TASK-CONFIGURATOR:TABS:MAP-INPUTS' };
+const ITERATOR_TAB_INFO = {
+  name: TASK_TABS.ITERATOR,
+  labelKey: 'TASK-CONFIGURATOR:TABS:ITERATOR',
+};
+const SUBFLOW_TAB_INFO = {
+  name: TASK_TABS.SUBFLOW,
+  labelKey: 'TASK-CONFIGURATOR:TABS:SUB-FLOW',
+};
+const MAPPINGS_TAB_INFO = {
+  name: TASK_TABS.INPUT_MAPPINGS,
+  labelKey: 'TASK-CONFIGURATOR:TABS:MAP-INPUTS',
+};
 
 @Component({
   selector: 'flogo-flow-task-configurator',
@@ -44,8 +74,13 @@ const MAPPINGS_TAB_INFO = { name: TASK_TABS.INPUT_MAPPINGS, labelKey: 'TASK-CONF
   templateUrl: 'task-configurator.component.html',
   animations: [
     trigger('dialog', [
-      transition('void => *', [style({ transform: 'translateY(-100%)', opacity: 0 }), animate('250ms ease-in')]),
-      transition('* => void', [animate('250ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 }))]),
+      transition('void => *', [
+        style({ transform: 'translateY(-100%)', opacity: 0 }),
+        animate('250ms ease-in'),
+      ]),
+      transition('* => void', [
+        animate('250ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 })),
+      ]),
     ]),
   ],
 })
@@ -123,7 +158,8 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   selectSubFlow() {
     this._flowService.listFlowsForApp(this.appId).then(flows => {
       this.subflowList = flows.filter(
-        flow => !(flow.id === this.actionId || flow.id === this.currentTile.settings.flowPath)
+        flow =>
+          !(flow.id === this.actionId || flow.id === this.currentTile.settings.flowPath)
       );
       this.showSubflowList = true;
     });
@@ -165,7 +201,9 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
         isIterable,
         iterableValue: isIterable ? this.iterableValue : undefined,
       },
-      inputMappings: MapperTranslator.translateMappingsOut(this.inputMapperController.getCurrentState().mappings),
+      inputMappings: MapperTranslator.translateMappingsOut(
+        this.inputMapperController.getCurrentState().mappings
+      ),
     }).subscribe(action => {
       this.store.dispatch(action);
     });
@@ -191,7 +229,11 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   changeTaskDetail(content, property) {
     this.isTaskDetailEdited = true;
     if (property === 'name') {
-      const repeatedName = hasTaskWithSameName(content, this.flowState.mainItems, this.flowState.errorItems);
+      const repeatedName = hasTaskWithSameName(
+        content,
+        this.flowState.mainItems,
+        this.flowState.errorItems
+      );
       if ((repeatedName && content !== this.currentTile.name) || content === '') {
         this.isValidTaskName = false;
       } else {
@@ -202,7 +244,9 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   private onIteratorValueChange(newValue: string, isValid: boolean) {
-    this.tabs.get(TASK_TABS.ITERATOR).isValid = MapperTranslator.isValidExpression(newValue);
+    this.tabs.get(TASK_TABS.ITERATOR).isValid = MapperTranslator.isValidExpression(
+      newValue
+    );
     this.iterableValue = newValue;
     this.checkIsIteratorDirty();
   }
@@ -218,14 +262,17 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     if (this.initialIteratorData.iteratorModeOn && !this.iteratorModeOn) {
       isDirty = true;
     } else {
-      isDirty = this.iteratorModeOn && this.iterableValue !== this.initialIteratorData.iterableValue;
+      isDirty =
+        this.iteratorModeOn &&
+        this.iterableValue !== this.initialIteratorData.iterableValue;
     }
     iteratorTab.isDirty = isDirty;
   }
 
   private configureOutputMapperLabels() {
     this.inputsSearchPlaceholderKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
-    this.tabs.get(TASK_TABS.INPUT_MAPPINGS).labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
+    this.tabs.get(TASK_TABS.INPUT_MAPPINGS).labelKey =
+      'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
   }
 
   private initConfigurator(state: FlowState) {
@@ -234,8 +281,11 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     this.ensurePreviousContextCleanup();
     this.contextChange$ = SingleEmissionSubject.create();
 
-    const selectedItem = <ItemTask>cloneDeep(state.mainItems[itemId] || state.errorItems[itemId]);
-    const activitySchema: ActivitySchema = (state.schemas[selectedItem.ref] || {}) as ActivitySchema;
+    const selectedItem = <ItemTask>(
+      cloneDeep(state.mainItems[itemId] || state.errorItems[itemId])
+    );
+    const activitySchema: ActivitySchema = (state.schemas[selectedItem.ref] ||
+      {}) as ActivitySchema;
     this.activitySchemaUrl = activitySchema.homepage;
     this.currentTile = mergeItemWithSchema(selectedItem, activitySchema);
 
@@ -255,7 +305,9 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
         this.actionId = state.id;
         this.createSubflowConfig(subflowSchema);
       } else {
-        return this.notificationsService.error({ key: 'SUBFLOW:REFERENCE-ERROR-TEXT' });
+        return this.notificationsService.error({
+          key: 'SUBFLOW:REFERENCE-ERROR-TEXT',
+        });
       }
     }
 
@@ -276,12 +328,14 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     }
 
     if (this.iteratorController) {
-      this.iteratorController.state$.pipe(takeUntil(this.contextChange$)).subscribe(mapperState => {
-        const iterableMapping = mapperState.mappings[ITERABLE_VALUE_KEY];
-        if (iterableMapping) {
-          this.onIteratorValueChange(iterableMapping.expression, mapperState.isValid);
-        }
-      });
+      this.iteratorController.state$
+        .pipe(takeUntil(this.contextChange$))
+        .subscribe(mapperState => {
+          const iterableMapping = mapperState.mappings[ITERABLE_VALUE_KEY];
+          if (iterableMapping) {
+            this.onIteratorValueChange(iterableMapping.expression, mapperState.isValid);
+          }
+        });
     }
     this.open();
   }
@@ -295,7 +349,9 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   private enableIteratorInInputMapper() {
-    const iteratorNode = this.mapperControllerFactory.createNodeFromSchema(getIteratorOutputSchema());
+    const iteratorNode = this.mapperControllerFactory.createNodeFromSchema(
+      getIteratorOutputSchema()
+    );
     this.inputMapperController.appendOutputNode(iteratorNode);
   }
 
@@ -311,12 +367,15 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       return;
     }
     this.iteratorModeOn = isIterableTask(selectedItem);
-    this.iterableValue = taskSettings && taskSettings.iterate ? taskSettings.iterate : null;
+    this.iterableValue =
+      taskSettings && taskSettings.iterate ? taskSettings.iterate : null;
     this.initialIteratorData = {
       iteratorModeOn: this.iteratorModeOn,
       iterableValue: this.iterableValue,
     };
-    const iterableValue = MapperTranslator.rawExpressionToString(this.iterableValue || '');
+    const iterableValue = MapperTranslator.rawExpressionToString(
+      this.iterableValue || ''
+    );
     const iteratorContext = createIteratorMappingContext(iterableValue);
     this.iteratorController = this.mapperControllerFactory.createController(
       iteratorContext.inputContext,
@@ -356,7 +415,11 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     if (this.inputMapperStateSubscription && !this.inputMapperStateSubscription.closed) {
       this.inputMapperStateSubscription.unsubscribe();
     }
-    this.inputMapperController = this.mapperControllerFactory.createController(propsToMap, inputScope, mappings);
+    this.inputMapperController = this.mapperControllerFactory.createController(
+      propsToMap,
+      inputScope,
+      mappings
+    );
     this.inputMapperStateSubscription = this.inputMapperController.status$
       .pipe(
         skip(1),

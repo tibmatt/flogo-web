@@ -9,7 +9,9 @@ export function calculateNextId(items: any, parseInput?) {
     _.filter(ids, (id: string) => {
       const type = items[id].type;
       return (
-        type === FLOGO_TASK_TYPE.TASK || type === FLOGO_TASK_TYPE.TASK_ROOT || type === FLOGO_TASK_TYPE.TASK_SUB_PROC
+        type === FLOGO_TASK_TYPE.TASK ||
+        type === FLOGO_TASK_TYPE.TASK_ROOT ||
+        type === FLOGO_TASK_TYPE.TASK_SUB_PROC
       );
     }),
     (id: string) => {

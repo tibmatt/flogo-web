@@ -271,7 +271,8 @@ export let mockActivitiesDetails = [
     version: '0.0.1',
     description: 'Simple Global Counter Activity',
     ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-    homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+    homepage:
+      'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
     inputs: [
       {
         name: 'counterName',
@@ -560,7 +561,8 @@ export const mockResultantUIFlow = {
       version: '0.0.1',
       description: 'Simple Global Counter Activity',
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+      homepage:
+        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
       inputs: [
         {
           name: 'counterName',
@@ -893,7 +895,8 @@ export const mockResultantUIFlowWithError = {
       version: '0.0.1',
       description: 'Simple Global Counter Activity',
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+      homepage:
+        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
       inputs: [
         {
           name: 'counterName',
@@ -1193,7 +1196,8 @@ export let mockResultantUIFlowWithTransformations = {
       version: '0.0.1',
       description: 'Simple Global Counter Activity',
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+      homepage:
+        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
       inputs: [
         {
           name: 'counterName',

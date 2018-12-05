@@ -14,7 +14,12 @@ export enum TriggerConfigureActionType {
 
 export class OpenConfigureWithSelection implements Action {
   readonly type = TriggerConfigureActionType.OpenConfigureWithSelection;
-  constructor(public payload: { triggerId: string; triggerSchemas: Dictionary<TriggerSchema> }) {}
+  constructor(
+    public payload: {
+      triggerId: string;
+      triggerSchemas: Dictionary<TriggerSchema>;
+    }
+  ) {}
 }
 
 export class CloseConfigure implements Action {
@@ -37,7 +42,12 @@ export class ConfigureStatusChanged implements Action {
     public payload: {
       triggerId: string;
       groupType: TriggerConfigureTabType;
-      newStatus: { isValid: boolean; isDirty: boolean; isEnabled?: boolean; isPending?: boolean };
+      newStatus: {
+        isValid: boolean;
+        isDirty: boolean;
+        isEnabled?: boolean;
+        isPending?: boolean;
+      };
     }
   ) {}
 }

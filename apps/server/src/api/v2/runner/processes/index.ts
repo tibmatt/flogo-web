@@ -21,7 +21,9 @@ export function createProcessesRouter(createRouter): Router {
   });
 
   processes.get('/processes/:processId', async (ctx: Context) => {
-    const response = await Services.flowsServer.client.get(`/flows/${ctx.params.processId}`);
+    const response = await Services.flowsServer.client.get(
+      `/flows/${ctx.params.processId}`
+    );
     ctx.body = response.body;
   });
 

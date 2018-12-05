@@ -9,7 +9,10 @@ describe('Service: ImportErrorFormatterService', function(this: {
   mockTranslateService: LanguageService;
 }) {
   beforeEach(() => {
-    this.mockTranslateService = jasmine.createSpyObj<LanguageService>('translateService', ['instant']);
+    this.mockTranslateService = jasmine.createSpyObj<LanguageService>(
+      'translateService',
+      ['instant']
+    );
     this.service = new ImportErrorFormatterService(this.mockTranslateService);
   });
 
@@ -18,7 +21,9 @@ describe('Service: ImportErrorFormatterService', function(this: {
     spyTranslateService.and.callFake(function(key) {
       return key;
     });
-    const errorLabel = this.service.formatMessageHeader(mockImportErrorResponse[0].meta.details[0].keyword);
+    const errorLabel = this.service.formatMessageHeader(
+      mockImportErrorResponse[0].meta.details[0].keyword
+    );
     expect(errorLabel).toEqual('IMPORT-ERROR:TYPE_MISMATCH');
   });
 
@@ -27,7 +32,9 @@ describe('Service: ImportErrorFormatterService', function(this: {
     spyTranslateService.and.callFake(function(key) {
       return key;
     });
-    const errorLabel = this.service.formatErrorMessage(mockImportErrorResponse[0].meta.details[2]);
+    const errorLabel = this.service.formatErrorMessage(
+      mockImportErrorResponse[0].meta.details[2]
+    );
     expect(errorLabel).toEqual('IMPORT-ERROR:ACTIVITY_MISSING_CONTENT');
   });
 

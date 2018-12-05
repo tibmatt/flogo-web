@@ -57,7 +57,8 @@ export class FlogoProfileServiceMock {
         version: '0.0.1',
         title: 'Receive MQTT Message',
         description: 'Simple MQTT Trigger',
-        homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/mqtt',
+        homepage:
+          'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/mqtt',
         ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt',
         settings: [
           {
@@ -114,7 +115,8 @@ export class FlogoProfileServiceMock {
         version: '0.0.1',
         title: 'Receive HTTP Message',
         description: 'Simple REST Trigger',
-        homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
+        homepage:
+          'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
         ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
         settings: [
           {
@@ -171,7 +173,8 @@ export class FlogoProfileServiceMock {
         version: '0.0.1',
         title: 'Timer',
         description: 'Simple Timer trigger',
-        homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer',
+        homepage:
+          'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer',
         ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/timer',
         settings: [],
         outputs: [

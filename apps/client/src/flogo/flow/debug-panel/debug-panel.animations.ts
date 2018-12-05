@@ -27,7 +27,10 @@ export const debugPanelAnimations: {
   wrappedContent: trigger('wrappedContentState', [
     state('open', style({ 'margin-bottom': '40vh' })),
     state('closed', style({ 'margin-bottom': 0 })),
-    transition('open => closed', animate(`${CLOSE_WRAPPER_ANIMATION_DURATION}ms cubic-bezier(0.25, 0.8, 0.25, 1)`)),
+    transition(
+      'open => closed',
+      animate(`${CLOSE_WRAPPER_ANIMATION_DURATION}ms cubic-bezier(0.25, 0.8, 0.25, 1)`)
+    ),
     transition('closed => open', animate(`300ms 100ms cubic-bezier(0.25, 0.8, 0.25, 1)`)),
   ]),
   panelContainer: trigger('debugPanelContainerState', [
@@ -47,10 +50,16 @@ export const debugPanelAnimations: {
     ),
     transition('closed => open', [
       group([
-        animate(`${OPEN_DELAY} cubic-bezier(0.25, 0.8, 0.25, 1)`, style({ transform: 'translate3d(0, 0, 0)' })),
+        animate(
+          `${OPEN_DELAY} cubic-bezier(0.25, 0.8, 0.25, 1)`,
+          style({ transform: 'translate3d(0, 0, 0)' })
+        ),
         query('@debugPanelState', animateChild()),
       ]),
-      animate(`${OPEN_DELAY} cubic-bezier(0.25, 0.8, 0.25, 1)`, style({ transform: 'translate3d(0, 0, 0)' })),
+      animate(
+        `${OPEN_DELAY} cubic-bezier(0.25, 0.8, 0.25, 1)`,
+        style({ transform: 'translate3d(0, 0, 0)' })
+      ),
     ]),
     transition('open => closed', [
       group([
@@ -85,7 +94,13 @@ export const debugPanelAnimations: {
       query('.js-debug-panel-content', animate('100ms', style({ opacity: 1 }))),
     ]),
     transition('open => *', [
-      style({ overflow: 'hidden', height: OPENED_HEIGHT, width: '*', transform: '*', opacity: 1 }),
+      style({
+        overflow: 'hidden',
+        height: OPENED_HEIGHT,
+        width: '*',
+        transform: '*',
+        opacity: 1,
+      }),
       query('.js-debug-panel-content', animate('100ms', style({ opacity: 0 }))),
       group([
         animate(

@@ -1,4 +1,7 @@
-import { actionHasSubflowTasks, forEachSubflowTaskInAction } from '../../../common/utils/subflow';
+import {
+  actionHasSubflowTasks,
+  forEachSubflowTaskInAction,
+} from '../../../common/utils/subflow';
 import { actionValueTypesNormalizer } from './action-value-type-normalizer';
 import { taskAttributesToMappingsUnifier } from './task-attributes-to-mappings-unifier';
 

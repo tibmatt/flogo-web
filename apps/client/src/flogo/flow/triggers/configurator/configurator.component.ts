@@ -39,16 +39,22 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.isConfiguratorInitialized$ = this.store.pipe(select(TriggerConfigureSelectors.getHasTriggersConfigure));
-    const triggerStatuses$ = this.store.pipe(select(TriggerConfigureSelectors.getTriggerStatuses));
+    this.isConfiguratorInitialized$ = this.store.pipe(
+      select(TriggerConfigureSelectors.getHasTriggersConfigure)
+    );
+    const triggerStatuses$ = this.store.pipe(
+      select(TriggerConfigureSelectors.getTriggerStatuses)
+    );
     this.triggerStatuses$ = this.observeWhileConfiguratorIsActive(triggerStatuses$, []);
 
-    this.isConfiguratorInitialized$.pipe(takeUntil(this.ngDestroy$)).subscribe(isConfigInitialized => {
-      this.isOpen = isConfigInitialized;
-      if (this.isOpen) {
-        this.triggerConfiguratorService.clear();
-      }
-    });
+    this.isConfiguratorInitialized$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe(isConfigInitialized => {
+        this.isOpen = isConfigInitialized;
+        if (this.isOpen) {
+          this.triggerConfiguratorService.clear();
+        }
+      });
 
     this.store
       .pipe(
@@ -59,14 +65,19 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
         this.currentTriggerDetailStatus = status;
       });
 
-    const currentTriggerId$ = this.store.pipe(select(TriggerConfigureSelectors.selectCurrentTriggerId));
-    this.observeWhileConfiguratorIsActive(currentTriggerId$, null).subscribe(currentTriggerId => {
-      this.selectedTriggerId = currentTriggerId;
-    });
+    const currentTriggerId$ = this.store.pipe(
+      select(TriggerConfigureSelectors.selectCurrentTriggerId)
+    );
+    this.observeWhileConfiguratorIsActive(currentTriggerId$, null).subscribe(
+      currentTriggerId => {
+        this.selectedTriggerId = currentTriggerId;
+      }
+    );
   }
 
   changeTriggerSelection(triggerId: string) {
-    const switchTrigger = () => this.store.dispatch(new TriggerConfigureActions.SelectTrigger(triggerId));
+    const switchTrigger = () =>
+      this.store.dispatch(new TriggerConfigureActions.SelectTrigger(triggerId));
     this.checkForContextSwitchConfirmation((result?: ConfirmationResult) => {
       if (!result || result === ConfirmationResult.Discard) {
         switchTrigger();
@@ -94,20 +105,30 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     });
   }
 
-  private checkForContextSwitchConfirmation(onResult: (result?: ConfirmationResult | null) => void) {
+  private checkForContextSwitchConfirmation(
+    onResult: (result?: ConfirmationResult | null) => void
+  ) {
     const status = this.currentTriggerDetailStatus;
     if (!status || !status.isDirty) {
       return onResult();
     }
     const injectionTokens = new WeakMap();
     injectionTokens.set(TRIGGER_STATUS_TOKEN, status);
-    const confirmation = this.confirmationService.openModal(ConfirmationComponent, injectionTokens);
+    const confirmation = this.confirmationService.openModal(
+      ConfirmationComponent,
+      injectionTokens
+    );
     confirmation.result.subscribe(onResult);
   }
 
-  private observeWhileConfiguratorIsActive<T>(observable$: Observable<T>, valueWhenNotInitialized: any) {
+  private observeWhileConfiguratorIsActive<T>(
+    observable$: Observable<T>,
+    valueWhenNotInitialized: any
+  ) {
     return this.isConfiguratorInitialized$.pipe(
-      switchMap(isInitialized => (isInitialized ? observable$ : of(valueWhenNotInitialized))),
+      switchMap(isInitialized =>
+        isInitialized ? observable$ : of(valueWhenNotInitialized)
+      ),
       takeUntil(this.ngDestroy$)
     );
   }

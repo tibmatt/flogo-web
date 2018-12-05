@@ -1,6 +1,12 @@
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
-import { serializeSettings, importSettings, KeyValue, SettingGroup, OTHER_CATEGORY } from './settings-converter';
+import {
+  serializeSettings,
+  importSettings,
+  KeyValue,
+  SettingGroup,
+  OTHER_CATEGORY,
+} from './settings-converter';
 
 @Component({
   selector: 'flogo-apps-settings',
@@ -41,7 +47,10 @@ export class FlogoAppSettingsComponent {
 
     this.customSettings = [];
     const other = this.inputSettings.find(input => input.key === OTHER_CATEGORY);
-    this.customSettings = Object.keys(other.settings || {}).map(key => ({ key, value: other.settings[key] }));
+    this.customSettings = Object.keys(other.settings || {}).map(key => ({
+      key,
+      value: other.settings[key],
+    }));
   }
 
   public moveItemArray(elements, oldIndex, newIndex) {
@@ -67,7 +76,10 @@ export class FlogoAppSettingsComponent {
       return;
     }
 
-    this.customSettings.push({ key: this.otherItem.key, value: this.otherItem.value });
+    this.customSettings.push({
+      key: this.otherItem.key,
+      value: this.otherItem.value,
+    });
     this.otherItem = { key: '', value: '' };
   }
 
@@ -81,10 +93,14 @@ export class FlogoAppSettingsComponent {
 
   public saveChanges() {
     const otherSettings = {};
-    const unvaryingInputs = this.inputSettings.filter(input => input.key !== OTHER_CATEGORY);
+    const unvaryingInputs = this.inputSettings.filter(
+      input => input.key !== OTHER_CATEGORY
+    );
     this.addCustom();
     this.customSettings.forEach(setting => (otherSettings[setting.key] = setting.value));
-    const serialized = serializeSettings(unvaryingInputs.concat([{ key: OTHER_CATEGORY, settings: otherSettings }]));
+    const serialized = serializeSettings(
+      unvaryingInputs.concat([{ key: OTHER_CATEGORY, settings: otherSettings }])
+    );
     this.save.emit(serialized);
     this.closeModal();
   }

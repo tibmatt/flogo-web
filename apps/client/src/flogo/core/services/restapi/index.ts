@@ -1,4 +1,7 @@
-export { DEFAULT_REST_HEADERS, createDefaultRestApiHttpHeaders } from './rest-api-http-headers';
+export {
+  DEFAULT_REST_HEADERS,
+  createDefaultRestApiHttpHeaders,
+} from './rest-api-http-headers';
 export { RestApiOptions, RestApiService } from './rest-api.service';
 export { HttpUtilsService } from './http-utils.service';
 

@@ -2,7 +2,13 @@ import { forIn, cloneDeep } from 'lodash';
 import { ReplaySubject, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { MapperState, MapperTreeNode, Mappings, ParsedExpressionDetails, TreeState } from '../../models';
+import {
+  MapperState,
+  MapperTreeNode,
+  Mappings,
+  ParsedExpressionDetails,
+  TreeState,
+} from '../../models';
 import { TreeNodeFactoryService } from '../tree-node-factory.service';
 import { TreeService } from '../tree.service';
 import { aggregateStatusChanges } from './aggregate-status-changes';
@@ -62,7 +68,10 @@ export class MapperController {
   }
 
   expressionChange(nodePath: string, expression: string) {
-    const state = this.applyExpressionChange(this.getCurrentState(), { nodePath, expression });
+    const state = this.applyExpressionChange(this.getCurrentState(), {
+      nodePath,
+      expression,
+    });
     this.updateState(state);
   }
 
@@ -93,7 +102,10 @@ export class MapperController {
   }
 
   resetStatus() {
-    const resetState: MapperState = { ...this.getCurrentState(), isDirty: false };
+    const resetState: MapperState = {
+      ...this.getCurrentState(),
+      isDirty: false,
+    };
     forIn(resetState.inputs.nodes, node => {
       node.isDirty = false;
     });
@@ -177,9 +189,18 @@ export class MapperController {
     };
   }
 
-  private applyTreeFilter(filterTerm: string, treeState: TreeState, currentSelection?: MapperTreeNode) {
-    const currentSelectionPath = currentSelection && currentSelection.data ? currentSelection.data.path : null;
-    const nodes = this.treeService.applyFilter(treeState.nodes, filterTerm, currentSelectionPath);
+  private applyTreeFilter(
+    filterTerm: string,
+    treeState: TreeState,
+    currentSelection?: MapperTreeNode
+  ) {
+    const currentSelectionPath =
+      currentSelection && currentSelection.data ? currentSelection.data.path : null;
+    const nodes = this.treeService.applyFilter(
+      treeState.nodes,
+      filterTerm,
+      currentSelectionPath
+    );
     return Object.assign({}, treeState, { filterTerm, nodes });
   }
 }

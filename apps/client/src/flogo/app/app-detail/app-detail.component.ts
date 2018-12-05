@@ -1,16 +1,33 @@
 import { sortBy, snakeCase } from 'lodash';
 import { differenceInSeconds } from 'date-fns';
 
-import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  SimpleChanges,
+  OnChanges,
+  OnInit,
+  EventEmitter,
+} from '@angular/core';
 import { Observable, of as observableOf } from 'rxjs';
 import { switchMap, map, take, tap, filter } from 'rxjs/operators';
 
-import { LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER } from '@flogo-web/client/core';
+import {
+  LanguageService,
+  FlowSummary,
+  Trigger,
+  ERROR_CODE,
+  CONTRIB_REF_PLACEHOLDER,
+} from '@flogo-web/client/core';
 import { FLOGO_PROFILE_TYPE } from '@flogo-web/client/core/constants';
 import { LocalStorageService, SanitizeService } from '@flogo-web/client/core/services';
 import { ShimTriggerBuildApiService } from '@flogo-web/client/core/services/restapi/v2/shim-trigger-build-api.service';
 import { ModalService } from '@flogo-web/client/core/modal';
-import { ConfirmationResult, ConfirmationModalService } from '@flogo-web/client/core/confirmation';
+import {
+  ConfirmationResult,
+  ConfirmationModalService,
+} from '@flogo-web/client/core/confirmation';
 import { NotificationsService } from '@flogo-web/client/core/notifications';
 import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
 import {
@@ -23,8 +40,14 @@ import {
   SETTING_DONT_WARN_MISSING_TRIGGERS,
 } from '../core';
 import { FlogoNewFlowComponent, NewFlowData } from '../new-flow/new-flow.component';
-import { ExportFlowsData, FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
-import { ShimTriggerData, TriggerShimBuildComponent } from '../shim-trigger/shim-trigger.component';
+import {
+  ExportFlowsData,
+  FlogoExportFlowsComponent,
+} from '../export-flows/export-flows.component';
+import {
+  ShimTriggerData,
+  TriggerShimBuildComponent,
+} from '../shim-trigger/shim-trigger.component';
 
 import {
   MissingTriggerConfirmationComponent,
@@ -43,9 +66,11 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   @Input() appDetail: ApplicationDetail;
 
   @Output() flowSelected: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
-  @Output() flowAdded: EventEmitter<{ name: string; description?: string; triggerId?: string }> = new EventEmitter<
-    FlowSummary
-  >();
+  @Output() flowAdded: EventEmitter<{
+    name: string;
+    description?: string;
+    triggerId?: string;
+  }> = new EventEmitter<FlowSummary>();
   @Output() flowDeleted: EventEmitter<App> = new EventEmitter<App>();
 
   application: App;
@@ -118,7 +143,8 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
         this.getShimTriggerBuildOptions();
       }
       const prevValue = change.previousValue;
-      const isDifferentApp = !prevValue || !prevValue.app || prevValue.app.id !== this.application.id;
+      const isDifferentApp =
+        !prevValue || !prevValue.app || prevValue.app.id !== this.application.id;
       if (isDifferentApp) {
         this.appUpdated();
       } else {
@@ -130,13 +156,17 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   private createFlowGroups() {
     const flowGroups = this.application ? this.application.flowGroups : null;
     this.flowGroups = flowGroups ? [...this.application.flowGroups] : [];
-    this.flowGroups = sortBy(this.flowGroups, g => (g.trigger ? g.trigger.name.toLocaleLowerCase() : ''));
+    this.flowGroups = sortBy(this.flowGroups, g =>
+      g.trigger ? g.trigger.name.toLocaleLowerCase() : ''
+    );
   }
 
   private createTriggerGroups() {
     const triggerGroups = this.application ? this.application.triggerGroups : null;
     this.triggerGroups = triggerGroups ? [...this.application.triggerGroups] : [];
-    this.triggerGroups = sortBy(this.triggerGroups, g => (g.triggers ? g.flow.name.toLocaleLowerCase() : ''));
+    this.triggerGroups = sortBy(this.triggerGroups, g =>
+      g.triggers ? g.flow.name.toLocaleLowerCase() : ''
+    );
   }
 
   appExporter(isLegacyExport: boolean = false) {
@@ -167,11 +197,20 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
         ];
       })
       .catch(errRsp => {
-        if (errRsp && errRsp.errors && errRsp.errors[0] && errRsp.errors[0].code === ERROR_CODE.HAS_SUBFLOW) {
-          this.notificationsService.error({ key: 'DETAILS-EXPORT:CANNOT-EXPORT' });
+        if (
+          errRsp &&
+          errRsp.errors &&
+          errRsp.errors[0] &&
+          errRsp.errors[0].code === ERROR_CODE.HAS_SUBFLOW
+        ) {
+          this.notificationsService.error({
+            key: 'DETAILS-EXPORT:CANNOT-EXPORT',
+          });
         } else {
           console.error(errRsp.errors);
-          this.notificationsService.error({ key: 'DETAILS-EXPORT:ERROR_UNKNOWN' });
+          this.notificationsService.error({
+            key: 'DETAILS-EXPORT:ERROR_UNKNOWN',
+          });
         }
       });
   }
@@ -184,11 +223,17 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     this.closeBuildBox();
     this.confirmActionWhenMissingTriggers('build')
       .pipe(filter(Boolean))
-      .subscribe(() => this.handleBuildDownload(this.appDetailService.build(this.application.id, { os, arch })));
+      .subscribe(() =>
+        this.handleBuildDownload(
+          this.appDetailService.build(this.application.id, { os, arch })
+        )
+      );
   }
 
   buildShimTrigger(selectedTriggerDetails) {
-    this.handleBuildDownload(this.shimTriggersApiService.buildShimTrigger(selectedTriggerDetails));
+    this.handleBuildDownload(
+      this.shimTriggersApiService.buildShimTrigger(selectedTriggerDetails)
+    );
   }
 
   openCreateFlowFromTrigger(trigger: Trigger) {
@@ -200,11 +245,13 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     if (triggerId) {
       newFlowData.triggerId = triggerId;
     }
-    return this.modalService.openModal<NewFlowData>(FlogoNewFlowComponent, newFlowData).result.subscribe(flowAdded => {
-      if (flowAdded) {
-        this.flowAdded.emit(flowAdded);
-      }
-    });
+    return this.modalService
+      .openModal<NewFlowData>(FlogoNewFlowComponent, newFlowData)
+      .result.subscribe(flowAdded => {
+        if (flowAdded) {
+          this.flowAdded.emit(flowAdded);
+        }
+      });
   }
 
   onClickAddDescription(event) {
@@ -214,7 +261,10 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   openExportFlow() {
     const flows = this.application.actions;
     const isLegacyExport = this.application.profileType === FLOGO_PROFILE_TYPE.DEVICE;
-    return this.modalService.openModal<ExportFlowsData>(FlogoExportFlowsComponent, { flows, isLegacyExport });
+    return this.modalService.openModal<ExportFlowsData>(FlogoExportFlowsComponent, {
+      flows,
+      isLegacyExport,
+    });
   }
 
   onNameSave() {
@@ -278,7 +328,9 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   onDeleteApp(application) {
     this.closeDetailsMenu();
     this.translate
-      .get(['APP-DETAIL:CONFIRM_DELETE', 'MODAL:CONFIRM-DELETION'], { appName: application.name })
+      .get(['APP-DETAIL:CONFIRM_DELETE', 'MODAL:CONFIRM-DELETION'], {
+        appName: application.name,
+      })
       .pipe(
         switchMap(translation => {
           return this.confirmationModalService.openModal({
@@ -303,8 +355,13 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   showShimTriggerList(ref) {
-    this.shimTriggersList = this.flowGroups.filter(flowGroup => flowGroup.trigger && flowGroup.trigger.ref === ref);
-    if (ref === CONTRIB_REF_PLACEHOLDER.REF_LAMBDA && this.shimTriggersList.length === 1) {
+    this.shimTriggersList = this.flowGroups.filter(
+      flowGroup => flowGroup.trigger && flowGroup.trigger.ref === ref
+    );
+    if (
+      ref === CONTRIB_REF_PLACEHOLDER.REF_LAMBDA &&
+      this.shimTriggersList.length === 1
+    ) {
       this.buildShimTrigger({ triggerId: this.shimTriggersList[0].trigger.id });
     } else {
       this.modalService
@@ -338,7 +395,9 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
   showDetailsView(viewType: string) {
     this.isFlowsViewActive = viewType === 'flows';
-    this.selectedViewTranslateKey = this.isFlowsViewActive ? 'DETAILS-VIEW-MENU:FLOWS' : 'DETAILS-VIEW-MENU:TRIGGERS';
+    this.selectedViewTranslateKey = this.isFlowsViewActive
+      ? 'DETAILS-VIEW-MENU:FLOWS'
+      : 'DETAILS-VIEW-MENU:TRIGGERS';
     this.isViewsDropdownShown = false;
   }
 
@@ -350,14 +409,24 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     this.isDetailsMenuOpen = false;
   }
 
-  private confirmActionWhenMissingTriggers(exportType: 'export' | 'build'): Observable<boolean> {
+  private confirmActionWhenMissingTriggers(
+    exportType: 'export' | 'build'
+  ): Observable<boolean> {
     const appHasTriggers = app =>
-      app && app.flowGroups && app.flowGroups.length > 0 && app.flowGroups.some(g => !!g.trigger);
-    if (this.localStorage.getItem(SETTING_DONT_WARN_MISSING_TRIGGERS) || appHasTriggers(this.appDetail.app)) {
+      app &&
+      app.flowGroups &&
+      app.flowGroups.length > 0 &&
+      app.flowGroups.some(g => !!g.trigger);
+    if (
+      this.localStorage.getItem(SETTING_DONT_WARN_MISSING_TRIGGERS) ||
+      appHasTriggers(this.appDetail.app)
+    ) {
       return observableOf(true);
     }
     return this.modalService
-      .openModal<ConfirmationParams>(MissingTriggerConfirmationComponent, { type: exportType })
+      .openModal<ConfirmationParams>(MissingTriggerConfirmationComponent, {
+        type: exportType,
+      })
       .result.pipe(
         take(1),
         tap((result: MissingTriggerConfirmationResult) => {
@@ -389,7 +458,10 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     this.isNameInEditMode = false;
     this.isNewApp = !this.application.updatedAt;
     if (this.isNewApp) {
-      const secondsSinceCreation = differenceInSeconds(Date.now(), this.application.createdAt);
+      const secondsSinceCreation = differenceInSeconds(
+        Date.now(),
+        this.application.createdAt
+      );
       this.isNewApp = secondsSinceCreation <= MAX_SECONDS_TO_ASK_APP_NAME;
       this.isNameInEditMode = this.isNewApp;
     }
@@ -411,31 +483,36 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
         triggerRef: flowGroup.trigger ? flowGroup.trigger.ref : null,
       };
     });
-    this.contributionService.getShimContributionDetails(this.application.profileType).then(shimmableTriggersDetails => {
-      shimmableTriggersDetails.forEach(shimmableTriggerDetail => {
-        const shimmableTrigger = flowGroupsMap.find(
-          flowGroupMap => flowGroupMap.triggerRef === shimmableTriggerDetail.ref
-        );
-        if (!!shimmableTrigger) {
-          switch (shimmableTriggerDetail.ref) {
-            case CONTRIB_REF_PLACEHOLDER.REF_LAMBDA:
-              this.shimTriggerOptions.push({
-                label: this.translate.instant('TRIGGER-SHIM:SERVERLESS-APP'),
-                ref: shimmableTriggerDetail.ref,
-              });
-              break;
-            case CONTRIB_REF_PLACEHOLDER.REF_CLI:
-              this.shimTriggerOptions.push({
-                label: this.translate.instant('TRIGGER-SHIM:CLI-APP'),
-                ref: shimmableTriggerDetail.ref,
-              });
-              break;
-            default:
-              this.shimTriggerOptions.push({ label: shimmableTriggerDetail.name, ref: shimmableTriggerDetail.ref });
-              break;
+    this.contributionService
+      .getShimContributionDetails(this.application.profileType)
+      .then(shimmableTriggersDetails => {
+        shimmableTriggersDetails.forEach(shimmableTriggerDetail => {
+          const shimmableTrigger = flowGroupsMap.find(
+            flowGroupMap => flowGroupMap.triggerRef === shimmableTriggerDetail.ref
+          );
+          if (!!shimmableTrigger) {
+            switch (shimmableTriggerDetail.ref) {
+              case CONTRIB_REF_PLACEHOLDER.REF_LAMBDA:
+                this.shimTriggerOptions.push({
+                  label: this.translate.instant('TRIGGER-SHIM:SERVERLESS-APP'),
+                  ref: shimmableTriggerDetail.ref,
+                });
+                break;
+              case CONTRIB_REF_PLACEHOLDER.REF_CLI:
+                this.shimTriggerOptions.push({
+                  label: this.translate.instant('TRIGGER-SHIM:CLI-APP'),
+                  ref: shimmableTriggerDetail.ref,
+                });
+                break;
+              default:
+                this.shimTriggerOptions.push({
+                  label: shimmableTriggerDetail.name,
+                  ref: shimmableTriggerDetail.ref,
+                });
+                break;
+            }
           }
-        }
+        });
       });
-    });
   }
 }

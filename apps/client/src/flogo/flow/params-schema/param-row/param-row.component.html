@@ -16,17 +16,24 @@
       aria-haspopup="true"
       aria-expanded="true"
     >
-      <span>{{ paramGroup.get('type').value | lowercase }}</span> <input type="hidden" formControlName="type" />
+      <span>{{ paramGroup.get('type').value | lowercase }}</span>
+      <input type="hidden" formControlName="type" />
       <span class="caret list-caret type-selector__caret"></span>
     </button>
     <ul class="dropdown-menu type-selector__dropdown-menu">
-      <li *ngFor="let option of dropdownOptions" class="list-label" (click)="selectType(option)">
+      <li
+        *ngFor="let option of dropdownOptions"
+        class="list-label"
+        (click)="selectType(option)"
+      >
         <a>{{ option }}</a>
       </li>
     </ul>
   </div>
   <!-- <div class="flow-params-delete" *ngIf="totalCount !== inputIndex+1"> -->
-  <div class="form-input__delete"><i class="flogo-icon-delete delete-icon" (click)="onRemoveParam()"></i></div>
+  <div class="form-input__delete">
+    <i class="flogo-icon-delete delete-icon" (click)="onRemoveParam()"></i>
+  </div>
   <!-- <div> -->
   <!-- <button class="flow-input-params-add" -->
   <!-- (click)="addParams()" type="button" *ngIf="totalCount === inputIndex+1" -->

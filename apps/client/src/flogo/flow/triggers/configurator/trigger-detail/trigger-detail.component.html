@@ -35,7 +35,9 @@
     *ngSwitchCase="TAB_TYPES.FlowOutputMappings"
     class="mapper content__mapper"
     [controller]="replyMapperController"
-    inputsSearchPlaceHolder="{{ 'TRIGGER-MAPPER:LABEL-TRIGGER-REPLY-ATTRIBUTES' | translate }}"
+    inputsSearchPlaceHolder="{{
+      'TRIGGER-MAPPER:LABEL-TRIGGER-REPLY-ATTRIBUTES' | translate
+    }}"
     outputsSearchPlaceHolder="{{ 'TRIGGER-MAPPER:LABEL-FLOW-OUTPUTS' | translate }}"
   >
   </flogo-mapper>

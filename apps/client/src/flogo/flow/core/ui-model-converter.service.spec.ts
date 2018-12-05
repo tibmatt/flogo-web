@@ -24,12 +24,15 @@ describe('Service: UI Model Converter', function(this: {
   emptySchemaRegistry: Dictionary<ActionBase>;
 }) {
   beforeEach(() => {
-    this.contribServiceMock = jasmine.createSpyObj<RESTAPIContributionsService>('contribService', [
-      'getContributionDetails',
-      'listContribs',
-    ]);
+    this.contribServiceMock = jasmine.createSpyObj<RESTAPIContributionsService>(
+      'contribService',
+      ['getContributionDetails', 'listContribs']
+    );
     this.errorService = new ErrorService();
-    this.service = new UIModelConverterService(this.contribServiceMock, this.errorService);
+    this.service = new UIModelConverterService(
+      this.contribServiceMock,
+      this.errorService
+    );
     this.service.setProfile(FLOGO_PROFILE_TYPE.MICRO_SERVICE);
     this.emptySchemaRegistry = {};
   });
@@ -54,10 +57,12 @@ describe('Service: UI Model Converter', function(this: {
     spyTriggerService.and.returnValue(Promise.resolve(mockTriggerDetails));
     const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     spyActivityService.and.returnValue(Promise.resolve(mockActivitiesDetails));
-    this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry).then((flow: any) => {
-      expect(flow).toEqual(mockResultantUIFlow);
-      done();
-    });
+    this.service
+      .getWebFlowModel(thisTestData, this.emptySchemaRegistry)
+      .then((flow: any) => {
+        expect(flow).toEqual(mockResultantUIFlow);
+        done();
+      });
   });
 
   it('Should have error handler in UI Flow model', done => {
@@ -67,10 +72,12 @@ describe('Service: UI Model Converter', function(this: {
     const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     spyActivityService.and.returnValue(Promise.resolve(mockActivitiesDetails));
     thisTestData.errorHandler = mockErrorHandler;
-    this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry).then((flow: any) => {
-      expect(flow).toEqual(mockResultantUIFlowWithError);
-      done();
-    });
+    this.service
+      .getWebFlowModel(thisTestData, this.emptySchemaRegistry)
+      .then((flow: any) => {
+        expect(flow).toEqual(mockResultantUIFlowWithError);
+        done();
+      });
   });
 
   it('Should maintain the transformation details of a tile', done => {
@@ -81,9 +88,11 @@ describe('Service: UI Model Converter', function(this: {
     spyActivityService.and.returnValue(Promise.resolve(mockActivitiesDetails));
     thisTestData.tasks[0].attributes = mockTransformationData.attributes;
     thisTestData.tasks[0].inputMappings = mockTransformationData.inputMappings;
-    this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry).then((flow: any) => {
-      expect(flow).toEqual(mockResultantUIFlowWithTransformations);
-      done();
-    });
+    this.service
+      .getWebFlowModel(thisTestData, this.emptySchemaRegistry)
+      .then((flow: any) => {
+        expect(flow).toEqual(mockResultantUIFlowWithTransformations);
+        done();
+      });
   });
 });

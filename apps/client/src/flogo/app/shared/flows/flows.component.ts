@@ -1,5 +1,13 @@
 import { sortBy } from 'lodash';
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ElementRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+  ElementRef,
+} from '@angular/core';
 import { FlowSummary } from '@flogo-web/client/core';
 
 @Component({
@@ -26,7 +34,12 @@ export class FlogoApplicationFlowsComponent implements OnChanges {
   }
 
   onSelect(event: Event, removeBox: ElementRef, flow: FlowSummary) {
-    if (!(event.target === removeBox.nativeElement || removeBox.nativeElement.contains(event.target))) {
+    if (
+      !(
+        event.target === removeBox.nativeElement ||
+        removeBox.nativeElement.contains(event.target)
+      )
+    ) {
       this.flowSelected.emit(flow);
     }
   }

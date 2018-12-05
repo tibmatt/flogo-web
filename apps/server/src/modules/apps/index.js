@@ -7,7 +7,11 @@ import escapeRegExp from 'lodash/escapeRegExp';
 
 import shortid from 'shortid';
 
-import { FLOGO_PROFILE_TYPES, FLOGO_TASK_TYPE, EXPORT_MODE } from '../../common/constants';
+import {
+  FLOGO_PROFILE_TYPES,
+  FLOGO_TASK_TYPE,
+  EXPORT_MODE,
+} from '../../common/constants';
 import { ErrorManager, ERROR_TYPES as GENERAL_ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
@@ -48,7 +52,9 @@ export class AppsManager {
     }
     const errors = Validator.validateSimpleApp(inputData, isDevice);
     if (errors) {
-      return Promise.reject(ErrorManager.createValidationError('Validation error', errors));
+      return Promise.reject(
+        ErrorManager.createValidationError('Validation error', errors)
+      );
     }
     inputData._id = shortid.generate();
     inputData.name = inputData.name.trim();
@@ -79,10 +85,15 @@ export class AppsManager {
     return (
       appStore
         // fetch editable fields only
-        .findOne({ _id: appId }, fromPairs(EDITABLE_FIELDS.concat('_id').map(field => [field, 1])))
+        .findOne(
+          { _id: appId },
+          fromPairs(EDITABLE_FIELDS.concat('_id').map(field => [field, 1]))
+        )
         .then(app => {
           if (!app) {
-            throw ErrorManager.makeError('App not found', { type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND });
+            throw ErrorManager.makeError('App not found', {
+              type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND,
+            });
           }
 
           const mergedData = Object.assign({}, app, inputData);
@@ -98,7 +109,9 @@ export class AppsManager {
 
           const errors = Validator.validateSimpleApp(mergedData, isDevice);
           if (errors) {
-            throw ErrorManager.createValidationError('Validation error', { details: errors });
+            throw ErrorManager.createValidationError('Validation error', {
+              details: errors,
+            });
           }
           if (inputData.name) {
             inputData.name = inputData.name.trim();
@@ -109,7 +122,10 @@ export class AppsManager {
         .then(shouldUpdate => {
           if (shouldUpdate) {
             delete inputData._id;
-            return appStore.update({ _id: appId }, { $set: Object.assign({ updatedAt: nowISO() }, inputData) });
+            return appStore.update(
+              { _id: appId },
+              { $set: Object.assign({ updatedAt: nowISO() }, inputData) }
+            );
           }
           return null;
         })
@@ -119,7 +135,10 @@ export class AppsManager {
     function validateUniqueName(inputName) {
       const name = getAppNameForSearch(inputName);
       return appStore
-        .findOne({ _id: { $ne: appId }, name: new RegExp(`^${name}$`, 'i') }, { _id: 1, name: 1 })
+        .findOne(
+          { _id: { $ne: appId }, name: new RegExp(`^${name}$`, 'i') },
+          { _id: 1, name: 1 }
+        )
         .then(nameExists => {
           if (nameExists) {
             throw ErrorManager.createValidationError('Validation error', [
@@ -193,7 +212,9 @@ export class AppsManager {
    * @param options.withFlows retrieve flows
    */
   static findOne(appId, { withFlows } = { withFlows: false }) {
-    return appStore.findOne({ _id: appId }).then(app => (app ? cleanForOutput(app) : null));
+    return appStore
+      .findOne({ _id: appId })
+      .then(app => (app ? cleanForOutput(app) : null));
   }
 
   // TODO documentation
@@ -227,14 +248,22 @@ export class AppsManager {
    * @throws Not found error if app not found
    */
   static export(appId, { appModel = EXPORT_MODE.STANDARD_MODEL, format, flowIds } = {}) {
-    if (appModel !== EXPORT_MODE.STANDARD_MODEL && appModel !== EXPORT_MODE.LEGACY_MODEL) {
-      throw ErrorManager.makeError(`Cannot export to unknown application model "${appModel}"`, {
-        type: APP_ERRORS.UNKNOWN_APP_MODEL,
-      });
+    if (
+      appModel !== EXPORT_MODE.STANDARD_MODEL &&
+      appModel !== EXPORT_MODE.LEGACY_MODEL
+    ) {
+      throw ErrorManager.makeError(
+        `Cannot export to unknown application model "${appModel}"`,
+        {
+          type: APP_ERRORS.UNKNOWN_APP_MODEL,
+        }
+      );
     }
     return AppsManager.findOne(appId).then(app => {
       if (!app) {
-        throw ErrorManager.makeError('Application not found', { type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND });
+        throw ErrorManager.makeError('Application not found', {
+          type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND,
+        });
       }
 
       const isFullExportMode = format !== EXPORT_MODE.FORMAT_FLOWS;
@@ -276,7 +305,12 @@ function cleanInput(app) {
 
 function build(app) {
   const now = new Date().toISOString();
-  return defaults(app, { createdAt: now, updatedAt: null, triggers: [], actions: [] });
+  return defaults(app, {
+    createdAt: now,
+    updatedAt: null,
+    triggers: [],
+    actions: [],
+  });
 }
 
 function cleanForOutput(app) {

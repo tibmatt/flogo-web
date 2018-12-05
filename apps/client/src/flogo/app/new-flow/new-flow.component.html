@@ -12,12 +12,17 @@
         asyncValidator
         placeholder="{{ 'ADD:GIVE-YOUR-FLOW-A-NAME' | translate }}"
       />
-      <label *ngIf="flow.get('name').hasError('uniqueInvalid')" for="flowName" class="form__error">{{
-        'ADD:FLOW-NAME-EXISTS' | translate
-      }}</label>
+      <label
+        *ngIf="flow.get('name').hasError('uniqueInvalid')"
+        for="flowName"
+        class="form__error"
+        >{{ 'ADD:FLOW-NAME-EXISTS' | translate }}</label
+      >
     </div>
     <div class="form-group">
-      <label for="flowDescription" class="form__label">{{ 'ADD:FLOW-DESCRIPTION' | translate }} </label>
+      <label for="flowDescription" class="form__label"
+        >{{ 'ADD:FLOW-DESCRIPTION' | translate }}
+      </label>
       <textarea
         class="form-control form__input"
         formControlName="description"
@@ -35,7 +40,11 @@
       >
         {{ 'ADD:CANCEL' | translate }}
       </button>
-      <button type="submit" class="flogo-button--default flogo-flows-add-save" [disabled]="!flow.valid">
+      <button
+        type="submit"
+        class="flogo-button--default flogo-flows-add-save"
+        [disabled]="!flow.valid"
+      >
         {{ 'ADD:CREATE' | translate }}
       </button>
     </div>

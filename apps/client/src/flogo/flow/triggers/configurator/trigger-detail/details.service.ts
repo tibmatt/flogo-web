@@ -1,9 +1,16 @@
 import { isEmpty } from 'lodash';
 import { Injectable } from '@angular/core';
-import { MapperController, MapperControllerFactory } from '@flogo-web/client/flow/shared/mapper';
+import {
+  MapperController,
+  MapperControllerFactory,
+} from '@flogo-web/client/flow/shared/mapper';
 import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo-web/client/core';
 import { TriggerHandler } from '@flogo-web/client/flow/core';
-import { CurrentTriggerState, SettingControlInfo, TriggerInformation } from '../interfaces';
+import {
+  CurrentTriggerState,
+  SettingControlInfo,
+  TriggerInformation,
+} from '../interfaces';
 import { SettingsFormBuilder } from './settings-form-builder';
 import { createValidatorsForSchema } from './settings-validation';
 import { TriggerNameValidatorService } from './trigger-name-validator.service';
@@ -35,13 +42,20 @@ export class ConfigureDetailsService {
         disableCommonSettings,
         nameValidator
       ),
-      flowInputMapper: this.createInputMapperController(flowMetadata, triggerSchema, input),
+      flowInputMapper: this.createInputMapperController(
+        flowMetadata,
+        triggerSchema,
+        input
+      ),
       replyMapper: this.createReplyMapperController(flowMetadata, triggerSchema, output),
       triggerInformation,
     };
   }
 
-  private getTriggerInformation(handlers: TriggerHandler[], triggerSchema: TriggerSchema): TriggerInformation {
+  private getTriggerInformation(
+    handlers: TriggerHandler[],
+    triggerSchema: TriggerSchema
+  ): TriggerInformation {
     return {
       settingsControls: this.getAllSettingsControls(triggerSchema),
       trigger: {
@@ -52,7 +66,9 @@ export class ConfigureDetailsService {
     };
   }
 
-  private getAllSettingsControls(schema: TriggerSchema): TriggerInformation['settingsControls'] {
+  private getAllSettingsControls(
+    schema: TriggerSchema
+  ): TriggerInformation['settingsControls'] {
     const { settings: triggerSettings, handler } = schema;
     const { settings: handlerSettings } = handler;
     return {
@@ -61,7 +77,11 @@ export class ConfigureDetailsService {
     };
   }
 
-  private createReplyMapperController(flowMetadata, triggerSchema, output: any): null | MapperController {
+  private createReplyMapperController(
+    flowMetadata,
+    triggerSchema,
+    output: any
+  ): null | MapperController {
     const flowOutput = flowMetadata && flowMetadata.output ? flowMetadata.output : null;
     if (isEmpty(flowOutput) || isEmpty(triggerSchema.reply)) {
       return null;
@@ -73,15 +93,25 @@ export class ConfigureDetailsService {
     );
   }
 
-  private createInputMapperController(flowMetadata, triggerSchema, input: any): null | MapperController {
+  private createInputMapperController(
+    flowMetadata,
+    triggerSchema,
+    input: any
+  ): null | MapperController {
     const flowInput = flowMetadata && flowMetadata.input ? flowMetadata.input : null;
     if (isEmpty(flowInput) || isEmpty(triggerSchema.outputs)) {
       return null;
     }
-    return this.mapperControllerFactory.createController(flowInput, triggerSchema.outputs || [], input);
+    return this.mapperControllerFactory.createController(
+      flowInput,
+      triggerSchema.outputs || [],
+      input
+    );
   }
 
-  private reduceSettingsAndGetInfo(settings: SchemaAttribute[]): Dictionary<SettingControlInfo> {
+  private reduceSettingsAndGetInfo(
+    settings: SchemaAttribute[]
+  ): Dictionary<SettingControlInfo> {
     return (settings || []).reduce((allSettings, setting) => {
       allSettings[setting.name] = {
         ...setting,

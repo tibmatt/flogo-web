@@ -37,7 +37,11 @@ interface SchemaDisplay {
 
 export interface BaseSchema {
   name: string;
-  type: 'flogo:trigger' | 'flogo:activity' | 'flogo:device:trigger' | 'flogo:device:activity';
+  type:
+    | 'flogo:trigger'
+    | 'flogo:activity'
+    | 'flogo:device:trigger'
+    | 'flogo:device:activity';
   ref: string;
   version: string;
   title: string;

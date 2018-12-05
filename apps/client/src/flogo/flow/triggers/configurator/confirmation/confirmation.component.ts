@@ -9,5 +9,8 @@ import { TRIGGER_STATUS_TOKEN } from './status.token';
   styleUrls: ['./confirmation.component.less'],
 })
 export class ConfirmationComponent implements ConfirmationContent {
-  constructor(@Inject(TRIGGER_STATUS_TOKEN) public status: TriggerStatus, public control: ConfirmationControl) {}
+  constructor(
+    @Inject(TRIGGER_STATUS_TOKEN) public status: TriggerStatus,
+    public control: ConfirmationControl
+  ) {}
 }

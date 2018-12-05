@@ -46,7 +46,10 @@ export class ConfirmationService {
     return new ComponentPortal(componentType, null, injector);
   }
 
-  private createInjector(customTokens: WeakMap<any, any>, control: ConfirmationControl): PortalInjector {
+  private createInjector(
+    customTokens: WeakMap<any, any>,
+    control: ConfirmationControl
+  ): PortalInjector {
     const injectionTokens = customTokens || new WeakMap<any, any>();
     injectionTokens.set(ConfirmationControl, control);
     return new PortalInjector(this.injector, injectionTokens);

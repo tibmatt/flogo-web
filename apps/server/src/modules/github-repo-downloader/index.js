@@ -3,7 +3,13 @@ import { config } from '../../config/app-config';
 import _ from 'lodash';
 import path from 'path';
 import fs from 'fs';
-import { parseGitHubURL, createFolder, gitClone, gitUpdate, rmFolder } from '../../common/utils';
+import {
+  parseGitHubURL,
+  createFolder,
+  gitClone,
+  gitUpdate,
+  rmFolder,
+} from '../../common/utils';
 
 /**
  * Download GitHub repo to local environment.
@@ -120,20 +126,23 @@ export class GitHubRepoDownloader {
  */
 function hasRepoCached(repoURL, cacheFolder) {
   return new Promise((resolve, reject) => {
-    fs.stat(path.join(cacheFolder, GitHubRepoDownloader.getTargetPath(repoURL), '.git'), (err, stats) => {
-      if (err) {
-        // log the error if it's not the `no entity` error.
-        if (err.code !== 'ENOENT') {
-          console.log(`[log] GitHubRepoDownloader.hasRepoCached on error: `);
-          console.log(err);
+    fs.stat(
+      path.join(cacheFolder, GitHubRepoDownloader.getTargetPath(repoURL), '.git'),
+      (err, stats) => {
+        if (err) {
+          // log the error if it's not the `no entity` error.
+          if (err.code !== 'ENOENT') {
+            console.log(`[log] GitHubRepoDownloader.hasRepoCached on error: `);
+            console.log(err);
+          }
+          resolve(false);
+        } else if (stats.isDirectory()) {
+          resolve(true);
+        } else {
+          resolve(false);
         }
-        resolve(false);
-      } else if (stats.isDirectory()) {
-        resolve(true);
-      } else {
-        resolve(false);
       }
-    });
+    );
   });
 }
 

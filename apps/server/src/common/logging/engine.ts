@@ -11,7 +11,9 @@ interface EngineLogger extends Logger {
 const engineLogger = createLogger({
   level: 'debug',
   format: format.combine(format.uncolorize(), format.timestamp(), format.json()),
-  transports: [new transports.File({ filename: path.join(config.logsPath, 'engine.log') })],
+  transports: [
+    new transports.File({ filename: path.join(config.logsPath, 'engine.log') }),
+  ],
 }) as EngineLogger;
 engineLogger.registerDataStream = registerDataStream;
 export { engineLogger };

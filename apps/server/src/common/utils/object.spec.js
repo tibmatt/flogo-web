@@ -6,7 +6,9 @@ describe('common.utils.object', () => {
     const keyOrder = ['foo', 'bar', 'baz'];
     const reordered = ensureKeyOrder(objectToOrder, keyOrder);
     test('should reorder the fields of an object based on the provided keys order', () => {
-      expect(JSON.stringify(reordered)).toBe(JSON.stringify({ foo: 'hello', baz: [], additional: 99 }));
+      expect(JSON.stringify(reordered)).toBe(
+        JSON.stringify({ foo: 'hello', baz: [], additional: 99 })
+      );
     });
     test('should omit specified keys in the key order that are not present in the object', () => {
       expect(Object.prototype.hasOwnProperty.call(reordered, 'bar')).toBe(false);

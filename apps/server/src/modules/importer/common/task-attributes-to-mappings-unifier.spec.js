@@ -1,6 +1,9 @@
 import cloneDeep from 'lodash/cloneDeep';
 import { REF_SUBFLOW } from '../../../common/constants';
-import { attributesToMappings, taskAttributesToMappingsUnifier } from './task-attributes-to-mappings-unifier';
+import {
+  attributesToMappings,
+  taskAttributesToMappingsUnifier,
+} from './task-attributes-to-mappings-unifier';
 
 describe('importer.common.task-attributes-to-mappings-unifier', () => {
   const dataUnderTest = {
@@ -9,7 +12,10 @@ describe('importer.common.task-attributes-to-mappings-unifier', () => {
         {
           id: 'task1',
           activityRef: 'activityschema1',
-          attributes: [{ name: 'attr1', type: 'double' }, { name: 'attr2', type: 'complex_object' }],
+          attributes: [
+            { name: 'attr1', type: 'double' },
+            { name: 'attr2', type: 'complex_object' },
+          ],
           inputMappings: [
             {
               mapTo: 'attr1',
@@ -21,7 +27,10 @@ describe('importer.common.task-attributes-to-mappings-unifier', () => {
         {
           id: 'task2',
           activityRef: 'activityschema2',
-          attributes: [{ name: 'attr1', type: 'number' }, { name: 'attr2', type: 'complexObject' }],
+          attributes: [
+            { name: 'attr1', type: 'number' },
+            { name: 'attr2', type: 'complexObject' },
+          ],
           inputMappings: [
             {
               mapTo: 'attr3',
@@ -111,9 +120,13 @@ describe('importer.common.task-attributes-to-mappings-unifier', () => {
   };
 
   let resultAction;
-  const extractMappings = (src, taskId) => src.tasks.find(task => task.id === taskId).inputMappings;
+  const extractMappings = (src, taskId) =>
+    src.tasks.find(task => task.id === taskId).inputMappings;
   beforeEach(() => {
-    resultAction = taskAttributesToMappingsUnifier(cloneDeep(dataUnderTest.action), dataUnderTest.schemas);
+    resultAction = taskAttributesToMappingsUnifier(
+      cloneDeep(dataUnderTest.action),
+      dataUnderTest.schemas
+    );
   });
 
   test('Should unify the inputMappings for task1 as expected', () => {
@@ -152,10 +165,14 @@ describe('importer.common.task-attributes-to-mappings-unifier', () => {
   });
 
   test('Should not process the unifier for task3 as it is a subflow', () => {
-    expect(extractMappings(resultAction, 'task3')).toEqual(extractMappings(dataUnderTest.action, 'task3'));
+    expect(extractMappings(resultAction, 'task3')).toEqual(
+      extractMappings(dataUnderTest.action, 'task3')
+    );
   });
 
   test('Should not process the unifier for task4 as it is a mapper', () => {
-    expect(extractMappings(resultAction, 'task4')).toEqual(extractMappings(dataUnderTest.action, 'task4'));
+    expect(extractMappings(resultAction, 'task4')).toEqual(
+      extractMappings(dataUnderTest.action, 'task4')
+    );
   });
 });

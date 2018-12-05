@@ -57,7 +57,8 @@ async function listContributions(ctx) {
     foundContributions = await contributionType.manager.find(searchTerms);
   } else {
     const contributionsFetcher = Object.keys(contributionTypes).reduce(
-      (getContribsArray, type) => getContribsArray.concat(contributionTypes[type].manager.find(searchTerms)),
+      (getContribsArray, type) =>
+        getContribsArray.concat(contributionTypes[type].manager.find(searchTerms)),
       []
     );
     const results = await Promise.all(contributionsFetcher);
@@ -85,14 +86,17 @@ async function installContribution(ctx, next) {
       type: ERROR_TYPES.ENGINE.INSTALL,
       message: 'Unknown type of contribution',
       params: {
-        body: 'Should be in the pattern: {"url": "path_to_contribution", "type": "activity"}',
+        body:
+          'Should be in the pattern: {"url": "path_to_contribution", "type": "activity"}',
       },
     });
   }
 
   logger.info(`[log] Install ${contribType.installerOpts.type}: '${url}'`);
-  const installController = await getInstallationController(config.defaultEngine.path, (url, engine) =>
-    installContributionToEngine(url, contribType.installerOpts.type, engine)
+  const installController = await getInstallationController(
+    config.defaultEngine.path,
+    (url, engine) =>
+      installContributionToEngine(url, contribType.installerOpts.type, engine)
   );
 
   const result = await installController.install(url);

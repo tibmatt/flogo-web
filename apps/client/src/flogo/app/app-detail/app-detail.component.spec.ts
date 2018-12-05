@@ -23,7 +23,9 @@ import { RESTAPIContributionsService } from '@flogo-web/client/core/services/res
 @Component({
   selector: 'flogo-container',
   template: `
-    <flogo-apps-details-application [appDetail]="appDetail"></flogo-apps-details-application>
+    <flogo-apps-details-application
+      [appDetail]="appDetail"
+    ></flogo-apps-details-application>
   `,
 })
 class ContainerComponent {
@@ -60,7 +62,12 @@ describe('FlogoApplicationDetailComponent component', () => {
 
   beforeEach(done => {
     TestBed.configureTestingModule({
-      imports: [BsModalModule, FakeRootLanguageModule, FlogoCoreModule, FlogoSharedModule],
+      imports: [
+        BsModalModule,
+        FakeRootLanguageModule,
+        FlogoCoreModule,
+        FlogoSharedModule,
+      ],
       declarations: [
         FlogoAppSettingsComponent,
         FlogoApplicationFlowsComponent,
@@ -74,8 +81,14 @@ describe('FlogoApplicationDetailComponent component', () => {
       ], // declare the test component
       providers: [
         { provide: AppDetailService, useClass: MockAppDetailService },
-        { provide: RESTAPIContributionsService, useClass: MockRESTAPIContributionsService },
-        { provide: NotificationsService, useValue: new NotificationsServiceMock() },
+        {
+          provide: RESTAPIContributionsService,
+          useClass: MockRESTAPIContributionsService,
+        },
+        {
+          provide: NotificationsService,
+          useValue: new NotificationsServiceMock(),
+        },
         FlogoProfileService,
       ],
     })
@@ -107,7 +120,9 @@ describe('FlogoApplicationDetailComponent component', () => {
   });
 
   it('Should display creation date', () => {
-    const creation = fixture.debugElement.query(By.css('.flogo-app-header__date--creation span'));
+    const creation = fixture.debugElement.query(
+      By.css('.flogo-app-header__date--creation span')
+    );
     expect(creation.nativeElement.innerText).toEqual('less than a minute ago.');
   });
 
@@ -115,7 +130,9 @@ describe('FlogoApplicationDetailComponent component', () => {
     let inputDescription;
 
     // because description field is empty, anchor add description should be present
-    const addDescription = fixture.debugElement.query(By.css('.flogo-app-header__description-container > a'));
+    const addDescription = fixture.debugElement.query(
+      By.css('.flogo-app-header__description-container > a')
+    );
     expect(addDescription).toBeDefined();
 
     // input description should not be present
@@ -132,13 +149,17 @@ describe('FlogoApplicationDetailComponent component', () => {
 
   it('When description field is empty, Add description link should be visible', () => {
     // because description field is empty, anchor add description should be present
-    const addDescription = fixture.debugElement.query(By.css('.flogo-app-header__description-container > a'));
+    const addDescription = fixture.debugElement.query(
+      By.css('.flogo-app-header__description-container > a')
+    );
     expect(addDescription).toBeDefined();
   });
 
   it('When done editing description input, description should be visible as a label', fakeAsync(() => {
     const newDescription = 'A brief description';
-    const addDescription = fixture.debugElement.query(By.css('.flogo-app-header__description-container > a'));
+    const addDescription = fixture.debugElement.query(
+      By.css('.flogo-app-header__description-container > a')
+    );
     addDescription.nativeElement.click();
     fixture.detectChanges();
 
@@ -152,8 +173,12 @@ describe('FlogoApplicationDetailComponent component', () => {
     tick();
     fixture.detectChanges();
 
-    const labelDescription = fixture.debugElement.query(By.css('.flogo-app-header__description'));
-    expect(labelDescription.nativeElement.innerText.indexOf(newDescription) >= 0).toBeTruthy();
+    const labelDescription = fixture.debugElement.query(
+      By.css('.flogo-app-header__description')
+    );
+    expect(
+      labelDescription.nativeElement.innerText.indexOf(newDescription) >= 0
+    ).toBeTruthy();
   }));
 
   it('When done editing name input, name should be visible as a label', fakeAsync(() => {
@@ -177,12 +202,16 @@ describe('FlogoApplicationDetailComponent component', () => {
   }));
 
   it('When the application has a description the add description link should not be visible', () => {
-    const appComponent = fixture.debugElement.query(By.css('flogo-apps-details-application'));
+    const appComponent = fixture.debugElement.query(
+      By.css('flogo-apps-details-application')
+    );
     appComponent.componentInstance.editableDescription = 'A brief description';
     fixture.detectChanges();
 
     // because description field is not empty, anchor add description should not be present
-    const addDescription = fixture.debugElement.query(By.css('.flogo-app-header__description-container > a'));
+    const addDescription = fixture.debugElement.query(
+      By.css('.flogo-app-header__description-container > a')
+    );
     expect(addDescription).toBeNull();
   });
 

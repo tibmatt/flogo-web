@@ -1,4 +1,11 @@
-import { Component, Input, OnChanges, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  QueryList,
+  SimpleChanges,
+  ViewChildren,
+} from '@angular/core';
 import { PerfectScrollbarDirective as ScrollbarDirective } from 'ngx-perfect-scrollbar';
 
 interface FunctionHelp {

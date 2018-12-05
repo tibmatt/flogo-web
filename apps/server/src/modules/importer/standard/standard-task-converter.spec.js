@@ -11,15 +11,19 @@ describe('importer.standard.StandardTaskConverter', () => {
         },
       };
       const activitySchema = {
-        inputs: [{ name: 'foo', type: 'string' }, { name: 'bar', type: 'array' }, { name: 'baz', type: 'string' }],
+        inputs: [
+          { name: 'foo', type: 'string' },
+          { name: 'bar', type: 'array' },
+          { name: 'baz', type: 'string' },
+        ],
       };
       const taskConverter = new StandardTaskConverter(sourceTask, activitySchema);
 
       const convertedAttributes = taskConverter.convertAttributes();
       expect(convertedAttributes).toHaveLength(1);
-      expect(convertedAttributes.map(attribute => [attribute.name, attribute.value])).toEqual(
-        expect.arrayContaining([['baz', 'hello world']])
-      );
+      expect(
+        convertedAttributes.map(attribute => [attribute.name, attribute.value])
+      ).toEqual(expect.arrayContaining([['baz', 'hello world']]));
     });
 
     test("should take task's input value on priority before schema's default values", () => {
@@ -41,9 +45,9 @@ describe('importer.standard.StandardTaskConverter', () => {
 
       const convertedAttributes = taskConverter.convertAttributes();
       expect(convertedAttributes).toHaveLength(1);
-      expect(convertedAttributes.map(attribute => [attribute.name, attribute.value])).toEqual(
-        expect.arrayContaining([['baz', 'hello world']])
-      );
+      expect(
+        convertedAttributes.map(attribute => [attribute.name, attribute.value])
+      ).toEqual(expect.arrayContaining([['baz', 'hello world']]));
     });
   });
 });

@@ -30,11 +30,15 @@ export class TriggerManager {
 
     return triggersDBService.db
       .find(terms)
-      .then(result => (result || []).map(triggerRow => cleanForOutput(triggerRow, fields)));
+      .then(result =>
+        (result || []).map(triggerRow => cleanForOutput(triggerRow, fields))
+      );
   }
 
   static findByRef(ref) {
-    return triggersDBService.db.findOne({ ref }).then(trigger => (trigger ? cleanForOutput(trigger) : null));
+    return triggersDBService.db
+      .findOne({ ref })
+      .then(trigger => (trigger ? cleanForOutput(trigger) : null));
   }
 }
 

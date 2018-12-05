@@ -1,5 +1,20 @@
-import { assign, cloneDeep, each, get, isEmpty, isObject, isUndefined, kebabCase, uniqueId, trimStart } from 'lodash';
-import { ValueType, FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '@flogo-web/client/core/constants';
+import {
+  assign,
+  cloneDeep,
+  each,
+  get,
+  isEmpty,
+  isObject,
+  isUndefined,
+  kebabCase,
+  uniqueId,
+  trimStart,
+} from 'lodash';
+import {
+  ValueType,
+  FLOGO_TASK_TYPE,
+  FLOGO_PROFILE_TYPE,
+} from '@flogo-web/client/core/constants';
 import { Item, Task } from '@flogo-web/client/core';
 import { TYPE_LITERAL_ASSIGNMENT } from '@flogo-web/client/flow/shared/mapper';
 
@@ -75,7 +90,9 @@ function portAttribute(
  * @return {boolean}
  */
 export function isMapperActivity(activitySchema: any) {
-  const hasOutputMapperDefinition = get(activitySchema, 'inputs', []).find(isOutputMapper);
+  const hasOutputMapperDefinition = get(activitySchema, 'inputs', []).find(
+    isOutputMapper
+  );
   return Boolean(hasOutputMapperDefinition);
 
   function isOutputMapper(inputDefinition) {
@@ -179,7 +196,9 @@ export function parseMapping(mappingValue: string) {
   let exprTail;
   let autoMap;
 
-  const matchesActivity = /(\${activity\.([\w-]+)\.([\w-]+)}((?:\.[\w-]+)*))/.exec(mappingValue);
+  const matchesActivity = /(\${activity\.([\w-]+)\.([\w-]+)}((?:\.[\w-]+)*))/.exec(
+    mappingValue
+  );
   if (matchesActivity) {
     taskId = matchesActivity[2] || null;
     attributeName = matchesActivity[3];
@@ -263,13 +282,17 @@ export function formatServerConfiguration(config: any) {
   };
 }
 
-export function getURL(config: { protocol?: string; host?: string; port?: string }): string {
+export function getURL(config: {
+  protocol?: string;
+  host?: string;
+  port?: string;
+}): string {
   if (config.port) {
-    return `${config.protocol || location.protocol.replace(':', '')}://${config.host || location.hostname}:${
-      config.port
-    }`;
+    return `${config.protocol || location.protocol.replace(':', '')}://${config.host ||
+      location.hostname}:${config.port}`;
   } else {
-    return `${config.protocol || location.protocol.replace(':', '')}://${config.host || location.hostname}}`;
+    return `${config.protocol || location.protocol.replace(':', '')}://${config.host ||
+      location.hostname}}`;
   }
 }
 

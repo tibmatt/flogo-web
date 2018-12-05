@@ -7,7 +7,11 @@ import { determinePathToVendor } from '../engine/determine-path-to-vendor';
 
 import { writeJSONFile } from '../../common/utils';
 
-const defaultBuildOptions = options => ({ optimize: true, embedConfig: true, ...options });
+const defaultBuildOptions = options => ({
+  optimize: true,
+  embedConfig: true,
+  ...options,
+});
 
 export async function buildBinary(appId, options) {
   return orchestrateBuild(appId, engine => engine.build(defaultBuildOptions(options)));
@@ -20,7 +24,9 @@ export async function buildBinary(appId, options) {
  * @return {Promise<T>}
  */
 export async function buildPlugin(exportApp, options) {
-  return orchestrateBuild(exportApp, engine => engine.buildPlugin(defaultBuildOptions(options))).then(result => ({
+  return orchestrateBuild(exportApp, engine =>
+    engine.buildPlugin(defaultBuildOptions(options))
+  ).then(result => ({
     ...result,
     trigger: options.shimTriggerId,
     plugin: true,

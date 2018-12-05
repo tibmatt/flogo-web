@@ -29,12 +29,21 @@ export class RESTAPIContributionsService {
       .toPromise();
   }
 
-  getShimContributionDetails<T extends ContribSchema = ContribSchema>(profileType: FLOGO_PROFILE_TYPE) {
-    return this.restApi.get<T[]>(this.getApiPath(profileType) + '?filter[shim]=' + true).toPromise();
+  getShimContributionDetails<T extends ContribSchema = ContribSchema>(
+    profileType: FLOGO_PROFILE_TYPE
+  ) {
+    return this.restApi
+      .get<T[]>(this.getApiPath(profileType) + '?filter[shim]=' + true)
+      .toPromise();
   }
 
-  listContribs<T extends ContribSchema = ContribSchema>(profileType: FLOGO_PROFILE_TYPE, type: FLOGO_CONTRIB_TYPE) {
-    return this.restApi.get<T[]>(this.getApiPath(profileType) + '?filter[type]=' + type).toPromise();
+  listContribs<T extends ContribSchema = ContribSchema>(
+    profileType: FLOGO_PROFILE_TYPE,
+    type: FLOGO_CONTRIB_TYPE
+  ) {
+    return this.restApi
+      .get<T[]>(this.getApiPath(profileType) + '?filter[type]=' + type)
+      .toPromise();
   }
 
   installContributions({
@@ -57,7 +66,11 @@ export class RESTAPIContributionsService {
   private getApiPath(profileType: FLOGO_PROFILE_TYPE): string {
     const pathToContribution = this.contributionPathByProfileType.get(profileType);
     if (!pathToContribution) {
-      throw new Error(`Contributions API path for '${FLOGO_PROFILE_TYPE[profileType]}' profile is not found`);
+      throw new Error(
+        `Contributions API path for '${
+          FLOGO_PROFILE_TYPE[profileType]
+        }' profile is not found`
+      );
     }
     return pathToContribution;
   }

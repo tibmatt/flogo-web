@@ -43,7 +43,8 @@ export class DiagramComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges({ flow: flowChange, isReadOnly: readOnlyChange }: SimpleChanges) {
-    const readOnlyDidChange = readOnlyChange && readOnlyChange.currentValue !== readOnlyChange.previousValue;
+    const readOnlyDidChange =
+      readOnlyChange && readOnlyChange.currentValue !== readOnlyChange.previousValue;
     if (flowChange || readOnlyDidChange) {
       this.updateMatrix();
     }

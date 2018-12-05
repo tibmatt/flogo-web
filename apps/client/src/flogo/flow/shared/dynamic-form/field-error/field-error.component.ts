@@ -6,7 +6,8 @@ const errorFormatters: { [errorType: string]: (error?: any) => string } = {
   notAnObject: error => `Value cannot be parsed as json`,
 };
 
-const formatErrorMessage = ([errorName, error]: [string, any]) => errorFormatters[errorName](error);
+const formatErrorMessage = ([errorName, error]: [string, any]) =>
+  errorFormatters[errorName](error);
 
 @Component({
   selector: 'flogo-flow-dynamic-field-error',

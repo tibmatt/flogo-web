@@ -18,7 +18,9 @@ export interface OperationalError extends Error {
 
 @Injectable()
 export class ErrorService {
-  public transformRestErrors(errors: { code: string; status: number | string }[]): { [key: string]: boolean } {
+  public transformRestErrors(
+    errors: { code: string; status: number | string }[]
+  ): { [key: string]: boolean } {
     const firstError = errors[0];
     if (firstError && (firstError.status === 500 || firstError.status === '500')) {
       // internal error
@@ -81,7 +83,9 @@ export class ErrorService {
     return error;
   }
 
-  private canCaptureStack(fromClass: any): fromClass is { captureStackTrace: (thisArg: any, func: any) => void } {
+  private canCaptureStack(
+    fromClass: any
+  ): fromClass is { captureStackTrace: (thisArg: any, func: any) => void } {
     return !!fromClass.captureStackTrace;
   }
 }

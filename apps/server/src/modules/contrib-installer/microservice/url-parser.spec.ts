@@ -13,9 +13,15 @@ describe('parse', () => {
       'github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/rest',
       'github.com/TIBCOSoftware/flogo-contrib/activity/rest'
     );
-    assertParsedEquals('https://github.com/TIBCOSoftware/rootrepo', 'github.com/TIBCOSoftware/rootrepo');
+    assertParsedEquals(
+      'https://github.com/TIBCOSoftware/rootrepo',
+      'github.com/TIBCOSoftware/rootrepo'
+    );
     assertParsedEquals('https://some.other.url/a/b', 'some.other.url/a/b');
     assertParsedEquals('some.other.url/a/b', 'some.other.url/a/b');
-    assertParsedEquals('https://some.other.url/tree/master/a/b', 'some.other.url/tree/master/a/b');
+    assertParsedEquals(
+      'https://some.other.url/tree/master/a/b',
+      'some.other.url/tree/master/a/b'
+    );
   });
 });

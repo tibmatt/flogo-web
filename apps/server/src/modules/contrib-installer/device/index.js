@@ -61,7 +61,9 @@ export class RemoteInstallerContrib {
             promise = getJSONContent(fileUrl)
               .then(result => Promise.resolve({ content: result, ref: url.original }))
               .catch(err => {
-                let fileUrl = repoInfo.file([repoUrlParts.path, 'trigger.json'].join('/'));
+                let fileUrl = repoInfo.file(
+                  [repoUrlParts.path, 'trigger.json'].join('/')
+                );
                 return getJSONContent(fileUrl)
                   .then(result => Promise.resolve({ content: result, ref: url.original }))
                   .catch(err => Promise.resolve({ content: null, ref: url.original }));

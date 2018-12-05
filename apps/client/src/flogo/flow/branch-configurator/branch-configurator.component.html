@@ -4,19 +4,26 @@
       <div class="header__title">
         <div class="header__title--configure">Configure Branch</div>
         <div class="header__title--links">
-          {{ this.parentActivity }} <span *ngIf="this.childActivity" class="link-separator">to</span
+          {{ this.parentActivity }}
+          <span *ngIf="this.childActivity" class="link-separator">to</span
           >{{ this.childActivity }}
         </div>
       </div>
 
       <div class="header__actions actions">
         <button class="flogo-button--secondary" (click)="cancel()">Cancel</button>
-        <button class="flogo-button--primary  actions__action--save" [disabled]="this.isSaveDisabled" (click)="save()">
+        <button
+          class="flogo-button--primary  actions__action--save"
+          [disabled]="this.isSaveDisabled"
+          (click)="save()"
+        >
           {{ 'BRANCH-CONFIGURATOR:SAVE' | translate }}
         </button>
       </div>
       <button class="mapper-modal__close" (click)="cancel()">
-        <span aria-hidden="true" class="sr-only">{{ 'BRANCH-CONFIGURATOR:CANCEL' | translate }}</span>
+        <span aria-hidden="true" class="sr-only">{{
+          'BRANCH-CONFIGURATOR:CANCEL' | translate
+        }}</span>
       </button>
     </div>
 

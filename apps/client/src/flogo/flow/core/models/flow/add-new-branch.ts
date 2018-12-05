@@ -1,7 +1,11 @@
 import { FlowGraph, GraphNode, NodeType } from '@flogo-web/client/core';
 import { insertNode } from './insert-node';
 
-export function addNewBranch(flowGraph: FlowGraph, parentId: string, branchId: string): FlowGraph {
+export function addNewBranch(
+  flowGraph: FlowGraph,
+  parentId: string,
+  branchId: string
+): FlowGraph {
   const parentNode = flowGraph.nodes[parentId];
   if (!parentNode || parentNode.type === NodeType.Branch) {
     return flowGraph;

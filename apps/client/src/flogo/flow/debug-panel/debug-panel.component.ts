@@ -4,14 +4,28 @@ import { AnimationEvent } from '@angular/animations';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, pipe } from 'rxjs';
-import { debounceTime, filter, map, shareReplay, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import {
+  debounceTime,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+  take,
+  takeUntil,
+  withLatestFrom,
+} from 'rxjs/operators';
 
 import { SingleEmissionSubject } from '@flogo-web/client/core/models';
 import { TestRunnerService } from '@flogo-web/client/flow/core/test-runner/test-runner.service';
 import { createSaveChangesAction } from '@flogo-web/client/flow/debug-panel/save-changes-action.creator';
 
 import { FlowActions, FlowSelectors, FlowState } from '@flogo-web/client/flow/core/state';
-import { ActivitySchema, Dictionary, ItemActivityTask, StepAttribute } from '@flogo-web/client/core';
+import {
+  ActivitySchema,
+  Dictionary,
+  ItemActivityTask,
+  StepAttribute,
+} from '@flogo-web/client/core';
 import { FormBuilderService } from '@flogo-web/client/flow/shared/dynamic-form';
 import { debugPanelAnimations } from './debug-panel.animations';
 import { mergeFormWithOutputs } from './utils';
@@ -27,8 +41,12 @@ const STATUS_CLOSED = 'closed';
 
 const mapFormInputChangesToSaveAction = (store, activity$) =>
   pipe(
-    filter((formInfo: FieldsInfo) => Boolean(formInfo && formInfo.form && formInfo.form.get('input'))),
-    switchMap((formInfo: FieldsInfo) => formInfo.form.get('input').valueChanges.pipe(debounceTime(250))),
+    filter((formInfo: FieldsInfo) =>
+      Boolean(formInfo && formInfo.form && formInfo.form.get('input'))
+    ),
+    switchMap((formInfo: FieldsInfo) =>
+      formInfo.form.get('input').valueChanges.pipe(debounceTime(250))
+    ),
     map(value => fromPairs(value.formFields.map(field => [field.name, field.value]))),
     withLatestFrom(activity$),
     switchMap(([newValues, task]) => createSaveChangesAction(store, task.id, newValues)),
@@ -39,7 +57,11 @@ const mapFormInputChangesToSaveAction = (store, activity$) =>
   selector: 'flogo-flow-debug-panel',
   templateUrl: './debug-panel.component.html',
   styleUrls: ['./debug-panel.component.less'],
-  animations: [debugPanelAnimations.panelContainer, debugPanelAnimations.panel, debugPanelAnimations.wrappedContent],
+  animations: [
+    debugPanelAnimations.panelContainer,
+    debugPanelAnimations.panel,
+    debugPanelAnimations.wrappedContent,
+  ],
 })
 export class DebugPanelComponent implements OnInit, OnDestroy {
   @ViewChild('content') content: ElementRef;
@@ -70,8 +92,12 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
         select(selector),
         shareReplay(1)
       );
-    this.isRunDisabled$ = selectAndShare(FlowSelectors.getIsRunDisabledForSelectedActivity);
-    this.executionErrrors$ = selectAndShare(FlowSelectors.getCurrentActivityExecutionErrors);
+    this.isRunDisabled$ = selectAndShare(
+      FlowSelectors.getIsRunDisabledForSelectedActivity
+    );
+    this.executionErrrors$ = selectAndShare(
+      FlowSelectors.getCurrentActivityExecutionErrors
+    );
     this.isRestartableTask$ = selectAndShare(FlowSelectors.getIsRestartableTask);
 
     const schema$ = selectAndShare(FlowSelectors.getSelectedActivitySchema);
@@ -86,7 +112,9 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
       this.mapStateToForm(),
       shareReplay(1)
     );
-    const executionResult$ = selectAndShare(FlowSelectors.getSelectedActivityExecutionResult);
+    const executionResult$ = selectAndShare(
+      FlowSelectors.getSelectedActivityExecutionResult
+    );
     this.activityHasRun$ = executionResult$.pipe(map(Boolean));
     this.fields$ = combineLatest(form$, selectedActivity$, executionResult$).pipe(
       this.mergeToFormFields(),
@@ -142,7 +170,9 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
     this.activity$
       .pipe(
         take(1),
-        switchMap(task => this.testRunner.runFromTask({ taskId: task.id, inputs: task.input }))
+        switchMap(task =>
+          this.testRunner.runFromTask({ taskId: task.id, inputs: task.input })
+        )
       )
       .subscribe();
   }
@@ -160,7 +190,9 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
   }
 
   private mergeToFormFields() {
-    return (source: Observable<[FieldsInfo, ItemActivityTask, Dictionary<StepAttribute>]>) =>
+    return (
+      source: Observable<[FieldsInfo, ItemActivityTask, Dictionary<StepAttribute>]>
+    ) =>
       source.pipe(
         filter(([schemaForm]) => !!schemaForm),
         map(([schemaForm, activity, lastExecutionResult]) => {
@@ -196,8 +228,12 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
     if (!schema) {
       return null;
     }
-    const inputs = !isEmpty(schema.inputs) ? this.attributeFormBuilder.toFormGroup(schema.inputs) : null;
-    const outputs = !isEmpty(schema.outputs) ? this.attributeFormBuilder.toFormGroup(schema.outputs) : null;
+    const inputs = !isEmpty(schema.inputs)
+      ? this.attributeFormBuilder.toFormGroup(schema.inputs)
+      : null;
+    const outputs = !isEmpty(schema.outputs)
+      ? this.attributeFormBuilder.toFormGroup(schema.outputs)
+      : null;
     const form = this.formBuilder.group({});
     if (inputs) {
       form.addControl('input', inputs.formGroup);
@@ -208,7 +244,10 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
     }
     return {
       form,
-      metadata: { input: inputs && inputs.fieldsWithControlType, output: outputs && outputs.fieldsWithControlType },
+      metadata: {
+        input: inputs && inputs.fieldsWithControlType,
+        output: outputs && outputs.fieldsWithControlType,
+      },
     };
   }
 

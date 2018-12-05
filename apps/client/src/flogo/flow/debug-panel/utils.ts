@@ -1,7 +1,10 @@
 import { Dictionary, StepAttribute } from '@flogo-web/client/core';
 import { FormGroup } from '@angular/forms';
 
-export function mergeFormWithOutputs(form: FormGroup, lastExecutionResult: Dictionary<StepAttribute>) {
+export function mergeFormWithOutputs(
+  form: FormGroup,
+  lastExecutionResult: Dictionary<StepAttribute>
+) {
   const outputFields = form && form.get('output.formFields');
   if (outputFields && lastExecutionResult) {
     const outputs = matchFormWithExecutionResult(lastExecutionResult, outputFields.value);
@@ -10,7 +13,10 @@ export function mergeFormWithOutputs(form: FormGroup, lastExecutionResult: Dicti
   return form;
 }
 
-export function matchFormWithExecutionResult(step: Dictionary<StepAttribute>, formValues: any[]) {
+export function matchFormWithExecutionResult(
+  step: Dictionary<StepAttribute>,
+  formValues: any[]
+) {
   const outputs = new Map(
     Object.values(step).map<[string, string]>(attr => {
       const [taskType, taskId, attribute] = attr.name.split('.');

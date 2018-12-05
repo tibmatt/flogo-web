@@ -10,7 +10,8 @@ export function createBaseClient() {
 }
 
 const tag = name => `[TestRunner][${name}]`;
-const logRequest = req => logger.info(tag('Request'), `${req.method} ${req.href}`, req.body);
+const logRequest = req =>
+  logger.info(tag('Request'), `${req.method} ${req.href}`, req.body);
 const logResponse = res =>
   logger.info(
     tag('Response'),

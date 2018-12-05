@@ -9,7 +9,10 @@ xdescribe('ConfirmationService', () => {
     });
   });
 
-  it('should be created', inject([ConfirmationService], (service: ConfirmationService) => {
-    expect(service).toBeTruthy();
-  }));
+  it('should be created', inject(
+    [ConfirmationService],
+    (service: ConfirmationService) => {
+      expect(service).toBeTruthy();
+    }
+  ));
 });

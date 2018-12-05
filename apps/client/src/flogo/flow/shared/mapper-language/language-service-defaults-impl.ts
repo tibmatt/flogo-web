@@ -1,9 +1,15 @@
-export class LanguageServiceDefaultsImpl implements monaco.languages.json.LanguageServiceDefaults {
-  private _onDidChange = new monaco.Emitter<monaco.languages.json.LanguageServiceDefaults>();
+export class LanguageServiceDefaultsImpl
+  implements monaco.languages.json.LanguageServiceDefaults {
+  private _onDidChange = new monaco.Emitter<
+    monaco.languages.json.LanguageServiceDefaults
+  >();
   private _diagnosticsOptions: monaco.languages.json.DiagnosticsOptions;
   private _languageId: string;
 
-  constructor(languageId: string, diagnosticsOptions: monaco.languages.json.DiagnosticsOptions) {
+  constructor(
+    languageId: string,
+    diagnosticsOptions: monaco.languages.json.DiagnosticsOptions
+  ) {
     this._languageId = languageId;
     this.setDiagnosticsOptions(diagnosticsOptions);
   }

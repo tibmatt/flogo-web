@@ -31,7 +31,9 @@ describe('diagram.createTileMatrix', function() {
       expect(actualRow[tileIndex]).toEqual(
         expectedTile,
         `For row ${rowIndex} at tile with position ${tileIndex}
-      expected ${JSON.stringify(actualRow[tileIndex])} to equal ${JSON.stringify(expectedTile)}`
+      expected ${JSON.stringify(actualRow[tileIndex])} to equal ${JSON.stringify(
+          expectedTile
+        )}`
       );
     });
   }

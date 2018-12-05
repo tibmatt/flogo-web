@@ -33,7 +33,15 @@ export class ParseLocation implements IParseLocation {
   }
 
   toString(): string {
-    return '{ "offset": ' + this.offset + ', "line": ' + this.line + ', "column":' + this.column + ' }';
+    return (
+      '{ "offset": ' +
+      this.offset +
+      ', "line": ' +
+      this.line +
+      ', "column":' +
+      this.column +
+      ' }'
+    );
   }
 }
 

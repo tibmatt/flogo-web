@@ -17,12 +17,16 @@ describe('NotificationsService', () => {
 
   it('Adds success notifications', async(() => {
     notificationsService.success('this was successful', 0);
-    takeOneEmission().subscribe(n => expect(n).toEqual([{ type: 'success', message: 'this was successful' }]));
+    takeOneEmission().subscribe(n =>
+      expect(n).toEqual([{ type: 'success', message: 'this was successful' }])
+    );
   }));
 
   it('Adds error notifications', async(() => {
     notificationsService.error('this was an error', 0);
-    takeOneEmission().subscribe(n => expect(n).toEqual([{ type: 'error', message: 'this was an error' }]));
+    takeOneEmission().subscribe(n =>
+      expect(n).toEqual([{ type: 'error', message: 'this was an error' }])
+    );
   }));
 
   it('New notifications are prepended', async(() => {

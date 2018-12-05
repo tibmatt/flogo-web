@@ -1,10 +1,16 @@
 import { TriggerConfigureState, TriggerConfigureTabType } from '../../interfaces';
 import { FlowState } from '../flow/flow.state';
-import { TriggerConfigureActionType, TriggerConfigureActionUnion } from './trigger-configure.actions';
+import {
+  TriggerConfigureActionType,
+  TriggerConfigureActionUnion,
+} from './trigger-configure.actions';
 import { init } from './cases/init';
 import { tabStatusReducer } from './cases/tab-status-reducer';
 
-export function reducer(flowState: FlowState, action: TriggerConfigureActionUnion): FlowState {
+export function reducer(
+  flowState: FlowState,
+  action: TriggerConfigureActionUnion
+): FlowState {
   const prevState = flowState.triggerConfigure;
   const triggerConfigureState = triggerConfigureReducer(prevState, action, flowState);
   if (prevState !== triggerConfigureState) {
@@ -57,7 +63,11 @@ export function triggerConfigureReducer(
   }
 }
 
-function updateTriggerSavingStatus(state: TriggerConfigureState, triggerId: string, isSaving: boolean) {
+function updateTriggerSavingStatus(
+  state: TriggerConfigureState,
+  triggerId: string,
+  isSaving: boolean
+) {
   if (!state) {
     return state;
   }

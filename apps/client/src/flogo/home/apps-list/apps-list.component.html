@@ -10,7 +10,9 @@
       (change)="onImportFileSelected($event)"
     />
   </button>
-  <button class="flogo-button--default" (click)="addNewApp()">{{ 'APP-LIST:NEW' | translate }}</button>
+  <button class="flogo-button--default" (click)="addNewApp()">
+    {{ 'APP-LIST:NEW' | translate }}
+  </button>
   <flogo-home-app-import
     *ngIf="showValidationErrors"
     [importValidationErrors]="importValidationErrors"
@@ -30,7 +32,9 @@
   >
     <div class="app__content">
       <h4 class="app__name qa-app-name">{{ app.name }}</h4>
-      <div class="app__description">{{ app.description ? app.description : '&nbsp;' }}</div>
+      <div class="app__description">
+        {{ app.description ? app.description : '&nbsp;' }}
+      </div>
       <footer class="app__created-at">
         {{ 'FLOWS:CREATED' | translate: { value: '' } }}{{ app.createdAt | timeFromNow }}
       </footer>

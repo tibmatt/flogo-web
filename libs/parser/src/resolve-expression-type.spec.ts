@@ -9,7 +9,8 @@ describe('Parser Type Resolver', () => {
   }
 
   const testResolvesToType = (expectedType, cases) => {
-    describe(`${expectedType}`, () => cases.forEach(text => assertParsedType(expectedType, text)));
+    describe(`${expectedType}`, () =>
+      cases.forEach(text => assertParsedType(expectedType, text)));
   };
 
   describe('for valid input', () => {

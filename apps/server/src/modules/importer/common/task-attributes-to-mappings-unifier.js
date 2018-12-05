@@ -1,6 +1,10 @@
 import cloneDeep from 'lodash/cloneDeep';
 import keyBy from 'lodash/keyBy';
-import { TASK_HANDLER_NAME_ERROR, TASK_HANDLER_NAME_ROOT, TYPE_LITERAL_ASSIGNMENT } from '../../../common/constants';
+import {
+  TASK_HANDLER_NAME_ERROR,
+  TASK_HANDLER_NAME_ROOT,
+  TYPE_LITERAL_ASSIGNMENT,
+} from '../../../common/constants';
 import { isMapperActivity, safeGetTasksInHandler } from '../../../common/utils/flow';
 import { isSubflowTask } from '../../../common/utils/subflow';
 

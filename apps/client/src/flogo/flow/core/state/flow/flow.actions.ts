@@ -62,7 +62,13 @@ export class ClearSelection implements BaseFlowAction {
 
 export class CreateBranch implements BaseFlowAction {
   readonly type = ActionType.CreateBranch;
-  constructor(public payload: { handlerType: HandlerType; parentId: string; newBranchId: string }) {}
+  constructor(
+    public payload: {
+      handlerType: HandlerType;
+      parentId: string;
+      newBranchId: string;
+    }
+  ) {}
 }
 
 export class TaskItemCreated implements BaseFlowAction {
@@ -101,7 +107,11 @@ export class ConfigureItem implements BaseFlowAction {
 export class CommitItemConfiguration implements BaseFlowAction {
   readonly type = ActionType.CommitItemConfiguration;
   constructor(
-    public payload: { handlerType: HandlerType; item: { id: string } & Partial<Item>; newSubflowSchema?: ActionSchema }
+    public payload: {
+      handlerType: HandlerType;
+      item: { id: string } & Partial<Item>;
+      newSubflowSchema?: ActionSchema;
+    }
   ) {}
 }
 
@@ -129,7 +139,12 @@ export class NewRunFromStartProcess implements BaseFlowAction {
 export class ExecutionStateUpdated implements BaseFlowAction {
   readonly type = ActionType.ExecutionUpdated;
   constructor(
-    public payload: { changes: { mainGraphNodes?: Dictionary<GraphNode>; errorGraphNodes?: Dictionary<GraphNode> } }
+    public payload: {
+      changes: {
+        mainGraphNodes?: Dictionary<GraphNode>;
+        errorGraphNodes?: Dictionary<GraphNode>;
+      };
+    }
   ) {}
 }
 

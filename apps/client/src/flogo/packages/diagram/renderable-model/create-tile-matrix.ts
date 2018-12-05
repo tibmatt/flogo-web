@@ -8,7 +8,8 @@ import { GraphNodeDictionary, NodeType } from '@flogo-web/client/core';
 
 const TILE_PADDING = tileFactory.makePadding();
 const TILE_PLACEHOLDER = tileFactory.makePlaceholder();
-const fillWithPlaceholders = (fromCount: number, max: number) => times(max - fromCount, () => TILE_PLACEHOLDER);
+const fillWithPlaceholders = (fromCount: number, max: number) =>
+  times(max - fromCount, () => TILE_PLACEHOLDER);
 
 // assumes that the rows won't overflow
 // and the overflow case should be handled somewhere else.
@@ -23,7 +24,10 @@ export function createTileMatrix(
     let hasBranch = false;
     if (!!node) {
       hasBranch = !!node.children.find(child => nodes[child].type === NodeType.Branch);
-      return { ...tileFactory.makeTask(node, index >= maxTileIndex), hasBranch: hasBranch };
+      return {
+        ...tileFactory.makeTask(node, index >= maxTileIndex),
+        hasBranch: hasBranch,
+      };
     } else {
       return TILE_PADDING;
     }

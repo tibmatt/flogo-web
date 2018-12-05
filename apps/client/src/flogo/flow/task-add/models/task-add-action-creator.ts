@@ -3,11 +3,25 @@ import { FlowState, FlowActions, FlowSelectors } from '../../core/state/index';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { PayloadOf } from '../../core/state/utils';
-import { activitySchemaToTask, createSubFlowTask, getProfileType, isSubflowTask } from '@flogo-web/client/shared/utils';
-import { CONTRIB_REF_PLACEHOLDER, ItemActivityTask, ItemSubflow, NodeType, Task } from '@flogo-web/client/core';
+import {
+  activitySchemaToTask,
+  createSubFlowTask,
+  getProfileType,
+  isSubflowTask,
+} from '@flogo-web/client/shared/utils';
+import {
+  CONTRIB_REF_PLACEHOLDER,
+  ItemActivityTask,
+  ItemSubflow,
+  NodeType,
+  Task,
+} from '@flogo-web/client/core';
 import { assign } from 'lodash';
 import { uniqueTaskName } from '@flogo-web/client/flow/core/models/unique-task-name';
-import { extractItemInputsFromTask, taskIdGenerator } from '@flogo-web/client/core/models';
+import {
+  extractItemInputsFromTask,
+  taskIdGenerator,
+} from '@flogo-web/client/core/models';
 import { makeNode } from '@flogo-web/client/flow/core/models/graph-and-items/graph-creator';
 import { HandlerType, InsertTaskSelection } from '@flogo-web/client/flow/core/models';
 
@@ -23,17 +37,30 @@ export function createTaskAddAction(
   return store.pipe(
     select(FlowSelectors.selectFlowState),
     take(1),
-    map(flowState => new FlowActions.TaskItemCreated(createNewTask(flowState, activityToAdd)))
+    map(
+      flowState =>
+        new FlowActions.TaskItemCreated(createNewTask(flowState, activityToAdd))
+    )
   );
 }
 
-function createNewTask(flowState: FlowState, activityData: TaskAddData): PayloadOf<FlowActions.TaskItemCreated> {
+function createNewTask(
+  flowState: FlowState,
+  activityData: TaskAddData
+): PayloadOf<FlowActions.TaskItemCreated> {
   const selection = flowState.currentSelection as InsertTaskSelection;
-  const handlerType = selection.handlerType === HandlerType.Main ? HandlerType.Main : HandlerType.Error;
+  const handlerType =
+    selection.handlerType === HandlerType.Main ? HandlerType.Main : HandlerType.Error;
   const schema = flowState.schemas[activityData.ref];
   const profileType = getProfileType(flowState.app);
   const { errorItems, mainItems } = flowState;
-  const task = createTask({ profileType, activitySchema: schema, data: activityData, errorItems, mainItems });
+  const task = createTask({
+    profileType,
+    activitySchema: schema,
+    data: activityData,
+    errorItems,
+    mainItems,
+  });
   const isFinal = !!task.return;
   const isSubflow = isSubflowTask(task.type);
   const item: ItemActivityTask | ItemSubflow = createItem(task, isSubflow);

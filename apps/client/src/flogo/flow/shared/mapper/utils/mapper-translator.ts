@@ -1,11 +1,22 @@
 import { isString, isArray, fromPairs } from 'lodash';
 import { resolveExpressionType } from '@flogo-web/parser';
 
-import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_TYPE, ValueType } from '@flogo-web/client/core/constants';
-import { Task as FlowTile, AttributeMapping as FlowMapping } from '@flogo-web/client/core';
+import {
+  FLOGO_ERROR_ROOT_NAME,
+  FLOGO_TASK_TYPE,
+  ValueType,
+} from '@flogo-web/client/core/constants';
+import {
+  Task as FlowTile,
+  AttributeMapping as FlowMapping,
+} from '@flogo-web/client/core';
 import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL, ROOT_TYPES } from '../constants';
 // todo: shared models should be moved to core
-import { FlowMetadata, MapperSchema, Properties as MapperSchemaProperties } from '../../../task-configurator/models';
+import {
+  FlowMetadata,
+  MapperSchema,
+  Properties as MapperSchemaProperties,
+} from '../../../task-configurator/models';
 import { Mappings, MapExpression } from '../models';
 
 export type MappingsValidatorFn = (mappings: Mappings) => boolean;
@@ -93,7 +104,11 @@ export class MapperTranslator {
         requiredPropertyNames.push(attr.name);
       }
     });
-    return { type: 'object', properties: sortObjectKeys(properties), required: requiredPropertyNames };
+    return {
+      type: 'object',
+      properties: sortObjectKeys(properties),
+      required: requiredPropertyNames,
+    };
   }
 
   static translateMappingsIn(inputMappings: FlowMapping[]) {
@@ -118,10 +133,15 @@ export class MapperTranslator {
     return (
       Object.keys(mappings || {})
         // filterOutEmptyExpressions
-        .filter(attrName => mappings[attrName].expression && mappings[attrName].expression.trim())
+        .filter(
+          attrName =>
+            mappings[attrName].expression && mappings[attrName].expression.trim()
+        )
         .map(attrName => {
           const mapping = mappings[attrName];
-          const { value, mappingType } = MapperTranslator.parseExpression(mapping.expression);
+          const { value, mappingType } = MapperTranslator.parseExpression(
+            mapping.expression
+          );
           return {
             mapTo: attrName,
             type: mappingType,
@@ -134,7 +154,10 @@ export class MapperTranslator {
   static parseExpression(expression: string) {
     const mappingType = mappingTypeFromExpression(expression);
     let value = expression;
-    if (mappingType === MAPPING_TYPE.OBJECT_TEMPLATE || mappingType === MAPPING_TYPE.LITERAL_ASSIGNMENT) {
+    if (
+      mappingType === MAPPING_TYPE.OBJECT_TEMPLATE ||
+      mappingType === MAPPING_TYPE.LITERAL_ASSIGNMENT
+    ) {
       value = value !== 'nil' ? JSON.parse(value) : null;
     }
     return { mappingType, value };
@@ -142,7 +165,9 @@ export class MapperTranslator {
 
   static getRootType(tile: FlowTile | FlowMetadata) {
     if (tile.type === FLOGO_TASK_TYPE.TASK_ROOT) {
-      return tile.triggerType === FLOGO_ERROR_ROOT_NAME ? ROOT_TYPES.ERROR : ROOT_TYPES.TRIGGER;
+      return tile.triggerType === FLOGO_ERROR_ROOT_NAME
+        ? ROOT_TYPES.ERROR
+        : ROOT_TYPES.TRIGGER;
     } else if (tile.type === 'metadata') {
       return ROOT_TYPES.FLOW;
     }
@@ -154,7 +179,9 @@ export class MapperTranslator {
       if (!mappings) {
         return true;
       }
-      const invalidMapping = Object.keys(mappings).find(mapTo => isInvalidMapping(mappings[mapTo]));
+      const invalidMapping = Object.keys(mappings).find(mapTo =>
+        isInvalidMapping(mappings[mapTo])
+      );
       return !invalidMapping;
     };
   }
@@ -178,10 +205,17 @@ export class MapperTranslator {
     return `$\{${head}}${tail}`;
   }
 
-  private static addTileToOutputContext(rootSchema, tile, includeEmptySchemas: boolean = false) {
+  private static addTileToOutputContext(
+    rootSchema,
+    tile,
+    includeEmptySchemas: boolean = false
+  ) {
     const attributes = tile.attributes;
     let outputs;
-    if (tile.type === FLOGO_TASK_TYPE.TASK || tile.type === FLOGO_TASK_TYPE.TASK_SUB_PROC) {
+    if (
+      tile.type === FLOGO_TASK_TYPE.TASK ||
+      tile.type === FLOGO_TASK_TYPE.TASK_SUB_PROC
+    ) {
       // try to get data from task from outputs
       outputs = attributes && attributes.outputs ? attributes.outputs : [];
     } else {

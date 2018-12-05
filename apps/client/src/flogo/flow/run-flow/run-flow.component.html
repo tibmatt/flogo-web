@@ -1,5 +1,8 @@
 <div class="run-flow__container" (fgClickOutside)="setRunFlowFlag(false)">
-  <div class="warning-container" [class.--show-disable-detail]="disableRun && disableReason">
+  <div
+    class="warning-container"
+    [class.--show-disable-detail]="disableRun && disableReason"
+  >
     <button
       (click)="handleRunFlowClick()"
       class="flogo-button--default run-flow__button"
@@ -21,10 +24,19 @@
         [fields]="flowInputs"
       ></flogo-flow-dynamic-form>
       <div class="button__container">
-        <button type="button" class="flogo-button--secondary" (click)="setRunFlowFlag(false)">
+        <button
+          type="button"
+          class="flogo-button--secondary"
+          (click)="setRunFlowFlag(false)"
+        >
           {{ 'FLOW-RUN:CANCEL-BUTTON' | translate }}
         </button>
-        <button type="submit" class="flogo-button--default" (click)="onRunFlowSubmit()" [disabled]="!isValid">
+        <button
+          type="submit"
+          class="flogo-button--default"
+          (click)="onRunFlowSubmit()"
+          [disabled]="!isValid"
+        >
           {{ 'FLOW-RUN:RUN-BUTTON' | translate }}
         </button>
       </div>

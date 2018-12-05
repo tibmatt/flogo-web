@@ -1,5 +1,12 @@
 // script based on: https://github.com/CoderAjay/ng2Draggable under MIT license
-import { Directive, ElementRef, HostListener, OnDestroy, OnInit, Renderer2 as Renderer } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  Renderer2 as Renderer,
+} from '@angular/core';
 
 @Directive({
   selector: '[fgDraggable]',

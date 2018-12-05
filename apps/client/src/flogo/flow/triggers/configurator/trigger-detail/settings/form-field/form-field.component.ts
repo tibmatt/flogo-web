@@ -1,4 +1,13 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChange, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChange,
+  ViewChild,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ValueType } from '@flogo-web/client/core/constants';
 import { Observable } from 'rxjs';
@@ -6,7 +15,13 @@ import { SettingValue } from '../../settings-value';
 import { SettingControlInfo } from '../../../interfaces';
 import { parseValue } from '../parse-value';
 
-const COMPLEX_TYPES = [ValueType.Array, ValueType.Any, ValueType.ComplexObject, ValueType.Object, ValueType.Params];
+const COMPLEX_TYPES = [
+  ValueType.Array,
+  ValueType.Any,
+  ValueType.ComplexObject,
+  ValueType.Object,
+  ValueType.Params,
+];
 
 @Component({
   selector: 'flogo-configuration-settings-field',

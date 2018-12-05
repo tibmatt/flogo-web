@@ -23,7 +23,13 @@ import {
   IStandaloneCodeEditor,
   LineRange,
 } from './monaco.types';
-import { ClientPosition, CompletionProvider, EditorError, HoverProvider, OffsetRange } from './types';
+import {
+  ClientPosition,
+  CompletionProvider,
+  EditorError,
+  HoverProvider,
+  OffsetRange,
+} from './types';
 import { DisposableTracker } from './disposable-tracker';
 
 const SOURCE_ID = 'ngx-monaco-editor';
@@ -66,28 +72,103 @@ export const DEFAULT_EDITOR_OPTIONS: EditorConstructOptions = {
         <svg viewBox="0 0 64 64">
           <g stroke-width="0">
             <circle cx="24" cy="0" transform="translate(32,32)" r="6.93333">
-              <animate attributeName="r" dur="750ms" values="8;7;6;5;4;3;2;1;8" repeatCount="indefinite"></animate>
+              <animate
+                attributeName="r"
+                dur="750ms"
+                values="8;7;6;5;4;3;2;1;8"
+                repeatCount="indefinite"
+              ></animate>
             </circle>
-            <circle cx="16.970562748477143" cy="16.97056274847714" transform="translate(32,32)" r="7.93333">
-              <animate attributeName="r" dur="750ms" values="1;8;7;6;5;4;3;2;1" repeatCount="indefinite"></animate>
+            <circle
+              cx="16.970562748477143"
+              cy="16.97056274847714"
+              transform="translate(32,32)"
+              r="7.93333"
+            >
+              <animate
+                attributeName="r"
+                dur="750ms"
+                values="1;8;7;6;5;4;3;2;1"
+                repeatCount="indefinite"
+              ></animate>
             </circle>
-            <circle cx="1.4695761589768238e-15" cy="24" transform="translate(32,32)" r="1.46666">
-              <animate attributeName="r" dur="750ms" values="2;1;8;7;6;5;4;3;2" repeatCount="indefinite"></animate>
+            <circle
+              cx="1.4695761589768238e-15"
+              cy="24"
+              transform="translate(32,32)"
+              r="1.46666"
+            >
+              <animate
+                attributeName="r"
+                dur="750ms"
+                values="2;1;8;7;6;5;4;3;2"
+                repeatCount="indefinite"
+              ></animate>
             </circle>
-            <circle cx="-16.97056274847714" cy="16.970562748477143" transform="translate(32,32)" r="1.93333">
-              <animate attributeName="r" dur="750ms" values="3;2;1;8;7;6;5;4;3" repeatCount="indefinite"></animate>
+            <circle
+              cx="-16.97056274847714"
+              cy="16.970562748477143"
+              transform="translate(32,32)"
+              r="1.93333"
+            >
+              <animate
+                attributeName="r"
+                dur="750ms"
+                values="3;2;1;8;7;6;5;4;3"
+                repeatCount="indefinite"
+              ></animate>
             </circle>
-            <circle cx="-24" cy="2.9391523179536475e-15" transform="translate(32,32)" r="2.93333">
-              <animate attributeName="r" dur="750ms" values="4;3;2;1;8;7;6;5;4" repeatCount="indefinite"></animate>
+            <circle
+              cx="-24"
+              cy="2.9391523179536475e-15"
+              transform="translate(32,32)"
+              r="2.93333"
+            >
+              <animate
+                attributeName="r"
+                dur="750ms"
+                values="4;3;2;1;8;7;6;5;4"
+                repeatCount="indefinite"
+              ></animate>
             </circle>
-            <circle cx="-16.970562748477143" cy="-16.97056274847714" transform="translate(32,32)" r="3.93333">
-              <animate attributeName="r" dur="750ms" values="5;4;3;2;1;8;7;6;5" repeatCount="indefinite"></animate>
+            <circle
+              cx="-16.970562748477143"
+              cy="-16.97056274847714"
+              transform="translate(32,32)"
+              r="3.93333"
+            >
+              <animate
+                attributeName="r"
+                dur="750ms"
+                values="5;4;3;2;1;8;7;6;5"
+                repeatCount="indefinite"
+              ></animate>
             </circle>
-            <circle cx="-4.408728476930472e-15" cy="-24" transform="translate(32,32)" r="4.93333">
-              <animate attributeName="r" dur="750ms" values="6;5;4;3;2;1;8;7;6" repeatCount="indefinite"></animate>
+            <circle
+              cx="-4.408728476930472e-15"
+              cy="-24"
+              transform="translate(32,32)"
+              r="4.93333"
+            >
+              <animate
+                attributeName="r"
+                dur="750ms"
+                values="6;5;4;3;2;1;8;7;6"
+                repeatCount="indefinite"
+              ></animate>
             </circle>
-            <circle cx="16.970562748477136" cy="-16.970562748477143" transform="translate(32,32)" r="5.93333">
-              <animate attributeName="r" dur="750ms" values="7;6;5;4;3;2;1;8;7" repeatCount="indefinite"></animate>
+            <circle
+              cx="16.970562748477136"
+              cy="-16.970562748477143"
+              transform="translate(32,32)"
+              r="5.93333"
+            >
+              <animate
+                attributeName="r"
+                dur="750ms"
+                values="7;6;5;4;3;2;1;8;7"
+                repeatCount="indefinite"
+              ></animate>
             </circle>
           </g>
         </svg>
@@ -95,7 +176,8 @@ export const DEFAULT_EDITOR_OPTIONS: EditorConstructOptions = {
     </div>
   `,
 })
-export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor {
+export class MonacoEditorComponent
+  implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor {
   @ViewChild('editor') editorRef: ElementRef;
 
   @Input() editorOptions: EditorConstructOptions = {};
@@ -103,10 +185,12 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
   @Input() completionProvider: CompletionProvider = null;
 
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
-  @Output() cursorChange: EventEmitter<ICursorPositionChangedEvent> = new EventEmitter<ICursorPositionChangedEvent>();
-  @Output() selectionChange: EventEmitter<ICursorSelectionChangedEvent> = new EventEmitter<
-    ICursorSelectionChangedEvent
+  @Output() cursorChange: EventEmitter<ICursorPositionChangedEvent> = new EventEmitter<
+    ICursorPositionChangedEvent
   >();
+  @Output() selectionChange: EventEmitter<
+    ICursorSelectionChangedEvent
+  > = new EventEmitter<ICursorSelectionChangedEvent>();
   @Output() blur: EventEmitter<void> = new EventEmitter<void>();
 
   @Output() ready: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -149,8 +233,18 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
     if (range) {
       monacoRange = this.createMonacoRangeInstance(range);
     } else {
-      const { startLineNumber, startColumn, endLineNumber, endColumn } = this.determineRangeToInsertTo();
-      monacoRange = new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn);
+      const {
+        startLineNumber,
+        startColumn,
+        endLineNumber,
+        endColumn,
+      } = this.determineRangeToInsertTo();
+      monacoRange = new monaco.Range(
+        startLineNumber,
+        startColumn,
+        endLineNumber,
+        endColumn
+      );
     }
 
     this.insertText(text, monacoRange);
@@ -232,7 +326,10 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
     const model = this.editor.getModel();
     if (model) {
       const markers = monaco.editor.getModelMarkers({ owner: SOURCE_ID });
-      return Boolean(markers) && markers.find(marker => marker.severity === monaco.MarkerSeverity.Error) != null;
+      return (
+        Boolean(markers) &&
+        markers.find(marker => marker.severity === monaco.MarkerSeverity.Error) != null
+      );
     }
     return false;
   }
@@ -247,7 +344,10 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
       return;
     }
 
-    const errorMarkers = errors && errors.length ? errors.map((e: EditorError) => this.errorToMarker(e)) : [];
+    const errorMarkers =
+      errors && errors.length
+        ? errors.map((e: EditorError) => this.errorToMarker(e))
+        : [];
     monaco.editor.setModelMarkers(model, SOURCE_ID, errorMarkers);
   }
 
@@ -296,7 +396,11 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
     this.valueChange
       .pipe(
         takeUntil(this.destroyed),
-        map(value => (this.formValueChangeTransformerFn ? this.formValueChangeTransformerFn(value) : value))
+        map(value =>
+          this.formValueChangeTransformerFn
+            ? this.formValueChangeTransformerFn(value)
+            : value
+        )
       )
       .subscribe(onChange);
   }
@@ -313,7 +417,11 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
   }
 
   writeValue(value: any) {
-    if (this.shouldUpdateValue && this.editor && !this.shouldUpdateValue(this.editor.getValue(), value)) {
+    if (
+      this.shouldUpdateValue &&
+      this.editor &&
+      !this.shouldUpdateValue(this.editor.getValue(), value)
+    ) {
       return;
     }
     if (this.formValueWriteTransformerFn) {
@@ -341,8 +449,12 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
 
     this._disposables.add(
       this.editor.onDidChangeModelContent(ngZone(() => this.onDidChangeContent())),
-      this.editor.onDidChangeCursorPosition(ngZone(event => this.onDidChangeCursorPosition(event))),
-      this.editor.onDidChangeCursorSelection(ngZone(event => this.onDidChangeCursorSelection(event))),
+      this.editor.onDidChangeCursorPosition(
+        ngZone(event => this.onDidChangeCursorPosition(event))
+      ),
+      this.editor.onDidChangeCursorSelection(
+        ngZone(event => this.onDidChangeCursorSelection(event))
+      ),
       this.editor.onDidBlurEditorWidget(ngZone(() => this.blur.emit()))
     );
 
@@ -407,7 +519,12 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
   }
 
   private errorToMarker(e: EditorError) {
-    const { startLineNumber, startColumn, endColumn, endLineNumber } = this.createMonacoRangeInstance(e.location);
+    const {
+      startLineNumber,
+      startColumn,
+      endColumn,
+      endLineNumber,
+    } = this.createMonacoRangeInstance(e.location);
     return {
       startLineNumber,
       startColumn,
@@ -443,7 +560,9 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
     ]);
   }
 
-  private getRangeForTokenAtClientPosition(clientPosition: ClientPosition): monaco.IRange | null {
+  private getRangeForTokenAtClientPosition(
+    clientPosition: ClientPosition
+  ): monaco.IRange | null {
     const target = this.editor.getTargetAtClientPoint(clientPosition.x, clientPosition.y);
     if (!target || !target.position) {
       return null;

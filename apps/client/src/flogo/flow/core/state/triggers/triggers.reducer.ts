@@ -2,7 +2,10 @@ import { FlowState } from '../flow/flow.state';
 import { TriggerActionsUnion, TriggerActionType } from './triggers.actions';
 import { makeTriggerSelection, isTriggerSelection } from '../../models/flow/selection';
 
-export function triggersReducer(state: FlowState, action: TriggerActionsUnion): FlowState {
+export function triggersReducer(
+  state: FlowState,
+  action: TriggerActionsUnion
+): FlowState {
   switch (action.type) {
     // todo: remove once selection display is not needed
     case TriggerActionType.SelectTrigger: {
@@ -52,7 +55,10 @@ export function triggersReducer(state: FlowState, action: TriggerActionsUnion): 
     case TriggerActionType.RemoveHandler: {
       state = removeTriggerAndHandler(state, action.payload);
       const currentSelection = state.currentSelection;
-      if (isTriggerSelection(currentSelection) && currentSelection.triggerId === action.payload) {
+      if (
+        isTriggerSelection(currentSelection) &&
+        currentSelection.triggerId === action.payload
+      ) {
         return {
           ...state,
           currentSelection: null,
@@ -65,7 +71,10 @@ export function triggersReducer(state: FlowState, action: TriggerActionsUnion): 
       state = removeTriggerAndHandler(state, payload.copiedTriggerId);
       let currentSelection = state.currentSelection;
       const newTrigger = payload.newTrigger;
-      if (isTriggerSelection(currentSelection) && currentSelection.triggerId === payload.copiedTriggerId) {
+      if (
+        isTriggerSelection(currentSelection) &&
+        currentSelection.triggerId === payload.copiedTriggerId
+      ) {
         currentSelection = makeTriggerSelection(newTrigger.id);
       }
       return {

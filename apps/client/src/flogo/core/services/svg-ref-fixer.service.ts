@@ -4,8 +4,10 @@ import { WindowRef } from './window-ref';
 
 const PATTERN_FUNCTIONAL = /url\((.*)#/;
 const PATTERN_HASHED = /(.*)#/;
-const replaceFunctionalUrl = (path: string, inString: string) => inString.replace(PATTERN_FUNCTIONAL, `url(${path}#`);
-const replaceHashedRef = (path: string, inString: string) => inString.replace(PATTERN_HASHED, `${path}#`);
+const replaceFunctionalUrl = (path: string, inString: string) =>
+  inString.replace(PATTERN_FUNCTIONAL, `url(${path}#`);
+const replaceHashedRef = (path: string, inString: string) =>
+  inString.replace(PATTERN_HASHED, `${path}#`);
 const fixRefIfNeeded = (path: string, attrVal: string) => {
   if (PATTERN_FUNCTIONAL.test(attrVal)) {
     return replaceFunctionalUrl(path, attrVal);
@@ -20,10 +22,15 @@ const fixRefIfNeeded = (path: string, attrVal: string) => {
 export class SvgRefFixerService {
   browserRequiresFix: boolean;
 
-  constructor(private location: Location, @Inject(DOCUMENT) document: Document, windowRef: WindowRef) {
+  constructor(
+    private location: Location,
+    @Inject(DOCUMENT) document: Document,
+    windowRef: WindowRef
+  ) {
     const navigator = windowRef.nativeWindow.navigator;
     this.browserRequiresFix = Boolean(
-      document['documentMode'] || /(Edge)|(Version\/[\d\.]+.*Safari)/.test(navigator.userAgent)
+      document['documentMode'] ||
+        /(Edge)|(Version\/[\d\.]+.*Safari)/.test(navigator.userAgent)
     );
   }
 

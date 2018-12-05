@@ -76,7 +76,12 @@ Example:
 ```javascript
 import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
 TestBed.configureTestingModule({
-  imports: [FakeRootLanguageModule, CoreModule, SharedModule, AnotherModuleThatUsesCoreModuleOrSharedModule],
+  imports: [
+    FakeRootLanguageModule,
+    CoreModule,
+    SharedModule,
+    AnotherModuleThatUsesCoreModuleOrSharedModule,
+  ],
   declarations: [ComponentUnderTest],
   providers: [],
 });

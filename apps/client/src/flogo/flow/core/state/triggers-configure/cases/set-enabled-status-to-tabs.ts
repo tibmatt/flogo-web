@@ -1,7 +1,9 @@
 import { isEmpty, mapValues } from 'lodash';
 import { TriggerConfigureState, TriggerConfigureTab } from '@flogo-web/client/flow/core';
 
-export function setEnabledStatusToTabs(state: TriggerConfigureState): TriggerConfigureState {
+export function setEnabledStatusToTabs(
+  state: TriggerConfigureState
+): TriggerConfigureState {
   return {
     ...state,
     tabs: mapValues(state.tabs, (tab, tabId) => {

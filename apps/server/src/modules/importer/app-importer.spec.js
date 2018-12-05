@@ -32,14 +32,22 @@ describe('importer.AppImporter', () => {
 
       beforeAll(async function() {
         sandbox = sinon.createSandbox();
-        testDoubles.validatorStub = sandbox.stub(importer, 'validateAndCleanAdditionalProperties').callsFake(app => {
-          app.id = 'myValidCleanAppId';
-        });
-        testDoubles.appCreationStub = sandbox.stub(dependencies.appStorage, 'create').returns({ id: 'createdAppId' });
+        testDoubles.validatorStub = sandbox
+          .stub(importer, 'validateAndCleanAdditionalProperties')
+          .callsFake(app => {
+            app.id = 'myValidCleanAppId';
+          });
+        testDoubles.appCreationStub = sandbox
+          .stub(dependencies.appStorage, 'create')
+          .returns({ id: 'createdAppId' });
 
         const actionsMap = new Map();
-        testDoubles.actionsImporterStub = sandbox.stub(dependencies.actionsImporter, 'importAll').returns(actionsMap);
-        testDoubles.triggerImporterMock = sandbox.mock(dependencies.triggerHandlersImporter);
+        testDoubles.actionsImporterStub = sandbox
+          .stub(dependencies.actionsImporter, 'importAll')
+          .returns(actionsMap);
+        testDoubles.triggerImporterMock = sandbox.mock(
+          dependencies.triggerHandlersImporter
+        );
         testDoubles.triggerImporterMock
           .expects('setAppId')
           .once()
@@ -67,7 +75,11 @@ describe('importer.AppImporter', () => {
       test('should import the actions into the created app', () => {
         const actionsImporterStub = testDoubles.actionsImporterStub;
         expect(actionsImporterStub.calledOnce).toBe(true);
-        expect(actionsImporterStub.calledWith('createdAppId', { id: 'myValidRawAppId' })).toBe(true);
+        expect(
+          actionsImporterStub.calledWith('createdAppId', {
+            id: 'myValidRawAppId',
+          })
+        ).toBe(true);
       });
       test('should configure the trigger handlers importer and import the triggers and handlers', () => {
         testDoubles.triggerImporterMock.verify();
@@ -89,8 +101,17 @@ describe('importer.AppImporter', () => {
     const fullAppValidator = {};
     const appStorage = { create: noOp };
     const actionsImporter = { importAll: noOp };
-    const triggerHandlersImporter = { setAppId: noOp, setActionsByOriginalId: noOp, importAll: noOp };
-    const importerInstance = new AppImporter(fullAppValidator, appStorage, actionsImporter, triggerHandlersImporter);
+    const triggerHandlersImporter = {
+      setAppId: noOp,
+      setActionsByOriginalId: noOp,
+      importAll: noOp,
+    };
+    const importerInstance = new AppImporter(
+      fullAppValidator,
+      appStorage,
+      actionsImporter,
+      triggerHandlersImporter
+    );
     return {
       importer: importerInstance,
       dependencies: {

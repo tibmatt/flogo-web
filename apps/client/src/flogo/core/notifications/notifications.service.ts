@@ -2,9 +2,13 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, timer, Observable, Subscription } from 'rxjs';
 import { Router, NavigationStart } from '@angular/router';
 import { filter, take, takeUntil } from 'rxjs/operators';
-import { Notification, NotificationMessage } from '@flogo-web/client/core/notifications/notifications';
+import {
+  Notification,
+  NotificationMessage,
+} from '@flogo-web/client/core/notifications/notifications';
 
-const keepPersistableOnly = (notifications: Notification[]) => notifications.filter(n => n.persistAfterNavigation);
+const keepPersistableOnly = (notifications: Notification[]) =>
+  notifications.filter(n => n.persistAfterNavigation);
 const DEFAULT_TIMEOUT = 4500;
 
 @Injectable({
@@ -16,7 +20,9 @@ export class NotificationsService {
   private navigationSubscription: Subscription;
 
   constructor(private router: Router) {
-    this.routeChange$ = router.events.pipe(filter(event => event instanceof NavigationStart));
+    this.routeChange$ = router.events.pipe(
+      filter(event => event instanceof NavigationStart)
+    );
     this.navigationSubscription = this.routeChange$.subscribe(() => this.onNavigation());
   }
 
@@ -67,7 +73,9 @@ export class NotificationsService {
     this.updateNotifications(keepPersistableOnly);
   }
 
-  private updateNotifications(update: (currentNotifications: Notification[]) => Notification[]) {
+  private updateNotifications(
+    update: (currentNotifications: Notification[]) => Notification[]
+  ) {
     const currentNotifications = this.notificationsSource.getValue();
     const nextNotifications = update(currentNotifications);
     if (nextNotifications !== currentNotifications) {

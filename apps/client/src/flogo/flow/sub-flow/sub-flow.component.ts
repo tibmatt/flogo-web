@@ -1,4 +1,12 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { FlogoFlowService as FlowsService } from '@flogo-web/client/flow/core/flow.service';
 import { BsModalComponent } from 'ng2-bs3-modal';
 import { ActionBase } from '@flogo-web/client/core';
@@ -14,7 +22,9 @@ export class SubFlowComponent implements AfterViewInit, OnInit {
   @Input()
   currentFlow: string;
   @Output()
-  flowSelected: EventEmitter<ActionBase | string> = new EventEmitter<ActionBase | string>();
+  flowSelected: EventEmitter<ActionBase | string> = new EventEmitter<
+    ActionBase | string
+  >();
 
   @ViewChild('listModal') modal: BsModalComponent;
   flowsList: ActionBase[];

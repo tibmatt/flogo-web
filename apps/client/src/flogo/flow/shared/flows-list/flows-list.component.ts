@@ -11,7 +11,9 @@ export class FlowsListComponent {
   list: ActionBase[];
 
   @Output()
-  flowSelected: EventEmitter<ActionBase | string> = new EventEmitter<ActionBase | string>();
+  flowSelected: EventEmitter<ActionBase | string> = new EventEmitter<
+    ActionBase | string
+  >();
   @Output()
   flowSelectionCancel: EventEmitter<string> = new EventEmitter<string>();
 

@@ -1,5 +1,12 @@
 import { sortBy } from 'lodash';
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { App } from '@flogo-web/client/core';
 import { NotificationsService } from '@flogo-web/client/core/notifications';
 import { AppsApiService } from '@flogo-web/client/core/services/restapi/v2/apps-api.service';
@@ -18,14 +25,22 @@ export class FlogoAppsListComponent implements OnInit {
 
   public applications: Array<App> = [];
 
-  constructor(private apiApplications: AppsApiService, private notifications: NotificationsService) {}
+  constructor(
+    private apiApplications: AppsApiService,
+    private notifications: NotificationsService
+  ) {}
 
   ngOnInit() {
     this.listAllApps();
   }
 
   onSelectApp(event: Event, removeBox: ElementRef, app: App) {
-    if (!(event.target === removeBox.nativeElement || removeBox.nativeElement.contains(event.target))) {
+    if (
+      !(
+        event.target === removeBox.nativeElement ||
+        removeBox.nativeElement.contains(event.target)
+      )
+    ) {
       this.emitAppSelected(app);
     }
   }

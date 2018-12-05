@@ -5,7 +5,9 @@ function getReporters(config) {
   if (process.env.TRAVIS) {
     return ['mocha'];
   }
-  return config.angularCli && config.angularCli.codeCoverage ? ['progress', 'coverage-istanbul'] : ['kjhtml', 'mocha'];
+  return config.angularCli && config.angularCli.codeCoverage
+    ? ['progress', 'coverage-istanbul']
+    : ['kjhtml', 'mocha'];
 }
 
 module.exports = function(config) {

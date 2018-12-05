@@ -23,7 +23,10 @@ export function exportApplication(app, appModel, options = {}) {
     let formatter;
     let validator;
 
-    if (appModel === EXPORT_MODE.STANDARD_MODEL && appProfileType !== FLOGO_PROFILE_TYPES.MICRO_SERVICE) {
+    if (
+      appModel === EXPORT_MODE.STANDARD_MODEL &&
+      appProfileType !== FLOGO_PROFILE_TYPES.MICRO_SERVICE
+    ) {
       // can't export standard mode of a device app
       throw new Error('Can only export microservice apps to an standard format');
     }
@@ -48,7 +51,12 @@ export function exportApplication(app, appModel, options = {}) {
 
 function executeExport({ app, options, formatter, validator }) {
   const { isFullExportMode = true, onlyThisActions = [] } = options || {};
-  const exporter = new Exporter(isFullExportMode, formatter, validator, new UniqueIdAgent());
+  const exporter = new Exporter(
+    isFullExportMode,
+    formatter,
+    validator,
+    new UniqueIdAgent()
+  );
   return exporter.export(cloneDeep(app), onlyThisActions);
 }
 

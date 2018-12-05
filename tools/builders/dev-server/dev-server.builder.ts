@@ -1,5 +1,10 @@
 import { resolve, normalize, Path, getSystemPath } from '@angular-devkit/core';
-import { BuildEvent, Builder, BuilderConfiguration, BuilderContext } from '@angular-devkit/architect';
+import {
+  BuildEvent,
+  Builder,
+  BuilderConfiguration,
+  BuilderContext,
+} from '@angular-devkit/architect';
 import { ChildProcess } from 'child_process';
 import { relative } from 'path';
 import { Observable, of } from 'rxjs';
@@ -37,11 +42,17 @@ export default class ServerBuilder implements Builder<BuildOptions> {
 
   private resolveBinary(watch: boolean) {
     return getSystemPath(
-      resolve(this.builderContext.workspace.root, normalize(watch ? TSNODE_DEV_BINARY : TSNODE_BINARY))
+      resolve(
+        this.builderContext.workspace.root,
+        normalize(watch ? TSNODE_DEV_BINARY : TSNODE_BINARY)
+      )
     );
   }
 
-  private runProcess(binary: string | Path, { cwd, main, tsconfig }: { cwd: string; main: string; tsconfig: string }) {
+  private runProcess(
+    binary: string | Path,
+    { cwd, main, tsconfig }: { cwd: string; main: string; tsconfig: string }
+  ) {
     return new Observable(observer => {
       const subprocess = spawn(binary, [...DEFAULT_ARGS, '-P', tsconfig, main], {
         cwd,
@@ -75,7 +86,10 @@ export default class ServerBuilder implements Builder<BuildOptions> {
 
   private getConfig(buildTarget: string) {
     const [project, target, configuration] = buildTarget.split(':');
-    return this.builderContext.architect.getBuilderConfiguration<{ tsConfig: string; main: string }>({
+    return this.builderContext.architect.getBuilderConfiguration<{
+      tsConfig: string;
+      main: string;
+    }>({
       project,
       target,
       configuration,

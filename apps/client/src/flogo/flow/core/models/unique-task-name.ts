@@ -36,6 +36,8 @@ export function uniqueTaskName(taskName: string, ...taskDictionaries) {
 export function hasTaskWithSameName(taskName, ...taskDictionaries): boolean {
   const allTasks = Object.assign({}, ...taskDictionaries);
   return !!Object.values(allTasks).find(
-    task => !isBranchTask(task) && (task as ItemTask).name.toLowerCase() === taskName.toLowerCase()
+    task =>
+      !isBranchTask(task) &&
+      (task as ItemTask).name.toLowerCase() === taskName.toLowerCase()
   );
 }

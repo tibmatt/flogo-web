@@ -14,7 +14,9 @@ export interface TriggerConfigureSettings {
 }
 
 export interface TriggerConfigureMappings {
-  groupId: TriggerConfigureTabType.FlowInputMappings | TriggerConfigureTabType.FlowOutputMappings;
+  groupId:
+    | TriggerConfigureTabType.FlowInputMappings
+    | TriggerConfigureTabType.FlowOutputMappings;
   mappings: { [field: string]: string };
 }
 

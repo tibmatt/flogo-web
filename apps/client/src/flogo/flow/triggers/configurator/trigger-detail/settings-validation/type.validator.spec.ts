@@ -1,4 +1,9 @@
-import { arrayValidator, booleanValidator, getNumberValidator, getObjectValidator } from './type.validator';
+import {
+  arrayValidator,
+  booleanValidator,
+  getNumberValidator,
+  getObjectValidator,
+} from './type.validator';
 import { makeExpectationFunctions } from './testing/make-expectation-functions';
 import { ValueType } from '@flogo-web/client/core';
 
@@ -45,7 +50,9 @@ describe('arrayValidator', function() {
 
 describe('numberValidator', function() {
   it('Should correctly validate number values', function() {
-    const { shouldPass, shouldFail } = makeExpectationFunctions(getNumberValidator(ValueType.Integer));
+    const { shouldPass, shouldFail } = makeExpectationFunctions(
+      getNumberValidator(ValueType.Integer)
+    );
 
     shouldPass(1);
     shouldPass(23423433);
@@ -67,7 +74,9 @@ describe('numberValidator', function() {
 
 describe('getObjectValidator', function() {
   it('Should correctly validate object values', function() {
-    const { shouldPass, shouldFail } = makeExpectationFunctions(getObjectValidator(ValueType.Object));
+    const { shouldPass, shouldFail } = makeExpectationFunctions(
+      getObjectValidator(ValueType.Object)
+    );
 
     shouldPass({});
     shouldPass({ a: 32424 });

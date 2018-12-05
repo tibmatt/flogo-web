@@ -11,7 +11,13 @@ import { TileBranchComponent } from '@flogo-web/client/packages/diagram/tiles/ti
 @NgModule({
   imports: [SharedModule, CoreModule],
   exports: [DiagramComponent],
-  declarations: [DiagramComponent, DiagramRowComponent, TileInsertComponent, TileBranchComponent, TileTaskComponent],
+  declarations: [
+    DiagramComponent,
+    DiagramRowComponent,
+    TileInsertComponent,
+    TileBranchComponent,
+    TileTaskComponent,
+  ],
   providers: [],
 })
 export class DiagramModule {}

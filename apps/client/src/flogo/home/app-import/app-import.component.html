@@ -8,7 +8,9 @@
   <div class="flogo-error__header">
     <h4 class="flogo-error__head">
       <i class="flogo-icon-info flogo-error__warning"></i>
-      <span class="flogo-error_head-text">{{ 'IMPORT-ERROR:IMPORT_FAILED' | translate }}</span>
+      <span class="flogo-error_head-text">{{
+        'IMPORT-ERROR:IMPORT_FAILED' | translate
+      }}</span>
     </h4>
   </div>
   <div class="flogo-error__container">
@@ -17,8 +19,12 @@
     </p>
     <div class="flogo-error__list-container">
       <div class="flogo-error__list" *ngFor="let detail of errorDetails">
-        <h4 class="flogo-error__list-head">{{ errorFormatter.formatMessageHeader(detail.keyword) }}</h4>
-        <span class="flogo-error__content">{{ errorFormatter.formatErrorMessage(detail) }}</span>
+        <h4 class="flogo-error__list-head">
+          {{ errorFormatter.formatMessageHeader(detail.keyword) }}
+        </h4>
+        <span class="flogo-error__content">{{
+          errorFormatter.formatErrorMessage(detail)
+        }}</span>
       </div>
     </div>
   </div>

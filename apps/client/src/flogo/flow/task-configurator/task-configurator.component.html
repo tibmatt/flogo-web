@@ -14,18 +14,30 @@
             [size]="title.length + 1"
           />
           <div class="task-id-homepage-wrapper">
-            <span>{{ 'TASK-CONFIGURATOR:ID' | translate: { value: currentTile.id } }}</span>
-            <a class="task-schema-homepage" *ngIf="activitySchemaUrl" [href]="activitySchemaUrl" target="_blank">
+            <span>{{
+              'TASK-CONFIGURATOR:ID' | translate: { value: currentTile.id }
+            }}</span>
+            <a
+              class="task-schema-homepage"
+              *ngIf="activitySchemaUrl"
+              [href]="activitySchemaUrl"
+              target="_blank"
+            >
               <i class="flogo-icon-info"></i>
             </a>
           </div>
         </div>
-        <div class="unique-name-error-message" *ngIf="!isValidTaskName && title.length > 0">
+        <div
+          class="unique-name-error-message"
+          *ngIf="!isValidTaskName && title.length > 0"
+        >
           {{ 'TASK-CONFIGURATOR:NAME-EXISTS' | translate }}
         </div>
         <div
           class="task-description"
-          (fgContentEditableChange)="changeTaskDetail(currentTile.description, 'description')"
+          (fgContentEditableChange)="
+            changeTaskDetail(currentTile.description, 'description')
+          "
           [(fgContentEditable)]="currentTile.description"
           [allowNewLines]="true"
           placeholder="{{ 'TASK-CONFIGURATOR:ADD-DESCRIPTION' | translate }}"
@@ -36,10 +48,16 @@
         <button
           class="flogo-button--primary  actions__action--save"
           [class.disabled]="
-            !((this.tabs.areDirty() || this.isTaskDetailEdited) && (this.tabs.areValid() && this.isValidTaskName))
+            !(
+              (this.tabs.areDirty() || this.isTaskDetailEdited) &&
+              (this.tabs.areValid() && this.isValidTaskName)
+            )
           "
           [disabled]="
-            !((this.tabs.areDirty() || this.isTaskDetailEdited) && (this.tabs.areValid() && this.isValidTaskName))
+            !(
+              (this.tabs.areDirty() || this.isTaskDetailEdited) &&
+              (this.tabs.areValid() && this.isValidTaskName)
+            )
           "
           (click)="save()"
         >
@@ -47,7 +65,9 @@
         </button>
       </div>
       <button class="mapper-modal__close" (click)="cancel()">
-        <span aria-hidden="true" class="sr-only">{{ 'TASK-CONFIGURATOR:CLOSE' | translate }}</span>
+        <span aria-hidden="true" class="sr-only">{{
+          'TASK-CONFIGURATOR:CLOSE' | translate
+        }}</span>
       </button>
     </div>
 

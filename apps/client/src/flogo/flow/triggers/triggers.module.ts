@@ -19,7 +19,11 @@ import { ConfiguratorModule as TriggersConfiguratorModule } from '@flogo-web/cli
     TriggersConfiguratorModule,
     ContribInstallerModule,
   ],
-  declarations: [TriggerBlockComponent, FlogoFlowTriggersPanelComponent, FlogoSelectTriggerComponent],
+  declarations: [
+    TriggerBlockComponent,
+    FlogoFlowTriggersPanelComponent,
+    FlogoSelectTriggerComponent,
+  ],
   exports: [FlogoFlowTriggersPanelComponent],
 })
 export class TriggersModule {}

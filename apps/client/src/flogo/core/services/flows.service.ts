@@ -28,13 +28,19 @@ export class FlowsService {
     return this.flowsService
       .createFlow(appId, newFlow)
       .then(flow => {
-        return this.getContribInfo(triggerId, profile).then(contribTrigger => ({ flow, contribTrigger }));
+        return this.getContribInfo(triggerId, profile).then(contribTrigger => ({
+          flow,
+          contribTrigger,
+        }));
       })
       .then(({ flow, contribTrigger }) => {
         const handlerSchema = contribTrigger.handler || ({} as TriggerSchema);
         const settings = objectFromArray(handlerSchema.settings);
         const outputs = objectFromArray(contribTrigger.outputs);
-        return this.handlersService.updateHandler(triggerId, flow.id, { settings, outputs });
+        return this.handlersService.updateHandler(triggerId, flow.id, {
+          settings,
+          outputs,
+        });
       });
   }
 
@@ -64,7 +70,10 @@ export class FlowsService {
     return this.triggersService
       .getTrigger(triggerInstanceId)
       .then(triggerInstance =>
-        this.contribTriggerService.getContributionDetails<TriggerSchema>(type, triggerInstance.ref)
+        this.contribTriggerService.getContributionDetails<TriggerSchema>(
+          type,
+          triggerInstance.ref
+        )
       );
   }
 }

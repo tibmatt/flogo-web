@@ -9,7 +9,11 @@ import { TYPE_PARAM_FUNCTION } from '../services/dragging.service';
 import { EditorService } from '../editor/editor.service';
 import { MapperTreeNode } from '../models/mapper-treenode.model';
 import { MapperService } from '../services/mapper.service';
-import { selectedInputKey, selectFilterFromFunctions, selectNodesFromFunctions } from '../services/selectors';
+import {
+  selectedInputKey,
+  selectFilterFromFunctions,
+  selectNodesFromFunctions,
+} from '../services/selectors';
 
 @Component({
   selector: 'flogo-mapper-functions',
@@ -25,7 +29,10 @@ export class FunctionsComponent implements OnInit, OnDestroy {
 
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
 
-  constructor(private mapperService: MapperService, private editorService: EditorService) {}
+  constructor(
+    private mapperService: MapperService,
+    private editorService: EditorService
+  ) {}
 
   ngOnInit() {
     const state$ = this.mapperService.state$.pipe(shareReplay());

@@ -5,7 +5,11 @@ import { AppsManager } from './index';
 import { TriggerManager as TriggerContribManager } from '../triggers';
 import { ContribsManager as ContribDeviceManager } from '../contribs';
 import { apps as appsDb, dbUtils } from '../../common/db';
-import { ErrorManager, ERROR_TYPES, ERROR_TYPES as GENERAL_ERROR_TYPES } from '../../common/errors';
+import {
+  ErrorManager,
+  ERROR_TYPES,
+  ERROR_TYPES as GENERAL_ERROR_TYPES,
+} from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { findGreatestNameIndex } from '../../common/utils/collection';
 import { getProfileType } from '../../common/utils/profile';
@@ -25,7 +29,8 @@ const nameExists = (triggerId, name, triggers) => {
   const comparableName = getComparableTriggerName(name);
   return !!triggers.find(
     currentTrigger =>
-      getComparableTriggerName(currentTrigger.name) === comparableName && currentTrigger.id !== triggerId
+      getComparableTriggerName(currentTrigger.name) === comparableName &&
+      currentTrigger.id !== triggerId
   );
 };
 
@@ -81,14 +86,20 @@ const nameExists = (triggerId, name, triggers) => {
 export class AppsTriggersManager {
   static create(appId, triggerData) {
     if (!appId) {
-      return Promise.reject(ErrorManager.makeError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND }));
+      return Promise.reject(
+        ErrorManager.makeError('App not found', {
+          type: ERROR_TYPES.COMMON.NOT_FOUND,
+        })
+      );
     }
 
     return appsDb
       .findOne({ _id: appId }, { triggers: 1, device: 1 })
       .then(app => {
         if (!app) {
-          throw ErrorManager.makeError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
+          throw ErrorManager.makeError('App not found', {
+            type: ERROR_TYPES.COMMON.NOT_FOUND,
+          });
         }
 
         const appProfile = getProfileType(app);
@@ -129,15 +140,19 @@ export class AppsTriggersManager {
         newTrigger.updatedAt = null;
         newTrigger.handlers = [];
 
-        return appsDb.update({ _id: appId }, { $push: { triggers: newTrigger } }).then(() => {
-          newTrigger.appId = appId;
-          return newTrigger;
-        });
+        return appsDb
+          .update({ _id: appId }, { $push: { triggers: newTrigger } })
+          .then(() => {
+            newTrigger.appId = appId;
+            return newTrigger;
+          });
       });
   }
 
   static update(triggerId, triggerData) {
-    const appNotFound = ErrorManager.makeError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
+    const appNotFound = ErrorManager.makeError('App not found', {
+      type: ERROR_TYPES.COMMON.NOT_FOUND,
+    });
 
     return AppsTriggersManager.findOne(triggerId).then(trigger => {
       if (!trigger) {
@@ -192,7 +207,10 @@ export class AppsTriggersManager {
             const modifierPrefix = `triggers.${triggerIndex}`;
             triggerFields.updatedAt = dbUtils.ISONow();
             // makes { $set: { 'triggers.1.name': 'my trigger' } };
-            updateQuery.$set = mapKeys(triggerFields, (v, fieldName) => `${modifierPrefix}.${fieldName}`);
+            updateQuery.$set = mapKeys(
+              triggerFields,
+              (v, fieldName) => `${modifierPrefix}.${fieldName}`
+            );
             return appsDb.update(appQuery, updateQuery);
           })
           .then(count => resolve(count))
@@ -219,7 +237,9 @@ export class AppsTriggersManager {
       .then(triggers => {
         if (name) {
           const findName = getComparableTriggerName(name);
-          return triggers.filter(trigger => findName === getComparableTriggerName(trigger.name));
+          return triggers.filter(
+            trigger => findName === getComparableTriggerName(trigger.name)
+          );
         }
         return triggers;
       });
@@ -249,7 +269,10 @@ export class AppsTriggersManager {
       });
     }
     const build = trigger.ref === REF_TRIGGER_LAMBDA ? buildPlugin : buildBinary;
-    return build(() => AppsManager.export(trigger.appId), { ...options, shimTriggerId: normalizeName(trigger.name) });
+    return build(() => AppsManager.export(trigger.appId), {
+      ...options,
+      shimTriggerId: normalizeName(trigger.name),
+    });
   }
 }
 

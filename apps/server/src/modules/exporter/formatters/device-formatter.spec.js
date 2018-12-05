@@ -33,11 +33,17 @@ describe('exporter.formatters.DeviceFormatter', () => {
     expect(triggers).toHaveLength(3);
     triggers.forEach(trigger => expect(trigger.handlers).toHaveLength(1));
 
-    const { triggers: triggersOfTypeX, handlers: handlersOfTypeX } = infoForTriggerWithNameThatStartsWith('triggerX');
+    const {
+      triggers: triggersOfTypeX,
+      handlers: handlersOfTypeX,
+    } = infoForTriggerWithNameThatStartsWith('triggerX');
     expect(triggersOfTypeX).toHaveLength(2);
     expect(handlersOfTypeX).toEqual(['handlerX1', 'handlerX2']);
 
-    const { triggers: triggersOfTypeY, handlers: handlersOfTypeY } = infoForTriggerWithNameThatStartsWith('triggerY');
+    const {
+      triggers: triggersOfTypeY,
+      handlers: handlersOfTypeY,
+    } = infoForTriggerWithNameThatStartsWith('triggerY');
     expect(triggersOfTypeY).toHaveLength(1);
     expect(handlersOfTypeY).toEqual(['handlerY1']);
   });

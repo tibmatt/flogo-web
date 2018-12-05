@@ -4,7 +4,13 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError as _throw } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
-import { flowToJSON_Link, Interceptor, InterceptorTask, Snapshot, Step } from '@flogo-web/client/core/interfaces';
+import {
+  flowToJSON_Link,
+  Interceptor,
+  InterceptorTask,
+  Snapshot,
+  Step,
+} from '@flogo-web/client/core/interfaces';
 import { RestApiService } from './rest-api.service';
 
 /**
@@ -73,11 +79,15 @@ export class RunApiService {
   // todo: data interface
   // todo: response interface
   startProcess(flowId: string, data: any): Observable<any> {
-    return this.restApi.post<any>(`runner/processes/${flowId}/start`, { attrs: data });
+    return this.restApi.post<any>(`runner/processes/${flowId}/start`, {
+      attrs: data,
+    });
   }
 
   storeProcess(flowId: string): Observable<StoredProcessResponse> {
-    return this.restApi.post<StoredProcessResponse>('runner/processes', { actionId: flowId });
+    return this.restApi.post<StoredProcessResponse>('runner/processes', {
+      actionId: flowId,
+    });
   }
 
   // TODO: original name was restartWithIcptFrom, what is "icpt?
@@ -98,7 +108,9 @@ export class RunApiService {
     const snapshotId = step !== 0 ? step : 1;
 
     return this.getSnapshot(processInstanceId, snapshotId).pipe(
-      map(snapshot => (updateProcessId ? updateSnapshotActionUri(snapshot, updateProcessId) : snapshot)),
+      map(snapshot =>
+        updateProcessId ? updateSnapshotActionUri(snapshot, updateProcessId) : snapshot
+      ),
       switchMap(snapshot => {
         // TODO: flowinfo interface
         return this.restApi.get(`runner/processes/${updateProcessId}`).pipe(
@@ -153,7 +165,11 @@ export class RunApiService {
 
     // filter out the tasks that are not in the path
     taskData = _filter(taskData, (taskDatum: any) => {
-      return taskDatum.taskId === '1' || taskDatum.taskId === 1 || taskIds.indexOf(taskDatum.taskId) !== -1;
+      return (
+        taskDatum.taskId === '1' ||
+        taskDatum.taskId === 1 ||
+        taskIds.indexOf(taskDatum.taskId) !== -1
+      );
     });
 
     snapshot.workQueue = workQueue;

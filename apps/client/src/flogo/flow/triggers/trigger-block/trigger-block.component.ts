@@ -33,17 +33,25 @@ export class TriggerBlockComponent {
   @Input()
   isSelected: boolean;
   @Output()
-  menuItemSelected: EventEmitter<TriggerMenuSelectionEvent> = new EventEmitter<TriggerMenuSelectionEvent>();
+  menuItemSelected: EventEmitter<TriggerMenuSelectionEvent> = new EventEmitter<
+    TriggerMenuSelectionEvent
+  >();
 
   isShowingMenu = false;
   MENU_OPTIONS: typeof TRIGGER_MENU_OPERATION = TRIGGER_MENU_OPERATION;
 
   get isLambda(): boolean {
-    return this.trigger && this.trigger.ref === 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda';
+    return (
+      this.trigger &&
+      this.trigger.ref === 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda'
+    );
   }
 
   handleTriggerSelection() {
-    this.menuItemSelected.emit({ operation: TRIGGER_MENU_OPERATION.SHOW_SETTINGS, trigger: this.trigger });
+    this.menuItemSelected.emit({
+      operation: TRIGGER_MENU_OPERATION.SHOW_SETTINGS,
+      trigger: this.trigger,
+    });
   }
 
   handleTriggerMenuShow() {

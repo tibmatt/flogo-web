@@ -7,7 +7,11 @@ export const getItemsDictionaryName = (handlerType: HandlerType) => `${handlerTy
 
 export const getGraphName = (handlerType: HandlerType) => `${handlerType}Graph`;
 
-export const getItem = (state: FlowState, handlerType: HandlerType, itemId: string): Item => {
+export const getItem = (
+  state: FlowState,
+  handlerType: HandlerType,
+  itemId: string
+): Item => {
   return state[getItemsDictionaryName(handlerType)][itemId];
 };
 export const nodesContainErrors = (nodes: NodeDictionary) => {

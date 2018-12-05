@@ -15,7 +15,9 @@ export class LegacyMicroServiceFormatter {
 
   preprocess(app) {
     if (appHasSubflowTasks(app)) {
-      throw ErrorManager.makeError('Application cannot be exported', { type: ERROR_TYPES.COMMON.HAS_SUBFLOW });
+      throw ErrorManager.makeError('Application cannot be exported', {
+        type: ERROR_TYPES.COMMON.HAS_SUBFLOW,
+      });
     }
     return app;
   }
@@ -57,7 +59,9 @@ export class LegacyMicroServiceFormatter {
 
     // Prepare task with attributes from input mappings
     allTasks.forEach(task => {
-      const activitySchema = this.activitySchemas.find(schema => schema.ref === task.activityRef);
+      const activitySchema = this.activitySchemas.find(
+        schema => schema.ref === task.activityRef
+      );
       task = mappingsToAttributes(task, activitySchema);
     });
     return action;

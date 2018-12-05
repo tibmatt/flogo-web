@@ -13,7 +13,9 @@ export class DeviceFormatter {
 
   preprocess(app) {
     if (this.appHasSubflowTask(app)) {
-      throw ErrorManager.makeError('Application cannot be exported', { type: ERROR_TYPES.COMMON.HAS_SUBFLOW });
+      throw ErrorManager.makeError('Application cannot be exported', {
+        type: ERROR_TYPES.COMMON.HAS_SUBFLOW,
+      });
     }
     app.triggers = this.expandTriggersHandlers(app.triggers);
     return app;
@@ -64,7 +66,10 @@ export class DeviceFormatter {
     return tasks.map(task => {
       return {
         ...task,
-        ...mappingsToAttributes(task, this.activitySchemas.find(schema => schema.ref === task.activityRef)),
+        ...mappingsToAttributes(
+          task,
+          this.activitySchemas.find(schema => schema.ref === task.activityRef)
+        ),
         attributes: this.formatTaskAttributes(task),
       };
     });

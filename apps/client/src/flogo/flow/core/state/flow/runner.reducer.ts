@@ -3,7 +3,10 @@ import { FlowState, INITIAL_STATE } from './flow.state';
 
 const ActionType = actions.ActionType;
 
-export function runnerReducer(state: FlowState = INITIAL_STATE, action: actions.ActionsUnion): FlowState {
+export function runnerReducer(
+  state: FlowState = INITIAL_STATE,
+  action: actions.ActionsUnion
+): FlowState {
   switch (action.type) {
     case ActionType.CreateBranch:
     case ActionType.TaskItemCreated:
@@ -52,7 +55,10 @@ export function runnerReducer(state: FlowState = INITIAL_STATE, action: actions.
       {
         state = {
           ...state,
-          lastExecutionResult: { ...state.lastExecutionResult, ...action.payload.steps },
+          lastExecutionResult: {
+            ...state.lastExecutionResult,
+            ...action.payload.steps,
+          },
         };
       }
       break;
@@ -81,7 +87,10 @@ function markAsStructureChanged(state: FlowState) {
 }
 
 function removeExecutionDataForItem(flowState: FlowState, itemId: string): FlowState {
-  const { [itemId]: _itemToRemove, ...lastExecutionResult } = flowState.lastExecutionResult;
+  const {
+    [itemId]: _itemToRemove,
+    ...lastExecutionResult
+  } = flowState.lastExecutionResult;
   return {
     ...flowState,
     lastExecutionResult,

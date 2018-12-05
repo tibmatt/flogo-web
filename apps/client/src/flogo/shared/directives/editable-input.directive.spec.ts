@@ -8,7 +8,11 @@ import { EditableInputDirective } from './editable-input.directive';
 @Component({
   selector: 'flogo-test-container',
   template: `
-    <input fgEditableInput (editableInputSave)="onSave()" (editableInputCancel)="onCancel()" />
+    <input
+      fgEditableInput
+      (editableInputSave)="onSave()"
+      (editableInputCancel)="onCancel()"
+    />
   `,
 })
 class ContainerComponent {

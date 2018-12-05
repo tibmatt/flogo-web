@@ -6,7 +6,9 @@ import { HandlersManager } from '../../modules/apps/handlers';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 
 export function handlers(router: Router) {
-  const handlersRouter: Router = new RouterClass({ prefix: '/triggers/:triggerId/handlers' });
+  const handlersRouter: Router = new RouterClass({
+    prefix: '/triggers/:triggerId/handlers',
+  });
   handlersRouter
     .get(`/`, listHandlers)
     .get(`/:actionId`, getHandler)
@@ -43,7 +45,8 @@ async function saveHandler(ctx: Context) {
     } else if (error.type === ERROR_TYPES.COMMON.NOT_FOUND) {
       throw ErrorManager.createRestNotFoundError('Action or trigger not found', {
         title: 'Action or trigger not found',
-        detail: 'Action or trigger not found. Make sure they exist and they are registered in the same app.',
+        detail:
+          'Action or trigger not found. Make sure they exist and they are registered in the same app.',
       });
     }
     throw error;

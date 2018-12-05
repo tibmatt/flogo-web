@@ -9,7 +9,10 @@
   <span class="flogo-icon-search icon-search"></span>
 </div>
 <div class="content" *ngIf="(filteredActivities$ | async) as activities">
-  <div class="list-item install-item qa-install-item" (click)="handleInstallerWindow(true)">
+  <div
+    class="list-item install-item qa-install-item"
+    (click)="handleInstallerWindow(true)"
+  >
     <div class="install-activity">
       <i class="install-icon flogo-icon-add"></i>
       <span>{{ 'FLOWS-DETAILS-TASKS:INSTALL-NEW-ACTIVITY' | translate }}</span>

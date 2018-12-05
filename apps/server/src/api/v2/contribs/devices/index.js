@@ -46,12 +46,15 @@ async function installContribs(ctx, next) {
   }
 
   if (results.fail.length) {
-    throw ErrorManager.createRestError('Installation error in /contributions installContribs', {
-      status: 400,
-      title: 'Installation error',
-      detail: 'There were one or more installation contrib problems',
-      meta: results,
-    });
+    throw ErrorManager.createRestError(
+      'Installation error in /contributions installContribs',
+      {
+        status: 400,
+        title: 'Installation error',
+        detail: 'There were one or more installation contrib problems',
+        meta: results,
+      }
+    );
   }
 
   ctx.body = {

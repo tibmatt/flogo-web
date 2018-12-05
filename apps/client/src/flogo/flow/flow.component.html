@@ -28,9 +28,11 @@
               [(fgContentEditable)]="flowState.name"
               (fgContentEditableChange)="changeFlowDetailName($event, 'name')"
             ></h3>
-            <span *ngIf="profileType === PROFILE_TYPES.DEVICE" class="flogo-profile__device-type">{{
-              flowState.app.device.deviceType
-            }}</span>
+            <span
+              *ngIf="profileType === PROFILE_TYPES.DEVICE"
+              class="flogo-profile__device-type"
+              >{{ flowState.app.device.deviceType }}</span
+            >
             <span>in</span>
             <span
               (click)="navigateToApp()"
@@ -58,8 +60,14 @@
           [flowInputs]="flowState?.metadata?.input"
           (submit)="onRunFlow($event)"
         ></flogo-run-flow>
-        <div class="flogo-flow-detail-log-button-container"><flogo-logs></flogo-logs></div>
-        <div class="flogo-flow-detail-menu" [class.--active]="isflowMenuOpen" (fgClickOutside)="closeFlowMenu()">
+        <div class="flogo-flow-detail-log-button-container">
+          <flogo-logs></flogo-logs>
+        </div>
+        <div
+          class="flogo-flow-detail-menu"
+          [class.--active]="isflowMenuOpen"
+          (fgClickOutside)="closeFlowMenu()"
+        >
           <i class="flogo-icon-kebabmenu kebabmenu-icon" (click)="toggleFlowMenu()"></i>
           <div class="flogo-flow-detail-menu-list-wrapper">
             <ul class="flogo-flow-detail-menu-list">
@@ -67,8 +75,13 @@
                 <li class="flogo-flow-detail-menu-item"><a disabled href="javascript:void(0);"><i class="fa fa-clone fa-fw"></i>{{ 'CANVAS:COPY' | translate }}</a></li>
               -->
               <li class="flogo-flow-detail-menu-item">
-                <a (click)="deleteFlow()" href="javascript:void(0);" class="flogo-flow-detail-menu-anchor">
-                  <i class="flogo-icon flogo-icon-delete"></i>{{ 'CANVAS:DELETE' | translate }}
+                <a
+                  (click)="deleteFlow()"
+                  href="javascript:void(0);"
+                  class="flogo-flow-detail-menu-anchor"
+                >
+                  <i class="flogo-icon flogo-icon-delete"></i
+                  >{{ 'CANVAS:DELETE' | translate }}
                 </a>
               </li>
             </ul>
@@ -87,7 +100,9 @@
   </flogo-flow-debug-panel>
 
   <ng-template #deviceDiagram>
-    <div class="diagram-container--device"><ng-container *ngTemplateOutlet="flowContent"></ng-container></div>
+    <div class="diagram-container--device">
+      <ng-container *ngTemplateOutlet="flowContent"></ng-container>
+    </div>
   </ng-template>
 
   <ng-template #flowContent>
@@ -99,7 +114,10 @@
       (click)="openInputSchemaModal()"
     ></flogo-flow-params-schema-button>
     <div class="diagram-container">
-      <flogo-flow-diagram class="diagram" (deleteTask)="onDeleteTask($event)"></flogo-flow-diagram>
+      <flogo-flow-diagram
+        class="diagram"
+        (deleteTask)="onDeleteTask($event)"
+      ></flogo-flow-diagram>
       <flogo-debug-panel-toggle-button
         *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
         class="debug-panel-toggler"

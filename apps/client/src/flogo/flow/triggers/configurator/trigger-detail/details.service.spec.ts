@@ -32,9 +32,16 @@ describe('Serive: ConfigureDetailsService', function(this: {
   };
 
   beforeEach(() => {
-    this.settingsFormBuilder = jasmine.createSpyObj<SettingsFormBuilder>('settingsFormBuilder', ['build']);
-    this.mapperControllerFactory = jasmine.createSpyObj('mapperControllerFactory', ['createController']);
-    const nameAsyncValidator = jasmine.createSpyObj('triggerNameValidatorService', ['create']);
+    this.settingsFormBuilder = jasmine.createSpyObj<SettingsFormBuilder>(
+      'settingsFormBuilder',
+      ['build']
+    );
+    this.mapperControllerFactory = jasmine.createSpyObj('mapperControllerFactory', [
+      'createController',
+    ]);
+    const nameAsyncValidator = jasmine.createSpyObj('triggerNameValidatorService', [
+      'create',
+    ]);
     this.testService = new ConfigureDetailsService(
       this.settingsFormBuilder,
       this.mapperControllerFactory,
@@ -53,10 +60,12 @@ describe('Serive: ConfigureDetailsService', function(this: {
   it('Should create a reply mapper with the correct arguments', () => {
     this.mapperControllerFactory.createController.and.callFake((...args) => args);
     this.testService.build(MockData);
-    expect(this.mapperControllerFactory.createController.calls.mostRecent().args).toEqual([
-      MockData.schema.reply,
-      MockData.flowMetadata.output,
-      MockData.handler.actionMappings.output,
-    ]);
+    expect(this.mapperControllerFactory.createController.calls.mostRecent().args).toEqual(
+      [
+        MockData.schema.reply,
+        MockData.flowMetadata.output,
+        MockData.handler.actionMappings.output,
+      ]
+    );
   });
 });

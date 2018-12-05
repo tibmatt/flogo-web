@@ -16,7 +16,10 @@ import { AppState } from './state/app.state';
 import { FlowState, Init } from './state';
 import { Trigger, TriggerHandler } from './interfaces';
 
-function normalizeTriggersAndHandlersForAction(actionId: string, originalTriggers: Trigger[]) {
+function normalizeTriggersAndHandlersForAction(
+  actionId: string,
+  originalTriggers: Trigger[]
+) {
   const triggers: Dictionary<Trigger> = {};
   const handlers: Dictionary<TriggerHandler> = {};
   const findHandlerForAction = (handler: TriggerHandler) => handler.actionId === actionId;
@@ -46,11 +49,18 @@ export class FlogoFlowService {
       .getFlow(flowId)
       .then(
         (flow: Action): PromiseLike<[Action, Action[]]> => {
-          const allTasks = ((flow && flow.tasks) || []).concat(get(flow, 'errorHandler.tasks', []));
+          const allTasks = ((flow && flow.tasks) || []).concat(
+            get(flow, 'errorHandler.tasks', [])
+          );
           const subFlowTasks = allTasks.filter(t => isSubflowTask(t.type));
-          const flowIdsToFetch = uniq<string>(subFlowTasks.map(t => (t.settings || {}).flowPath));
+          const flowIdsToFetch = uniq<string>(
+            subFlowTasks.map(t => (t.settings || {}).flowPath)
+          );
           if (flowIdsToFetch.length > 0) {
-            return Promise.all([flow, this._flowAPIService.getSubFlows(flow.appId, flowIdsToFetch)]);
+            return Promise.all([
+              flow,
+              this._flowAPIService.getSubFlows(flow.appId, flowIdsToFetch),
+            ]);
           }
           return Promise.resolve([flow, []] as [Action, Action[]]);
         }
@@ -58,19 +68,34 @@ export class FlogoFlowService {
       .then(([flow, subflows]) => {
         const flowTriggers = flow.triggers || [];
         const flowDiagramDetails = omit(flow, ['triggers']);
-        const { triggers, handlers } = normalizeTriggersAndHandlersForAction(flow.id, flowTriggers);
-        const linkedSubflows = fromPairs(subflows.map(a => [a.id, a]) as [string, Action][]);
+        const { triggers, handlers } = normalizeTriggersAndHandlersForAction(
+          flow.id,
+          flowTriggers
+        );
+        const linkedSubflows = fromPairs(subflows.map(a => [a.id, a]) as [
+          string,
+          Action
+        ][]);
         this.currentFlowDetails = new FlogoFlowDetails(flow, this.store);
 
         this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
-        return this._converterService.getWebFlowModel(flowDiagramDetails, linkedSubflows).then(convertedFlow => {
-          this.previousSavedFlow = savableFlow(convertedFlow);
-          this.store.dispatch(new Init({ ...convertedFlow, triggers, handlers, linkedSubflows } as FlowState));
-          return {
-            flow: convertedFlow,
-            triggers: flowTriggers,
-          };
-        });
+        return this._converterService
+          .getWebFlowModel(flowDiagramDetails, linkedSubflows)
+          .then(convertedFlow => {
+            this.previousSavedFlow = savableFlow(convertedFlow);
+            this.store.dispatch(
+              new Init({
+                ...convertedFlow,
+                triggers,
+                handlers,
+                linkedSubflows,
+              } as FlowState)
+            );
+            return {
+              flow: convertedFlow,
+              triggers: flowTriggers,
+            };
+          });
       });
   }
 

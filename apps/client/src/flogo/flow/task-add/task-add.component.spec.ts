@@ -96,7 +96,10 @@ describe('Component: TaskAddComponent', () => {
   });
 
   it('should select the activity as a task', () => {
-    const spySelectActivity = spyOn(fixture.debugElement.injector.get(TASKADD_OPTIONS), 'selectActivity');
+    const spySelectActivity = spyOn(
+      fixture.debugElement.injector.get(TASKADD_OPTIONS),
+      'selectActivity'
+    );
     const activitiesElements = fixture.debugElement.queryAll(By.css('.qa-activities'));
     activitiesElements[1].triggerEventHandler('click', null);
     fixture.detectChanges();
@@ -106,7 +109,10 @@ describe('Component: TaskAddComponent', () => {
   });
 
   it('should open installer and mark the popover to keep active', () => {
-    const spyActiveState = spyOn(fixture.debugElement.injector.get(TASKADD_OPTIONS), 'updateActiveState');
+    const spyActiveState = spyOn(
+      fixture.debugElement.injector.get(TASKADD_OPTIONS),
+      'updateActiveState'
+    );
     const installElement = fixture.debugElement.query(By.css('.qa-install-item'));
     installElement.triggerEventHandler('click', null);
     fixture.detectChanges();
@@ -117,7 +123,10 @@ describe('Component: TaskAddComponent', () => {
   });
 
   it('should open subflow window and mark the popover to keep active', () => {
-    const spyActiveState = spyOn(fixture.debugElement.injector.get(TASKADD_OPTIONS), 'updateActiveState');
+    const spyActiveState = spyOn(
+      fixture.debugElement.injector.get(TASKADD_OPTIONS),
+      'updateActiveState'
+    );
     const activitiesElements = fixture.debugElement.queryAll(By.css('.qa-activities'));
     activitiesElements[2].triggerEventHandler('click', null);
     fixture.detectChanges();

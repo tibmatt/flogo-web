@@ -14,7 +14,12 @@ import { FlowState } from './flow.state';
 import { getGraphName, getItemsDictionaryName, nodesContainErrors } from '../utils';
 import { determineRunnableStatus } from './views/determine-runnable-status';
 
-import { InsertTaskSelection, HandlerType, TaskSelection, SelectionType } from '../../models';
+import {
+  InsertTaskSelection,
+  HandlerType,
+  TaskSelection,
+  SelectionType,
+} from '../../models';
 import { DiagramSelectionType } from '@flogo-web/client/packages/diagram/interfaces';
 import { Activity } from '@flogo-web/client/flow/task-add';
 import { getProfileType } from '@flogo-web/client/shared/utils';
@@ -148,20 +153,30 @@ export const getCurrentHandlerType = createSelector(
   }
 );
 
-export const getCurrentItems: MemoizedSelector<FlowState, Dictionary<Item>> = createSelector(
-  getCurrentHandlerType,
-  selectFlowState,
-  (currentHandlerType, flowState) => (currentHandlerType ? flowState[getItemsDictionaryName(currentHandlerType)] : null)
-);
-
-export const getCurrentNodes: MemoizedSelector<FlowState, NodeDictionary> = createSelector(
+export const getCurrentItems: MemoizedSelector<
+  FlowState,
+  Dictionary<Item>
+> = createSelector(
   getCurrentHandlerType,
   selectFlowState,
   (currentHandlerType, flowState) =>
-    currentHandlerType ? (flowState[getGraphName(currentHandlerType)].nodes as NodeDictionary) : null
+    currentHandlerType ? flowState[getItemsDictionaryName(currentHandlerType)] : null
 );
 
-const isTaskSelection = (selection): selection is TaskSelection => selection && selection.type === SelectionType.Task;
+export const getCurrentNodes: MemoizedSelector<
+  FlowState,
+  NodeDictionary
+> = createSelector(
+  getCurrentHandlerType,
+  selectFlowState,
+  (currentHandlerType, flowState) =>
+    currentHandlerType
+      ? (flowState[getGraphName(currentHandlerType)].nodes as NodeDictionary)
+      : null
+);
+
+const isTaskSelection = (selection): selection is TaskSelection =>
+  selection && selection.type === SelectionType.Task;
 export const getSelectedActivity = createSelector(
   selectCurrentSelection,
   getCurrentItems,
@@ -187,7 +202,8 @@ export const getSelectedActivityExecutionResult = createSelector(
   getSelectedActivity,
   selectLastExecutionResult,
   /* tslint:disable-next-line:triple-equals --> for legacy ids of type number so 1 == '1' */
-  (selectedActivity, steps) => (selectedActivity && steps ? steps[selectedActivity.id] : null)
+  (selectedActivity, steps) =>
+    selectedActivity && steps ? steps[selectedActivity.id] : null
 );
 
 export const getFlowHasRun = createSelector(
@@ -210,7 +226,8 @@ export const getIsRunDisabledForSelectedActivity = createSelector(
 export const isCurrentSelectionRoot = createSelector(
   getSelectedActivity,
   getCurrentGraph,
-  (activity, currentGraph): boolean => activity && currentGraph && currentGraph.rootId === activity.id
+  (activity, currentGraph): boolean =>
+    activity && currentGraph && currentGraph.rootId === activity.id
 );
 
 export const getIsRestartableTask = createSelector(
@@ -297,7 +314,10 @@ export const getInstalledActivities = createSelector(
         title: schema.title,
         ref: schema.ref,
       }));
-    const subflowActivity = remove(activities, activity => activity.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW).pop();
+    const subflowActivity = remove(
+      activities,
+      activity => activity.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW
+    ).pop();
     if (subflowActivity) {
       activities.unshift(subflowActivity);
     }

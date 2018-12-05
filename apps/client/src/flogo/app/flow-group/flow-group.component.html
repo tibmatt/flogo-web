@@ -3,10 +3,16 @@
   <div class="flogo-trigger__container flogo-flow-trigger__container">
     <svg class="trigger" viewBox="0 0 50 52" xmlns="http://www.w3.org/2000/svg">
       <ng-container *ngIf="trigger">
-        <use xlink:href="/assets/svg/trigger-icon.svg#defaultTrigger" class="trigger__shape"></use>
+        <use
+          xlink:href="/assets/svg/trigger-icon.svg#defaultTrigger"
+          class="trigger__shape"
+        ></use>
       </ng-container>
       <ng-container *ngIf="!trigger">
-        <use xlink:href="/assets/svg/trigger-icon.svg#addTrigger" class="trigger__shape trigger__shape--empty"></use>
+        <use
+          xlink:href="/assets/svg/trigger-icon.svg#addTrigger"
+          class="trigger__shape trigger__shape--empty"
+        ></use>
       </ng-container>
     </svg>
   </div>

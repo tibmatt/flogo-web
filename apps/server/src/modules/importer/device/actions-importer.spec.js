@@ -33,13 +33,19 @@ describe('importer.device.ActionsImporter', () => {
     test('should account for empty actions', () => {
       let formattedAction = null;
       expect(() => {
-        formattedAction = deviceActionsImporter.formatAction({ id: 'a', name: 'my action' });
+        formattedAction = deviceActionsImporter.formatAction({
+          id: 'a',
+          name: 'my action',
+        });
       }).not.toThrowError();
       expect(formattedAction).toMatchObject({ id: 'a', name: 'my action' });
     });
 
     test('should set the id as name if name is not provided', () => {
-      const formattedAction = deviceActionsImporter.formatAction({ id: 'myCoolAction', data: {} });
+      const formattedAction = deviceActionsImporter.formatAction({
+        id: 'myCoolAction',
+        data: {},
+      });
       expect(formattedAction.name).toBe('myCoolAction');
     });
 

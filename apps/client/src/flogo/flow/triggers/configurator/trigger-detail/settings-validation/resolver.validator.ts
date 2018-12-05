@@ -41,14 +41,21 @@ function getParsingErrors(value: SettingValue) {
 function validateResolver(value: SettingValue) {
   const errors = [];
   let resolverDetails: ScopeResolver;
-  if (value.parsingDetails && value.parsingDetails.ast && value.parsingDetails.ast.type === 'ScopeResolver') {
+  if (
+    value.parsingDetails &&
+    value.parsingDetails.ast &&
+    value.parsingDetails.ast.type === 'ScopeResolver'
+  ) {
     resolverDetails = value.parsingDetails.ast as ScopeResolver;
   } else {
     return null;
   }
   const resolverName = resolverDetails.name || '';
   if (!ALLOWED_RESOLVERS.includes(resolverName)) {
-    errors.push([ErrorTypes.UnknownResolverName, { name: resolverName, allowed: [...ALLOWED_RESOLVERS] }]);
+    errors.push([
+      ErrorTypes.UnknownResolverName,
+      { name: resolverName, allowed: [...ALLOWED_RESOLVERS] },
+    ]);
   }
   const elementToResolve = resolverDetails.sel;
   if (elementToResolve) {

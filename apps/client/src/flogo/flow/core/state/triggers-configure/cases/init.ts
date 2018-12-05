@@ -12,7 +12,10 @@ import {
 import { getDeviceTabs, getMicroServiceTabs } from './tab-base-by-profile';
 import { setEnabledStatusToTabs } from './set-enabled-status-to-tabs';
 
-export function init(flowState: FlowState, payload: OpenConfigureWithSelection['payload']): TriggerConfigureState {
+export function init(
+  flowState: FlowState,
+  payload: OpenConfigureWithSelection['payload']
+): TriggerConfigureState {
   const { triggerId: selectedTriggerId, triggerSchemas } = payload;
   let triggerConfigureState = {
     isOpen: true,
@@ -44,7 +47,9 @@ function initTriggerConfigureState(
   appTriggers.forEach(trigger => {
     const tabsForTrigger = createTabsForTrigger(trigger.id, appProfileType);
     allTabs = { ...allTabs, ...tabsForTrigger };
-    triggersForConfigure[trigger.id] = createTriggerState(trigger, [...Object.keys(tabsForTrigger)]);
+    triggersForConfigure[trigger.id] = createTriggerState(trigger, [
+      ...Object.keys(tabsForTrigger),
+    ]);
   });
   return {
     ...baseState,
@@ -54,8 +59,14 @@ function initTriggerConfigureState(
   };
 }
 
-function createTabsForTrigger(triggerId: string, appProfileType: FLOGO_PROFILE_TYPE): Dictionary<TriggerConfigureTab> {
-  const getTabBases = appProfileType === FLOGO_PROFILE_TYPE.MICRO_SERVICE ? getMicroServiceTabs : getDeviceTabs;
+function createTabsForTrigger(
+  triggerId: string,
+  appProfileType: FLOGO_PROFILE_TYPE
+): Dictionary<TriggerConfigureTab> {
+  const getTabBases =
+    appProfileType === FLOGO_PROFILE_TYPE.MICRO_SERVICE
+      ? getMicroServiceTabs
+      : getDeviceTabs;
   return getTabBases().reduce((tabs, tabBase) => {
     tabs[`${triggerId}.${tabBase.type}`] = {
       triggerId,

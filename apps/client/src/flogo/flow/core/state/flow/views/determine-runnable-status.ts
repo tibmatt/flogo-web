@@ -3,9 +3,13 @@ import { Dictionary, Item } from '@flogo-web/client/core';
 import { isIterableTask, isSubflowTask } from '@flogo-web/client/shared/utils';
 
 const isNotRunnableTask = task => isSubflowTask(task.type) || isIterableTask(task);
-const findNotRunnableTasks = (tasks: Dictionary<Item>) => !!Object.values(tasks).find(isNotRunnableTask);
+const findNotRunnableTasks = (tasks: Dictionary<Item>) =>
+  !!Object.values(tasks).find(isNotRunnableTask);
 
-export function determineRunnableStatus(mainItems: Dictionary<Item>, errorItems: Dictionary<Item>) {
+export function determineRunnableStatus(
+  mainItems: Dictionary<Item>,
+  errorItems: Dictionary<Item>
+) {
   const runnableInfo = {
     disabled: isEmpty(mainItems),
     disableReason: null,
@@ -13,7 +17,8 @@ export function determineRunnableStatus(mainItems: Dictionary<Item>, errorItems:
   if (runnableInfo.disabled) {
     return runnableInfo;
   }
-  const hasNotRunnableTasks = findNotRunnableTasks(mainItems) || findNotRunnableTasks(errorItems);
+  const hasNotRunnableTasks =
+    findNotRunnableTasks(mainItems) || findNotRunnableTasks(errorItems);
   if (hasNotRunnableTasks) {
     runnableInfo.disabled = true;
     runnableInfo.disableReason = 'CANVAS:WARNING-UNSUPPORTED-TEST-RUN';

@@ -112,7 +112,10 @@ export class DiagnosticsAdapter {
 // }
 
 //
-function toDiagnostics(resource: Uri, diagnostic: RecognitionException | LexingError): monaco.editor.IMarkerData {
+function toDiagnostics(
+  resource: Uri,
+  diagnostic: RecognitionException | LexingError
+): monaco.editor.IMarkerData {
   if ((<RecognitionException>diagnostic).token) {
     return parseExceptionToMarker(<RecognitionException>diagnostic);
   } else {
@@ -132,7 +135,9 @@ const missingToken = (token: RecognitionException['token']) => ({
   endLineNumber: token.endLine,
   endColumn: token.endColumn + 2,
 });
-function parseExceptionToMarker(exception: RecognitionException): monaco.editor.IMarkerData {
+function parseExceptionToMarker(
+  exception: RecognitionException
+): monaco.editor.IMarkerData {
   let positionInfo = tokenToPosition(exception.token);
   //
   if (isNaN(exception.token.startOffset) && (<any>exception).previousToken) {
@@ -146,7 +151,10 @@ function parseExceptionToMarker(exception: RecognitionException): monaco.editor.
   };
 }
 
-function lexErrorToMarker(resource: monaco.Uri, lexingError: LexingError): monaco.editor.IMarkerData {
+function lexErrorToMarker(
+  resource: monaco.Uri,
+  lexingError: LexingError
+): monaco.editor.IMarkerData {
   const model = monaco.editor.getModel(resource);
   const startPosition = model.getPositionAt(lexingError.offset);
   const endPosition = model.getPositionAt(lexingError.offset + lexingError.length);

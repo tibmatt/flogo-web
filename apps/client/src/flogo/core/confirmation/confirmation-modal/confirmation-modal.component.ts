@@ -3,7 +3,9 @@ import { ConfirmationControl } from '@flogo-web/client/core/confirmation/confirm
 import { ConfirmationContent } from '@flogo-web/client/core/confirmation/confirmation-content';
 import { animate, style, transition, trigger } from '@angular/animations';
 
-export const CONFIRMATION_MODAL_TOKEN = new InjectionToken('flogo/core/confirmation/flogo-confirmation-modal');
+export const CONFIRMATION_MODAL_TOKEN = new InjectionToken(
+  'flogo/core/confirmation/flogo-confirmation-modal'
+);
 
 export interface ConfirmationModal {
   title?: string;
@@ -16,11 +18,19 @@ export interface ConfirmationModal {
   styleUrls: ['./confirmation-modal.component.less'],
   animations: [
     trigger('dialog', [
-      transition('void => *', [style({ transform: 'translateY(-100%)', opacity: 0 }), animate('250ms ease-in')]),
-      transition('* => void', [animate('250ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 }))]),
+      transition('void => *', [
+        style({ transform: 'translateY(-100%)', opacity: 0 }),
+        animate('250ms ease-in'),
+      ]),
+      transition('* => void', [
+        animate('250ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 })),
+      ]),
     ]),
   ],
 })
 export class ConfirmationModalComponent implements ConfirmationContent {
-  constructor(@Inject(CONFIRMATION_MODAL_TOKEN) public data: ConfirmationModal, public control: ConfirmationControl) {}
+  constructor(
+    @Inject(CONFIRMATION_MODAL_TOKEN) public data: ConfirmationModal,
+    public control: ConfirmationControl
+  ) {}
 }

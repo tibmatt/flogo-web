@@ -33,7 +33,11 @@ const IdentifierName = createToken({
   name: 'IdentifierName',
   label: 'Identifier',
   // TODO: should we change this regex for manual parsing to avoid perf issues?
-  pattern: new RegExp(`[_${UnicodeCategory.Letter}][_${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`),
+  pattern: new RegExp(
+    `[_${UnicodeCategory.Letter}][_${UnicodeCategory.Letter}${
+      UnicodeCategory.DecimalDigit
+    }]*`
+  ),
 });
 
 const True = createToken({
@@ -163,7 +167,9 @@ function matchStringTemplateOpen(text: string, startOffset?: number, tokens?: IT
   }
   const isLexingJson = tokens.find((token, index, tokenArr) => {
     const prevToken = index - 1 >= 0 ? tokenArr[index - 1] : null;
-    return prevToken && tokenMatcher(token, Colon) && tokenMatcher(prevToken, StringLiteral);
+    return (
+      prevToken && tokenMatcher(token, Colon) && tokenMatcher(prevToken, StringLiteral)
+    );
   });
   if (!isLexingJson) {
     return null;
@@ -207,7 +213,9 @@ const Lookup = createToken({
 });
 
 const RESOLVER_PATTERN = new RegExp(
-  `[_${UnicodeCategory.Letter}][_\.${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`
+  `[_${UnicodeCategory.Letter}][_\.${UnicodeCategory.Letter}${
+    UnicodeCategory.DecimalDigit
+  }]*`
 );
 function matchResolverIdentifier(text: string, startOffset?: number, tokens?: IToken[]) {
   if (tokens.length < 3) {
@@ -397,7 +405,10 @@ export class MappingParser extends Parser {
   }
 
   public mappingExpression = this.RULE('mappingExpression', () => {
-    this.OR([{ ALT: () => this.SUBRULE(this.expression) }, { ALT: () => this.SUBRULE(this.json) }]);
+    this.OR([
+      { ALT: () => this.SUBRULE(this.expression) },
+      { ALT: () => this.SUBRULE(this.json) },
+    ]);
   });
 
   public attrAccess = this.RULE('attrAccess', () => {
@@ -416,7 +427,10 @@ export class MappingParser extends Parser {
   });
 
   public json = this.RULE('json', () => {
-    this.OR([{ ALT: () => this.SUBRULE(this.object) }, { ALT: () => this.SUBRULE(this.array) }]);
+    this.OR([
+      { ALT: () => this.SUBRULE(this.object) },
+      { ALT: () => this.SUBRULE(this.array) },
+    ]);
   });
 
   public expression = this.RULE('expression', () => {
@@ -425,7 +439,10 @@ export class MappingParser extends Parser {
   });
 
   public baseExpr = this.RULE('baseExpr', () => {
-    this.OR([{ ALT: () => this.SUBRULE(this.parenExpr) }, { ALT: () => this.SUBRULE(this.unaryExpr) }]);
+    this.OR([
+      { ALT: () => this.SUBRULE(this.parenExpr) },
+      { ALT: () => this.SUBRULE(this.unaryExpr) },
+    ]);
     this.MANY(() => this.SUBRULE1(this.binaryExprSide));
   });
 
@@ -463,11 +480,17 @@ export class MappingParser extends Parser {
   });
 
   private operand = this.RULE('operand', () => {
-    this.OR([{ ALT: () => this.SUBRULE(this.literal) }, { ALT: () => this.SUBRULE(this.operandHead) }]);
+    this.OR([
+      { ALT: () => this.SUBRULE(this.literal) },
+      { ALT: () => this.SUBRULE(this.operandHead) },
+    ]);
   });
 
   private operandHead = this.RULE('operandHead', () => {
-    this.OR([{ ALT: () => this.CONSUME(Token.IdentifierName) }, { ALT: () => this.SUBRULE(this.resolver) }]);
+    this.OR([
+      { ALT: () => this.CONSUME(Token.IdentifierName) },
+      { ALT: () => this.SUBRULE(this.resolver) },
+    ]);
   });
 
   private resolverSelector = this.RULE('resolverSelector', () => {

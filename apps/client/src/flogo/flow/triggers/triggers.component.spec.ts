@@ -214,11 +214,18 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
           flow: featureReducer,
         }),
       ],
-      declarations: [FlogoFlowTriggersPanelComponent, TriggerBlockComponent, FlogoSelectTriggerComponent],
+      declarations: [
+        FlogoFlowTriggersPanelComponent,
+        TriggerBlockComponent,
+        FlogoSelectTriggerComponent,
+      ],
       providers: [
         { provide: Router, useClass: MockRouterService },
         { provide: FlogoProfileService, useClass: FlogoProfileServiceMock },
-        { provide: RESTAPIContributionsService, useClass: MockActivityContribService },
+        {
+          provide: RESTAPIContributionsService,
+          useClass: MockActivityContribService,
+        },
         { provide: TriggersApiService, useClass: MockTriggerServiceV2 },
         { provide: RESTAPIHandlersService, useClass: MockHandlerService },
         { provide: UIModelConverterService, useClass: MockUIConverterService },
@@ -242,7 +249,9 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
       })
     );
     fixture.detectChanges();
-    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-icon-trigger'));
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(
+      By.css('.flogo-icon-trigger')
+    );
     expect(res.length).toEqual(0);
   });
 
@@ -254,7 +263,9 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
       })
     );
     fixture.detectChanges();
-    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-icon-trigger'));
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(
+      By.css('.flogo-icon-trigger')
+    );
     expect(res.length).toEqual(2);
   });
 
@@ -266,7 +277,9 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
       })
     );
     fixture.detectChanges();
-    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-icon-add'));
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(
+      By.css('.flogo-icon-add')
+    );
     expect(res.length).toEqual(1);
   });
 
@@ -283,7 +296,9 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
       })
     );
     fixture.detectChanges();
-    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-icon-add'));
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(
+      By.css('.flogo-icon-add')
+    );
     expect(res.length).toEqual(1);
   });
 
@@ -299,7 +314,9 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
       })
     );
     fixture.detectChanges();
-    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-icon-add'));
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(
+      By.css('.flogo-icon-add')
+    );
     expect(res.length).toEqual(0);
   });
 });

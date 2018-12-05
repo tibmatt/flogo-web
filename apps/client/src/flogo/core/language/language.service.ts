@@ -7,7 +7,10 @@ export abstract class LanguageService {
    * @param interpolateParams
    * @returns {any} the translated key, or an object of translated keys
    */
-  abstract get(key: string | Array<string>, interpolateParams?: Object): Observable<string | any>;
+  abstract get(
+    key: string | Array<string>,
+    interpolateParams?: Object
+  ): Observable<string | any>;
   /**
    * Returns a translation instantly from the internal state of loaded translation.
    * All rules regarding the current language, the preferred language of even fallback languages will be used except any promise handling.

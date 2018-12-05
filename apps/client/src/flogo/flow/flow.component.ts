@@ -2,7 +2,11 @@ import { cloneDeep, filter as _filter, get, isEmpty } from 'lodash';
 import { takeUntil, switchMap, take, filter } from 'rxjs/operators';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { trigger as animationTrigger, transition, animateChild } from '@angular/animations';
+import {
+  trigger as animationTrigger,
+  transition,
+  animateChild,
+} from '@angular/animations';
 import { MetadataAttribute, Task, LanguageService, Item } from '@flogo-web/client/core';
 
 import { NotificationsService } from '@flogo-web/client/core/notifications';
@@ -46,7 +50,9 @@ interface TaskContext {
   providers: [TestRunnerService],
   templateUrl: 'flow.component.html',
   styleUrls: ['flow.component.less'],
-  animations: [animationTrigger('initialAnimation', [transition('void => *', animateChild())])],
+  animations: [
+    animationTrigger('initialAnimation', [transition('void => *', animateChild())]),
+  ],
 })
 export class FlowComponent implements OnInit, OnDestroy {
   @HostBinding('@initialAnimation') initialAnimation = true;
@@ -149,7 +155,9 @@ export class FlowComponent implements OnInit, OnDestroy {
   deleteFlow() {
     this.closeFlowMenu();
     this.translate
-      .get(['FLOWS:CONFIRM_DELETE', 'MODAL:CONFIRM-DELETION'], { flowName: this.flowState.name })
+      .get(['FLOWS:CONFIRM_DELETE', 'MODAL:CONFIRM-DELETION'], {
+        flowName: this.flowState.name,
+      })
       .pipe(
         switchMap(translation => {
           return this.confirmationModalService.openModal({
@@ -166,13 +174,23 @@ export class FlowComponent implements OnInit, OnDestroy {
           appPromise
             .then(app => {
               const triggerDetails = this.getTriggerCurrentFlow(app, this.flowState.id);
-              return this._flowService.deleteFlow(this.flowId, triggerDetails ? triggerDetails.id : null);
+              return this._flowService.deleteFlow(
+                this.flowId,
+                triggerDetails ? triggerDetails.id : null
+              );
             })
             .then(() => this.navigateToApp())
-            .then(() => this.notifications.success({ key: 'FLOWS:SUCCESS-MESSAGE-FLOW-DELETED' }))
+            .then(() =>
+              this.notifications.success({
+                key: 'FLOWS:SUCCESS-MESSAGE-FLOW-DELETED',
+              })
+            )
             .catch(err => {
               console.error(err);
-              this.notifications.error({ key: 'FLOWS:ERROR-MESSAGE-REMOVE-FLOW', params: err });
+              this.notifications.error({
+                key: 'FLOWS:ERROR-MESSAGE-REMOVE-FLOW',
+                params: err,
+              });
             });
         }
       });
@@ -201,7 +219,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     return {
       isTrigger: false, // taskType === FLOGO_TASK_TYPE.TASK_ROOT,
       isBranch: taskType === FLOGO_TASK_TYPE.TASK_BRANCH,
-      isTask: taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC,
+      isTask:
+        taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC,
       shouldSkipTaskConfigure: taskType !== FLOGO_TASK_TYPE.TASK_BRANCH,
       profileType: this.profileType,
       // can't run from tile anymore in this panel, hardcoding to false until we remove the right panel
@@ -239,11 +258,19 @@ export class FlowComponent implements OnInit, OnDestroy {
     return this._updateFlow()
       .then(wasSaved => {
         if (wasSaved) {
-          this.notifications.success({ key: 'CANVAS:SUCCESS-MESSAGE-UPDATE', params: { value: property } });
+          this.notifications.success({
+            key: 'CANVAS:SUCCESS-MESSAGE-UPDATE',
+            params: { value: property },
+          });
         }
         return wasSaved;
       })
-      .catch(() => this.notifications.error({ key: 'CANVAS:ERROR-MESSAGE-UPDATE', params: { value: property } }));
+      .catch(() =>
+        this.notifications.error({
+          key: 'CANVAS:ERROR-MESSAGE-UPDATE',
+          params: { value: property },
+        })
+      );
   }
 
   /**
@@ -270,24 +297,36 @@ export class FlowComponent implements OnInit, OnDestroy {
             return;
           }
           this.flowState.name = this.flowName;
-          this.notifications.error({ key: 'CANVAS:FLOW-NAME-EXISTS', params: { value: name } });
+          this.notifications.error({
+            key: 'CANVAS:FLOW-NAME-EXISTS',
+            params: { value: name },
+          });
           return results;
         } else {
           this.flowState.name = name;
           this._updateFlow()
             .then((response: any) => {
-              this.notifications.success({ key: 'CANVAS:SUCCESS-MESSAGE-UPDATE', params: { value: property } });
+              this.notifications.success({
+                key: 'CANVAS:SUCCESS-MESSAGE-UPDATE',
+                params: { value: property },
+              });
               this.flowName = this.flowState.name;
               return response;
             })
             .catch(err => {
-              this.notifications.error({ key: 'CANVAS:ERROR-MESSAGE-UPDATE', params: { value: property } });
+              this.notifications.error({
+                key: 'CANVAS:ERROR-MESSAGE-UPDATE',
+                params: { value: property },
+              });
               return Promise.reject(err);
             });
         }
       })
       .catch(err => {
-        this.notifications.error({ key: 'CANVAS:ERROR-MESSAGE-UPDATE', params: { value: property } });
+        this.notifications.error({
+          key: 'CANVAS:ERROR-MESSAGE-UPDATE',
+          params: { value: property },
+        });
         return Promise.reject(err);
       });
   }
@@ -423,7 +462,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.flowState.metadata.input = this.mergeFlowInputMetadata(newMetadata.input);
     this.flowState.metadata.output = newMetadata.output;
 
-    const propCollectionToRegistry = from => new Map(<Array<[string, boolean]>>from.map((o: any) => [o.name, true]));
+    const propCollectionToRegistry = from =>
+      new Map(<Array<[string, boolean]>>from.map((o: any) => [o.name, true]));
 
     const outputRegistry = propCollectionToRegistry(newMetadata.output);
     const inputRegistry = propCollectionToRegistry(newMetadata.input);
@@ -433,9 +473,13 @@ export class FlowComponent implements OnInit, OnDestroy {
     this._updateFlow();
   }
 
-  private mergeFlowInputMetadata(inputMetadata: MetadataAttribute[]): MetadataAttribute[] {
+  private mergeFlowInputMetadata(
+    inputMetadata: MetadataAttribute[]
+  ): MetadataAttribute[] {
     return inputMetadata.map(input => {
-      const existingInput = this.flowState.metadata.input.find(i => i.name === input.name && i.type === input.type);
+      const existingInput = this.flowState.metadata.input.find(
+        i => i.name === input.name && i.type === input.type
+      );
       if (existingInput) {
         input.value = existingInput.value;
       }
@@ -456,7 +500,11 @@ export class FlowComponent implements OnInit, OnDestroy {
     if (handlersToUpdate.length > 0) {
       return Promise.all(
         handlersToUpdate.map(({ handler, triggerId }) => {
-          return this._restAPIHandlerService.updateHandler(triggerId, this.flowId, handler);
+          return this._restAPIHandlerService.updateHandler(
+            triggerId,
+            this.flowId,
+            handler
+          );
         })
       );
     }

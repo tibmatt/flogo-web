@@ -11,7 +11,10 @@ export function prepareUpdateQuery(newAction, oldAction, indexOfAction) {
   const removeMainHandler = oldAction.tasks && !newAction.tasks;
   const removeErrorHandler = oldAction.errorHandler && !newAction.errorHandler;
   // makes { $set: { 'actions.1.name': 'my action' } };
-  updateQuery.$set = mapKeys(newAction, (v, fieldName) => `${modifierPrefix}.${fieldName}`);
+  updateQuery.$set = mapKeys(
+    newAction,
+    (v, fieldName) => `${modifierPrefix}.${fieldName}`
+  );
   /***
    * Apart from updating all the fields coming from the new action data, In case when empty items in main handler
    * and error handler, then we need to unset the 'tasks', 'links' and 'errorHandler' from action

@@ -7,7 +7,10 @@ interface TranslateContext {
   nodes: GraphNodeDictionary;
 }
 
-export function nodesToNodeMatrix(rootNode: GraphNode, nodes: GraphNodeDictionary): NodeMatrix {
+export function nodesToNodeMatrix(
+  rootNode: GraphNode,
+  nodes: GraphNodeDictionary
+): NodeMatrix {
   const matrix: NodeMatrix = [[rootNode]];
   translateChildren({ parentNode: rootNode, nodes }, matrix);
   return matrix;
@@ -15,7 +18,10 @@ export function nodesToNodeMatrix(rootNode: GraphNode, nodes: GraphNodeDictionar
 
 const arrayOfNulls = partialRight<number, Function, null[]>(times, () => null);
 
-export function translateChildren(context: TranslateContext, matrix: NodeMatrix): NodeMatrix {
+export function translateChildren(
+  context: TranslateContext,
+  matrix: NodeMatrix
+): NodeMatrix {
   const children = retrieveChildrenNodes(context).sort(nonBranchesFirst);
   if (isEmpty(children)) {
     return matrix;

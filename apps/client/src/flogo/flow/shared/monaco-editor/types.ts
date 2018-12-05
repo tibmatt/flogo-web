@@ -1,4 +1,11 @@
-import { CancellationToken, CompletionItem, CompletionList, LineRange, MarkedString, Thenable } from './monaco.types';
+import {
+  CancellationToken,
+  CompletionItem,
+  CompletionList,
+  LineRange,
+  MarkedString,
+  Thenable,
+} from './monaco.types';
 
 export interface OffsetRange {
   startOffset: number;
@@ -38,7 +45,11 @@ export interface CompletionProvider {
   provideCompletionItems(
     position: Position,
     token: CancellationToken
-  ): CompletionItem[] | Thenable<CompletionItem[]> | CompletionList | Thenable<CompletionList>;
+  ):
+    | CompletionItem[]
+    | Thenable<CompletionItem[]>
+    | CompletionList
+    | Thenable<CompletionList>;
 }
 
 export interface EditorError {

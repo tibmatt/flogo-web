@@ -49,7 +49,10 @@ import { ModalService } from '@flogo-web/client/core/modal/modal.service';
   ],
   providers: [
     // services
-    { provide: DEFAULT_REST_HEADERS, useValue: createDefaultRestApiHttpHeaders() },
+    {
+      provide: DEFAULT_REST_HEADERS,
+      useValue: createDefaultRestApiHttpHeaders(),
+    },
     HttpUtilsService,
     RestApiService,
 

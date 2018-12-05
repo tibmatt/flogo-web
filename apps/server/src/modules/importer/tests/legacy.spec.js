@@ -17,7 +17,8 @@ describe('Importer: Legacy', () => {
     testContext.importerContext = makeImporterContext(testContext.importerFactory);
     testContext.testOptions = new TestOptions({
       updateTasksRefCb: function(app) {
-        app.actions[0].data.flow.rootTask.tasks[0].activityRef = 'some.domain/path/to/activity';
+        app.actions[0].data.flow.rootTask.tasks[0].activityRef =
+          'some.domain/path/to/activity';
         return app;
       },
       depsConstructors: {
