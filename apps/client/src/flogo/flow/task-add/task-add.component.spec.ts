@@ -3,7 +3,6 @@ import { TASKADD_OPTIONS, TaskAddComponent } from './task-add.component';
 import { TaskAddModule } from './task-add.module';
 import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
 import { of } from 'rxjs';
-import { FLOGO_PROFILE_TYPE } from '@flogo-web/client/core';
 import { By } from '@angular/platform-browser';
 import { FlogoFlowService } from '@flogo-web/client/flow/core';
 import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
@@ -29,7 +28,6 @@ describe('Component: TaskAddComponent', () => {
     ]),
     appAndFlowInfo$: of({
       appId: 'some_app',
-      appProfileType: FLOGO_PROFILE_TYPE.MICRO_SERVICE,
       actionId: 'some_action',
     }),
     selectActivity: () => {},

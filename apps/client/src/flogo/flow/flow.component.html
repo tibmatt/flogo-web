@@ -1,11 +1,5 @@
 <div class="canvas-flow" *ngIf="flowState && !loading">
-  <div
-    class="header"
-    [ngClass]="{
-      'header--device': profileType === PROFILE_TYPES.DEVICE,
-      'header--microservice': profileType === PROFILE_TYPES.MICRO_SERVICE
-    }"
-  >
+  <div class="header header--microservice">
     <section class="flogo-flow-detail">
       <header class="flogo-flow-detail-header" [ngClass]="{ '--hover': backToAppHover }">
         <i
@@ -15,11 +9,7 @@
           (mouseout)="onMouseOutBackControl()"
         ></i>
         <div
-          class="flogo-profile__tile flogo-profile-detail__thumb"
-          [ngClass]="{
-            'flogo-profile__device': profileType === PROFILE_TYPES.DEVICE,
-            'flogo-profile__microservice': profileType === PROFILE_TYPES.MICRO_SERVICE
-          }"
+          class="flogo-profile__tile flogo-profile-detail__thumb flogo-profile__microservice"
         ></div>
         <div class="header-content">
           <div class="flow-detail-name">
@@ -28,11 +18,6 @@
               [(fgContentEditable)]="flowState.name"
               (fgContentEditableChange)="changeFlowDetailName($event, 'name')"
             ></h3>
-            <span
-              *ngIf="profileType === PROFILE_TYPES.DEVICE"
-              class="flogo-profile__device-type"
-              >{{ flowState.app.device.deviceType }}</span
-            >
             <span>in</span>
             <span
               (click)="navigateToApp()"
@@ -54,7 +39,6 @@
 
       <div class="flogo-flow-detail-menu-container">
         <flogo-run-flow
-          *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
           [disableRun]="runnableInfo?.disabled"
           disableReason="{{ runnableInfo?.disableReason | translate }}"
           [flowInputs]="flowState?.metadata?.input"
@@ -92,24 +76,14 @@
     <flogo-flow-tabs class="tabs"></flogo-flow-tabs>
   </div>
 
-  <flogo-flow-debug-panel
-    *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE; else deviceDiagram"
-    class="debug-panel-container"
-  >
+  <flogo-flow-debug-panel class="debug-panel-container">
     <ng-container *ngTemplateOutlet="flowContent"></ng-container>
   </flogo-flow-debug-panel>
-
-  <ng-template #deviceDiagram>
-    <div class="diagram-container--device">
-      <ng-container *ngTemplateOutlet="flowContent"></ng-container>
-    </div>
-  </ng-template>
 
   <ng-template #flowContent>
     <flogo-flow-triggers></flogo-flow-triggers>
     <flogo-flow-params-schema-button
       role="button"
-      *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
       [flowMetadata]="flowState?.metadata"
       (click)="openInputSchemaModal()"
     ></flogo-flow-params-schema-button>
@@ -119,7 +93,6 @@
         (deleteTask)="onDeleteTask($event)"
       ></flogo-flow-diagram>
       <flogo-debug-panel-toggle-button
-        *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
         class="debug-panel-toggler"
       ></flogo-debug-panel-toggle-button>
     </div>

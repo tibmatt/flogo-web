@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 
 import { App } from '@flogo-web/client/core';
 import { FileDownloaderService } from '@flogo-web/client/core/services/file-downloader.service';
-import { FLOGO_PROFILE_TYPE, TYPE_APP_MODEL } from '../../../constants';
+import { TYPE_APP_MODEL } from '../../../constants';
 import { HttpUtilsService } from '../http-utils.service';
 import { RestApiService } from '../rest-api.service';
 

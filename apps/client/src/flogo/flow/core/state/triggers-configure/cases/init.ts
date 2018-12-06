@@ -1,6 +1,5 @@
-import { Dictionary, FLOGO_PROFILE_TYPE, TriggerSchema } from '@flogo-web/client/core';
+import { Dictionary, TriggerSchema } from '@flogo-web/client/core';
 import { FlowState } from '@flogo-web/client/flow/core/state/flow/flow.state';
-import { getProfileType } from '@flogo-web/client/shared/utils';
 import { OpenConfigureWithSelection } from '../trigger-configure.actions';
 import {
   Trigger,
@@ -9,7 +8,7 @@ import {
   TriggerConfigureTabType,
   TriggerConfigureTrigger,
 } from '@flogo-web/client/flow/core/interfaces';
-import { getDeviceTabs, getMicroServiceTabs } from './tab-base-by-profile';
+import { getMicroServiceTabs } from './tab-base-by-profile';
 import { setEnabledStatusToTabs } from './set-enabled-status-to-tabs';
 
 export function init(
@@ -29,8 +28,7 @@ export function init(
   triggerConfigureState = initTriggerConfigureState(
     triggerConfigureState,
     Object.values(flowState.triggers),
-    triggerSchemas,
-    getProfileType(flowState.app)
+    triggerSchemas
   );
   return setEnabledStatusToTabs(triggerConfigureState);
 }
@@ -38,14 +36,13 @@ export function init(
 function initTriggerConfigureState(
   baseState: TriggerConfigureState,
   appTriggers: Trigger[],
-  triggersSchemas: Dictionary<TriggerSchema>,
-  appProfileType: FLOGO_PROFILE_TYPE
+  triggersSchemas: Dictionary<TriggerSchema>
 ): TriggerConfigureState {
   const triggersForConfigure: Dictionary<TriggerConfigureTrigger> = {};
   let allTabs: Dictionary<TriggerConfigureTab> = {};
   const fields = {};
   appTriggers.forEach(trigger => {
-    const tabsForTrigger = createTabsForTrigger(trigger.id, appProfileType);
+    const tabsForTrigger = createTabsForTrigger(trigger.id);
     allTabs = { ...allTabs, ...tabsForTrigger };
     triggersForConfigure[trigger.id] = createTriggerState(trigger, [
       ...Object.keys(tabsForTrigger),
@@ -59,15 +56,8 @@ function initTriggerConfigureState(
   };
 }
 
-function createTabsForTrigger(
-  triggerId: string,
-  appProfileType: FLOGO_PROFILE_TYPE
-): Dictionary<TriggerConfigureTab> {
-  const getTabBases =
-    appProfileType === FLOGO_PROFILE_TYPE.MICRO_SERVICE
-      ? getMicroServiceTabs
-      : getDeviceTabs;
-  return getTabBases().reduce((tabs, tabBase) => {
+function createTabsForTrigger(triggerId: string): Dictionary<TriggerConfigureTab> {
+  return getMicroServiceTabs().reduce((tabs, tabBase) => {
     tabs[`${triggerId}.${tabBase.type}`] = {
       triggerId,
       ...tabBase,

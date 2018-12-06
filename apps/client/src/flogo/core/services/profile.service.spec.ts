@@ -1,5 +1,4 @@
 import { FlogoProfileService } from './profile.service';
-import { FLOGO_PROFILE_TYPE } from '../constants';
 import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
 import Spy = jasmine.Spy;
 
@@ -409,7 +408,7 @@ describe('Service: FlogoProfileService', function(this: {
   it('Should transform the 11 activities in case subflow is not installed in engine', done => {
     const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     spyActivityService.and.returnValue(Promise.resolve(_.cloneDeep(mockData)));
-    this.testService.getActivities(FLOGO_PROFILE_TYPE.MICRO_SERVICE).then(res => {
+    this.testService.getActivities().then(res => {
       // 11 activities + 1 sub-flow activity
       expect(res.length).toEqual(11);
       done();
@@ -420,7 +419,7 @@ describe('Service: FlogoProfileService', function(this: {
     const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     appendSubflowActivity();
     spyActivityService.and.returnValue(Promise.resolve(_.cloneDeep(mockData)));
-    this.testService.getActivities(FLOGO_PROFILE_TYPE.MICRO_SERVICE).then(res => {
+    this.testService.getActivities().then(res => {
       // 11 activities + 1 sub-flow activity
       expect(res.length).toEqual(12);
       done();
@@ -430,7 +429,7 @@ describe('Service: FlogoProfileService', function(this: {
   it('Should add the "installed" field to 11 items', done => {
     const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     spyActivityService.and.returnValue(Promise.resolve(_.cloneDeep(mockData)));
-    this.testService.getActivities(FLOGO_PROFILE_TYPE.MICRO_SERVICE).then(res => {
+    this.testService.getActivities().then(res => {
       const installed = (res || []).filter(item => item['installed'] === true);
 
       expect(installed.length).toEqual(11);

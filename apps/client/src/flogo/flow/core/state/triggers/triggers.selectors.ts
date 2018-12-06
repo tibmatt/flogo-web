@@ -43,7 +43,6 @@ export const getTriggersState = createSelector(
     return {
       appId: appInfo.appId,
       actionId,
-      appProfileType: appInfo.appProfileType,
       triggers,
       flowMetadata,
       currentTrigger,

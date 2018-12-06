@@ -12,10 +12,7 @@ import {
   Dictionary,
 } from '@flogo-web/client/core';
 import { TriggersApiService } from '@flogo-web/client/core/services';
-import {
-  FLOGO_PROFILE_TYPE,
-  TRIGGER_MENU_OPERATION,
-} from '@flogo-web/client/core/constants';
+import { TRIGGER_MENU_OPERATION } from '@flogo-web/client/core/constants';
 import { objectFromArray } from '@flogo-web/client/shared/utils';
 import { RESTAPIHandlersService } from '@flogo-web/client/core/services/restapi/v2/handlers-api.service';
 
@@ -40,11 +37,9 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   actionId: string;
   appDetails: {
     appId: string;
-    appProfileType: FLOGO_PROFILE_TYPE;
     metadata?: FlowMetadata;
   };
   triggersList: RenderableTrigger[] = [];
-  allowMultipleTriggers = true;
   currentTrigger: RenderableTrigger;
   showAddTrigger = false;
   installTriggerActivated = false;
@@ -73,11 +68,9 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
         // todo: possibly flatten this structure out but some sub components depend on it right now
         this.appDetails = {
           appId: triggerState.appId,
-          appProfileType: triggerState.appProfileType,
           metadata: triggerState.flowMetadata,
         };
         // todo: modifies computed values based on state, it could be a selector instead
-        this.manageAddTriggerInView();
       });
   }
 
@@ -85,16 +78,8 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
     this.ngDestroy$.emitAndComplete();
   }
 
-  get isDeviceType() {
-    return this.appDetails.appProfileType === FLOGO_PROFILE_TYPE.DEVICE;
-  }
-
   trackTriggerBy(index: number, trigger: RenderableTrigger) {
     return trigger.id;
-  }
-
-  private manageAddTriggerInView() {
-    this.allowMultipleTriggers = !(this.isDeviceType && this.triggersList.length > 0);
   }
 
   openInstallTriggerWindow() {

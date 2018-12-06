@@ -22,7 +22,6 @@ import {
 } from '../../models';
 import { DiagramSelectionType } from '@flogo-web/client/packages/diagram/interfaces';
 import { Activity } from '@flogo-web/client/flow/task-add';
-import { getProfileType } from '@flogo-web/client/shared/utils';
 import { CONTRIB_REF_PLACEHOLDER } from '@flogo-web/client/core/constants';
 import { NodeDictionary } from '@flogo-web/client/core/interfaces/graph/graph';
 
@@ -285,12 +284,10 @@ export const selectAppInfo = createSelector(
     if (!app) {
       return {
         appId: null,
-        appProfileType: null,
       };
     }
     return {
       appId: app.id,
-      appProfileType: getProfileType(app),
     };
   }
 );
@@ -305,11 +302,7 @@ export const getInstalledActivities = createSelector(
   selectSchemas,
   (schemas: Dictionary<ContribSchema>): Activity[] => {
     const activities = Object.values(schemas)
-      .filter(
-        schema =>
-          schema.type === FLOGO_CONTRIB_TYPE_VALUES.DEVICE_ACTIVITY ||
-          schema.type === FLOGO_CONTRIB_TYPE_VALUES.MICRO_SERVICE_ACTIVITY
-      )
+      .filter(schema => schema.type === FLOGO_CONTRIB_TYPE_VALUES.MICRO_SERVICE_ACTIVITY)
       .map(schema => ({
         title: schema.title,
         ref: schema.ref,

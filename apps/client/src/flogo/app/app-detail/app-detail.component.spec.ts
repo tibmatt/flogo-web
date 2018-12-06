@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed, tick, fakeAsync, async } from '@angular/core
 import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
 import { BsModalModule } from 'ng2-bs3-modal';
-import { FLOGO_PROFILE_TYPE } from '@flogo-web/client/core';
 import { NotificationsServiceMock } from '@flogo-web/client/core/notifications/testing';
 import { NotificationsService } from '@flogo-web/client/core/notifications/notifications.service';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared/shared.module';
@@ -249,7 +248,6 @@ describe('FlogoApplicationDetailComponent component', () => {
 function makeMockAppDetail() {
   return {
     app: {
-      profileType: FLOGO_PROFILE_TYPE.MICRO_SERVICE,
       id: '1',
       name: 'Sample Application 1',
       version: '0.0.1',

@@ -301,22 +301,4 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
     );
     expect(res.length).toEqual(1);
   });
-
-  it('Should not have Add Trigger button for Device Profile when a trigger is already associated to the Flow', () => {
-    store.dispatch(
-      new Init({
-        ...TEST_STATE,
-        app: <any>{
-          ...TEST_STATE.app,
-          device: 'device',
-        },
-        ...DEVICE_TRIGGERS_HANDLERS,
-      })
-    );
-    fixture.detectChanges();
-    const res: Array<DebugElement> = fixture.debugElement.queryAll(
-      By.css('.flogo-icon-add')
-    );
-    expect(res.length).toEqual(0);
-  });
 });

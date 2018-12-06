@@ -20,7 +20,6 @@ import {
   ERROR_CODE,
   CONTRIB_REF_PLACEHOLDER,
 } from '@flogo-web/client/core';
-import { FLOGO_PROFILE_TYPE } from '@flogo-web/client/core/constants';
 import { LocalStorageService, SanitizeService } from '@flogo-web/client/core/services';
 import { ShimTriggerBuildApiService } from '@flogo-web/client/core/services/restapi/v2/shim-trigger-build-api.service';
 import { ModalService } from '@flogo-web/client/core/modal';
@@ -108,8 +107,6 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   isExportBoxShown = false;
   downloadLink: string;
 
-  PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
-
   constructor(
     public translate: LanguageService,
     private appDetailService: AppDetailService,
@@ -138,10 +135,8 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
       // this.flows = this.extractFlows();
       this.createFlowGroups();
       this.createTriggerGroups();
-      if (this.application.profileType === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
-        this.shimTriggerOptions = [];
-        this.getShimTriggerBuildOptions();
-      }
+      this.shimTriggerOptions = [];
+      this.getShimTriggerBuildOptions();
       const prevValue = change.previousValue;
       const isDifferentApp =
         !prevValue || !prevValue.app || prevValue.app.id !== this.application.id;
@@ -260,7 +255,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
 
   openExportFlow() {
     const flows = this.application.actions;
-    const isLegacyExport = this.application.profileType === FLOGO_PROFILE_TYPE.DEVICE;
+    const isLegacyExport = false;
     return this.modalService.openModal<ExportFlowsData>(FlogoExportFlowsComponent, {
       flows,
       isLegacyExport,
@@ -288,15 +283,6 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     this.isDescriptionInEditMode = false;
     this.editableDescription = this.sanitizer.sanitizeHTMLInput(this.editableDescription);
     this.appDetailService.update('description', this.editableDescription);
-  }
-
-  onSaveDeviceSettings(settings: any[]) {
-    if (!this.application.device) {
-      this.application.device = {};
-    }
-
-    this.application.device.settings = settings;
-    this.appDetailService.update('device', this.application.device);
   }
 
   onDescriptionCancel() {
@@ -484,7 +470,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
       };
     });
     this.contributionService
-      .getShimContributionDetails(this.application.profileType)
+      .getShimContributionDetails()
       .then(shimmableTriggersDetails => {
         shimmableTriggersDetails.forEach(shimmableTriggerDetail => {
           const shimmableTrigger = flowGroupsMap.find(

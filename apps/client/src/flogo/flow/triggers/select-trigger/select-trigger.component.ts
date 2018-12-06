@@ -58,7 +58,7 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
 
   loadInstalledTriggers() {
     return this.profileService
-      .getTriggers(this.appDetails.appProfileType)
+      .getTriggers()
       .then((triggers: any) => {
         this.installedTriggers = triggers;
         return triggers;

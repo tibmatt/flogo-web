@@ -10,11 +10,7 @@ import {
   uniqueId,
   trimStart,
 } from 'lodash';
-import {
-  ValueType,
-  FLOGO_TASK_TYPE,
-  FLOGO_PROFILE_TYPE,
-} from '@flogo-web/client/core/constants';
+import { ValueType, FLOGO_TASK_TYPE } from '@flogo-web/client/core/constants';
 import { Item, Task } from '@flogo-web/client/core';
 import { TYPE_LITERAL_ASSIGNMENT } from '@flogo-web/client/flow/shared/mapper';
 
@@ -349,14 +345,4 @@ export function isIterableTask(task: Task | Item): boolean {
 
 export function isBranchConfigured(branchCondition): boolean {
   return branchCondition && branchCondition !== 'true';
-}
-
-export function getProfileType(app) {
-  let profileType: FLOGO_PROFILE_TYPE;
-  if (app.device) {
-    profileType = FLOGO_PROFILE_TYPE.DEVICE;
-  } else {
-    profileType = FLOGO_PROFILE_TYPE.MICRO_SERVICE;
-  }
-  return profileType;
 }
