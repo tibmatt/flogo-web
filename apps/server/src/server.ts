@@ -6,6 +6,9 @@ import { ensureDefaultDirs } from './modules/init';
 import { createApp as createServerApp } from './modules/init/app';
 import { syncTasks } from './modules/contrib-install-controller/sync-tasks';
 
+import { loadPlugins } from './plugins';
+// loadPlugins(register);
+
 export default ensureDefaultDirs()
   .then(() => initEngine(config.defaultEngine.path))
   .then(() =>
