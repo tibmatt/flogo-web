@@ -10,7 +10,7 @@ import { DanglingSubflowReferencesCleaner } from './utils/dangling-subflow-refer
 export class Exporter {
   /**
    * @param {boolean} isFullExportMode - full export or flows export
-   * @param {StandardMicroServiceFormatter|LegacyMicroServiceFormatter|DeviceFormatter} formatter
+   * @param {StandardMicroServiceFormatter|LegacyMicroServiceFormatter} formatter
    * @param {Validator} validator
    * @param {UniqueIdAgent} uniqueIdAgent
    */

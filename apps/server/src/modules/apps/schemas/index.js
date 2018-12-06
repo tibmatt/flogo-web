@@ -6,7 +6,6 @@ const deviceAppSchema = require('./device-app-schema.json');
 const appSchema = require('./app-schema.json');
 const handlerEditableSchema = require('./handler-editable-schema.json');
 const fullAppSchema = require('./full-app-schema.json');
-const fullDeviceAppSchema = require('./full-device-app-schema.json');
 
 export {
   activityDeviceSchemaCreate,
@@ -17,5 +16,4 @@ export {
   appSchema,
   handlerEditableSchema,
   fullAppSchema,
-  fullDeviceAppSchema,
 };

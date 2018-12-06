@@ -2,10 +2,10 @@ import { isEmpty } from 'lodash';
 import { AppImporter } from './app-importer';
 import { LegacyAppImporterFactory } from './legacy/factory';
 import { StandardAppImporterFactory } from './standard/factory';
-import { DEFAULT_APP_TYPE } from '../../common/constants';
 import { ErrorManager } from '../../common/errors';
 import { IMPORT_ERRORS } from './errors';
 import { ResourceStorageRegistry } from '../resource-storage-registry';
+import { isValidApplicationType } from '../../common/utils';
 
 export class AppImporterFactory {
   resourceStorageRegistry: any;
@@ -58,7 +58,7 @@ export class AppImporterFactory {
   }
 
   isLegacyApp(rawApp) {
-    return this.isMicroservicetype(rawApp.type) && isEmpty(rawApp.appModel);
+    return isValidApplicationType(rawApp.type) && isEmpty(rawApp.appModel);
   }
 
   legacyDependenciesFactory() {
@@ -66,7 +66,7 @@ export class AppImporterFactory {
   }
 
   isStandardApp(rawApp) {
-    return this.isMicroservicetype(rawApp.type) && rawApp.appModel === '1.0.0';
+    return isValidApplicationType(rawApp.type) && rawApp.appModel === '1.0.0';
   }
 
   standardDependenciesFactory() {
@@ -80,10 +80,6 @@ export class AppImporterFactory {
       actionsImporter,
       triggersHandlersImporter
     );
-  }
-
-  isMicroservicetype(appType: string) {
-    return appType === DEFAULT_APP_TYPE;
   }
 
   getAppsManager() {
