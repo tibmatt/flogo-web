@@ -37,9 +37,6 @@ export class ErrorManager {
    * @param {string} message - message to be sent to the client
    * @param {string} keyword
    * @param {object} [details] - optional details
-   * @param {string} [details.dataPath] - path of the data at which the validation has failed
-   * @param {object [details.params] -  an object which can have custom error specific extra information based on which
-   * the error occurred
    */
   static createCustomValidationError(message, keyword, { dataPath, params } = {}) {
     if (!keyword) {

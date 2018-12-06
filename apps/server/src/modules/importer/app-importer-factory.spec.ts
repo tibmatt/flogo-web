@@ -1,5 +1,4 @@
 import sinon from 'sinon';
-import { DeviceAppImporterFactory } from './device/factory';
 import { LegacyAppImporterFactory } from './legacy/factory';
 import { AppImporterFactory } from './app-importer-factory';
 import { AppImporter } from './app-importer';
@@ -20,7 +19,7 @@ describe('importer.AppImporterFactory', () => {
   });
 
   describe('when given a standard app', () => {
-    const standardApp = { appModel: '1.0.0' };
+    const standardApp = { appModel: '1.0.0', type: 'flogo:app' };
 
     test('#isLegacyApp should correctly determine it is a standard app', async () => {
       expect(appImporterFactory.isStandardApp(standardApp)).toBe(true);
@@ -28,9 +27,12 @@ describe('importer.AppImporterFactory', () => {
 
     test('#isStandardApp should accept only appModel 1.0.0', async () => {
       ['', '1.2.4', undefined, 1, 'xyx'].forEach(appModelTestVal =>
-        expect(appImporterFactory.isStandardApp({ appModel: appModelTestVal })).not.toBe(
-          true
-        )
+        expect(
+          appImporterFactory.isStandardApp({
+            appModel: appModelTestVal,
+            type: 'flogo:app',
+          })
+        ).not.toBe(true)
       );
       expect(appImporterFactory.isStandardApp({})).not.toBe(true);
     });
@@ -41,7 +43,7 @@ describe('importer.AppImporterFactory', () => {
   });
 
   describe('when given a legacy app', () => {
-    const legacyApp = {};
+    const legacyApp = { type: 'flogo:app' };
 
     test('#isLegacyApp should correctly determine it is a legacy app', async () => {
       expect(appImporterFactory.isLegacyApp(legacyApp)).toBe(true);
@@ -52,32 +54,17 @@ describe('importer.AppImporterFactory', () => {
     });
   });
 
-  describe('when given a device app', () => {
-    const deviceApp = { device: 'devicetype' };
-
-    test('#isDeviceApp should correctly determine it is a device app', async () => {
-      expect(appImporterFactory.isDeviceApp(deviceApp)).toBe(true);
-    });
-
-    test('#dependenciesFactory should select the device dependencies factory', () => {
-      assertFactorySelected('deviceDependenciesFactory', deviceApp);
-    });
-  });
-
   function assertFactorySelected(factorySelector, testApp) {
     const dependenciesFactoryCreator = sandbox
       .stub(appImporterFactory, factorySelector)
       .returns({ id: factorySelector });
-    const dependendenciesFactory = appImporterFactory.getDependenciesFactory(testApp);
-    expect(dependendenciesFactory.id).toBe(factorySelector);
+    const dependenciesFactory = appImporterFactory.getDependenciesFactory(testApp);
+    expect(dependenciesFactory.id).toBe(factorySelector);
     expect(dependenciesFactoryCreator.calledOnce).toBe(true);
   }
 
   function createTestContext(sandboxInstance) {
     const stubs = {
-      deviceDependenciesFactory: sandboxInstance.createStubInstance(
-        DeviceAppImporterFactory
-      ),
       legacyDependenciesFactory: sandboxInstance.createStubInstance(
         LegacyAppImporterFactory
       ),

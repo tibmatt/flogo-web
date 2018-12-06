@@ -111,12 +111,6 @@ export function createSharedTestCases(name, testContext) {
           },
         },
         {
-          name: 'device',
-          properties: {
-            type: 'flogo:app:device',
-          },
-        },
-        {
           name: 'legacy',
           properties: {
             type: 'flogo:app',

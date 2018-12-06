@@ -4,7 +4,6 @@ import { AppsManagerMock } from './mocks/apps-manager-mock';
 import { ActionsManagerMock } from './mocks/actions-manager-mock';
 import { AppsTriggersManagerMock } from './mocks/apps-trigger-manager-mock';
 import { HandlerManagerMock } from './mocks/handler-manager-mock';
-import { ContribManagerMock } from './mocks/contrib-mananger-mock';
 
 export class ResourceStorageRegistryMock {
   /**
@@ -26,13 +25,6 @@ export class ResourceStorageRegistryMock {
    */
   static getContribActivitiesManager() {
     return ActivitiesManagerMock;
-  }
-
-  /**
-   * @return {ContribsManager}
-   */
-  static getDeviceContribsManager() {
-    return ContribManagerMock;
   }
 
   /**
