@@ -2,7 +2,6 @@ import { get, fromPairs, uniqueId } from 'lodash';
 import {
   ActionBase,
   FlowMetadata,
-  FLOGO_PROFILE_TYPE,
   FLOGO_FLOW_DIAGRAM_NODE_TYPE,
   UiFlow,
   Dictionary,
@@ -45,8 +44,6 @@ export abstract class AbstractModelConverter {
     this.errorService = errorService;
   }
 
-  abstract getProfileType(): FLOGO_PROFILE_TYPE;
-
   abstract getFlowInformation(flow): FlowInfo;
 
   abstract normalizeActivitySchema(schema: ActivitySchema): ActivitySchema;
@@ -66,7 +63,7 @@ export abstract class AbstractModelConverter {
       );
     } else {
       return this.contribService
-        .getContributionDetails(this.getProfileType(), trigger.ref)
+        .getContributionDetails(trigger.ref)
         .then((schema: TriggerSchema) => this.normalizeTriggerSchema(schema));
     }
   }
@@ -182,7 +179,7 @@ export abstract class AbstractModelConverter {
 
   private getAllActivitySchemas(): Promise<ActivitySchema[]> {
     return this.contribService
-      .listContribs<ActivitySchema>(this.getProfileType(), FLOGO_CONTRIB_TYPE.ACTIVITY)
+      .listContribs<ActivitySchema>(FLOGO_CONTRIB_TYPE.ACTIVITY)
       .then(activities => activities.map(this.normalizeActivitySchema));
   }
 

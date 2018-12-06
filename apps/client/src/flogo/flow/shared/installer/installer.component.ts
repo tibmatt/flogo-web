@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
 import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
-import { FLOGO_CONTRIB_TYPE, FLOGO_PROFILE_TYPE } from '@flogo-web/client/core/constants';
+import { FLOGO_CONTRIB_TYPE } from '@flogo-web/client/core/constants';
 import {
   FLOGO_INSTALLER_STATUS_STANDBY,
   FLOGO_INSTALLER_STATUS_IDLE,
@@ -30,8 +30,6 @@ export class FlogoInstallerComponent implements OnChanges {
   installType: string;
   @Input()
   isActivated: boolean;
-  @Input()
-  profileType: FLOGO_PROFILE_TYPE;
 
   // TODO
   //  may add two-way binding later.
@@ -125,7 +123,6 @@ export class FlogoInstallerComponent implements OnChanges {
 
     this.contributionsAPIs
       .installContributions({
-        profileType: this.profileType,
         installType: this._installType,
         url,
       })
@@ -133,10 +130,7 @@ export class FlogoInstallerComponent implements OnChanges {
       .then(result => {
         self._status = FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS;
         console.groupEnd();
-        return this.contributionsAPIs.getContributionDetails(
-          this.profileType,
-          result.ref
-        );
+        return this.contributionsAPIs.getContributionDetails(result.ref);
       })
       .then(contribDetails => this.installed.emit(contribDetails))
       .catch(err => {

@@ -78,7 +78,7 @@ export class FlogoFlowService {
         ][]);
         this.currentFlowDetails = new FlogoFlowDetails(flow, this.store);
 
-        this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
+        this._converterService.setProfile();
         return this._converterService
           .getWebFlowModel(flowDiagramDetails, linkedSubflows)
           .then(convertedFlow => {

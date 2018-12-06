@@ -4,9 +4,6 @@ import { distinctUntilChanged } from 'rxjs/operators';
 
 import { GraphNode, Item, UiFlow } from '@flogo-web/client/core';
 
-import { FLOGO_PROFILE_TYPE } from '@flogo-web/client/core/constants';
-import { getProfileType } from '@flogo-web/client/shared/utils';
-
 import { FlowActions, FlowSelectors } from '../state';
 import { AppState } from '../state/app.state';
 import { HandlerType } from './handler-type';
@@ -14,13 +11,11 @@ import { HandlerType } from './handler-type';
 export class FlogoFlowDetails {
   id: string;
   associatedToAppId: string;
-  applicationProfileType: FLOGO_PROFILE_TYPE;
   flow: UiFlow;
 
   constructor(flow, private store: Store<AppState>) {
     this.id = flow.id;
     this.associatedToAppId = flow.app.id;
-    this.applicationProfileType = getProfileType(flow.app);
   }
 
   get runnableState$() {

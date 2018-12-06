@@ -29,8 +29,6 @@ export class TriggerBlockComponent {
   @Input()
   trigger: Trigger;
   @Input()
-  menuDisabled: boolean;
-  @Input()
   isSelected: boolean;
   @Output()
   menuItemSelected: EventEmitter<TriggerMenuSelectionEvent> = new EventEmitter<
@@ -55,9 +53,7 @@ export class TriggerBlockComponent {
   }
 
   handleTriggerMenuShow() {
-    if (!this.menuDisabled) {
-      this.isShowingMenu = true;
-    }
+    this.isShowingMenu = true;
   }
 
   handleTriggerMenuHide() {

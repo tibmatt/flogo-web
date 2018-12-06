@@ -1,5 +1,4 @@
 import { taskIdGenerator } from './task-id-generator';
-import { FLOGO_PROFILE_TYPE } from '@flogo-web/client/core';
 
 const mockTasksAvailable = {
   RmxvZ286OlRyaWdnZXI6OjE1MDQ2Mjg3ODI1NzU: {
@@ -117,16 +116,7 @@ describe('taskIdGenerator', () => {
   let generatedTaskID;
 
   it('Should generate the task ID for Microservice profile in "ref_num" format', () => {
-    generatedTaskID = taskIdGenerator(
-      FLOGO_PROFILE_TYPE.MICRO_SERVICE,
-      mockTasksAvailable,
-      mockSelectedTask
-    );
+    generatedTaskID = taskIdGenerator(mockTasksAvailable, mockSelectedTask);
     expect(generatedTaskID).toEqual('counter_2');
-  });
-
-  it('Should generate the task ID for Device profile in "num" format', () => {
-    generatedTaskID = taskIdGenerator(FLOGO_PROFILE_TYPE.DEVICE, mockTasksAvailable);
-    expect(generatedTaskID).toEqual('2');
   });
 });

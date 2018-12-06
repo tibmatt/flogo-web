@@ -4,7 +4,7 @@ import { objectFromArray } from '../../shared/utils';
 import { TriggersApiService } from './restapi';
 import { RESTAPIHandlersService as HandlersService } from './restapi/v2/handlers-api.service';
 import { APIFlowsService as FlowsApiService } from './restapi/v2/flows-api.service';
-import { FLOGO_PROFILE_TYPE, TriggerSchema } from '@flogo-web/client/core';
+import { TriggerSchema } from '@flogo-web/client/core';
 import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
 
 @Injectable()
@@ -19,8 +19,7 @@ export class FlowsService {
   createFlow(
     appId: string,
     newFlow: { name: string; description: string },
-    triggerId,
-    profile: FLOGO_PROFILE_TYPE
+    triggerId
   ): Promise<any> {
     if (!triggerId) {
       return this.flowsService.createFlow(appId, newFlow);
@@ -28,7 +27,7 @@ export class FlowsService {
     return this.flowsService
       .createFlow(appId, newFlow)
       .then(flow => {
-        return this.getContribInfo(triggerId, profile).then(contribTrigger => ({
+        return this.getContribInfo(triggerId).then(contribTrigger => ({
           flow,
           contribTrigger,
         }));
@@ -66,12 +65,11 @@ export class FlowsService {
       .catch(err => Promise.reject(err));
   }
 
-  private getContribInfo(triggerInstanceId, type: FLOGO_PROFILE_TYPE) {
+  private getContribInfo(triggerInstanceId) {
     return this.triggersService
       .getTrigger(triggerInstanceId)
       .then(triggerInstance =>
         this.contribTriggerService.getContributionDetails<TriggerSchema>(
-          type,
           triggerInstance.ref
         )
       );

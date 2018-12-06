@@ -1,13 +1,9 @@
 import { FlowMetadata, MetadataAttribute } from '@flogo-web/client/core/interfaces';
 import { ValueType } from '@flogo-web/client/core/constants';
 import { AbstractModelConverter } from '../ui-converter.model';
-import { ActivitySchema, FLOGO_PROFILE_TYPE } from '@flogo-web/client/core';
+import { ActivitySchema } from '@flogo-web/client/core';
 
 export class MicroServiceModelConverter extends AbstractModelConverter {
-  getProfileType(): FLOGO_PROFILE_TYPE {
-    return FLOGO_PROFILE_TYPE.MICRO_SERVICE;
-  }
-
   normalizeActivitySchema(schema: ActivitySchema) {
     return schema;
   }

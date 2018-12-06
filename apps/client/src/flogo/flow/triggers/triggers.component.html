@@ -26,15 +26,9 @@
     *ngFor="let trigger of triggersList; trackBy: trackTriggerBy"
     [isSelected]="currentTrigger?.id === trigger.id"
     [trigger]="trigger"
-    [menuDisabled]="isDeviceType"
     (menuItemSelected)="handleMenuSelection($event)"
   ></flogo-flow-triggers-trigger-block>
-  <div
-    class="trigger trigger--add"
-    title="Add Trigger"
-    *ngIf="allowMultipleTriggers"
-    (click)="openAddTriggerModal()"
-  >
+  <div class="trigger trigger--add" title="Add Trigger" (click)="openAddTriggerModal()">
     <svg
       class="trigger-icon-background"
       viewBox="0 0 50 50"
@@ -55,7 +49,6 @@
   >
   </flogo-flow-select-trigger>
   <flogo-flow-installer
-    [profileType]="appDetails?.appProfileType"
     [installType]="'trigger'"
     [(isActivated)]="installTriggerActivated"
     (isActivatedChange)="openAddTriggerModal()"

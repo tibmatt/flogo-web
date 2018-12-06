@@ -16,8 +16,8 @@ import { FlowMetadata } from './task-configurator/models/flow-metadata';
 
 import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
 import { RESTAPIHandlersService } from '../core/services/restapi/v2/handlers-api.service';
-import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '../core/constants';
-import { getProfileType, isMapperActivity } from '@flogo-web/client/shared/utils';
+import { FLOGO_TASK_TYPE } from '../core/constants';
+import { isMapperActivity } from '@flogo-web/client/shared/utils';
 
 import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
@@ -42,7 +42,6 @@ interface TaskContext {
   isDiagramEdited: boolean;
   app: any;
   currentTrigger: any;
-  profileType: FLOGO_PROFILE_TYPE;
 }
 
 @Component({
@@ -69,9 +68,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   _isDiagramEdited: boolean;
   flowName: string;
   backToAppHover = false;
-
-  profileType: FLOGO_PROFILE_TYPE;
-  PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
 
   @HostBinding('hidden') loading: boolean;
   public hasTrigger: boolean;
@@ -203,7 +199,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   private initFlowData(flowData: FlowData) {
     this.flowName = flowData.flow.name;
     this.triggersList = flowData.triggers;
-    this.profileType = getProfileType(flowData.flow.app);
   }
 
   private getCurrentRunStateForTask(taskID: string) {
@@ -222,7 +217,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       isTask:
         taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC,
       shouldSkipTaskConfigure: taskType !== FLOGO_TASK_TYPE.TASK_BRANCH,
-      profileType: this.profileType,
       // can't run from tile anymore in this panel, hardcoding to false until we remove the right panel
       hasProcess: false,
       flowRunDisabled: this.runnableInfo && this.runnableInfo.disabled,

@@ -3,7 +3,7 @@ import { ValueType } from '@flogo-web/client/core/constants';
 export type ContribSchema = ActivitySchema | TriggerSchema;
 
 export interface ActivitySchema extends BaseSchema {
-  type: 'flogo:activity' | 'flogo:device:activity';
+  type: 'flogo:activity';
   return: boolean;
   /** @deprecated */
   reply?: boolean;
@@ -11,7 +11,7 @@ export interface ActivitySchema extends BaseSchema {
 }
 
 export interface TriggerSchema extends BaseSchema {
-  type: 'flogo:trigger' | 'flogo:device:trigger';
+  type: 'flogo:trigger';
   reply?: SchemaAttribute[];
   settings?: SchemaAttribute[];
   handler?: {
@@ -37,11 +37,7 @@ interface SchemaDisplay {
 
 export interface BaseSchema {
   name: string;
-  type:
-    | 'flogo:trigger'
-    | 'flogo:activity'
-    | 'flogo:device:trigger'
-    | 'flogo:device:activity';
+  type: 'flogo:trigger' | 'flogo:activity';
   ref: string;
   version: string;
   title: string;

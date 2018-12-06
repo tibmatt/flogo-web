@@ -2,11 +2,6 @@
  * Enumerations
  */
 
-export enum FLOGO_PROFILE_TYPE {
-  MICRO_SERVICE,
-  DEVICE,
-}
-
 export enum FLOGO_CONTRIB_TYPE {
   TRIGGER = 'trigger',
   ACTIVITY = 'activity',
@@ -14,7 +9,6 @@ export enum FLOGO_CONTRIB_TYPE {
 
 export enum FLOGO_CONTRIB_TYPE_VALUES {
   MICRO_SERVICE_ACTIVITY = 'flogo:activity',
-  DEVICE_ACTIVITY = 'flogo:device:activity',
 }
 
 export enum FLOGO_TASK_TYPE {

@@ -8,7 +8,6 @@ import { RESTAPIContributionsService } from '@flogo-web/client/core/services/res
 import { HttpUtilsService } from '@flogo-web/client/core/services/restapi/http-utils.service';
 import { FlogoProfileService } from '@flogo-web/client/core/services/profile.service';
 import { FlogoProfileServiceMock } from '@flogo-web/client/core/services/profile.service.mock';
-import { FLOGO_PROFILE_TYPE } from '@flogo-web/client/core/constants';
 import { TriggersModule } from '@flogo-web/client/flow/triggers';
 import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
 
@@ -51,9 +50,6 @@ describe('FlogoSelectTrigger component', () => {
     compileComponent().then(() => {
       fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
       comp = fixture.componentInstance;
-      comp.appDetails = {
-        appProfileType: FLOGO_PROFILE_TYPE.MICRO_SERVICE,
-      };
       comp.loadInstalledTriggers().then(() => {
         fixture.detectChanges();
         const res: Array<DebugElement> = fixture.debugElement.queryAll(
@@ -69,9 +65,6 @@ describe('FlogoSelectTrigger component', () => {
     compileComponent().then(() => {
       fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
       comp = fixture.componentInstance;
-      comp.appDetails = {
-        appProfileType: FLOGO_PROFILE_TYPE.MICRO_SERVICE,
-      };
       const existing = function() {
         return Promise.resolve(existingMock);
       };
@@ -91,9 +84,6 @@ describe('FlogoSelectTrigger component', () => {
     compileComponent().then(() => {
       fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
       comp = fixture.componentInstance;
-      comp.appDetails = {
-        appProfileType: FLOGO_PROFILE_TYPE.MICRO_SERVICE,
-      };
       const existing = function() {
         return Promise.resolve([]);
       };
@@ -116,9 +106,6 @@ describe('FlogoSelectTrigger component', () => {
     compileComponent().then(() => {
       fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
       comp = fixture.componentInstance;
-      comp.appDetails = {
-        appProfileType: FLOGO_PROFILE_TYPE.MICRO_SERVICE,
-      };
       const existing = function() {
         return Promise.resolve(existingMock);
       };

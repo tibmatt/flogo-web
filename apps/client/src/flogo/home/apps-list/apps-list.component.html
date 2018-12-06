@@ -23,11 +23,7 @@
 <div class="content">
   <article
     *ngFor="let app of applications"
-    class="app qa-app"
-    [ngClass]="{
-      'flogo-profile__thumbnail--microservice': app.type != 'flogo:device',
-      'flogo-profile__thumbnail--device': app.type === 'flogo:device'
-    }"
+    class="app qa-app flogo-profile__thumbnail--microservice"
     (click)="onSelectApp($event, deleteBox, app)"
   >
     <div class="app__content">

@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { ActionBase, ActivitySchema, FLOGO_PROFILE_TYPE } from '../../../core/index';
+import { ActionBase, ActivitySchema } from '../../../core/index';
 
 export interface TaskAddOptions {
   activities$: Observable<Activity[]>;
@@ -16,6 +16,5 @@ export interface Activity {
 
 interface AppAndFlowInfo {
   appId: string;
-  appProfileType: FLOGO_PROFILE_TYPE;
   actionId: string;
 }

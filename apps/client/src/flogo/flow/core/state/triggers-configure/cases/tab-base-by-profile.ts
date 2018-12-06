@@ -23,5 +23,3 @@ export const getMicroServiceTabs = () => [
   { ...INPUT_MAPPINGS_TAB },
   { ...OUTPUT_MAPPINGS_TAB },
 ];
-
-export const getDeviceTabs = () => [{ ...SETTINGS_TAB }];

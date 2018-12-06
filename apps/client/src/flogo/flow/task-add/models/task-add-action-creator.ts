@@ -6,7 +6,6 @@ import { PayloadOf } from '../../core/state/utils';
 import {
   activitySchemaToTask,
   createSubFlowTask,
-  getProfileType,
   isSubflowTask,
 } from '@flogo-web/client/shared/utils';
 import {
@@ -52,10 +51,8 @@ function createNewTask(
   const handlerType =
     selection.handlerType === HandlerType.Main ? HandlerType.Main : HandlerType.Error;
   const schema = flowState.schemas[activityData.ref];
-  const profileType = getProfileType(flowState.app);
   const { errorItems, mainItems } = flowState;
   const task = createTask({
-    profileType,
     activitySchema: schema,
     data: activityData,
     errorItems,
@@ -84,7 +81,7 @@ function createNewTask(
   };
 }
 
-function createTask({ profileType, data, activitySchema, mainItems, errorItems }) {
+function createTask({ data, activitySchema, mainItems, errorItems }) {
   let task;
   if (data.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
     const {
@@ -102,7 +99,7 @@ function createTask({ profileType, data, activitySchema, mainItems, errorItems }
   }
   const taskName = uniqueTaskName(task.name, mainItems, errorItems);
   task = <Task>assign({}, task, {
-    id: taskIdGenerator(profileType, { ...mainItems, ...errorItems }, task),
+    id: taskIdGenerator({ ...mainItems, ...errorItems }, task),
     name: taskName,
   });
   return task;

@@ -33,7 +33,6 @@
   </ng-template>
 </div>
 <flogo-flow-installer
-  [profileType]="(options.appAndFlowInfo$ | async).appProfileType"
   [installType]="'activity'"
   [isActivated]="isInstallOpen"
   (isActivatedChange)="handleInstallerWindow($event)"

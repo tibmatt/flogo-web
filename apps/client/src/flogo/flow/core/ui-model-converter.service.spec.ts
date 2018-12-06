@@ -13,7 +13,6 @@ import {
 import { mockTriggerDetails } from './ui-model-trigger.mock';
 import { RESTAPIContributionsService } from '../../core/services/restapi/v2/contributions.service';
 import Spy = jasmine.Spy;
-import { FLOGO_PROFILE_TYPE } from '@flogo-web/client/core/constants';
 import { ActionBase, Dictionary } from '@flogo-web/client/core';
 import { cloneDeep } from 'lodash';
 
@@ -33,7 +32,7 @@ describe('Service: UI Model Converter', function(this: {
       this.contribServiceMock,
       this.errorService
     );
-    this.service.setProfile(FLOGO_PROFILE_TYPE.MICRO_SERVICE);
+    this.service.setProfile();
     this.emptySchemaRegistry = {};
   });
 
