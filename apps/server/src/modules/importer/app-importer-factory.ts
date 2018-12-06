@@ -1,15 +1,14 @@
-import isEmpty from 'lodash/isEmpty';
-
+import { isEmpty } from 'lodash';
 import { AppImporter } from './app-importer';
 import { LegacyAppImporterFactory } from './legacy/factory';
-import { DeviceAppImporterFactory } from './device/factory';
 import { StandardAppImporterFactory } from './standard/factory';
-import { getProfileType } from '../../common/utils/profile';
-import { FLOGO_PROFILE_TYPES } from '../../common/constants';
+import { DEFAULT_APP_TYPE } from '../../common/constants';
 import { ErrorManager } from '../../common/errors';
 import { IMPORT_ERRORS } from './errors';
+import { ResourceStorageRegistry } from '../resource-storage-registry';
 
 export class AppImporterFactory {
+  resourceStorageRegistry: any;
   /**
    * @param {ResourceStorageRegistry} resourceStorageRegistry
    */
@@ -59,7 +58,7 @@ export class AppImporterFactory {
   }
 
   isLegacyApp(rawApp) {
-    return this.isMicroserviceprofile(rawApp) && isEmpty(rawApp.appModel);
+    return this.isMicroservicetype(rawApp.type) && isEmpty(rawApp.appModel);
   }
 
   legacyDependenciesFactory() {
@@ -67,7 +66,7 @@ export class AppImporterFactory {
   }
 
   isStandardApp(rawApp) {
-    return this.isMicroserviceprofile(rawApp) && rawApp.appModel === '1.0.0';
+    return this.isMicroservicetype(rawApp.type) && rawApp.appModel === '1.0.0';
   }
 
   standardDependenciesFactory() {
@@ -83,8 +82,8 @@ export class AppImporterFactory {
     );
   }
 
-  isMicroserviceprofile(rawApp) {
-    return getProfileType(rawApp) === FLOGO_PROFILE_TYPES.MICRO_SERVICE;
+  isMicroservicetype(appType: string) {
+    return appType === DEFAULT_APP_TYPE;
   }
 
   getAppsManager() {
