@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { AutofocusDirective } from './autofocus.directive';
@@ -9,7 +9,12 @@ import { AutofocusDirective } from './autofocus.directive';
   selector: 'flogo-test-container',
   template: `
     <div [ngSwitch]="caseName">
-      <input *ngSwitchDefault type="text" fgAutofocus id="inputNoBind" />
+      <input
+        *ngSwitchCase="'noCondition'"
+        type="text"
+        fgAutofocus
+        id="inputWithoutCondition"
+      />
       <input
         *ngSwitchCase="'bindTrue'"
         type="text"
@@ -43,18 +48,20 @@ describe('Directive: fgAutofocus ', () => {
     });
     fixture = TestBed.createComponent(ContainerComponent);
     container = fixture.componentInstance;
+    (document.activeElement as any).blur();
+    fixture.detectChanges();
   });
 
   it('The input control should have the focus when the input initializes', () => {
+    container.caseName = 'noCondition';
     fixture.detectChanges();
-    expect(document.activeElement.id).toEqual('inputNoBind');
+    expect(document.activeElement.id).toEqual('inputWithoutCondition');
   });
 
   it('The input control should not have the focus when the binding is false', () => {
     container.caseName = 'bindFalse';
     container.shouldAutofocus = false;
     fixture.detectChanges();
-
     expect(document.activeElement.id).not.toEqual('inputBindFalse');
   });
 
@@ -62,7 +69,6 @@ describe('Directive: fgAutofocus ', () => {
     container.caseName = 'bindTrue';
     container.shouldAutofocus = true;
     fixture.detectChanges();
-
     expect(document.activeElement.id).toEqual('inputBindTrue');
   });
 });
