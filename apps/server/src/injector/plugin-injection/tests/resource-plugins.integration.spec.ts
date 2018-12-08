@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Container, injectable, inject } from 'inversify';
 import { ResourceHooks } from '@flogo-web/server/core';
-import { TOKENS } from '../../tokens';
+import { TOKENS } from '../../../core/tokens';
 import { bindResourcePluginFactory } from '../resource-plugin-factory';
 import { createResourceRegistrar } from '../resource-registrar';
 import { generateMockHooksImplementation } from './utils';

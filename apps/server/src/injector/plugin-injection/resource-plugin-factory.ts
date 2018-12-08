@@ -1,6 +1,6 @@
 import { Container, interfaces } from 'inversify';
 import { ResourceHooks } from '@flogo-web/server/core';
-import { TOKENS } from '../tokens';
+import { TOKENS } from '../../core/tokens';
 
 export function bindResourcePluginFactory(container: Container) {
   container

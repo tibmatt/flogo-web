@@ -4,7 +4,7 @@ import {
   ResourceRegistrarFn,
   ResourceRegistrarParams,
 } from '@flogo-web/server/core';
-import { TOKENS } from '../tokens';
+import { TOKENS } from '../../core/tokens';
 
 export function createResourceRegistrar(container: Container): ResourceRegistrarFn {
   return function registerResourcePlugin(params) {
