@@ -1,5 +1,5 @@
 import { createServer, Server } from 'http';
-
+import { Container } from 'inversify';
 import * as Koa from 'koa';
 import 'koa-body';
 const KoaApp = require('koa');
@@ -18,9 +18,10 @@ export interface ServerConfig {
   port: string;
   staticPath: string;
   logsRoot: string;
+  container: Container;
 }
 
-export async function createApp({ port, staticPath, logsRoot }: ServerConfig) {
+export async function createApp({ port, staticPath, logsRoot, container }: ServerConfig) {
   const app: Koa = new KoaApp();
   app.on('error', errorLogger);
   app.use(
@@ -34,7 +35,7 @@ export async function createApp({ port, staticPath, logsRoot }: ServerConfig) {
   app.use(stripTrailingSlash());
   app.use(compressor());
 
-  const router = initRouter(logsRoot);
+  const router = initRouter(logsRoot, container);
   app.use(router.routes()).use(router.allowedMethods());
 
   app.use(serveStatic(staticPath, { defer: true }));
@@ -63,7 +64,7 @@ function errorLogger(): Koa.Middleware {
   };
 }
 
-function initRouter(logsRoot: string) {
+function initRouter(logsRoot: string, container: Container) {
   const router = new Router();
   router.use(
     bodyParser({
@@ -75,7 +76,7 @@ function initRouter(logsRoot: string) {
       },
     })
   );
-  mountRestApi(router);
+  mountRestApi(router, container);
   const sendLog = logName => ctx => send(ctx, logName, { root: logsRoot });
   router.get('/_logs/app.log', sendLog('app.log'));
   router.get('/_logs/engine.log', sendLog('engine.log'));

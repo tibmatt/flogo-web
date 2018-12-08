@@ -17,6 +17,7 @@ export default ensureDefaultDirs()
       port: config.app.port as string,
       staticPath: config.publicPath,
       logsRoot: config.localPath,
+      container,
     })
   )
   .then(newServer => initWebSocketApi(newServer))
@@ -26,7 +27,7 @@ export default ensureDefaultDirs()
   })
   .catch(err => {
     logger.error(err && err.message);
-    console.error(err)
+    console.error(err);
     process.exit(1);
   });
 

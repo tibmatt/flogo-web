@@ -7,4 +7,3 @@ export function loadFlowResourcePlugin(registerPlugin: ResourceRegistrarFn) {
     resourceHooks: FlowResourceHooks,
   });
 }
-

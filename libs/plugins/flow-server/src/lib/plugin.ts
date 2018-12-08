@@ -25,7 +25,7 @@ export class FlowResourceHooks implements ResourceHooks<FlowData> {
   }
 
   async beforeList(resource: Resource<FlowData>) {
-    const data = {...resource.data};
+    const data = { ...resource.data };
     delete data.internalInfo;
     return { ...resource, data };
   }
