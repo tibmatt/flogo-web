@@ -13,5 +13,4 @@ export interface App {
   triggers?: Array<Trigger>;
   actions?: Array<Action>;
   type?: string;
-  device?: any;
 }

@@ -9,7 +9,6 @@ import { CoreModule as FlogoCoreModule } from '@flogo-web/client/core/core.modul
 import { FlogoApplicationDetailComponent } from './app-detail.component';
 import { AppDetailService, ApplicationDetail } from '../core';
 import { FlogoProfileService } from '../../core/services/profile.service';
-import { FlogoAppSettingsComponent } from '../settings/settings.component';
 import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
 import { FlowTriggerGroupComponent } from '../trigger-group/trigger-group.component';
 import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
@@ -68,7 +67,6 @@ describe('FlogoApplicationDetailComponent component', () => {
         FlogoSharedModule,
       ],
       declarations: [
-        FlogoAppSettingsComponent,
         FlogoApplicationFlowsComponent,
         FlogoApplicationDetailComponent,
         FlowGroupComponent,

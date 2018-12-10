@@ -282,23 +282,4 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
     );
     expect(res.length).toEqual(1);
   });
-
-  it('Should show Add Trigger button for Device Profile when there are no triggers associated to the Flow', () => {
-    store.dispatch(
-      new Init({
-        ...TEST_STATE,
-        app: <any>{
-          ...TEST_STATE.app,
-          type: 'device',
-        },
-        triggers: {},
-        handlers: {},
-      })
-    );
-    fixture.detectChanges();
-    const res: Array<DebugElement> = fixture.debugElement.queryAll(
-      By.css('.flogo-icon-add')
-    );
-    expect(res.length).toEqual(1);
-  });
 });
