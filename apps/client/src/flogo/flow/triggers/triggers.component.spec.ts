@@ -282,5 +282,4 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
     );
     expect(res.length).toEqual(1);
   });
-
 });
