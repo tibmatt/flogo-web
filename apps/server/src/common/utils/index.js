@@ -1,7 +1,11 @@
 import _ from 'lodash';
 import { inspect } from 'util';
 
-import { FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../constants';
+import {
+  DEFAULT_APP_TYPE,
+  FLOGO_TASK_ATTRIBUTE_TYPE,
+  FLOGO_TASK_TYPE,
+} from '../constants';
 import { runShellCMD } from './process';
 
 export * from './file';
@@ -150,4 +154,8 @@ export function getDefaultValueByType(type) {
 
 export function isIterableTask(task) {
   return !_.isEmpty(_.get(task, 'settings.iterate'));
+}
+
+export function isValidApplicationType(appType) {
+  return appType === DEFAULT_APP_TYPE;
 }

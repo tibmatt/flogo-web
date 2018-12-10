@@ -3,7 +3,6 @@ import path from 'path';
 import { Engine } from './engine';
 import { logger, engineLogger } from '../../common/logging';
 import { config } from '../../config/app-config';
-import { installDeviceContributions } from './../init/install-device-contribs';
 import { ContribInstallController } from '../contrib-install-controller';
 
 const CONTRIB_INSTALLER = 'contribInstaller';
@@ -71,10 +70,7 @@ function createEngine(engine, defaultFlogoDescriptorPath, useVendor) {
         config.defaultEngine.defaultPalette
       );
       logger.info(`Will install palette at ${palettePath}`);
-      return Promise.all([
-        engine.installPalette(palettePath),
-        installDeviceContributions(),
-      ]);
+      return engine.installPalette(palettePath);
     })
     .catch(error => {
       logger.error('Found error while initializing engine:');

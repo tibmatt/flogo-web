@@ -1,13 +1,11 @@
 import defaults from 'lodash/defaults';
 import Ajv from 'ajv';
 
-import { FLOGO_PROFILE_TYPES } from '../../common/constants';
 import {
   activityDeviceSchemaCreate,
   appSchema,
   deviceAppSchema,
   fullAppSchema,
-  fullDeviceAppSchema,
   handlerEditableSchema,
   triggerDeviceSchemaCreate,
   triggerSchemaCreate,
@@ -85,7 +83,7 @@ export class Validator {
     });
   }
 
-  static validateFullApp(profileType, data, contribVerify, options) {
+  static validateFullApp(data, options, contribVerify) {
     options = defaults({}, options, {
       removeAdditional: false,
       useDefaults: false,
@@ -125,14 +123,7 @@ export class Validator {
       ];
     }
 
-    let schemaToUse;
-    if (profileType === FLOGO_PROFILE_TYPES.MICRO_SERVICE) {
-      schemaToUse = fullAppSchema;
-    } else {
-      schemaToUse = fullDeviceAppSchema;
-    }
-
-    const errors = validate(schemaToUse, data, options, customValidations);
+    const errors = validate(fullAppSchema, data, options, customValidations);
     if (errors && errors.length > 0) {
       // get rid of some info we don't want to expose
       errors.forEach(e => {

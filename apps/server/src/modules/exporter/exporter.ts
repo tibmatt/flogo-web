@@ -1,16 +1,21 @@
-import isEmpty from 'lodash/isEmpty';
-import compact from 'lodash/compact';
+import { isEmpty, compact } from 'lodash';
 
 import { DEFAULT_APP_TYPE, DEFAULT_APP_VERSION } from '../../common/constants';
 import { forEachSubflowTaskInAction } from '../../common/utils/subflow';
 
 import { normalizeName } from './utils/normalize-name';
 import { DanglingSubflowReferencesCleaner } from './utils/dangling-subflow-references-cleaner';
+import { UniqueIdAgent } from './utils/unique-id-agent';
+import { Validator } from '../../common/validator';
 
 export class Exporter {
+  isFullAppExportMode: boolean;
+  formatter: any;
+  validator: Validator;
+  uniqueIdAgent: UniqueIdAgent;
   /**
    * @param {boolean} isFullExportMode - full export or flows export
-   * @param {StandardMicroServiceFormatter|LegacyMicroServiceFormatter|DeviceFormatter} formatter
+   * @param {StandardMicroServiceFormatter|LegacyMicroServiceFormatter} formatter
    * @param {Validator} validator
    * @param {UniqueIdAgent} uniqueIdAgent
    */
