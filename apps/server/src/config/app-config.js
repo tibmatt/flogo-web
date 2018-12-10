@@ -42,7 +42,6 @@ const config = {
   logLevel,
   localPath: LOCAL_DIR,
   defaultAppJsonPath: path.join(rootPath, 'config', 'sample-app.json'),
-  defaultContribsPath: path.join(rootPath, 'config', 'default-devices-contrib.json'),
   defaultFlogoDescriptorPath:
     process.env.FLOGO_WEB_DEFAULT_DESCRIPTOR ||
     path.join(rootPath, 'config', 'default-flogo.json'),
@@ -71,9 +70,6 @@ const config = {
   },
   indexer: {
     dbPath: path.resolve(DB_DIR, 'indexer.db'),
-  },
-  contribs: {
-    dbPath: path.resolve(DB_DIR, 'contribs.db'),
   },
   buildEngine: {
     host: 'localhost',

@@ -6,7 +6,6 @@ import { errorMiddleware } from './error-middleware';
 import { apps } from './apps';
 import { triggers } from './triggers';
 import { actions } from './actions';
-import { contribs as deviceContribs } from './contribs/devices';
 import { contribs as microserviceContribs } from './contribs/microservices';
 import { handlers } from './handlers';
 import { mountServices } from './services';
@@ -21,7 +20,6 @@ export function createRouter(): Router {
   apps(router);
   triggers(router);
   actions(router);
-  deviceContribs(router);
   microserviceContribs(router);
   handlers(router);
   mountServices(router);

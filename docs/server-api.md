@@ -65,8 +65,6 @@ TODO: upgrade contribs
 - `GET /v1/api/activities` - List all installed activities applicable for MicroServices
 - `POST /v1/api/activities` - Install an activity for MicroServices in engine
 - `DELETE /v1/api/activities` - Uninstall an installed activity for MicroServices from engine
-- `GET /api/v2/contributions/devices` - List all installed contributions applicable for device profile
-- `POST /api/v2/contributions/devices` - Install new contributions for device profile
 
 ### Services
 
