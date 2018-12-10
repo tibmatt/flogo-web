@@ -9,7 +9,6 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ModalService } from '@flogo-web/client/core/modal/modal.service';
 
 import { FlogoApplicationComponent } from './app.component';
-import { FlogoAppSettingsComponent } from './settings/settings.component';
 import { FlogoApplicationDetailComponent } from './app-detail/app-detail.component';
 import { AppDetailService } from './core/apps.service';
 import { FlogoApplicationFlowsComponent } from './shared/flows/flows.component';
@@ -40,7 +39,6 @@ import { MissingTriggerConfirmationComponent } from './missing-trigger-confirmat
     FlogoApplicationComponent,
     FlogoApplicationFlowsComponent,
     FlowGroupComponent,
-    FlogoAppSettingsComponent,
     FlogoExportFlowsComponent,
     FlowTriggerGroupComponent,
     FlogoNewFlowComponent,

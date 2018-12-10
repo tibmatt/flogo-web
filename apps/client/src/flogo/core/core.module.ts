@@ -20,7 +20,6 @@ import { ErrorService } from './services/error.service';
 import { WindowRef } from './services/window-ref';
 import { ChildWindowService } from './services/child-window.service';
 import { FlowsService } from './services/flows.service';
-import { ProfilesAPIService } from './services/restapi/v2/profiles-api.service';
 import { FlogoProfileService } from './services/profile.service';
 import { RESTAPIContributionsService } from './services/restapi/v2/contributions.service';
 import { SvgRefFixerService } from './services/svg-ref-fixer.service';
@@ -62,7 +61,6 @@ import { ModalService } from '@flogo-web/client/core/modal/modal.service';
     RESTAPIHandlersServiceV2,
     AppsApiService,
     APIFlowsService,
-    ProfilesAPIService,
     RESTAPIContributionsService,
 
     RunApiService,

@@ -11,8 +11,6 @@ import { FlogoDeletePopupComponent } from '../../shared/components/delete.popup.
 import { FlogoAppImportComponent } from '../app-import/app-import.component';
 import { BsModalComponent } from 'ng2-bs3-modal';
 import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
-import { ProfilesAPIService } from '@flogo-web/client/core/services/restapi/v2/profiles-api.service';
-import { MockProfilesAPIService } from '@flogo-web/client/core/services/restapi/v2/profiles-api.service.mock';
 import { NotificationsService } from '@flogo-web/client/core/notifications/notifications.service';
 import { NotificationsServiceMock } from '@flogo-web/client/core/notifications/testing';
 
@@ -65,7 +63,6 @@ describe('FlogoAppList component', () => {
       ], // declare the test component
       providers: [
         HttpUtilsService,
-        { provide: ProfilesAPIService, useClass: MockProfilesAPIService },
         { provide: ErrorService, useClass: ErrorService },
         { provide: AppsApiService, useClass: AppsApiServiceMock },
         {
