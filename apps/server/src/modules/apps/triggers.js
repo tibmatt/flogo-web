@@ -3,7 +3,6 @@ import mapKeys from 'lodash/mapKeys';
 
 import { AppsManager } from './index';
 import { TriggerManager as TriggerContribManager } from '../triggers';
-import { ContribsManager as ContribDeviceManager } from '../contribs';
 import { apps as appsDb, dbUtils } from '../../common/db';
 import {
   ErrorManager,
@@ -12,8 +11,7 @@ import {
 } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { findGreatestNameIndex } from '../../common/utils/collection';
-import { getProfileType } from '../../common/utils/profile';
-import { FLOGO_PROFILE_TYPES, REF_TRIGGER_LAMBDA } from '../../common/constants';
+import { REF_TRIGGER_LAMBDA } from '../../common/constants';
 import { normalizeName } from '../exporter/utils/normalize-name';
 
 import { Validator } from './validator';
@@ -102,20 +100,12 @@ export class AppsTriggersManager {
           });
         }
 
-        const appProfile = getProfileType(app);
         const errors = Validator.validateTriggerCreate(triggerData);
         if (errors) {
           throw ErrorManager.createValidationError('Validation error', errors);
         }
 
-        let triggerContribPromise;
-        if (appProfile === FLOGO_PROFILE_TYPES.MICRO_SERVICE) {
-          triggerContribPromise = TriggerContribManager.findByRef(triggerData.ref);
-        } else {
-          triggerContribPromise = ContribDeviceManager.findByRef(triggerData.ref);
-        }
-
-        return triggerContribPromise.then(contribTrigger => {
+        return TriggerContribManager.findByRef(triggerData.ref).then(contribTrigger => {
           if (!contribTrigger) {
             throw ErrorManager.createValidationError('Validation error', [
               {

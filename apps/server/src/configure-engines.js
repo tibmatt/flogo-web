@@ -1,5 +1,5 @@
 import { config } from './config/app-config';
-import { apps, indexer, contribs } from './common/db';
+import { apps, indexer } from './common/db';
 import { getInitializedEngine } from './modules/engine';
 import { installDefaults, ensureDefaultDirs } from './modules/init';
 import { syncTasks } from './modules/contrib-install-controller/sync-tasks';
@@ -11,7 +11,7 @@ ensureDefaultDirs()
     console.log('[log] init test engine done');
     return installDefaults();
   })
-  .then(() => Promise.all([apps.compact(), indexer.compact(), contribs.compact()]))
+  .then(() => Promise.all([apps.compact(), indexer.compact()]))
   .catch(error => {
     console.error(error);
     console.error(error.stack);

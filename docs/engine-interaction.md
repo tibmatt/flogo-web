@@ -119,7 +119,3 @@ with the regular flogo engine and they cannot be installed into one.
 However, since the UI does not support running nor compiling device apps then it does not need to use the `flogodevice`
 command and it does not need to generate or interact with any engine in the filesystem. Instead, the json descriptors for
 activities and triggers are just loaded into the flogo web database directly from Github.
-
-The device contributions that are installed by default are defined in [`src/server/config/default-devices-contrib.json`](https://github.com/TIBCOSoftware/flogo-web/blob/master/src/server/config/default-devices-contrib.json)
-as mentioned before they activity.json or trigger.json is fetched directly from Github and that happens when the server application is initialized.
-The code that handles the load/init is located in [src/server/modules/init/install-device-contribs.js](https://github.com/TIBCOSoftware/flogo-web/blob/master/src/server/modules/init/install-device-contribs.js)
