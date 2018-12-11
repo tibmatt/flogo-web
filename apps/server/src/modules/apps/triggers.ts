@@ -92,7 +92,7 @@ export class AppsTriggersManager {
     }
 
     return appsDb
-      .findOne({ _id: appId }, { triggers: 1, device: 1 })
+      .findOne({ _id: appId }, { triggers: 1 })
       .then(app => {
         if (!app) {
           throw ErrorManager.makeError('App not found', {
@@ -163,7 +163,7 @@ export class AppsTriggersManager {
     function _atomicUpdate(triggerFields, appId) {
       return new Promise((resolve, reject) => {
         const appQuery = { _id: appId };
-        const updateQuery = {};
+        const updateQuery: any = {};
 
         appsDb
           .findOne(appQuery, { triggers: 1 })

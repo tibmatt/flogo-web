@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isEmpty, get } from 'lodash';
 import { inspect } from 'util';
 
 import {
@@ -12,7 +12,7 @@ export * from './file';
 export * from './json';
 
 export function atob(str) {
-  return new Buffer(str, 'base64').toString('binary');
+  return Buffer.from(str, 'base64').toString('binary');
 }
 
 /** *******
@@ -29,8 +29,8 @@ const GITHUB_URL_SUBFOLDER_PATTERN = /^(?:https\:\/\/)?github\.com\/(?:([\w\-]+)
   .source;
 
 export function parseGitHubURL(url) {
-  let simplePattern = new RegExp(GITHUB_URL_PATTERN);
-  let subfolderPattern = new RegExp(GITHUB_URL_SUBFOLDER_PATTERN);
+  const simplePattern = new RegExp(GITHUB_URL_PATTERN);
+  const subfolderPattern = new RegExp(GITHUB_URL_SUBFOLDER_PATTERN);
   let result = null;
 
   let parsed = url.match(simplePattern);
@@ -109,27 +109,7 @@ export function gitUpdate(folderPath) {
  * @param obj
  */
 export function inspectObj(obj) {
-  console.log(inspect(obj, { depth: 7, color: true }));
-}
-
-/**
- * Get the content of an external file
- * @param url
- * @returns {Promise|Promise<T>}
- */
-export function getRemoteFileContent(url) {
-  return new Promise((resolve, reject) => {
-    const lib = url.startsWith('https') ? require('https') : require('http');
-    const request = lib.get(url, response => {
-      if (response.statusCode < 200 || response.statusCode > 299) {
-        reject(new Error('Failed to load file, status: ' + response.statusCode));
-      }
-      const body = [];
-      response.on('data', chunk => body.push(chunk));
-      response.on('end', () => resolve(body.join('')));
-    });
-    request.on('error', err => reject(err));
-  });
+  console.log(inspect(obj, { depth: 7, colors: true }));
 }
 
 export function getDefaultValueByType(type) {
@@ -153,7 +133,7 @@ export function getDefaultValueByType(type) {
 }
 
 export function isIterableTask(task) {
-  return !_.isEmpty(_.get(task, 'settings.iterate'));
+  return !isEmpty(get(task, 'settings.iterate'));
 }
 
 export function isValidApplicationType(appType) {

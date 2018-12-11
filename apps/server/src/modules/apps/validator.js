@@ -2,12 +2,9 @@ import defaults from 'lodash/defaults';
 import Ajv from 'ajv';
 
 import {
-  activityDeviceSchemaCreate,
   appSchema,
-  deviceAppSchema,
   fullAppSchema,
   handlerEditableSchema,
-  triggerDeviceSchemaCreate,
   triggerSchemaCreate,
   triggerSchemaUpdate,
 } from './schemas';
@@ -29,14 +26,8 @@ function validate(schema, data, options = {}, customValidations) {
 }
 
 export class Validator {
-  static validateSimpleApp(data, isDeviceType) {
-    let validationSchema;
-    if (isDeviceType) {
-      validationSchema = deviceAppSchema;
-    } else {
-      validationSchema = appSchema;
-    }
-    return validate(validationSchema, data, {
+  static validateSimpleApp(data) {
+    return validate(appSchema, data, {
       removeAdditional: true,
       useDefaults: true,
       allErrors: true,
@@ -45,22 +36,6 @@ export class Validator {
 
   static validateTriggerCreate(data) {
     return validate(triggerSchemaCreate, data, {
-      removeAdditional: true,
-      useDefaults: true,
-      allErrors: true,
-    });
-  }
-
-  static validateTriggerDeviceCreate(data) {
-    return validate(triggerDeviceSchemaCreate, data, {
-      removeAdditional: true,
-      useDefaults: true,
-      allErrors: true,
-    });
-  }
-
-  static validateActivityDeviceCreate(data) {
-    return validate(activityDeviceSchemaCreate, data, {
       removeAdditional: true,
       useDefaults: true,
       allErrors: true,

@@ -48,14 +48,8 @@ info:
     // get the app with action and trigger linked
     finalApp = request.get('/apps/${app.id}');
 
-    // get the contributions of device profile
-    deviceContributions = request.get('/contributions/devices');
-
     // get the contributions of microservice profile
     microserviceContributions = request.get('/contributions/microservices');
-
-    // install a contribution of device profile
-    results = request.post('/contributions/devices', contributionData);
 
     // install a contribution of microservice profile
     results = request.post('/contributions/microservices', contributionData);

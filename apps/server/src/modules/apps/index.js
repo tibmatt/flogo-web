@@ -1,5 +1,4 @@
 import pick from 'lodash/pick';
-import get from 'lodash/get';
 import defaults from 'lodash/defaults';
 import fromPairs from 'lodash/fromPairs';
 import isEqual from 'lodash/isEqual';
@@ -7,11 +6,7 @@ import escapeRegExp from 'lodash/escapeRegExp';
 
 import shortid from 'shortid';
 
-import {
-  FLOGO_PROFILE_TYPES,
-  FLOGO_TASK_TYPE,
-  EXPORT_MODE,
-} from '../../common/constants';
+import { EXPORT_MODE } from '../../common/constants';
 import { ErrorManager, ERROR_TYPES as GENERAL_ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
@@ -24,10 +19,9 @@ import { exportApplication } from '../exporter';
 import { buildBinary } from './build';
 
 import { Validator } from './validator';
-import { getProfileType } from '../../common/utils/profile';
 import { APP_ERRORS } from './errors';
 
-const EDITABLE_FIELDS = ['name', 'version', 'description', 'device'];
+const EDITABLE_FIELDS = ['name', 'version', 'description'];
 
 const PUBLISH_FIELDS = [
   'id',
@@ -46,11 +40,7 @@ const PUBLISH_FIELDS = [
 export class AppsManager {
   static create(app) {
     let inputData = app;
-    let isDevice = false;
-    if (getProfileType(app) === FLOGO_PROFILE_TYPES.DEVICE) {
-      isDevice = true;
-    }
-    const errors = Validator.validateSimpleApp(inputData, isDevice);
+    const errors = Validator.validateSimpleApp(inputData);
     if (errors) {
       return Promise.reject(
         ErrorManager.createValidationError('Validation error', errors)
@@ -102,12 +92,7 @@ export class AppsManager {
             return false;
           }
 
-          let isDevice = false;
-          if (getProfileType(mergedData) === FLOGO_PROFILE_TYPES.DEVICE) {
-            isDevice = true;
-          }
-
-          const errors = Validator.validateSimpleApp(mergedData, isDevice);
+          const errors = Validator.validateSimpleApp(mergedData);
           if (errors) {
             throw ErrorManager.createValidationError('Validation error', {
               details: errors,
@@ -315,11 +300,7 @@ function build(app) {
 
 function cleanForOutput(app) {
   const cleanedApp = Object.assign({ id: app._id }, app);
-  const appDataToSend = pick(cleanedApp, PUBLISH_FIELDS);
-  if (getProfileType(app) === FLOGO_PROFILE_TYPES.DEVICE) {
-    appDataToSend.device = app.device;
-  }
-  return appDataToSend;
+  return pick(cleanedApp, PUBLISH_FIELDS);
 }
 
 function nowISO() {
