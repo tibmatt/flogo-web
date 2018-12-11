@@ -46,11 +46,7 @@ const PUBLISH_FIELDS = [
 export class AppsManager {
   static create(app) {
     let inputData = app;
-    let isDevice = false;
-    if (getProfileType(app) === FLOGO_PROFILE_TYPES.DEVICE) {
-      isDevice = true;
-    }
-    const errors = Validator.validateSimpleApp(inputData, isDevice);
+    const errors = Validator.validateSimpleApp(inputData);
     if (errors) {
       return Promise.reject(
         ErrorManager.createValidationError('Validation error', errors)
@@ -102,12 +98,7 @@ export class AppsManager {
             return false;
           }
 
-          let isDevice = false;
-          if (getProfileType(mergedData) === FLOGO_PROFILE_TYPES.DEVICE) {
-            isDevice = true;
-          }
-
-          const errors = Validator.validateSimpleApp(mergedData, isDevice);
+          const errors = Validator.validateSimpleApp(mergedData);
           if (errors) {
             throw ErrorManager.createValidationError('Validation error', {
               details: errors,
