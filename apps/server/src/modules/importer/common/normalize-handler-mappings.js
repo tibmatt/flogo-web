@@ -1,5 +1,5 @@
 import { isString } from 'lodash';
-import { parse } from '@flogo-web/parser';
+import { parse, parseResolver } from '@flogo-web/parser';
 import { MAPPING_EXPRESSION_TYPE } from '../../../common/constants';
 
 const CURRENT_SCOPE_RESOLVER = '$';

@@ -25,6 +25,17 @@
     },
     "client-e2e": {
       "tags": []
+    },
+    "server-core": {
+      "tags": [
+        "server"
+      ]
+    },
+    "plugins-flow-server": {
+      "tags": [
+        "server",
+        "plugin"
+      ]
     }
   }
 }

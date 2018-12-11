@@ -279,6 +279,62 @@
           }
         }
       }
+    },
+    "server-core": {
+      "root": "libs/server/core",
+      "sourceRoot": "libs/server/core/src",
+      "projectType": "library",
+      "prefix": "flogo-web",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/server/core/tsconfig.lib.json",
+              "libs/server/core/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "libs/server/core/jest.config.js",
+            "tsConfig": "libs/server/core/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "plugins-flow-server": {
+      "root": "libs/plugins/flow-server",
+      "sourceRoot": "libs/plugins/flow-server/src",
+      "projectType": "library",
+      "prefix": "flogo-web",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/flow-server/tsconfig.lib.json",
+              "libs/plugins/flow-server/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "libs/plugins/flow-server/jest.config.js",
+            "tsConfig": "libs/plugins/flow-server/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {
