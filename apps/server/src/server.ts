@@ -1,3 +1,5 @@
+import { container, registerResourcePlugin } from './injector/root';
+import { loadPlugins } from './plugins';
 import { logger } from './common/logging';
 import { config } from './config/app-config';
 import { init as initWebsocketApi } from './api/ws';
@@ -6,6 +8,8 @@ import { ensureDefaultDirs } from './modules/init';
 import { createApp as createServerApp } from './modules/init/app';
 import { syncTasks } from './modules/contrib-install-controller/sync-tasks';
 
+loadPlugins(registerResourcePlugin);
+
 export default ensureDefaultDirs()
   .then(() => initEngine(config.defaultEngine.path))
   .then(() =>
@@ -13,6 +17,7 @@ export default ensureDefaultDirs()
       port: config.app.port as string,
       staticPath: config.publicPath,
       logsRoot: config.localPath,
+      container,
     })
   )
   .then(newServer => initWebSocketApi(newServer))
@@ -21,7 +26,8 @@ export default ensureDefaultDirs()
     showBanner();
   })
   .catch(err => {
-    logger.error(err);
+    logger.error(err && err.message);
+    console.error(err);
     process.exit(1);
   });
 

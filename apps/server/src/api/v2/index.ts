@@ -1,3 +1,4 @@
+import { Container } from 'inversify';
 import * as Router from 'koa-router';
 const RouterConstructor = require('koa-router');
 
@@ -11,8 +12,9 @@ import { handlers } from './handlers';
 import { mountServices } from './services';
 import { mountEngine } from './engine';
 import { mountTestRunner } from './runner';
+import { resources as mountResources } from './resources';
 
-export function createRouter(): Router {
+export function createRouter(container: Container): Router {
   const router = new RouterConstructor({
     prefix: config.app.basePathV2,
   });
@@ -22,6 +24,7 @@ export function createRouter(): Router {
   actions(router);
   microserviceContribs(router);
   handlers(router);
+  mountResources(router, container);
   mountServices(router);
   mountEngine(router);
   mountTestRunner(router);

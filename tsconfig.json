@@ -24,12 +24,18 @@
       "@flogo-web/client/*": [
         "apps/client/src/flogo/*"
       ],
+      "@flogo-web/server/core": [
+        "libs/server/core/src/index.ts"
+      ],
+      "@flogo-web/plugins/flow-server": [
+        "libs/plugins/flow-server/src/index.ts"
+      ]
     }
   },
   "exclude": [
     "node_modules",
     "tmp",
     "dist",
-    "coverage",
+    "coverage"
   ]
 }
