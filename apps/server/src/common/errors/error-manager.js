@@ -7,7 +7,7 @@ export class ErrorManager {
    * @param message {string}
    * @param options {object}
    * @param options.type {string} error type (see error constants)
-   * @param options.details {object}
+   * @param [options.details] {object}
    * @return {FlogoError}
    */
   static makeError(message, options) {
@@ -18,7 +18,7 @@ export class ErrorManager {
    *
    * @param message
    * @param details
-   * @param ctr
+   * @param [ctr]
    */
   static createValidationError(message, details, ctr) {
     return ErrorManager.makeError(message, {

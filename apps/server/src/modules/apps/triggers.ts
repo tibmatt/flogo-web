@@ -163,7 +163,7 @@ export class AppsTriggersManager {
     function _atomicUpdate(triggerFields, appId) {
       return new Promise((resolve, reject) => {
         const appQuery = { _id: appId };
-        const updateQuery = {};
+        const updateQuery: any = {};
 
         appsDb
           .findOne(appQuery, { triggers: 1 })

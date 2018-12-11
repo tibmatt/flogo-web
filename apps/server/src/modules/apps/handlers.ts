@@ -1,6 +1,4 @@
-import pick from 'lodash/pick';
-import defaults from 'lodash/defaults';
-import isEmpty from 'lodash/isEmpty';
+import { pick, defaults, isEmpty } from 'lodash';
 import { apps as appsDb, dbUtils } from '../../common/db';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { Validator } from './validator';
