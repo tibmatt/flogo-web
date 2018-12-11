@@ -30,10 +30,6 @@ describe('FlogoSelectTrigger component', () => {
     },
   ];
 
-  function compileComponent() {
-    return TestBed.compileComponents();
-  }
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [FakeRootLanguageModule, TriggersModule],
@@ -44,85 +40,78 @@ describe('FlogoSelectTrigger component', () => {
         HttpUtilsService,
       ],
     });
+    return TestBed.compileComponents();
   });
 
   it('Should display 4 installed triggers', done => {
-    compileComponent().then(() => {
-      fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
-      comp = fixture.componentInstance;
-      comp.loadInstalledTriggers().then(() => {
-        fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(
-          By.css('.trigger__content')
-        );
-        expect(res.length).toEqual(4);
-        done();
-      });
+    fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
+    comp = fixture.componentInstance;
+    comp.appDetails = { appId: 'foo' };
+    fixture.detectChanges();
+    comp.loadInstalledTriggers().then(() => {
+      fixture.detectChanges();
+      const res: Array<DebugElement> = fixture.debugElement.queryAll(
+        By.css('.trigger__content')
+      );
+      expect(res.length).toEqual(4);
+      done();
     });
   });
 
   it('Should display 2 existing triggers', done => {
-    compileComponent().then(() => {
-      fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
-      comp = fixture.componentInstance;
-      const existing = function() {
-        return Promise.resolve(existingMock);
-      };
-      comp.getExistingTriggers = existing;
-      comp.loadInstalledTriggers().then(() => {
-        fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(
-          By.css('.arrow-div li')
-        );
-        expect(res.length).toEqual(2);
-        done();
-      });
+    fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
+    comp = fixture.componentInstance;
+    const existing = function() {
+      return Promise.resolve(existingMock);
+    };
+    comp.getExistingTriggers = existing;
+    comp.loadInstalledTriggers().then(() => {
+      fixture.detectChanges();
+      const res: Array<DebugElement> = fixture.debugElement.queryAll(
+        By.css('.arrow-div li')
+      );
+      expect(res.length).toEqual(2);
+      done();
     });
   });
 
   it('Should select an installed trigger', done => {
-    compileComponent().then(() => {
-      fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
-      comp = fixture.componentInstance;
-      const existing = function() {
-        return Promise.resolve([]);
-      };
-      comp.addTriggerToAction.subscribe(data => {
-        expect(data.triggerData.description).toEqual('Simple CoAP Trigger');
-        done();
-      });
-      comp.getExistingTriggers = existing;
-      comp.loadInstalledTriggers().then(() => {
-        fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(
-          By.css('.trigger__content')
-        );
-        res[0].nativeElement.click(res[0]);
-      });
+    fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
+    comp = fixture.componentInstance;
+    const existing = function() {
+      return Promise.resolve([]);
+    };
+    comp.addTriggerToAction.subscribe(data => {
+      expect(data.triggerData.description).toEqual('Simple CoAP Trigger');
+      done();
+    });
+    comp.getExistingTriggers = existing;
+    comp.loadInstalledTriggers().then(() => {
+      fixture.detectChanges();
+      const res: Array<DebugElement> = fixture.debugElement.queryAll(
+        By.css('.trigger__content')
+      );
+      res[0].nativeElement.click(res[0]);
     });
   });
 
   it('Should select an existing trigger', done => {
-    compileComponent().then(() => {
-      fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
-      comp = fixture.componentInstance;
-      const existing = function() {
-        return Promise.resolve(existingMock);
-      };
-      comp.addTriggerToAction.subscribe(data => {
-        expect(data.triggerData.description).toEqual(
-          'Description of Simple COAP Trigger'
-        );
-        done();
-      });
-      comp.getExistingTriggers = existing;
-      comp.loadInstalledTriggers().then(() => {
-        fixture.detectChanges();
-        const res: Array<DebugElement> = fixture.debugElement.queryAll(
-          By.css('.arrow-div li')
-        );
-        res[0].nativeElement.click(res[0]);
-      });
+    fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
+    comp = fixture.componentInstance;
+    const existing = function() {
+      return Promise.resolve(existingMock);
+    };
+    comp.addTriggerToAction.subscribe(data => {
+      expect(data.triggerData.description).toEqual('Description of Simple COAP Trigger');
+      done();
+    });
+    comp.getExistingTriggers = existing;
+    comp.loadInstalledTriggers().then(() => {
+      fixture.detectChanges();
+      const res: Array<DebugElement> = fixture.debugElement.queryAll(
+        By.css('.arrow-div li')
+      );
+      res[0].nativeElement.click(res[0]);
     });
   });
 });
