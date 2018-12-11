@@ -112,26 +112,6 @@ export function inspectObj(obj) {
   console.log(inspect(obj, { depth: 7, color: true }));
 }
 
-/**
- * Get the content of an external file
- * @param url
- * @returns {Promise|Promise<T>}
- */
-export function getRemoteFileContent(url) {
-  return new Promise((resolve, reject) => {
-    const lib = url.startsWith('https') ? require('https') : require('http');
-    const request = lib.get(url, response => {
-      if (response.statusCode < 200 || response.statusCode > 299) {
-        reject(new Error('Failed to load file, status: ' + response.statusCode));
-      }
-      const body = [];
-      response.on('data', chunk => body.push(chunk));
-      response.on('end', () => resolve(body.join('')));
-    });
-    request.on('error', err => reject(err));
-  });
-}
-
 export function getDefaultValueByType(type) {
   const defaultValues = {
     [FLOGO_TASK_ATTRIBUTE_TYPE.STRING]: '',
