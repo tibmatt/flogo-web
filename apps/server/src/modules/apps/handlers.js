@@ -1,12 +1,9 @@
 import pick from 'lodash/pick';
 import defaults from 'lodash/defaults';
-import defaultsDeep from 'lodash/defaultsDeep';
 import isEmpty from 'lodash/isEmpty';
 import { apps as appsDb, dbUtils } from '../../common/db';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { Validator } from './validator';
-import { getProfileType } from '../../common/utils/profile';
-import { FLOGO_PROFILE_TYPES } from '../../common/constants';
 
 const EDITABLE_FIELDS = ['settings', 'outputs', 'actionMappings'];
 
@@ -17,7 +14,7 @@ export class HandlersManager {
     }
 
     const findQuery = { 'triggers.id': triggerId, 'actions.id': actionId };
-    return appsDb.findOne(findQuery, { actions: 1, triggers: 1, device: 1 }).then(app => {
+    return appsDb.findOne(findQuery, { actions: 1, triggers: 1 }).then(app => {
       if (!app) {
         throw ErrorManager.makeError('App not found', {
           type: ERROR_TYPES.COMMON.NOT_FOUND,
@@ -55,16 +52,11 @@ export class HandlersManager {
           updatedAt: null,
           settings: {},
           outputs: {},
+          actionMappings: {
+            input: [],
+            output: [],
+          }
         });
-        /* Need to add actionInputMappings and actionOutputMappings only for Microservice profile*/
-        if (getProfileType(app) === FLOGO_PROFILE_TYPES.MICRO_SERVICE) {
-          handler = defaultsDeep(handler, {
-            actionMappings: {
-              input: [],
-              output: [],
-            },
-          });
-        }
         updateQuery = {
           $push: { [`triggers.${triggerIndex}.handlers`]: handler },
         };

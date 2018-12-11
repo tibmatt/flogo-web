@@ -92,7 +92,7 @@ export class AppsTriggersManager {
     }
 
     return appsDb
-      .findOne({ _id: appId }, { triggers: 1, device: 1 })
+      .findOne({ _id: appId }, { triggers: 1 })
       .then(app => {
         if (!app) {
           throw ErrorManager.makeError('App not found', {

@@ -2,10 +2,7 @@
 
 Following documents how the flogo-web server interacts with the Flogo CLI to create, inspect and run the engine.
 
-There are two modes:
-
 * [Microservices](#microsevices)
-* [Devices](#devices)
 
 ## Microsevices
 
@@ -109,13 +106,3 @@ flogo create -f <path-to-temp-flogo.json> -vendor <path-to-flogo-design-engine/s
     specified by the user. If no target specified then the binary is located under `<engine>/bin/<binary>` where binary has the same name as the engine.
     If a target was specified then the binary can be found at `<engine>/bin/<GOOS>_<GOARCH>/<binary>`. Additionally if `GOOS='windows'` the binary
     will have an `.exe` extension.
-
-## Devices
-
-For the device profile the flogo-cli specifies a different command than for the microservice profile. While for microservices
-the command is just `flogo`, for devices it is `flogodevice`. The device contributions (activities and triggers) are not compatible
-with the regular flogo engine and they cannot be installed into one.
-
-However, since the UI does not support running nor compiling device apps then it does not need to use the `flogodevice`
-command and it does not need to generate or interact with any engine in the filesystem. Instead, the json descriptors for
-activities and triggers are just loaded into the flogo web database directly from Github.
