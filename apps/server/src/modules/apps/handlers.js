@@ -55,7 +55,7 @@ export class HandlersManager {
           actionMappings: {
             input: [],
             output: [],
-          }
+          },
         });
         updateQuery = {
           $push: { [`triggers.${triggerIndex}.handlers`]: handler },
