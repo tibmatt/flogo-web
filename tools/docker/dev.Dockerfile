@@ -1,7 +1,7 @@
 FROM node:10.14 as base
-ARG GOLANG_VERSION=1.10.5
+ARG GOLANG_VERSION=1.11.2
 ARG GOLANG_SRC_URL=https://dl.google.com/go/go${GOLANG_VERSION}.linux-amd64.tar.gz
-ARG GOLANG_SRC_SHA256=a035d9beda8341b645d3f45a1b620cf2d8fb0c5eb409be36b389c0fd384ecc3a
+ARG GOLANG_SRC_SHA256=1dfe664fa3d8ad714bbd15a36627992effd150ddabd7523931f077b3926d736d
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 RUN curl -fsSL "$GOLANG_SRC_URL" -o golang.tar.gz && \
