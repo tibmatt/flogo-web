@@ -28,16 +28,13 @@ const EDITABLE_FIELDS_UPDATE = [
   'errorHandler',
 ];
 
-const RECENT_ACTIONS_ID = 'actions:recent';
-const MAX_RECENT = 10;
-
 export class ActionsManager {
-  static get repository() {
+  private static get repository() {
     // todo: container shouldn't be used this way, we should use @inject annotations to inject the dependencies
     return container.resolve(ResourceRepository);
   }
 
-  static async create(appId, actionData) {
+  static async create(appId: string, actionData) {
     const resourceRepository = this.repository;
     if (!appId) {
       return Promise.reject(
