@@ -1,3 +1,4 @@
+import { container } from './injector/root';
 import { config } from './config/app-config';
 import { apps, indexer } from './common/db';
 import { getInitializedEngine } from './modules/engine';
