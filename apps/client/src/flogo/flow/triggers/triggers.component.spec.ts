@@ -36,7 +36,7 @@ const TEST_STATE: FlowState = {
   }),
 };
 
-const MICROSERVICE_TRIGGERS_HANDLERS = {
+const TRIGGERS_HANDLERS = {
   triggers: {
     trigger1: {
       id: 'trigger1',
@@ -155,35 +155,6 @@ const MICROSERVICE_TRIGGERS_HANDLERS = {
   },
 };
 
-const DEVICE_TRIGGERS_HANDLERS = {
-  triggers: {
-    trigger1: {
-      id: 'trigger1',
-      name: 'Read From BME',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/device/trigger/bme280stream',
-      settings: {
-        reading: '',
-        interval: '500',
-      },
-      handlers: [
-        {
-          settings: {},
-          actionId: 'abc',
-          outputs: {},
-        },
-      ],
-    },
-  },
-  handlers: {
-    trigger1: {
-      triggerId: 'trigger1',
-      actionId: 'abc',
-      settings: {},
-      outputs: {},
-    },
-  },
-};
-
 class MockActivityContribService {}
 
 class MockTriggerServiceV2 {}
@@ -259,7 +230,7 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
     store.dispatch(
       new Init({
         ...TEST_STATE,
-        ...MICROSERVICE_TRIGGERS_HANDLERS,
+        ...TRIGGERS_HANDLERS,
       })
     );
     fixture.detectChanges();
@@ -273,7 +244,7 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
     store.dispatch(
       new Init({
         ...TEST_STATE,
-        ...MICROSERVICE_TRIGGERS_HANDLERS,
+        ...TRIGGERS_HANDLERS,
       })
     );
     fixture.detectChanges();
