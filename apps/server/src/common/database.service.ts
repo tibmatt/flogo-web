@@ -1,7 +1,11 @@
 const Datastore = require('nedb');
 
 function defer() {
-  const defered = {};
+  interface Defered {
+    promise: Promise<any>;
+    callback: (err, result) => void;
+  }
+  const defered: Partial<Defered> = {};
   defered.promise = new Promise((resolve, reject) => {
     defered.callback = (err, result) => {
       if (err) {
@@ -11,10 +15,11 @@ function defer() {
       }
     };
   });
-  return defered;
+  return defered as Defered;
 }
 
 export class Database {
+  collection: any;
   constructor(options, indexes = []) {
     this.collection = new Datastore(options);
     indexes.forEach(index => this.collection.ensureIndex(index));
@@ -64,7 +69,7 @@ export class Database {
     return deferred.promise;
   }
 
-  update(query, update, options) {
+  update(query, update, options?) {
     const deferred = defer();
     const args = Array.prototype.slice.call(arguments);
     args.push(deferred.callback);
@@ -107,11 +112,12 @@ export class Database {
 }
 
 export class DatabaseService {
+  db: Database;
   constructor() {
     this.db = new Database({ autoload: true });
   }
 
   init() {
-    return Promise.resolve(this.collection);
+    return Promise.resolve(this.db);
   }
 }

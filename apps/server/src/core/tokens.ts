@@ -1,4 +1,7 @@
 export const TOKENS = {
-  ResourcePlugin: Symbol.for('ResourcePlugin'),
-  ResourcePluginFactory: Symbol.for('Factory<ResourcePlugin>'),
+  ResourcePlugin: Symbol('ResourcePlugin'),
+  ResourcePluginFactory: Symbol('Factory<ResourcePlugin>'),
+  Logger: Symbol('Logger'),
+  AppsDb: Symbol('AppsDb'),
+  ActionIndexerDb: Symbol('ActionsIndexerDb'),
 };

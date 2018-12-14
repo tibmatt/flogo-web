@@ -86,6 +86,7 @@
         "-r", "ts-node/register",
         "-r", "tsconfig-paths/register"
       ],
+      "outputCapture": "std",
       "sourceMaps": true,
       "cwd": "${workspaceRoot}/apps/server",
       "protocol": "inspector"
