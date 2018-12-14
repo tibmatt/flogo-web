@@ -1,5 +1,8 @@
+import { ErrorCodes } from '@flogo-web/server/core';
+
 export const ERROR_TYPES = {
   COMMON: {
+    ...ErrorCodes.Common,
     BAD_SYNTAX: 'BadSyntax',
     REST_API: 'RestApiError',
     VALIDATION: 'ValidationError',

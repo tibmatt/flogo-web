@@ -2,10 +2,12 @@ import { Context } from 'koa';
 import * as Router from 'koa-router';
 const RouterClass = require('koa-router');
 
-import { HandlersManager } from '../../modules/apps/handlers';
+import { HandlersService } from '../../modules/apps/handlers-service';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 
-export function handlers(router: Router) {
+let handlersService: HandlersService;
+export function handlers(router: Router, container) {
+  handlersService = container.resolve(HandlersService);
   const handlersRouter: Router = new RouterClass({
     prefix: '/triggers/:triggerId/handlers',
   });
@@ -19,7 +21,7 @@ export function handlers(router: Router) {
 
 async function listHandlers(ctx: Context) {
   const triggerId = ctx.params.triggerId;
-  const handlerList = await HandlersManager.list(triggerId);
+  const handlerList = await handlersService.list(triggerId);
   ctx.body = {
     data: handlerList || [],
   };
@@ -30,7 +32,7 @@ async function saveHandler(ctx: Context) {
   const actionId = ctx.params.actionId;
   const body = ctx.request.body;
   try {
-    const handler = await HandlersManager.save(triggerId, actionId, body);
+    const handler = await handlersService.save(triggerId, actionId, body);
     ctx.body = {
       data: handler,
     };
@@ -57,7 +59,7 @@ async function getHandler(ctx: Context) {
   const triggerId = ctx.params.triggerId;
   const actionId = ctx.params.actionId;
 
-  const handler = await HandlersManager.findOne(triggerId, actionId);
+  const handler = await handlersService.findOne(triggerId, actionId);
 
   if (!handler) {
     throw ErrorManager.createRestNotFoundError('Handler not found', {
@@ -78,7 +80,7 @@ async function getHandler(ctx: Context) {
 async function deleteHandler(ctx: Context) {
   const triggerId = ctx.params.triggerId;
   const actionId = ctx.params.actionId;
-  const removed = await HandlersManager.remove(triggerId, actionId);
+  const removed = await handlersService.remove(triggerId, actionId);
 
   if (!removed) {
     throw ErrorManager.createRestNotFoundError('Handler not found', {

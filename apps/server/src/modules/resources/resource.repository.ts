@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { Resource } from '@flogo-web/server/core';
 import { App } from '../../interfaces';
 import { TOKENS } from '../../core';
-import { dbUtils } from '../../common/db';
+import { ISONow } from '../../common/utils';
 import { Database } from '../../common/database.service';
 import { Logger } from '../../common/logging';
 import { CONSTRAINTS } from '../../common/validation';
@@ -24,8 +24,8 @@ export class ResourceRepository {
     return this.appsDb.findOne({ _id: appId }, { actions: 1 });
   }
 
-  async create(appId: string, resource: Resource) {
-    resource.createdAt = dbUtils.ISONow();
+  async create(appId: string, resource: Resource): Promise<number> {
+    resource.createdAt = ISONow();
     resource.updatedAt = null;
     return this.appsDb.update(
       { _id: appId },
@@ -33,7 +33,7 @@ export class ResourceRepository {
         $push: {
           actions: {
             ...resource,
-            createdAt: dbUtils.ISONow(),
+            createdAt: ISONow(),
             updatedAt: null,
           },
         },
@@ -128,7 +128,7 @@ function atomicUpdate(appsDb: Database, { resource, appId }) {
       }
 
       const actionIndex = app.actions.findIndex(t => t.id === resource.id);
-      resource.updatedAt = dbUtils.ISONow();
+      resource.updatedAt = ISONow();
       Object.assign(
         updateQuery,
         prepareUpdateQuery(resource, app.actions[actionIndex], actionIndex)

@@ -1,143 +1,60 @@
 const Router = require('koa-router');
-import { ActionsManager } from '../../modules/actions';
-import { ErrorManager, ERROR_TYPES } from '../../common/errors';
+import { isArray } from 'lodash';
+import {
+  unflowify,
+  flowify,
+} from '../../modules/resources/transitional-resource.repository';
 
-export function actions(router) {
-  router.get(`/apps/:appId/actions`, listActions);
-  router.post(`/apps/:appId/actions`, createAction);
+import { createResourceMiddleware } from './resources/resource-service-middleware';
+import { listResources } from './resources/list-resources';
+import { listRecent } from './resources/list-recent';
+import { createResource } from './resources/create-resource';
+import { getResource } from './resources/get-resource';
+import { updateResource } from './resources/update-resource';
+import { deleteResource } from './resources/delete-resource';
+
+export function actions(router, container) {
+  const resourceServiceMiddleware = createResourceMiddleware(container);
+  router.get(
+    `/apps/:appId/actions`,
+    resourceServiceMiddleware,
+    flowifyResponse,
+    listResources
+  );
+  router.post(
+    `/apps/:appId/actions`,
+    resourceServiceMiddleware,
+    unflowifyRequest,
+    flowifyResponse,
+    createResource
+  );
 
   const actions = new Router();
   actions
-    .get(`/recent`, listRecentActions)
-    .get(`/:actionId`, getAction)
-    .patch(`/:actionId`, updateAction)
-    .del(`/:actionId`, deleteAction);
-  router.use('/actions', actions.routes(), actions.allowedMethods());
+    .get(`/recent`, listRecent)
+    .get(`/:resourceId`, flowifyResponse, getResource)
+    .patch(`/:resourceId`, unflowifyRequest, flowifyResponse, updateResource)
+    .del(`/:resourceId`, deleteResource);
+  router.use(
+    '/actions',
+    resourceServiceMiddleware,
+    actions.routes(),
+    actions.allowedMethods()
+  );
 }
 
-async function listActions(ctx, next) {
-  const appId = ctx.params.appId;
-
-  const options = {};
-  const filterName = ctx.request.query['filter[name]'];
-  const filterId = ctx.request.query['filter[id]'];
-  const getFields = ctx.request.query['fields'];
-  if (filterName || filterId) {
-    const filter = (options.filter = {});
-    if (filterName) {
-      filter.by = 'name';
-      filter.value = filterName;
-    } else if (filterId) {
-      filter.by = 'id';
-      filter.value = filterId.split(',');
-    }
+async function unflowifyRequest(ctx, next) {
+  if (ctx.request.body) {
+    ctx.request.body = unflowify(ctx.request.body);
   }
-
-  if (getFields) {
-    options.project = getFields.split(',');
-  }
-
-  const actionList = await ActionsManager.list(appId, options);
-  ctx.body = {
-    data: actionList || [],
-  };
+  await next();
 }
 
-async function listRecentActions(ctx, next) {
-  const appId = ctx.params.appId;
-  ctx.body = { appId };
-
-  const actionList = await ActionsManager.listRecent();
-  ctx.body = {
-    data: actionList || [],
-  };
-}
-
-async function createAction(ctx, next) {
-  const appId = ctx.params.appId;
-  const body = ctx.request.body;
-  try {
-    const action = await ActionsManager.create(appId, body);
-    ctx.body = {
-      data: action,
-    };
-  } catch (error) {
-    if (error.isOperational && error.type === ERROR_TYPES.COMMON.VALIDATION) {
-      throw ErrorManager.createRestError('Validation error in /actions create action', {
-        status: 400,
-        title: 'Validation error',
-        detail: 'There were one or more validation problems',
-        meta: error.details.errors,
-      });
-    } else if (error.type === ERROR_TYPES.COMMON.NOT_FOUND) {
-      throw ErrorManager.createRestNotFoundError('Application not found', {
-        title: 'Application not found',
-        detail: 'No application with the specified id',
-      });
-    }
-    throw error;
+async function flowifyResponse(ctx, next) {
+  await next();
+  if (isArray(ctx.body.data)) {
+    ctx.body.data = ctx.body.data.map(flowify);
+  } else if (ctx.body.data) {
+    ctx.body.data = flowify(ctx.body.data);
   }
-}
-
-async function getAction(ctx, next) {
-  const actionId = ctx.params.actionId;
-
-  const action = await ActionsManager.findOne(actionId);
-
-  if (!action) {
-    throw ErrorManager.createRestNotFoundError('Action not found', {
-      title: 'Action not found',
-      detail: 'No action with the specified id',
-      value: actionId,
-    });
-  }
-
-  ctx.body = {
-    data: action,
-  };
-}
-
-async function updateAction(ctx, next) {
-  const actionId = ctx.params.actionId;
-  const data = ctx.request.body || {};
-  try {
-    const app = await ActionsManager.update(actionId, data);
-
-    ctx.body = {
-      data: app,
-    };
-  } catch (error) {
-    if (error.isOperational) {
-      if (error.type === ERROR_TYPES.COMMON.VALIDATION) {
-        throw ErrorManager.createRestError('Validation error in /action updateAction', {
-          status: 400,
-          title: 'Validation error',
-          detail: 'There were one or more validation problems',
-          meta: error.details.errors,
-        });
-      } else if (error.type === ERROR_TYPES.COMMON.NOT_FOUND) {
-        throw ErrorManager.createRestNotFoundError('Action not found', {
-          title: 'Action not found',
-          detail: 'No action with the specified id',
-          value: actionId,
-        });
-      }
-    }
-    throw error;
-  }
-}
-
-async function deleteAction(ctx, next) {
-  const actionId = ctx.params.actionId;
-  const removed = await ActionsManager.remove(actionId);
-
-  if (!removed) {
-    throw ErrorManager.createRestNotFoundError('Action not found', {
-      title: 'Action not found',
-      detail: 'No action with the specified id',
-      value: actionId,
-    });
-  }
-
-  ctx.status = 204;
 }
