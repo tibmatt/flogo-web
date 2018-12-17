@@ -151,6 +151,22 @@ export class MapperTranslator {
     );
   }
 
+  static translateTaskMappingsOut(mappings: {
+    [attr: string]: { expression: string; mappingType?: number };
+  }): any {
+    const EXPR_PREFIX = "=";
+    return this.translateMappingsOut(mappings).reduce((input, mapping) => {
+      let value = mapping.value;
+      if (mapping.type === MAPPING_TYPE.ATTR_ASSIGNMENT || mapping.type === MAPPING_TYPE.EXPRESSION_ASSIGNMENT) {
+        value = EXPR_PREFIX + value;
+      } else if (mapping.type === MAPPING_TYPE.OBJECT_TEMPLATE) {
+        value = EXPR_PREFIX + JSON.stringify(value);
+      }
+      input[mapping.mapTo] = value;
+      return input;
+    }, {});
+  }
+
   static parseExpression(expression: string) {
     const mappingType = mappingTypeFromExpression(expression);
     let value = expression;

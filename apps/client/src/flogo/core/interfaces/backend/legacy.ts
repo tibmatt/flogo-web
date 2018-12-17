@@ -1,3 +1,5 @@
+import { Dictionary } from '@flogo-web/client/core';
+
 export interface LegacyFlowWrapper {
   id: string;
   name: string;
@@ -34,7 +36,7 @@ export interface flowToJSON_Task {
   description?: string;
   attributes: flowToJSON_Attribute[];
   settings?: flowToJSON_Settings;
-  inputMappings: flowToJSON_Mapping[];
+  inputMappings: Dictionary<any>;
   ouputMappings: flowToJSON_Mapping[];
 }
 

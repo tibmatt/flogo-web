@@ -153,9 +153,7 @@ const generateDiagramTraverser = schemas => {
 
       /* add inputMappings */
 
-      const inputMappings = parseFlowMappings(<DiagramTaskAttributeMapping[]>(
-        get(task, 'inputMappings')
-      ));
+      const inputMappings = get(task, 'inputMappings', {});
 
       if (!isEmpty(inputMappings)) {
         taskInfo.inputMappings = inputMappings;

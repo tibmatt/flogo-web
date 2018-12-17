@@ -201,7 +201,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
         isIterable,
         iterableValue: isIterable ? this.iterableValue : undefined,
       },
-      inputMappings: MapperTranslator.translateMappingsOut(
+      inputMappings: MapperTranslator.translateTaskMappingsOut(
         this.inputMapperController.getCurrentState().mappings
       ),
     }).subscribe(action => {

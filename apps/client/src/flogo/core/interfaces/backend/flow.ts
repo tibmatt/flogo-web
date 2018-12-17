@@ -12,7 +12,7 @@ export namespace flow {
     name?: string;
     description?: string;
     attributes?: Attribute[];
-    inputMappings?: Mapping[];
+    inputMappings?: any;
     settings?: any;
     outputMappings?: Mapping[];
   }
