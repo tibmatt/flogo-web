@@ -15,7 +15,7 @@ export function formatTaskLinkGroups(activitySchemas, flow) {
 }
 
 function formatGroup(activitySchemas, { tasks, links }) {
-  const group = {};
+  const group: { tasks?: any[]; links?: any[] } = {};
   const formattedTasks = formatTasks(activitySchemas, tasks);
   if (!isEmpty(formattedTasks)) {
     group.tasks = formattedTasks;

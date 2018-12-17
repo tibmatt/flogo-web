@@ -18,9 +18,7 @@ const APP_KEY_ORDER = [
 const TRIGGER_KEY_ORDER = ['id', 'ref', 'name', 'description', 'settings', 'handlers'];
 
 export class StandardMicroServiceFormatter {
-  constructor(activitySchemas) {
-    this.activitySchemas = activitySchemas;
-  }
+  constructor(private activitySchemas) {}
 
   preprocess(app) {
     return app;

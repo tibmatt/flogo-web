@@ -85,7 +85,7 @@ export class Exporter {
     });
 
     return compact(
-      [...finalActionIds.values()].map(actionId => actionRegistry.get(actionId))
+      Array.from(finalActionIds.values()).map(actionId => actionRegistry.get(actionId))
     );
   }
 

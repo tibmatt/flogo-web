@@ -23,7 +23,7 @@ class ActivitiesManagerImpl implements ContributionsService {
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
    */
-  find(terms) {
+  find(terms?) {
     terms = terms || {};
 
     return activitiesDBService.db

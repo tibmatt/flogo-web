@@ -6,7 +6,10 @@ const mappingsExporter = portMappings.bind(null, typeMapper.toStandard().mapping
 
 export function portAndFormatMappings(actionMappings) {
   const portedMappings = mappingsExporter(actionMappings);
-  const formattedMappings = {};
+  const formattedMappings: {
+    input?: any;
+    output?: any;
+  } = {};
   if (!isEmpty(portedMappings.input)) {
     formattedMappings.input = portedMappings.input;
   }
