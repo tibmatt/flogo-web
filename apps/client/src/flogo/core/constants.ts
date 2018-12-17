@@ -39,10 +39,6 @@ export enum FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE {
   LABELED,
 }
 
-export enum FLOGO_PROCESS_TYPE {
-  DEFAULT = 1,
-}
-
 export enum ValueType {
   String = 'string',
   Integer = 'integer',
