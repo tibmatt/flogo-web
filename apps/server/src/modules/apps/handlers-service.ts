@@ -1,4 +1,6 @@
 import { defaults, isEmpty, pick } from 'lodash';
+import { injectable, inject } from 'inversify';
+import { TOKENS } from '../../core';
 import { Database } from '../../common/database.service';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { Validator } from './validator';
@@ -6,12 +8,9 @@ import { ISONow } from '../../common/utils';
 
 const EDITABLE_FIELDS = ['settings', 'outputs', 'actionMappings'];
 
+@injectable()
 export class HandlersService {
-  private appsDb: Database;
-
-  constructor(appsDatabase: Database) {
-    this.appsDb = appsDatabase;
-  }
+  constructor(@inject(TOKENS.AppsDb) private appsDb: Database) {}
 
   save(triggerId, actionId, handlerData) {
     if (!triggerId || !actionId) {
