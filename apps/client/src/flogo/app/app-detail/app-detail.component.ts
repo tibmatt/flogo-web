@@ -164,7 +164,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     );
   }
 
-  appExporter(isLegacyExport: boolean = false) {
+  appExporter() {
     return () => {
       this.closeExportBox();
       return this.confirmActionWhenMissingTriggers('export')
@@ -173,20 +173,19 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
           if (!proceed) {
             return null;
           }
-          return this.performExportApp(isLegacyExport);
+          return this.performExportApp();
         });
     };
   }
 
-  private performExportApp(isLegacyExport: boolean) {
+  private performExportApp() {
     return this.appDetailService
-      .toEngineSpec(isLegacyExport)
+      .toEngineSpec()
       .then(engineApp => {
         const appName = snakeCase(engineApp.name);
-        const fileNameSuffix = isLegacyExport ? '_legacy' : '';
         return [
           {
-            fileName: `${appName}${fileNameSuffix}.json`,
+            fileName: `${appName}.json`,
             data: engineApp,
           },
         ];
@@ -255,10 +254,8 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
 
   openExportFlow() {
     const flows = this.application.actions;
-    const isLegacyExport = false;
     return this.modalService.openModal<ExportFlowsData>(FlogoExportFlowsComponent, {
       flows,
-      isLegacyExport,
     });
   }
 

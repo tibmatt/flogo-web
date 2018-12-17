@@ -232,18 +232,7 @@ export class AppsManager {
    * @return {object} exported object
    * @throws Not found error if app not found
    */
-  static export(appId, { appModel = EXPORT_MODE.STANDARD_MODEL, format, flowIds } = {}) {
-    if (
-      appModel !== EXPORT_MODE.STANDARD_MODEL &&
-      appModel !== EXPORT_MODE.LEGACY_MODEL
-    ) {
-      throw ErrorManager.makeError(
-        `Cannot export to unknown application model "${appModel}"`,
-        {
-          type: APP_ERRORS.UNKNOWN_APP_MODEL,
-        }
-      );
-    }
+  static export(appId, { format, flowIds } = {}) {
     return AppsManager.findOne(appId).then(app => {
       if (!app) {
         throw ErrorManager.makeError('Application not found', {
@@ -254,7 +243,7 @@ export class AppsManager {
       const isFullExportMode = format !== EXPORT_MODE.FORMAT_FLOWS;
       const exportOptions = { isFullExportMode, onlyThisActions: flowIds };
 
-      return exportApplication(app, appModel, exportOptions);
+      return exportApplication(app, exportOptions);
     });
   }
 
