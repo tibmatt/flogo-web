@@ -5,16 +5,14 @@ import {
 import { actionValueTypesNormalizer } from './action-value-type-normalizer';
 import { taskAttributesToMappingsUnifier } from './task-attributes-to-mappings-unifier';
 
-export class AbstractActionsImporter {
-  constructor(actionStorage, activitySchemas) {
-    this.actionStorage = actionStorage;
-    this.activitySchemas = activitySchemas;
-  }
+// TODO: add Action interface
+type Action = any;
+
+export abstract class AbstractActionsImporter {
+  constructor(private actionStorage, private activitySchemas: any[]) {}
 
   // eslint-disable-next-line no-unused-vars
-  extractActions(fromRawApp) {
-    throw new Error('You have to implement the method extractActions!');
-  }
+  abstract extractActions(fromRawApp): Action[];
 
   async importAll(appId, fromRawApp) {
     const rawActions = this.extractActions(fromRawApp)
@@ -54,7 +52,7 @@ export class AbstractActionsImporter {
     const actionPromises = rawActions.map(async rawAction => {
       const originalActionId = rawAction.id;
       const action = await this.storeSingleAction(appId, rawAction);
-      return [originalActionId, action];
+      return [originalActionId, action] as [string, any];
     });
     return Promise.all(actionPromises);
   }

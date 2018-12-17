@@ -2,8 +2,9 @@ import pick from 'lodash/pick';
 import get from 'lodash/get';
 import { PUBLISH_FIELDS_SHORT, PUBLISH_FIELDS_LONG } from './constants';
 import { triggersDBService } from '../../common/db/triggers';
+import { ContributionsService } from '../contribs';
 
-export class TriggerManager {
+class TriggerManagerImpl implements ContributionsService {
   /**
    * List or find triggers
    *
@@ -24,7 +25,7 @@ export class TriggerManager {
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
    */
-  static find(terms, options) {
+  find(terms, options) {
     terms = translateFindTerms(terms);
     const { fields } = Object.assign({ fields: 'full' }, options);
 
@@ -35,14 +36,15 @@ export class TriggerManager {
       );
   }
 
-  static findByRef(ref) {
+  findByRef(ref) {
     return triggersDBService.db
       .findOne({ ref })
       .then(trigger => (trigger ? cleanForOutput(trigger) : null));
   }
 }
+export const TriggerManager = new TriggerManagerImpl();
 
-function cleanForOutput(trigger, fields) {
+function cleanForOutput(trigger, fields?) {
   let cleanTrigger = Object.assign(
     {
       id: trigger.id || trigger._id,

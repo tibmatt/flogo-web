@@ -6,13 +6,9 @@ import { TASK_TYPE } from '../../transfer/common/type-mapper';
 import { parseResourceIdFromResourceUri, portMappingType } from './utils';
 
 export class StandardTaskConverter {
-  /**
-   * @static
-   * @param resourceTask
-   * @param activitySchema
-   * @return {StandardTaskConverter}
-   */
-  static create(resourceTask, activitySchema) {
+  private resourceTask;
+  private activitySchema;
+  static create(resourceTask, activitySchema): StandardTaskConverter {
     return new StandardTaskConverter(resourceTask, activitySchema);
   }
 
@@ -50,7 +46,7 @@ export class StandardTaskConverter {
   }
 
   resolveTypeAndSettings() {
-    const settings = {};
+    const settings: { [key: string]: any } = {};
     let type = FLOGO_TASK_TYPE.TASK;
     if (this.isSubflowTask()) {
       type = FLOGO_TASK_TYPE.TASK_SUB_PROC;

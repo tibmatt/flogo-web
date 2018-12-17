@@ -1,31 +1,22 @@
-import flow from 'lodash/fp/flow';
-import map from 'lodash/fp/map';
-import filter from 'lodash/fp/filter';
-// TODO: regular import {normalizedHandlerMappings} is undefined during runtime, probably something related
-// with the combination of typescript + js + class extension
-const { normalizeHandlerMappings } = require('./normalize-handler-mappings');
+import { flow, map, filter } from 'lodash/fp';
+import { normalizeHandlerMappings } from './normalize-handler-mappings';
 
-export class AbstractTriggersHandlersImporter {
-  /**
-   * @param {{ create: Function(string, object):Promise }} triggerStorage
-   * @param {{ save: Function(string, string, object):Promise }} handlerStore
-   */
-  constructor(triggerStorage, handlerStore) {
-    this.handlerStore = handlerStore;
-    this.triggerStorage = triggerStorage;
+// todo: define handler interface
+type Handler = any;
+export abstract class AbstractTriggersHandlersImporter {
+  actionsByOriginalId: Map<string, any>;
+  appId: string;
+
+  constructor(private triggerStorage, private handlerStore) {
     this.actionsByOriginalId = new Map();
     this.appId = null;
   }
 
   // eslint-disable-next-line no-unused-vars
-  extractHandlers(trigger) {
-    throw new Error('You have to implement the method extractHandlers!');
-  }
+  abstract extractHandlers(trigger): any[];
 
   // eslint-disable-next-line no-unused-vars
-  extractTriggers(rawApp) {
-    throw new Error('You have to implement the method extractTriggers!');
-  }
+  abstract extractTriggers(rawApp): any[];
 
   setActionsByOriginalId(actionsByOriginalId) {
     this.actionsByOriginalId = actionsByOriginalId;
@@ -49,7 +40,9 @@ export class AbstractTriggersHandlersImporter {
   reconcileTriggersAndActions(rawTriggers) {
     const normalizeHandlers = flow(
       map(handler => this.reconcileHandlerWithAction(handler)),
-      filter(reconciledHandler => !!reconciledHandler.actionId),
+      filter<{ handler?: any; actionId: string }>(
+        reconciledHandler => !!reconciledHandler.actionId
+      ),
       map(reconciledHandler => ({
         ...reconciledHandler,
         handler: normalizeHandlerMappings(reconciledHandler.handler),
@@ -68,7 +61,12 @@ export class AbstractTriggersHandlersImporter {
    * @param handler
    * @return { handler: *, actionId: string|null }
    */
-  reconcileHandlerWithAction(handler) {
+  reconcileHandlerWithAction(
+    handler
+  ): {
+    actionId: string | null;
+    handler: Handler;
+  } {
     const linkedAction = this.actionsByOriginalId.get(handler.actionId);
     return {
       handler,

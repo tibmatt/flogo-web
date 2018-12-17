@@ -1,4 +1,5 @@
 import { fullAppSchema } from '../../apps/schemas';
+import { ResourceStorageRegistry } from '../../resource-storage-registry';
 
 import { validatorFactory } from '../validator';
 
@@ -9,12 +10,7 @@ import { TriggersHandlersImporter } from './triggers-handlers-importer';
 import { loadMicroserviceContribs } from '../common/load-microservice-contribs';
 
 export class LegacyAppImporterFactory {
-  /**
-   * @param {ResourceStorageRegistry} resourceStorageRegistry
-   */
-  constructor(resourceStorageRegistry) {
-    this.resourceStorageRegistry = resourceStorageRegistry;
-  }
+  constructor(private resourceStorageRegistry: ResourceStorageRegistry) {}
 
   async create() {
     const contributions = await this.loadContributions();

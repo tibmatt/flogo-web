@@ -1,9 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 import { REF_SUBFLOW } from '../../../common/constants';
-import {
-  attributesToMappings,
-  taskAttributesToMappingsUnifier,
-} from './task-attributes-to-mappings-unifier';
+import { taskAttributesToMappingsUnifier } from './task-attributes-to-mappings-unifier';
 
 describe('importer.common.task-attributes-to-mappings-unifier', () => {
   const dataUnderTest = {
