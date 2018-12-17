@@ -6,7 +6,6 @@ import { MODAL_TOKEN, modalAnimate, ModalControl } from '@flogo-web/client/core/
 
 export interface ExportFlowsData {
   flows: Array<Action>;
-  isLegacyExport: boolean;
 }
 
 @Component({
@@ -65,7 +64,7 @@ export class FlogoExportFlowsComponent {
     }
     return () =>
       this.appDetailService
-        .exportFlow(flowsToExport, this.exportFlowsData.isLegacyExport)
+        .exportFlow(flowsToExport)
         .then(appWithFlows => {
           this.control.close('Flows Exported');
           return [

@@ -3,7 +3,6 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 
 import { App } from '@flogo-web/client/core';
 import { FileDownloaderService } from '@flogo-web/client/core/services/file-downloader.service';
-import { TYPE_APP_MODEL } from '../../../constants';
 import { HttpUtilsService } from '../http-utils.service';
 import { RestApiService } from '../rest-api.service';
 
@@ -58,30 +57,19 @@ export class AppsApiService {
   }
 
   // todo: combine with exportflows
-  exportApp(appId: string, options: { appModel?: TYPE_APP_MODEL } = {}) {
-    let requestOptions = null;
-    if (options.appModel) {
-      requestOptions = {
-        params: {
-          appmodel: options.appModel,
-        },
-      };
-    }
+  exportApp(appId: string) {
     return this.restApi
-      .get<any>(`apps/${appId}:export`, requestOptions)
+      .get<any>(`apps/${appId}:export`)
       .toPromise()
       .catch(err => Promise.reject(err && err.error ? err.error : err));
   }
 
   // todo: combine with exportapp
-  exportFlows(appId: string, flowIds: any[], appModel?: TYPE_APP_MODEL) {
+  exportFlows(appId: string, flowIds: any[]) {
     let requestParams = new HttpParams({ fromObject: { type: 'flows' } });
     if (flowIds && flowIds.length > 0) {
       const selectedFlowIds = flowIds.join(',');
       requestParams = requestParams.set('flowids', selectedFlowIds);
-    }
-    if (appModel) {
-      requestParams = requestParams.set('appmodel', appModel);
     }
     return this.restApi
       .get(`apps/${appId}:export`, { params: requestParams })

@@ -76,7 +76,6 @@
   "DETAILS:ADD-DESCRIPTION": "Add description",
   "DETAILS:EXPORT": "Export",
   "DETAILS:EXPORT-APP": "App",
-  "DETAILS:EXPORT-APP-LEGACY": "Legacy App",
   "DETAILS:EXPORT-FLOW": "Flows",
   "DETAILS-EXPORT:CANNOT-EXPORT": "Cannot export the application as it has subflow tasks",
   "DETAILS-EXPORT:ERROR_UNKNOWN": "Unknown error",
