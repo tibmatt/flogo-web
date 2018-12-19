@@ -52,7 +52,9 @@ export class ResourceRepository {
     if (updateCount <= 0) {
       return Promise.reject(new Error('Error while saving flow'));
     }
-    storeAsRecent(this.indexerDb, resource).catch(e => this.logger.error(e));
+    storeAsRecent(this.indexerDb, { id: resource.id, appId }).catch(e =>
+      this.logger.error(e)
+    );
     return true;
   }
 
@@ -151,7 +153,7 @@ function resourceNameComparator(resource: Resource) {
   return (r: Resource) => resourceName(r.name) === resourceName && r.id !== resource.id;
 }
 
-function storeAsRecent(indexerDb: Database, withAction) {
+function storeAsRecent(indexerDb: Database, actionInfo: { id: string; appId: string }) {
   const findQuery = { _id: RECENT_ACTIONS_ID };
   const updateQuery = {} as any;
 
@@ -165,12 +167,12 @@ function storeAsRecent(indexerDb: Database, withAction) {
       recentActions = recentActions || { actions: [] };
       const oldActions = recentActions.actions;
 
-      const existingActionIndex = oldActions.findIndex(a => a.id === withAction.id);
+      const existingActionIndex = oldActions.findIndex(a => a.id === actionInfo.id);
       if (existingActionIndex > -1) {
         oldActions.splice(existingActionIndex, 1);
       }
 
-      const newRecentActions = [withAction, ...oldActions.slice(0, MAX_RECENT)];
+      const newRecentActions = [actionInfo, ...oldActions.slice(0, MAX_RECENT)];
 
       updateQuery.$set = { actions: newRecentActions };
     });

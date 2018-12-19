@@ -109,8 +109,10 @@ export class ResourceService {
     return { ...resource, app, triggers };
   }
 
-  listRecent() {
-    return this.resourceRepository.listRecent();
+  async listRecent() {
+    const recentIds = await this.resourceRepository.listRecent();
+    const recentResources = await mapAsync(recentIds, ({ id }) => this.findOne(id));
+    return recentResources.filter(Boolean);
   }
 
   async remove(actionId) {
@@ -209,7 +211,7 @@ function applyListFilters(resources, options) {
 
 function projectOutputOnFields(actionArray, fields) {
   if (fields && fields.length > 0) {
-    fields.push('id');
+    fields.push('id', 'type');
     return actionArray.map(action => pick(action, fields));
   }
   return actionArray;
