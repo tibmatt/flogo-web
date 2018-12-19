@@ -115,24 +115,6 @@
         }
       }
     },
-    "mapping": {
-      "title": "mapping",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "integer"
-        },
-        "value": true,
-        "mapTo": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "type",
-        "value",
-        "mapTo"
-      ]
-    },
     "link": {
       "title": "link",
       "type": "object",
@@ -209,10 +191,7 @@
           }
         },
         "inputMappings": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/mapping"
-          }
+          "type": "object"
         }
       },
       "required": [

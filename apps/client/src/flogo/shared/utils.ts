@@ -12,7 +12,6 @@ import {
 } from 'lodash';
 import { ValueType, FLOGO_TASK_TYPE } from '@flogo-web/client/core/constants';
 import { Item, Task } from '@flogo-web/client/core';
-import { TYPE_LITERAL_ASSIGNMENT } from '@flogo-web/client/flow/shared/mapper';
 
 export function flogoGenTriggerID(): string {
   return `Flogo::Trigger::${Date.now()}`;
@@ -119,11 +118,10 @@ export function activitySchemaToTask(schema: any): any {
   if (!isMapperActivity(schema)) {
     task.inputMappings = get(schema, 'inputs', [])
       .filter(attribute => !isUndefined(attribute.value))
-      .map(attribute => ({
-        mapTo: attribute.name,
-        type: TYPE_LITERAL_ASSIGNMENT,
-        value: attribute.value,
-      }));
+      .reduce((inputs, attribute) => {
+        inputs[attribute.name] = attribute.value;
+        return inputs;
+      }, {});
   }
 
   each(task.attributes.inputs, (input: any) => {

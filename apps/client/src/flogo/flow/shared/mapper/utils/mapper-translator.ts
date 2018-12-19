@@ -19,6 +19,7 @@ import {
 } from '../../../task-configurator/models';
 import { Mappings, MapExpression } from '../models';
 
+const REGEX_MAPPING_PREFIX = /^=(.+)$/g;
 export type MappingsValidatorFn = (mappings: Mappings) => boolean;
 export interface AttributeDescriptor {
   name: string;
@@ -111,12 +112,11 @@ export class MapperTranslator {
     };
   }
 
-  static translateMappingsIn(inputMappings: FlowMapping[]) {
-    inputMappings = inputMappings || [];
-    return inputMappings.reduce((mappings, input) => {
-      let value = MapperTranslator.upgradeLegacyMappingIfNeeded(input.value);
-      value = MapperTranslator.rawExpressionToString(value, input.type);
-      mappings[input.mapTo] = { expression: value, mappingType: input.type };
+  static translateMappingsIn(inputMappings: any) {
+    inputMappings = inputMappings || {};
+    return Object.keys(inputMappings).reduce((mappings, input) => {
+      const { value, mappingType } = MapperTranslator.processInputValue(inputMappings[input]);
+      mappings[input] = { expression: value, mappingType };
       return mappings;
     }, {});
   }
@@ -204,6 +204,22 @@ export class MapperTranslator {
 
   static isValidExpression(expression: string) {
     return isValidExpression(expression);
+  }
+
+  private static processInputValue (inputValue: string) {
+    let value = inputValue;
+    let literalAssignment;
+    const valueWithMappingPrefix = REGEX_MAPPING_PREFIX.exec(value);
+    if (valueWithMappingPrefix) {
+      [,value] = valueWithMappingPrefix;
+    }
+    if (value === '') {
+      literalAssignment = MAPPING_TYPE.LITERAL_ASSIGNMENT;
+    }
+    value = MapperTranslator.upgradeLegacyMappingIfNeeded(value);
+    value = MapperTranslator.rawExpressionToString(value, literalAssignment);
+    const {mappingType} = MapperTranslator.parseExpression(value);
+    return {value, mappingType};
   }
 
   private static upgradeLegacyMappingIfNeeded(mappingValue: string) {

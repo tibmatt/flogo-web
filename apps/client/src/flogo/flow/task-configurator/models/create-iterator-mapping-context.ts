@@ -3,6 +3,8 @@ import { ValueType } from '@flogo-web/client/core';
 export const ITERABLE_VALUE_KEY = 'iterate';
 
 export function createIteratorMappingContext(iterableValue: string) {
+  const mappings = {};
+  mappings[ITERABLE_VALUE_KEY] = iterableValue;
   return {
     inputContext: [
       {
@@ -10,11 +12,6 @@ export function createIteratorMappingContext(iterableValue: string) {
         type: ValueType.Any,
       },
     ],
-    mappings: [
-      {
-        mapTo: ITERABLE_VALUE_KEY,
-        value: iterableValue,
-      },
-    ],
+    mappings,
   };
 }
