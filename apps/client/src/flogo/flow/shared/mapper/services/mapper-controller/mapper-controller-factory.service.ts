@@ -26,7 +26,7 @@ export class MapperControllerFactory {
   createController(
     input: AttributeDescriptor[],
     output: AttributeDescriptor[],
-    mappings: any[]
+    mappings: any
   ): MapperController {
     const context = createMapperContext(input, output, mappings);
     return new MapperController(

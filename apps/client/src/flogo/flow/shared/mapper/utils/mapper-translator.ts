@@ -19,7 +19,6 @@ import {
 } from '../../../task-configurator/models';
 import { Mappings, MapExpression } from '../models';
 
-const REGEX_MAPPING_PREFIX = /^=(.+)$/g;
 export type MappingsValidatorFn = (mappings: Mappings) => boolean;
 export interface AttributeDescriptor {
   name: string;
@@ -157,10 +156,8 @@ export class MapperTranslator {
     const EXPR_PREFIX = "=";
     return this.translateMappingsOut(mappings).reduce((input, mapping) => {
       let value = mapping.value;
-      if (mapping.type === MAPPING_TYPE.ATTR_ASSIGNMENT || mapping.type === MAPPING_TYPE.EXPRESSION_ASSIGNMENT) {
+      if (mapping.type === MAPPING_TYPE.ATTR_ASSIGNMENT || mapping.type === MAPPING_TYPE.EXPRESSION_ASSIGNMENT || mapping.type === MAPPING_TYPE.OBJECT_TEMPLATE) {
         value = EXPR_PREFIX + value;
-      } else if (mapping.type === MAPPING_TYPE.OBJECT_TEMPLATE) {
-        value = EXPR_PREFIX + JSON.stringify(value);
       }
       input[mapping.mapTo] = value;
       return input;
@@ -174,7 +171,7 @@ export class MapperTranslator {
       mappingType === MAPPING_TYPE.OBJECT_TEMPLATE ||
       mappingType === MAPPING_TYPE.LITERAL_ASSIGNMENT
     ) {
-      value = value !== 'nil' ? JSON.parse(value) : null;
+      value = value !== 'nil' ? value : null;
     }
     return { mappingType, value };
   }
@@ -209,9 +206,8 @@ export class MapperTranslator {
   private static processInputValue (inputValue: string) {
     let value = inputValue;
     let literalAssignment;
-    const valueWithMappingPrefix = REGEX_MAPPING_PREFIX.exec(value);
-    if (valueWithMappingPrefix) {
-      [,value] = valueWithMappingPrefix;
+    if (/^=/g.test(value)) {
+      value = value.substr(1);
     }
     if (value === '') {
       literalAssignment = MAPPING_TYPE.LITERAL_ASSIGNMENT;
