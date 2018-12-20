@@ -1,18 +1,16 @@
 import cloneDeep from 'lodash/cloneDeep';
+import { App } from '../../interfaces';
+import { AbstractActionsImporter, AbstractTriggersHandlersImporter } from './common';
 
 export class AppImporter {
-  /**
-   * @param {{ validate: function(object) }} fullAppValidator
-   * @param {{ create: Function(object):Promise }} appStorage
-   * @param {ActionsImporter} actionsImporter
-   * @param {TriggersHandlersImporter} triggerHandlersImporter
-   */
-  constructor(fullAppValidator, appStorage, actionsImporter, triggerHandlersImporter) {
-    this.fullAppValidator = fullAppValidator;
-    this.appStorage = appStorage;
-    this.actionsImporter = actionsImporter;
-    this.triggerHandlersImporter = triggerHandlersImporter;
-  }
+  private rawData: any;
+  private app: App;
+  constructor(
+    private fullAppValidator: { validate: (a: any) => any[] },
+    private appStorage: { create: (app) => Promise<any> },
+    private actionsImporter: AbstractActionsImporter,
+    private triggerHandlersImporter: AbstractTriggersHandlersImporter
+  ) {}
 
   async import(value) {
     this.rawData = value;

@@ -43,7 +43,7 @@ function contributionRuleFactory(keyword, type, refs) {
     validate: function validator(schema, contribRef) {
       const isInstalled = refs.includes(contribRef);
       if (!isInstalled) {
-        validator.errors = [
+        (validator as any).errors = [
           {
             keyword,
             message: `${type} "${contribRef}" is not installed`,

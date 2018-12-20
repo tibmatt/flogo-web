@@ -3,11 +3,14 @@ import { AbstractActionsImporter } from './abstract-actions-importer';
 describe('importer.common.AbstractActionsImporter', () => {
   class ActionsImporterImpl extends AbstractActionsImporter {
     constructor() {
-      super({
-        create(appId, action) {
-          return Promise.resolve({ ...action, id: `${action.id}-processed` });
+      super(
+        {
+          create(appId, action) {
+            return Promise.resolve({ ...action, id: `${action.id}-processed` });
+          },
         },
-      });
+        null
+      );
     }
     extractActions(fromApp) {
       return fromApp.actions;

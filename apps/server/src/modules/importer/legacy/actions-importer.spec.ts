@@ -4,7 +4,7 @@ describe('importer.legacy.ActionsImporter', () => {
   const legacyActionImporter = new ActionsImporter({}, []);
 
   test('should return empty array for undefined actions', () => {
-    let formattedAction = legacyActionImporter.extractActions({
+    const formattedAction = legacyActionImporter.extractActions({
       id: 'a',
       name: 'my app',
     });

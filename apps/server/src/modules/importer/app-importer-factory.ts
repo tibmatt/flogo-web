@@ -8,13 +8,7 @@ import { ResourceStorageRegistry } from '../resource-storage-registry';
 import { isValidApplicationType } from '../../common/utils';
 
 export class AppImporterFactory {
-  resourceStorageRegistry: any;
-  /**
-   * @param {ResourceStorageRegistry} resourceStorageRegistry
-   */
-  constructor(resourceStorageRegistry) {
-    this.resourceStorageRegistry = resourceStorageRegistry;
-  }
+  constructor(private resourceStorageRegistry: ResourceStorageRegistry) {}
 
   async create(rawApp) {
     const dependenciesFactory = this.getDependenciesFactory(rawApp);

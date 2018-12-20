@@ -1,33 +1,34 @@
-/** @module importer */
 import { AppsManager } from '../apps';
 import { ActivitiesManager as ContribActivitiesManager } from '../activities';
 import { TriggerManager as ContribTriggersManager } from '../triggers';
 import { ActionsManager } from '../actions';
 import { AppsTriggersManager } from '../apps/triggers';
 import { HandlersManager } from '../apps/handlers';
+import { HandlersService } from '../apps/handlers-service';
+import { ContributionsService } from '../contribs';
 
 export class ResourceStorageRegistry {
-  static getAppsManager() {
+  getAppsManager() {
     return AppsManager;
   }
 
-  static getContribTriggersManager() {
+  getContribTriggersManager(): ContributionsService {
     return ContribTriggersManager;
   }
 
-  static getContribActivitiesManager() {
+  getContribActivitiesManager(): ContributionsService {
     return ContribActivitiesManager;
   }
 
-  static getActionsManager() {
+  getActionsManager(): ActionsManager {
     return ActionsManager;
   }
 
-  static getAppsTriggersManager() {
+  getAppsTriggersManager(): AppsTriggersManager {
     return AppsTriggersManager;
   }
 
-  static getHandlersManager() {
+  getHandlersManager(): HandlersService {
     return HandlersManager;
   }
 }

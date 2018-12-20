@@ -6,7 +6,10 @@ export interface Task {
   description?: string;
   attributes?: Attribute[];
   inputMappings?: Mapping[];
-  settings?: any;
+  settings?: {
+    flowPath?: string;
+    iterate: string;
+  };
   outputMappings?: Mapping[];
 }
 

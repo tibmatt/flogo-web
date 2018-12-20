@@ -50,7 +50,7 @@ class Asserter {
   }
 }
 
-class AppImporterTestContext {
+export class AppImporterTestContext {
   appImporterFactory;
   isSuccess: boolean;
   errors?: any;

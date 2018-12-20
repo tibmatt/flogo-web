@@ -1,5 +1,7 @@
 import * as schemas from '../../schemas/v1.0.0';
 
+import { ResourceStorageRegistry } from '../../resource-storage-registry';
+
 import { loadMicroserviceContribs } from '../common/load-microservice-contribs';
 import { validatorFactory } from '../validator';
 
@@ -10,12 +12,7 @@ import { StandardTaskConverter } from './standard-task-converter';
 import { StandardTriggersHandlersImporter } from './standard-triggers-handlers-importer';
 
 export class StandardAppImporterFactory {
-  /**
-   * @param {ResourceStorageRegistry} resourceStorageRegistry
-   */
-  constructor(resourceStorageRegistry) {
-    this.resourceStorageRegistry = resourceStorageRegistry;
-  }
+  constructor(private resourceStorageRegistry: ResourceStorageRegistry) {}
 
   async create() {
     const contributions = await this.loadContributions();

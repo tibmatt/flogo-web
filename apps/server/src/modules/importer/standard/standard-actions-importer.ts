@@ -2,22 +2,22 @@ import isEmpty from 'lodash/isEmpty';
 import { LINK_TYPE } from '../../transfer/common/type-mapper';
 import { AbstractActionsImporter } from '../common';
 import { fromStandardTypeMapper } from './utils';
+import { StandardTaskConverter } from './standard-task-converter';
 
 export class StandardActionsImporter extends AbstractActionsImporter {
-  /**
-   * @param {ActionsManager} actionStorage
-   * @param {typeof StandardTaskConverter} taskConverterFactory
-   * @param {{ref: string}[]} activitySchemas
-   */
-  constructor(actionStorage, taskConverterFactory, activitySchemas) {
+  private activitySchemasByRef: Map<string, any>;
+  constructor(
+    actionStorage,
+    private taskConverterFactory: typeof StandardTaskConverter,
+    activitySchemas: any[]
+  ) {
+    super(actionStorage, activitySchemas);
     if (!activitySchemas) {
       throw new TypeError('Missing parameter: activitySchemas');
     }
     if (!taskConverterFactory) {
       throw new TypeError('Missing parameter: taskConverterFactory');
     }
-    super(actionStorage, activitySchemas);
-    this.taskConverterFactory = taskConverterFactory;
     this.activitySchemasByRef = activitySchemas.reduce(
       (registry, activity) => registry.set(activity.ref, activity),
       new Map()
@@ -29,7 +29,7 @@ export class StandardActionsImporter extends AbstractActionsImporter {
     return resources.map(resource => this.resourceToAction(resource));
   }
 
-  resourceToAction(resource = {}) {
+  resourceToAction(resource: any = {}) {
     const resourceData = resource.data || {};
     const errorHandler = this.getErrorHandler(resourceData);
     return {

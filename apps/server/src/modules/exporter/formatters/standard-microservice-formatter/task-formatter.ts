@@ -6,11 +6,14 @@ import { TASK_TYPE } from '../../../transfer/common/type-mapper';
 import { isIterableTask } from '../../../../common/utils';
 import { isOutputMapperField } from '../../../../common/utils/flow';
 import { isSubflowTask } from '../../../../common/utils/subflow';
+import { Task } from '../../../../interfaces';
 
 import { portAndFormatMappings } from './port-and-format-mappings';
 import { createFlowUri } from './create-flow-uri';
 
 export class TaskFormatter {
+  private sourceTask: Task;
+  private schemaInputsByName: { [name: string]: any };
   setSourceTask(sourceTask) {
     this.sourceTask = sourceTask;
     return this;
@@ -42,8 +45,12 @@ export class TaskFormatter {
   }
 
   resolveTypeAndSettings() {
-    const taskSettings = {};
-    const activitySettings = {};
+    const taskSettings: {
+      iterate?: string;
+    } = {};
+    const activitySettings: {
+      flowURI?: string;
+    } = {};
     // for type 'standard' we will omit the 'type' property as a task is 'standard' by default
     let type;
     if (isSubflowTask(this.sourceTask)) {
@@ -67,7 +74,7 @@ export class TaskFormatter {
 
   convertAttributes() {
     // todo: for mapper classes need to convert input.mappings too
-    const attributes = this.sourceTask.attributes || {};
+    const attributes = this.sourceTask.attributes || [];
     return attributes.reduce((input, attribute) => {
       let value = attribute.value;
       if (

@@ -1,26 +1,31 @@
-import { ResourceStorageRegistryMock } from './resource-storage-mock';
-import { AppImporterFactory } from '../app-importer-factory';
-import { createSharedTestCases, makeImporterContext } from './test-utils';
+import sinon from 'sinon';
 import cloneDeep from 'lodash/cloneDeep';
+
+import { StandardTriggersHandlersImporter } from '../standard/standard-triggers-handlers-importer';
+import { AppImporterFactory } from '../app-importer-factory';
+import { ResourceStorageRegistryMock } from './resource-storage-mock';
+import { createSharedTestCases, makeImporterContext } from './test-utils';
 import { TestOptions } from './test-options';
 import { StandardActionsImporter } from '../standard/standard-actions-importer';
-import { StandardTriggersHandlersImporter } from '../standard/standard-triggers-handlers-importer';
-import sinon from 'sinon';
+import { TestContext } from './test-context';
 
 const app = require('./samples/standard-app.json');
 const testData = require('./samples/standard-test-data.json');
 
-let testContext = {};
+const testContext: TestContext = {};
 const getTestContext = () => testContext;
 
 describe('Importer: Standard', () => {
   beforeAll(async function() {
-    testContext.importerFactory = new AppImporterFactory(ResourceStorageRegistryMock);
+    testContext.importerFactory = new AppImporterFactory(
+      ResourceStorageRegistryMock as any
+    );
     testContext.importerContext = makeImporterContext(testContext.importerFactory);
     testContext.testOptions = new TestOptions({
-      updateTasksRefCb: function(app) {
-        app.resources[0].data.tasks[0].activity.ref = 'some.domain/path/to/activity';
-        return app;
+      updateTasksRefCb: function(appToUpdate) {
+        appToUpdate.resources[0].data.tasks[0].activity.ref =
+          'some.domain/path/to/activity';
+        return appToUpdate;
       },
       depsConstructors: {
         actionsImporter: StandardActionsImporter,
@@ -47,7 +52,8 @@ describe('Importer: Standard', () => {
 
   test('TriggerHandlerImporter:  should transform handlers as expected', async () => {
     const spyingHandlersExtract = testContext.sinonSandbox.spy(
-      testContext.testOptions.depsConstructors.triggersHandlersImporter.prototype,
+      (testContext.testOptions.depsConstructors.triggersHandlersImporter as any)
+        .prototype,
       'extractHandlers'
     );
     const assert = await testContext.importerContext.importAndCreateAssert(

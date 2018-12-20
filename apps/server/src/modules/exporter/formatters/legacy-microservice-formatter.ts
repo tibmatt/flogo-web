@@ -9,9 +9,7 @@ import { mappingsToAttributes } from '../mappings-to-attributes';
 const MICROSERVICE_ACTION_REF = 'github.com/TIBCOSoftware/flogo-contrib/action/flow';
 
 export class LegacyMicroServiceFormatter {
-  constructor(activitySchemas) {
-    this.activitySchemas = activitySchemas;
-  }
+  constructor(private activitySchemas) {}
 
   preprocess(app) {
     if (appHasSubflowTasks(app)) {

@@ -2,6 +2,14 @@ import { AbstractActionsImporter } from '../common/abstract-actions-importer';
 import { AbstractTriggersHandlersImporter } from '../common/abstract-trigger-handlers-importer';
 
 export class TestOptions {
+  updateTasksRef: Function;
+  depsConstructors: {
+    actionsImporter: AbstractActionsImporter;
+    triggersHandlersImporter: AbstractTriggersHandlersImporter;
+  };
+  expectedActions: any[];
+  expectedTriggers: any[];
+  expectedReconciledTriggers: any[];
   constructor({
     updateTasksRefCb,
     depsConstructors,

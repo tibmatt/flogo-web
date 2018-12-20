@@ -34,7 +34,7 @@ export function normalizeSingleHandlerMapping(mapping) {
 function shouldPrefixWithScopeResolver(expression) {
   const { ast } = parse(expression);
   if (ast && ast.type === 'ExprStmt') {
-    const { x: exprNode } = ast; // as ExprStmt;
+    const { x: exprNode } = ast as any; // as ExprStmt;
     const headNode = getAssignExpressionHead(exprNode);
     return !!headNode && headNode.type === 'Identifier';
   }

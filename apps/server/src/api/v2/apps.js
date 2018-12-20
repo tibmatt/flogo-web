@@ -118,7 +118,7 @@ async function deleteApp(ctx, next) {
 
 async function importApp(ctx, next) {
   try {
-    ctx.body = await AppsManager.import(ctx.request.body, ResourceStorageRegistry);
+    ctx.body = await AppsManager.import(ctx.request.body, new ResourceStorageRegistry());
   } catch (error) {
     if (error.isOperational && error.type === ERROR_TYPES.COMMON.VALIDATION) {
       throw ErrorManager.createRestError('Validation error in /apps getApp', {

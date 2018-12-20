@@ -1,7 +1,8 @@
 import get from 'lodash/get';
 import { activitiesDBService } from '../../common/db/activities';
+import { ContributionsService } from '../contribs';
 
-export class ActivitiesManager {
+class ActivitiesManagerImpl implements ContributionsService {
   /**
    * List or find activities
    *
@@ -22,7 +23,7 @@ export class ActivitiesManager {
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
    */
-  static find(terms) {
+  find(terms?) {
     terms = terms || {};
 
     return activitiesDBService.db
@@ -30,6 +31,7 @@ export class ActivitiesManager {
       .then(result => (result || []).map(activityRow => prepareForOutput(activityRow)));
   }
 }
+export const ActivitiesManager = new ActivitiesManagerImpl();
 
 function prepareForOutput(activity) {
   // this is a legacy

@@ -9,6 +9,6 @@ export function installDefaults() {
 
 export function installDefaultApps() {
   return readJSONFile(config.defaultAppJsonPath)
-    .then(defaultApp => AppsManager.import(defaultApp, ResourceStorageRegistry))
+    .then(defaultApp => AppsManager.import(defaultApp, new ResourceStorageRegistry()))
     .catch(err => Promise.reject(err));
 }
