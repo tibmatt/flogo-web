@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { Resource } from '@flogo-web/server/core';
 import { App } from '../../interfaces';
 import { TOKENS } from '../../core';
-import { dbUtils } from '../../common/db';
+import { ISONow } from '../../common/utils';
 import { Database } from '../../common/database.service';
 import { Logger } from '../../common/logging';
 import { CONSTRAINTS } from '../../common/validation';
@@ -24,8 +24,8 @@ export class ResourceRepository {
     return this.appsDb.findOne({ _id: appId }, { actions: 1 });
   }
 
-  async create(appId: string, resource: Resource) {
-    resource.createdAt = dbUtils.ISONow();
+  async create(appId: string, resource: Resource): Promise<number> {
+    resource.createdAt = ISONow();
     resource.updatedAt = null;
     return this.appsDb.update(
       { _id: appId },
@@ -33,7 +33,7 @@ export class ResourceRepository {
         $push: {
           actions: {
             ...resource,
-            createdAt: dbUtils.ISONow(),
+            createdAt: ISONow(),
             updatedAt: null,
           },
         },
@@ -52,7 +52,9 @@ export class ResourceRepository {
     if (updateCount <= 0) {
       return Promise.reject(new Error('Error while saving flow'));
     }
-    storeAsRecent(this.indexerDb, resource).catch(e => this.logger.error(e));
+    storeAsRecent(this.indexerDb, { id: resource.id, appId }).catch(e =>
+      this.logger.error(e)
+    );
     return true;
   }
 
@@ -128,7 +130,7 @@ function atomicUpdate(appsDb: Database, { resource, appId }) {
       }
 
       const actionIndex = app.actions.findIndex(t => t.id === resource.id);
-      resource.updatedAt = dbUtils.ISONow();
+      resource.updatedAt = ISONow();
       Object.assign(
         updateQuery,
         prepareUpdateQuery(resource, app.actions[actionIndex], actionIndex)
@@ -151,7 +153,7 @@ function resourceNameComparator(resource: Resource) {
   return (r: Resource) => resourceName(r.name) === resourceName && r.id !== resource.id;
 }
 
-function storeAsRecent(indexerDb: Database, withAction) {
+function storeAsRecent(indexerDb: Database, actionInfo: { id: string; appId: string }) {
   const findQuery = { _id: RECENT_ACTIONS_ID };
   const updateQuery = {} as any;
 
@@ -165,12 +167,12 @@ function storeAsRecent(indexerDb: Database, withAction) {
       recentActions = recentActions || { actions: [] };
       const oldActions = recentActions.actions;
 
-      const existingActionIndex = oldActions.findIndex(a => a.id === withAction.id);
+      const existingActionIndex = oldActions.findIndex(a => a.id === actionInfo.id);
       if (existingActionIndex > -1) {
         oldActions.splice(existingActionIndex, 1);
       }
 
-      const newRecentActions = [withAction, ...oldActions.slice(0, MAX_RECENT)];
+      const newRecentActions = [actionInfo, ...oldActions.slice(0, MAX_RECENT)];
 
       updateQuery.$set = { actions: newRecentActions };
     });

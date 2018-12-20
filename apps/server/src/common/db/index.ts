@@ -1,4 +1,4 @@
-import { generateShortId, ISONow } from './common';
+import { generateShortId, ISONow } from '../utils/common';
 
 export { apps } from './apps';
 export { indexer } from './indexer';

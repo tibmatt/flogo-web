@@ -18,10 +18,20 @@ export interface Resource<TResourceData = unknown> {
   data: TResourceData;
 }
 
+export interface BeforeUpdateHookParams<T> {
+  changes: Partial<Resource<T>>;
+  existingResource: Resource<T>;
+  updatedResource: Resource<T>;
+}
+
 export interface ResourceHooks<TResourceData = unknown> {
-  beforeCreate(resource: Resource<TResourceData>): Promise<Resource<TResourceData>>;
+  beforeCreate(
+    resource: Partial<Resource<TResourceData>>
+  ): Promise<Partial<Resource<TResourceData>>>;
   onImport(data: object): Promise<Resource<TResourceData>>;
-  beforeUpdate(resource: Resource<TResourceData>): Promise<Resource<TResourceData>>;
+  beforeUpdate(
+    params: BeforeUpdateHookParams<TResourceData>
+  ): Promise<Resource<TResourceData>>;
   beforeExport(resource: Resource<TResourceData>): Promise<object>;
   beforeList(resource: Resource<TResourceData>): Promise<Resource<TResourceData>>;
 }

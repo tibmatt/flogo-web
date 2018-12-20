@@ -42,7 +42,7 @@ export class ResourceStorageRegistryMock {
   }
 
   /**
-   * @return {HandlersManager}
+   * @return {HandlersService}
    */
   static getHandlersManager() {
     return HandlerManagerMock;

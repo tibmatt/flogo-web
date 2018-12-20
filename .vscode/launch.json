@@ -89,7 +89,9 @@
       "outputCapture": "std",
       "sourceMaps": true,
       "cwd": "${workspaceRoot}/apps/server",
-      "protocol": "inspector"
+      "protocol": "inspector",
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**"],
     }
   ]
 }
