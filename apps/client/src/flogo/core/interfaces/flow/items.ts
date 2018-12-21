@@ -1,5 +1,6 @@
 import { FLOGO_TASK_TYPE } from '../../constants';
 import { AttributeMapping } from './attribute-mapping';
+import { Dictionary } from '@flogo-web/client/core';
 
 export type ItemTask = ItemActivityTask | ItemSubflow;
 export type Item = ItemTask | ItemBranch;
@@ -17,7 +18,7 @@ export interface BaseItemTask extends BaseItem {
   ref: string;
   name: string;
   description?: string;
-  inputMappings?: AttributeMapping[];
+  inputMappings?: Dictionary<any>;
   input: {
     [name: string]: any;
   };

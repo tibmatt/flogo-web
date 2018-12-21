@@ -8,7 +8,7 @@ import {
 } from '@flogo-web/client/core/constants';
 import {
   Task as FlowTile,
-  AttributeMapping as FlowMapping,
+  Dictionary,
 } from '@flogo-web/client/core';
 import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL, ROOT_TYPES } from '../constants';
 // todo: shared models should be moved to core
@@ -128,40 +128,29 @@ export class MapperTranslator {
 
   static translateMappingsOut(mappings: {
     [attr: string]: { expression: string; mappingType?: number };
-  }): FlowMapping[] {
+  }): Dictionary<any> {
+    const EXPR_PREFIX = "=";
     return (
       Object.keys(mappings || {})
         // filterOutEmptyExpressions
         .filter(
           attrName =>
             mappings[attrName].expression && mappings[attrName].expression.trim()
-        )
-        .map(attrName => {
+        ).reduce((inputs, attrName) => {
           const mapping = mappings[attrName];
-          const { value, mappingType } = MapperTranslator.parseExpression(
+          const { value: inputValue, mappingType } = MapperTranslator.parseExpression(
             mapping.expression
           );
-          return {
-            mapTo: attrName,
-            type: mappingType,
-            value,
-          };
-        })
+          let value = inputValue;
+          if (mappingType === MAPPING_TYPE.ATTR_ASSIGNMENT
+            || mappingType === MAPPING_TYPE.EXPRESSION_ASSIGNMENT
+            || mappingType === MAPPING_TYPE.OBJECT_TEMPLATE) {
+            value = EXPR_PREFIX + value;
+          }
+          inputs[attrName] = value;
+          return inputs;
+        }, {})
     );
-  }
-
-  static translateTaskMappingsOut(mappings: {
-    [attr: string]: { expression: string; mappingType?: number };
-  }): any {
-    const EXPR_PREFIX = "=";
-    return this.translateMappingsOut(mappings).reduce((input, mapping) => {
-      let value = mapping.value;
-      if (mapping.type === MAPPING_TYPE.ATTR_ASSIGNMENT || mapping.type === MAPPING_TYPE.EXPRESSION_ASSIGNMENT || mapping.type === MAPPING_TYPE.OBJECT_TEMPLATE) {
-        value = EXPR_PREFIX + value;
-      }
-      input[mapping.mapTo] = value;
-      return input;
-    }, {});
   }
 
   static parseExpression(expression: string) {

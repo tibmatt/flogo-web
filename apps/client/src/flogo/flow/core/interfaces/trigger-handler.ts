@@ -1,4 +1,4 @@
-import { flow } from '@flogo-web/client/core';
+import { Dictionary } from '@flogo-web/client/core';
 
 export interface TriggerHandler {
   actionId: string;
@@ -6,7 +6,7 @@ export interface TriggerHandler {
   settings: { [name: string]: any };
   outputs: { [name: string]: any };
   actionMappings?: {
-    input: flow.Mapping[];
-    output: flow.Mapping[];
+    input: Dictionary<any>;
+    output: Dictionary<any>;
   };
 }

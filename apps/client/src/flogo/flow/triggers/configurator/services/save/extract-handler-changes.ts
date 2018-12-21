@@ -1,6 +1,6 @@
 import { fromPairs } from 'lodash';
 import { FormGroup } from '@angular/forms';
-import { AttributeMapping } from '@flogo-web/client/core';
+import { Dictionary } from '@flogo-web/client/core';
 import { TriggerHandler } from '@flogo-web/client/flow/core';
 import { MapperController, MapperTranslator } from '@flogo-web/client/flow/shared/mapper';
 import { SettingControlGroup } from '../../interfaces';
@@ -50,6 +50,6 @@ function checkForMappingChanges(
   return newMappings !== originalMappings ? newMappings : null;
 }
 
-function extractMappings(mapperController: MapperController): AttributeMapping[] {
+function extractMappings(mapperController: MapperController): Dictionary<any> {
   return MapperTranslator.translateMappingsOut(mapperController.getMappings());
 }

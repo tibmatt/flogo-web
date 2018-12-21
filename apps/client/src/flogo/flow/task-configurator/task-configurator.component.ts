@@ -5,7 +5,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-import { ActivitySchema, Task } from '@flogo-web/client/core/interfaces';
+import { ActivitySchema, Task, Dictionary } from '@flogo-web/client/core/interfaces';
 import {
   mergeItemWithSchema,
   SingleEmissionSubject,
@@ -201,7 +201,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
         isIterable,
         iterableValue: isIterable ? this.iterableValue : undefined,
       },
-      inputMappings: MapperTranslator.translateTaskMappingsOut(
+      inputMappings: MapperTranslator.translateMappingsOut(
         this.inputMapperController.getCurrentState().mappings
       ),
     }).subscribe(action => {
@@ -390,9 +390,9 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     flowMetadata,
     activitySchema,
     subflowSchema,
-  }): { propsToMap: any[]; mappings: any[] } {
+  }): { propsToMap: any[]; mappings: Dictionary<any> } {
     let propsToMap = [];
-    let mappings = [];
+    let mappings = {};
     const isOutputMapper = isMapperActivity(activitySchema);
     if (isOutputMapper) {
       propsToMap = flowMetadata.output;
@@ -404,7 +404,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
 
     if (isOutputMapper) {
       const inputs = selectedItem.input || {};
-      mappings = inputs.mappings || [];
+      mappings = inputs.mappings || {};
     } else {
       mappings = this.currentTile.inputMappings;
     }

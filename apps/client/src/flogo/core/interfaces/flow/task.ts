@@ -1,7 +1,7 @@
 import { FLOGO_TASK_TYPE } from '@flogo-web/client/core/constants';
 import { TaskAttributes } from './attribute';
-import { AttributeMapping } from './attribute-mapping';
 import { Link } from './link';
+import { Dictionary } from '@flogo-web/client/core';
 
 export interface Task {
   id: string;
@@ -14,8 +14,8 @@ export interface Task {
   activityType?: string;
   triggerType?: string;
   attributes?: TaskAttributes;
-  inputMappings?: AttributeMapping[];
-  outputMappings?: AttributeMapping[];
+  inputMappings?: Dictionary<any>;
+  outputMappings?: Dictionary<any>;
   tasks?: Task[];
   links?: Link[];
   settings?: {

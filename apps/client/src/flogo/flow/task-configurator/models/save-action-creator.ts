@@ -10,6 +10,7 @@ import {
   ItemBranch,
   ItemSubflow,
   ItemTask,
+  Dictionary,
 } from '@flogo-web/client/core';
 import { isMapperActivity } from '@flogo-web/client/shared/utils';
 
@@ -26,7 +27,7 @@ export interface SaveTaskConfigEventData {
     isIterable: boolean;
     iterableValue?: string;
   };
-  inputMappings: any[];
+  inputMappings: Dictionary<any>;
   subflowPath?: string;
   changedSubflowSchema?: ActionBase;
 }
