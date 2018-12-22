@@ -1,5 +1,5 @@
 export class AppsManagerMock {
-  static create(app) {
+  create(app) {
     const now = new Date().toISOString();
     return Promise.resolve({
       ...app,

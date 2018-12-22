@@ -1,5 +1,5 @@
 export class HandlerManagerMock {
-  static save(triggerId, actionId, handler) {
+  save(triggerId, actionId, handler) {
     const now = new Date().toISOString();
     return Promise.resolve({
       ...handler,

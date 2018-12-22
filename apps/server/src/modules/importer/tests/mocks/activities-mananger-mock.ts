@@ -1,7 +1,7 @@
 const activities = require('../samples/activities.json');
 
 export class ActivitiesManagerMock {
-  static find() {
+  find() {
     return Promise.resolve([...activities]);
   }
 }

@@ -1,7 +1,7 @@
 const commonApp = require('../samples/common-app-details.json');
 
-export class ActionsManagerMock {
-  static create(appId, actionData) {
+export class ActionsManagerMockClass {
+  create(appId, actionData) {
     const now = new Date().toISOString();
     const action = {
       ...actionData,
@@ -27,7 +27,8 @@ export class ActionsManagerMock {
     return Promise.resolve(action);
   }
 
-  static update(actionId, action) {
+  update(actionId, action) {
     return Promise.resolve({ ...action });
   }
 }
+export const ActionsManagerMock = new ActionsManagerMockClass();

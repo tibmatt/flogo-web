@@ -1,12 +1,14 @@
+import { flatten } from 'lodash';
+
 import { TriggerManager } from '../../../../modules/triggers';
 import { ActivitiesManager } from '../../../../modules/activities';
+
 import { getContribInstallationController as getInstallationController } from '../../../../modules/engine';
 import { config } from '../../../../config/app-config';
 import { logger } from '../../../../common/logging';
 import { install as installContributionToEngine } from '../../../../modules/contrib-installer/microservice';
 import { TYPE_ACTIVITY, TYPE_TRIGGER } from '../../../../common/constants';
 import { ERROR_TYPES, ErrorManager } from '../../../../common/errors';
-import flatten from 'lodash/flatten';
 
 const contributionTypes = {
   activity: {
@@ -37,11 +39,11 @@ export function contribs(router) {
  *
  */
 async function listContributions(ctx) {
-  const searchTerms = {};
+  const searchTerms: { name?: string; ref?: string; shim?: string } = {};
   const filterName = ctx.request.query['filter[name]'];
   const filterRef = ctx.request.query['filter[ref]'];
   const filterShim = ctx.request.query['filter[shim]'];
-  let contributionType = contributionTypes[ctx.request.query['filter[type]']];
+  const contributionType = contributionTypes[ctx.request.query['filter[type]']];
   let foundContributions;
 
   if (filterName) {
@@ -95,8 +97,8 @@ async function installContribution(ctx, next) {
   logger.info(`[log] Install ${contribType.installerOpts.type}: '${url}'`);
   const installController = await getInstallationController(
     config.defaultEngine.path,
-    (url, engine) =>
-      installContributionToEngine(url, contribType.installerOpts.type, engine)
+    (contribRef, engine) =>
+      installContributionToEngine(contribRef, contribType.installerOpts.type, engine)
   );
 
   const result = await installController.install(url);

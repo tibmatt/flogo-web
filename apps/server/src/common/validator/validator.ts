@@ -1,6 +1,8 @@
 import { ErrorManager } from '../errors';
 
 export class Validator {
+  ajvInstance;
+  schema;
   constructor(schema, ajvInstance) {
     this.schema = schema;
     this.ajvInstance = ajvInstance;

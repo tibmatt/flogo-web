@@ -1,5 +1,5 @@
 export class AppsTriggersManagerMock {
-  static create(appId, trigger) {
+  create(appId, trigger) {
     const now = new Date().toISOString();
     return Promise.resolve({
       ...trigger,

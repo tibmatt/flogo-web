@@ -1,10 +1,14 @@
-import { AppsTriggersManager } from '../../modules/apps/triggers';
+import * as Router from 'koa-router';
+import { Context } from 'koa';
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
 import { buildTrigger } from './triggers/build';
+import { appTriggersServiceMiddleware } from './shared/apps-service-middleware';
 
-export function triggers(router) {
-  router.get(`/apps/:appId/triggers`, listTriggers);
-  router.post(`/apps/:appId/triggers`, createTrigger);
+export function triggers(router: Router, container) {
+  const triggersServiceMiddleware = appTriggersServiceMiddleware(container);
+  router.get(`/apps/:appId/triggers`, triggersServiceMiddleware, listTriggers);
+  router.post(`/apps/:appId/triggers`, triggersServiceMiddleware, createTrigger);
+  router.use('triggers/', triggersServiceMiddleware);
   // !!IMPORTANT :shim endpoint should be declared before the other /triggers/{triggerId} urls
   router.get(`/triggers/:triggerId\\:shim`, buildTrigger);
   router.get(`/triggers/:triggerId`, getTrigger);
@@ -12,24 +16,24 @@ export function triggers(router) {
   router.del(`/triggers/:triggerId`, deleteTrigger);
 }
 
-async function listTriggers(ctx, next) {
+async function listTriggers(ctx: Context) {
   const appId = ctx.params.appId;
-  const searchTerms = {};
+  const searchTerms: { name?: string } = {};
   const filterName = ctx.request.query['filter[name]'];
   if (filterName) {
     searchTerms.name = filterName;
   }
-  const triggerList = await AppsTriggersManager.list(appId, searchTerms);
+  const triggerList = await ctx.appTriggersService.list(appId, searchTerms);
   ctx.body = {
     data: triggerList || [],
   };
 }
 
-async function createTrigger(ctx, next) {
+async function createTrigger(ctx: Context) {
   const appId = ctx.params.appId;
   const body = ctx.request.body;
   try {
-    const trigger = await AppsTriggersManager.create(appId, body);
+    const trigger = await ctx.appTriggersService.create(appId, body);
     ctx.body = {
       data: trigger,
     };
@@ -51,10 +55,10 @@ async function createTrigger(ctx, next) {
   }
 }
 
-async function getTrigger(ctx, next) {
+async function getTrigger(ctx: Context) {
   const triggerId = ctx.params.triggerId;
 
-  const trigger = await AppsTriggersManager.findOne(triggerId);
+  const trigger = await ctx.appTriggersService.findOne(triggerId);
 
   if (!trigger) {
     throw ErrorManager.createRestNotFoundError('Trigger not found', {
@@ -69,11 +73,11 @@ async function getTrigger(ctx, next) {
   };
 }
 
-async function updateTrigger(ctx, next) {
+async function updateTrigger(ctx: Context) {
   const triggerId = ctx.params.triggerId;
   const data = ctx.request.body || {};
   try {
-    const app = await AppsTriggersManager.update(triggerId, data);
+    const app = await ctx.appTriggersService.update(triggerId, data);
 
     ctx.body = {
       data: app,
@@ -99,9 +103,9 @@ async function updateTrigger(ctx, next) {
   }
 }
 
-async function deleteTrigger(ctx, next) {
+async function deleteTrigger(ctx: Context) {
   const triggerId = ctx.params.triggerId;
-  const removed = await AppsTriggersManager.remove(triggerId);
+  const removed = await ctx.appTriggersService.remove(triggerId);
 
   if (!removed) {
     throw ErrorManager.createRestNotFoundError('Trigger not found', {

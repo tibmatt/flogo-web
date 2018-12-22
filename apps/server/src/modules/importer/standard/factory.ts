@@ -1,18 +1,29 @@
+import { inject, injectable } from 'inversify';
+import { TOKENS } from '../../../core';
+import { HandlersService } from '../../apps/handlers-service';
+import { AppTriggersService } from '../../apps/triggers';
+import { ContributionsService } from '../../contribs';
 import * as schemas from '../../schemas/v1.0.0';
-
-import { ResourceStorageRegistry } from '../../resource-storage-registry';
-
+import { extractContribRefs } from '../common/extract-contrib-refs';
 import { loadMicroserviceContribs } from '../common/load-microservice-contribs';
 import { validatorFactory } from '../validator';
-
-import { extractContribRefs } from '../common/extract-contrib-refs';
-
 import { StandardActionsImporter } from './standard-actions-importer';
 import { StandardTaskConverter } from './standard-task-converter';
 import { StandardTriggersHandlersImporter } from './standard-triggers-handlers-importer';
+import { StrategyDependenciesFactory } from '../common';
 
-export class StandardAppImporterFactory {
-  constructor(private resourceStorageRegistry: ResourceStorageRegistry) {}
+@injectable()
+export class StandardAppImporterFactory implements StrategyDependenciesFactory {
+  constructor(
+    @inject(TOKENS.ActionsManager)
+    private actionsManager,
+    @inject(TOKENS.ContribActivitiesManager)
+    private contribActivitiesService: ContributionsService,
+    @inject(TOKENS.ContribTriggersManager)
+    private contribTriggersService: ContributionsService,
+    private handlersService: HandlersService,
+    private appTriggersService: AppTriggersService
+  ) {}
 
   async create() {
     const contributions = await this.loadContributions();
@@ -20,12 +31,12 @@ export class StandardAppImporterFactory {
     const validator = this.createValidator(contributions);
 
     const actionsImporter = this.createActionsImporter(
-      this.resourceStorageRegistry.getActionsManager(),
+      this.actionsManager,
       contributions.activities
     );
     const triggersHandlersImporter = this.createTriggersHandlersImporter(
-      this.resourceStorageRegistry.getAppsTriggersManager(),
-      this.resourceStorageRegistry.getHandlersManager()
+      this.appTriggersService,
+      this.handlersService
     );
     return {
       actionsImporter,
@@ -36,17 +47,9 @@ export class StandardAppImporterFactory {
 
   async loadContributions() {
     return loadMicroserviceContribs(
-      this.getActivitiesManager(),
-      this.getTriggersManager()
+      this.contribActivitiesService,
+      this.contribTriggersService
     );
-  }
-
-  getTriggersManager() {
-    return this.resourceStorageRegistry.getContribTriggersManager();
-  }
-
-  getActivitiesManager() {
-    return this.resourceStorageRegistry.getContribActivitiesManager();
   }
 
   createValidator(contributions) {

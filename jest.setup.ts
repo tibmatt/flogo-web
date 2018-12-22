@@ -1,2 +1,3 @@
 import 'jest';
-import 'jest-preset-angular';
+import 'reflect-metadata';
+// import 'jest-preset-angular';

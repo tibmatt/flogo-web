@@ -1,16 +1,24 @@
-const Router = require('koa-router');
-import { AppsManager } from '../../modules/apps';
-import { ResourceStorageRegistry } from '../../modules/resource-storage-registry';
+// const Router = require('koa-router');
+import Router from 'koa-router';
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
 import { exportApp } from './apps/export';
 import { buildApp } from './apps/build';
 
-export function apps(router) {
-  const apps = new Router();
-  apps
+import { Container } from 'inversify';
+import { Context } from 'koa';
+import { appsServiceMiddleware } from './shared/apps-service-middleware';
+import { AppImporterFactory, importApp } from '../../modules/importer';
+
+export function apps(router: Router, container: Container) {
+  const appsRouter = new Router();
+  appsRouter
+    .use(appsServiceMiddleware(container))
     .get('/', listApps)
     .post('/', createApp)
-    .post('\\:import', importApp)
+    .post('\\:import', async ctx => {
+      const appImporterFactory = container.resolve(AppImporterFactory);
+      await handleAppImport(appImporterFactory, ctx);
+    })
     // ex. /apps/zA45E:export
     // needs to be registered before .get('/:appId')
     .get('/:appId\\:export', exportApp)
@@ -19,26 +27,26 @@ export function apps(router) {
     .patch('/:appId', updateApp)
     .del('/:appId', deleteApp)
     .post('\\:validate', validateApp);
-  router.use('/apps', apps.routes(), apps.allowedMethods());
+  router.use('/apps', appsRouter.routes(), appsRouter.allowedMethods());
 }
 
-async function listApps(ctx, next) {
-  const searchTerms = {};
+async function listApps(ctx: Context) {
+  const searchTerms: { name?: string } = {};
   const filterName = ctx.request.query['filter[name]'];
   if (filterName) {
     searchTerms.name = filterName;
   }
 
-  const foundApps = await AppsManager.find(searchTerms);
+  const foundApps = await ctx.appsService.find(searchTerms);
   ctx.body = {
     data: foundApps || [],
   };
 }
 
-async function createApp(ctx) {
+async function createApp(ctx: Context) {
   const body = ctx.request.body;
   try {
-    const app = await AppsManager.create(body);
+    const app = await ctx.appsService.create(body);
     ctx.body = {
       data: app,
     };
@@ -55,10 +63,10 @@ async function createApp(ctx) {
   }
 }
 
-async function getApp(ctx, next) {
+async function getApp(ctx: Context) {
   const appId = ctx.params.appId;
 
-  const app = await AppsManager.findOne(appId, { withFlows: 'short' });
+  const app = await ctx.appsService.findOne(appId, { withFlows: 'short' });
 
   if (!app) {
     throw ErrorManager.createRestNotFoundError('Application not found', {
@@ -72,12 +80,12 @@ async function getApp(ctx, next) {
   };
 }
 
-async function updateApp(ctx, next) {
+async function updateApp(ctx: Context) {
   try {
     const appId = ctx.params.appId;
     const data = ctx.request.body || {};
 
-    const app = await AppsManager.update(appId, data);
+    const app = await ctx.appsService.update(appId, data);
 
     ctx.body = {
       data: app,
@@ -102,9 +110,9 @@ async function updateApp(ctx, next) {
   }
 }
 
-async function deleteApp(ctx, next) {
+async function deleteApp(ctx: Context) {
   const appId = ctx.params.appId;
-  const removed = await AppsManager.remove(appId);
+  const removed = await ctx.appsService.remove(appId);
 
   if (!removed) {
     throw ErrorManager.createRestNotFoundError('Application not found', {
@@ -116,9 +124,9 @@ async function deleteApp(ctx, next) {
   ctx.status = 204;
 }
 
-async function importApp(ctx, next) {
+async function handleAppImport(appImporterFactory: AppImporterFactory, ctx: Context) {
   try {
-    ctx.body = await AppsManager.import(ctx.request.body, new ResourceStorageRegistry());
+    ctx.body = await importApp(ctx.request.body, appImporterFactory);
   } catch (error) {
     if (error.isOperational && error.type === ERROR_TYPES.COMMON.VALIDATION) {
       throw ErrorManager.createRestError('Validation error in /apps getApp', {
@@ -132,9 +140,9 @@ async function importApp(ctx, next) {
   }
 }
 
-async function validateApp(ctx, next) {
+async function validateApp(ctx: Context) {
   const data = ctx.request.body || {};
-  const errors = await AppsManager.validate(data, { clean: true });
+  const errors = await ctx.appsService.validate(data, { clean: true });
   ctx.status = 200;
   if (errors && errors.length > 0) {
     ctx.status = 400;

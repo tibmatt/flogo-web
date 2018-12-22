@@ -4,11 +4,18 @@ import { LegacyAppImporterFactory } from './legacy/factory';
 import { StandardAppImporterFactory } from './standard/factory';
 import { ErrorManager } from '../../common/errors';
 import { IMPORT_ERRORS } from './errors';
-import { ResourceStorageRegistry } from '../resource-storage-registry';
 import { isValidApplicationType } from '../../common/utils';
+import { AppsService } from '../apps/apps-service';
+import { injectable } from 'inversify';
+import { StrategyDependenciesFactory } from './common';
 
+@injectable()
 export class AppImporterFactory {
-  constructor(private resourceStorageRegistry: ResourceStorageRegistry) {}
+  constructor(
+    private appsService: AppsService,
+    private legacyDependenciesFactory: LegacyAppImporterFactory,
+    private standardDependenciesFactory: StandardAppImporterFactory
+  ) {}
 
   async create(rawApp) {
     const dependenciesFactory = this.getDependenciesFactory(rawApp);
@@ -41,12 +48,12 @@ export class AppImporterFactory {
   // a simple approach where all the conditions and factories are checked in this class
   // if more types factories are needed then refactoring to a patten where the
   // checks and factories can be dynamically registered
-  getDependenciesFactory(rawApp) {
+  getDependenciesFactory(rawApp): StrategyDependenciesFactory {
     let dependenciesFactory = null;
     if (this.isStandardApp(rawApp)) {
-      dependenciesFactory = this.standardDependenciesFactory();
+      dependenciesFactory = this.standardDependenciesFactory;
     } else if (this.isLegacyApp(rawApp)) {
-      dependenciesFactory = this.legacyDependenciesFactory();
+      dependenciesFactory = this.legacyDependenciesFactory;
     }
     return dependenciesFactory;
   }
@@ -55,28 +62,20 @@ export class AppImporterFactory {
     return isValidApplicationType(rawApp.type) && isEmpty(rawApp.appModel);
   }
 
-  legacyDependenciesFactory() {
-    return new LegacyAppImporterFactory(this.resourceStorageRegistry);
-  }
-
   isStandardApp(rawApp) {
     return isValidApplicationType(rawApp.type) && rawApp.appModel === '1.0.0';
-  }
-
-  standardDependenciesFactory() {
-    return new StandardAppImporterFactory(this.resourceStorageRegistry);
   }
 
   createAppImporter({ validator, actionsImporter, triggersHandlersImporter }) {
     return new AppImporter(
       validator,
-      this.getAppsManager(),
+      this.appsService,
       actionsImporter,
       triggersHandlersImporter
     );
   }
 
   getAppsManager() {
-    return this.resourceStorageRegistry.getAppsManager();
+    return this.appsService;
   }
 }

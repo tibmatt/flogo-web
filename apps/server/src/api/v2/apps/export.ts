@@ -1,11 +1,11 @@
-import { AppsManager } from '../../../modules/apps';
 import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
+import { Context } from 'koa';
 
-export async function exportApp(ctx) {
+export async function exportApp(ctx: Context) {
   const appId = ctx.params.appId;
   const options = extractOptions(ctx.request.query);
   try {
-    ctx.body = await AppsManager.export(appId, options);
+    ctx.body = await ctx.appsService.export(appId, options);
   } catch (error) {
     handleErrorAndRethrow(error);
   }

@@ -53,7 +53,9 @@ class Engine {
   load() {
     return commander
       .list(this.path)
-      .then(installedContribs => loader.loadMetadata(this.path, installedContribs))
+      .then(installedContribs => {
+        return loader.loadMetadata(this.path, installedContribs);
+      })
       .then((contribMetadata: TaskCollections) => {
         this.tasks = contribMetadata;
         return contribMetadata;

@@ -1,21 +1,16 @@
 import pick from 'lodash/pick';
 import mapKeys from 'lodash/mapKeys';
+import { injectable, inject } from 'inversify';
 
-import { AppsManager } from './index';
+import { TOKENS } from '../../core';
 import { TriggerManager as TriggerContribManager } from '../triggers';
-import { apps as appsDb, dbUtils } from '../../common/db';
-import {
-  ErrorManager,
-  ERROR_TYPES,
-  ERROR_TYPES as GENERAL_ERROR_TYPES,
-} from '../../common/errors';
+import { Database } from '../../common/database.service';
+import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
+import { generateShortId, ISONow } from '../../common/utils';
 import { findGreatestNameIndex } from '../../common/utils/collection';
-import { REF_TRIGGER_LAMBDA } from '../../common/constants';
-import { normalizeName } from '../exporter/utils/normalize-name';
 
 import { Validator } from './validator';
-import { buildBinary, buildPlugin } from './build';
 
 const EDITABLE_FIELDS_CREATION = ['name', 'ref', 'description', 'settings'];
 
@@ -81,8 +76,11 @@ const nameExists = (triggerId, name, triggers) => {
   ]
 }
  */
-export class AppsTriggersManager {
-  static create(appId, triggerData) {
+@injectable()
+export class AppTriggersService {
+  constructor(@inject(TOKENS.AppsDb) private appsDb: Database) {}
+
+  create(appId, triggerData) {
     if (!appId) {
       return Promise.reject(
         ErrorManager.makeError('App not found', {
@@ -91,7 +89,7 @@ export class AppsTriggersManager {
       );
     }
 
-    return appsDb
+    return this.appsDb
       .findOne({ _id: appId }, { triggers: 1 })
       .then(app => {
         if (!app) {
@@ -123,14 +121,13 @@ export class AppsTriggersManager {
       })
       .then(newTrigger => {
         newTrigger = cleanInput(triggerData, EDITABLE_FIELDS_CREATION);
-
-        newTrigger.id = dbUtils.generateShortId();
+        newTrigger.id = generateShortId();
         newTrigger.name = newTrigger.name.trim();
-        newTrigger.createdAt = dbUtils.ISONow();
+        newTrigger.createdAt = ISONow();
         newTrigger.updatedAt = null;
         newTrigger.handlers = [];
 
-        return appsDb
+        return this.appsDb
           .update({ _id: appId }, { $push: { triggers: newTrigger } })
           .then(() => {
             newTrigger.appId = appId;
@@ -139,12 +136,13 @@ export class AppsTriggersManager {
       });
   }
 
-  static update(triggerId, triggerData) {
+  update(triggerId, triggerData) {
+    const appsDb = this.appsDb;
     const appNotFound = ErrorManager.makeError('App not found', {
       type: ERROR_TYPES.COMMON.NOT_FOUND,
     });
 
-    return AppsTriggersManager.findOne(triggerId).then(trigger => {
+    return this.findOne(triggerId).then(trigger => {
       if (!trigger) {
         throw appNotFound;
       }
@@ -156,7 +154,7 @@ export class AppsTriggersManager {
       triggerData = cleanInput(triggerData, EDITABLE_FIELDS_UPDATE);
 
       return _atomicUpdate(triggerData, trigger.appId).then(updatedCount =>
-        updatedCount > 0 ? AppsTriggersManager.findOne(triggerId) : null
+        updatedCount > 0 ? this.findOne(triggerId) : null
       );
     });
 
@@ -195,7 +193,7 @@ export class AppsTriggersManager {
 
             const triggerIndex = app.triggers.findIndex(t => t.id === triggerId);
             const modifierPrefix = `triggers.${triggerIndex}`;
-            triggerFields.updatedAt = dbUtils.ISONow();
+            triggerFields.updatedAt = ISONow();
             // makes { $set: { 'triggers.1.name': 'my trigger' } };
             updateQuery.$set = mapKeys(
               triggerFields,
@@ -209,19 +207,21 @@ export class AppsTriggersManager {
     }
   }
 
-  static findOne(triggerId) {
-    return appsDb.findOne({ 'triggers.id': triggerId }, { triggers: 1 }).then(app => {
-      if (!app) {
-        return null;
-      }
-      const trigger = app.triggers.find(t => t.id === triggerId);
-      trigger.appId = app._id;
-      return trigger;
-    });
+  findOne(triggerId) {
+    return this.appsDb
+      .findOne({ 'triggers.id': triggerId }, { triggers: 1 })
+      .then(app => {
+        if (!app) {
+          return null;
+        }
+        const trigger = app.triggers.find(t => t.id === triggerId);
+        trigger.appId = app._id;
+        return trigger;
+      });
   }
 
-  static list(appId, { name }) {
-    return appsDb
+  list(appId, { name }: { name?: string }) {
+    return this.appsDb
       .findOne({ _id: appId })
       .then(app => (app && app.triggers ? app.triggers : []))
       .then(triggers => {
@@ -235,34 +235,10 @@ export class AppsTriggersManager {
       });
   }
 
-  static remove(triggerId) {
-    return appsDb
+  remove(triggerId) {
+    return this.appsDb
       .update({ 'triggers.id': triggerId }, { $pull: { triggers: { id: triggerId } } })
       .then(numRemoved => numRemoved > 0);
-  }
-
-  /**
-   * Builds an app in shim mode and returns the generated file
-   * @param triggerId {string} trigger to build
-   * @params options
-   * @params options.compile.os: target operating system
-   * @params options.compile.arch: target architecture
-   * @params options.shimTriggerId: create an app using shim mode using specified trigger id
-   * @return {{ trigger: string, appName: string, data: Stream }} built handler zip file
-   * @throws Not found error if trigger not found
-   */
-  static async buildShim(triggerId, options) {
-    const trigger = await AppsTriggersManager.findOne(triggerId);
-    if (!trigger) {
-      throw ErrorManager.makeError('Cannot build shim for unknown trigger id', {
-        type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND,
-      });
-    }
-    const build = trigger.ref === REF_TRIGGER_LAMBDA ? buildPlugin : buildBinary;
-    return build(() => AppsManager.export(trigger.appId), {
-      ...options,
-      shimTriggerId: normalizeName(trigger.name),
-    });
   }
 }
 

@@ -1,26 +1,38 @@
+import { inject, injectable } from 'inversify';
+import { TOKENS } from '../../../core';
+import { HandlersService } from '../../apps/handlers-service';
 import { fullAppSchema } from '../../apps/schemas';
-import { ResourceStorageRegistry } from '../../resource-storage-registry';
-
-import { validatorFactory } from '../validator';
-
+import { AppTriggersService } from '../../apps/triggers';
+import { ContributionsService } from '../../contribs';
 import { extractContribRefs } from '../common/extract-contrib-refs';
-
+import { loadMicroserviceContribs } from '../common/load-microservice-contribs';
+import { validatorFactory } from '../validator';
 import { ActionsImporter } from './actions-importer';
 import { TriggersHandlersImporter } from './triggers-handlers-importer';
-import { loadMicroserviceContribs } from '../common/load-microservice-contribs';
+import { StrategyDependenciesFactory } from '../common';
 
-export class LegacyAppImporterFactory {
-  constructor(private resourceStorageRegistry: ResourceStorageRegistry) {}
+@injectable()
+export class LegacyAppImporterFactory implements StrategyDependenciesFactory {
+  constructor(
+    @inject(TOKENS.ActionsManager)
+    private actionsManager,
+    @inject(TOKENS.ContribActivitiesManager)
+    private contribActivitiesService: ContributionsService,
+    @inject(TOKENS.ContribTriggersManager)
+    private contribTriggersService: ContributionsService,
+    private handlersService: HandlersService,
+    private appTriggersService: AppTriggersService
+  ) {}
 
   async create() {
     const contributions = await this.loadContributions();
     const actionsImporter = this.createActionsImporter(
-      this.resourceStorageRegistry.getActionsManager(),
+      this.actionsManager,
       contributions.activities
     );
     const triggersHandlersImporter = this.createTriggersHandlersImporter(
-      this.resourceStorageRegistry.getAppsTriggersManager(),
-      this.resourceStorageRegistry.getHandlersManager()
+      this.appTriggersService,
+      this.handlersService
     );
     const validator = this.createValidator(contributions);
     return {
@@ -32,17 +44,9 @@ export class LegacyAppImporterFactory {
 
   async loadContributions() {
     return loadMicroserviceContribs(
-      this.getActivitiesManager(),
-      this.getTriggersManager()
+      this.contribActivitiesService,
+      this.contribTriggersService
     );
-  }
-
-  getTriggersManager() {
-    return this.resourceStorageRegistry.getContribTriggersManager();
-  }
-
-  getActivitiesManager() {
-    return this.resourceStorageRegistry.getContribActivitiesManager();
   }
 
   createValidator(contributions) {

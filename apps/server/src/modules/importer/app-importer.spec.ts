@@ -98,14 +98,14 @@ describe('importer.AppImporter', () => {
    */
   function makeContext() {
     const noOp = () => {};
-    const fullAppValidator = {};
-    const appStorage = { create: noOp };
-    const actionsImporter = { importAll: noOp };
+    const fullAppValidator = {} as any;
+    const appStorage = { create: noOp } as any;
+    const actionsImporter = { importAll: noOp } as any;
     const triggerHandlersImporter = {
       setAppId: noOp,
       setActionsByOriginalId: noOp,
       importAll: noOp,
-    };
+    } as any;
     const importerInstance = new AppImporter(
       fullAppValidator,
       appStorage,

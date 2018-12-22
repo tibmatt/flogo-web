@@ -1,7 +1,7 @@
 const triggers = require('../samples/triggers.json');
 
 export class TriggerManagerMock {
-  static find() {
+  find() {
     return Promise.resolve([...triggers]);
   }
 }

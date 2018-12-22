@@ -1,28 +1,22 @@
-import pick from 'lodash/pick';
-import defaults from 'lodash/defaults';
-import fromPairs from 'lodash/fromPairs';
-import isEqual from 'lodash/isEqual';
-import escapeRegExp from 'lodash/escapeRegExp';
-
+import { inject, injectable } from 'inversify';
+import { defaults, escapeRegExp, fromPairs, isEqual, pick } from 'lodash';
 import shortid from 'shortid';
 
-import { EXPORT_MODE } from '../../common/constants';
+import { EXPORT_MODE, REF_TRIGGER_LAMBDA } from '../../common/constants';
+import { normalizeName } from '../exporter/utils/normalize-name';
+
+import { Database } from '../../common/database.service';
 import { ErrorManager, ERROR_TYPES as GENERAL_ERROR_TYPES } from '../../common/errors';
-import { CONSTRAINTS } from '../../common/validation';
-import { apps as appStore } from '../../common/db';
-import { logger } from '../../common/logging';
+import { Logger } from '../../common/logging';
 import { findGreatestNameIndex } from '../../common/utils/collection';
-
-import { ActionsManager } from '../actions';
-import { importApp } from '../importer';
+import { CONSTRAINTS } from '../../common/validation';
+import { TOKENS } from '../../core';
 import { exportApplication } from '../exporter';
-import { buildBinary } from './build';
-
+import { buildBinary, buildPlugin } from './build';
 import { Validator } from './validator';
-import { APP_ERRORS } from './errors';
+import { AppTriggersService } from './triggers';
 
 const EDITABLE_FIELDS = ['name', 'version', 'description'];
-
 const PUBLISH_FIELDS = [
   'id',
   'name',
@@ -37,8 +31,16 @@ const PUBLISH_FIELDS = [
   'actions',
 ];
 
-export class AppsManager {
-  static create(app) {
+@injectable()
+export class AppsService {
+  constructor(
+    @inject(TOKENS.AppsDb) private appsDb: Database,
+    @inject(TOKENS.Logger) private logger: Logger,
+    @inject(TOKENS.ActionsManager) private actionsManager,
+    private triggersService: AppTriggersService
+  ) {}
+
+  create(app) {
     let inputData = app;
     const errors = Validator.validateSimpleApp(inputData);
     if (errors) {
@@ -48,16 +50,18 @@ export class AppsManager {
     }
     inputData._id = shortid.generate();
     inputData.name = inputData.name.trim();
-    inputData = build(inputData);
-    return appStore
+    inputData = appDefaults(inputData);
+    return this.appsDb
       .insert(inputData)
       .catch(error => {
         if (error.errorType === 'uniqueViolated') {
-          logger.debug(`Name ${inputData.name} already exists, will create new name`);
-          return ensureUniqueName(inputData.name).then(name => {
-            logger.debug(`Will use ${name}`);
+          this.logger.debug(
+            `Name ${inputData.name} already exists, will create new name`
+          );
+          return ensureUniqueName(inputData.name, this.appsDb).then(name => {
+            this.logger.debug(`Will use ${name}`);
             inputData.name = name;
-            return appStore.insert(inputData);
+            return this.appsDb.insert(inputData);
           });
         }
         return Promise.reject(error);
@@ -70,10 +74,10 @@ export class AppsManager {
    * @param appId if not provided will try to use app.id
    * @param newData {object}
    */
-  static update(appId, newData) {
+  update(appId, newData) {
     const inputData = cleanInput(newData);
     return (
-      appStore
+      this.appsDb
         // fetch editable fields only
         .findOne(
           { _id: appId },
@@ -107,19 +111,19 @@ export class AppsManager {
         .then(shouldUpdate => {
           if (shouldUpdate) {
             delete inputData._id;
-            return appStore.update(
+            return this.appsDb.update(
               { _id: appId },
               { $set: Object.assign({ updatedAt: nowISO() }, inputData) }
             );
           }
           return null;
         })
-        .then(() => AppsManager.findOne(appId, { withFlows: true }))
+        .then(() => this.findOne(appId, { withFlows: true }))
     );
 
     function validateUniqueName(inputName) {
       const name = getAppNameForSearch(inputName);
-      return appStore
+      return this.appsDb
         .findOne(
           { _id: { $ne: appId }, name: new RegExp(`^${name}$`, 'i') },
           { _id: 1, name: 1 }
@@ -146,14 +150,13 @@ export class AppsManager {
    * Will also delete related flows
    * @param appId {string} appId
    */
-  static remove(appId) {
-    return appStore.remove({ _id: appId }).then(numRemoved => {
-      const wasRemoved = numRemoved > 0;
-      if (wasRemoved) {
-        return ActionsManager.removeFromRecentByAppId(appId).then(() => wasRemoved);
-      }
-      return wasRemoved;
-    });
+  async remove(appId) {
+    const numRemoved = await this.appsDb.remove({ _id: appId });
+    const wasRemoved = numRemoved > 0;
+    if (wasRemoved) {
+      await this.actionsManager.removeFromRecentByAppId(appId);
+    }
+    return wasRemoved;
   }
 
   /**
@@ -174,13 +177,13 @@ export class AppsManager {
    * @params options
    * @params options.withFlows: retrieveFlows
    */
-  static find(terms = {}, { withFlows } = { withFlows: false }) {
+  find(terms: { name?: string | RegExp } = {}, { withFlows } = { withFlows: false }) {
     if (terms.name) {
       const name = getAppNameForSearch(terms.name);
       terms.name = new RegExp(`^${name}$`, 'i');
     }
 
-    return appStore.find(terms).then(apps => apps.map(cleanForOutput));
+    return this.appsDb.find(terms).then(apps => apps.map(cleanForOutput));
   }
 
   /**
@@ -196,15 +199,10 @@ export class AppsManager {
    * @param options
    * @param options.withFlows retrieve flows
    */
-  static findOne(appId, { withFlows } = { withFlows: false }) {
-    return appStore
+  findOne(appId, { withFlows }: { withFlows: string | boolean } = { withFlows: false }) {
+    return this.appsDb
       .findOne({ _id: appId })
       .then(app => (app ? cleanForOutput(app) : null));
-  }
-
-  // TODO documentation
-  static import(fromApp, resourceRegistry) {
-    return importApp(fromApp, resourceRegistry);
   }
 
   /**
@@ -217,8 +215,32 @@ export class AppsManager {
    * @return {object} built app stream
    * @throws Not found error if app not found
    */
-  static async build(appId, options) {
-    return buildBinary(() => AppsManager.export(appId), options);
+  async build(appId, options) {
+    return buildBinary(() => this.export(appId), options);
+  }
+
+  /**
+   * Builds an app in shim mode and returns the generated file
+   * @param triggerId {string} trigger to build
+   * @params options
+   * @params options.compile.os: target operating system
+   * @params options.compile.arch: target architecture
+   * @params options.shimTriggerId: create an app using shim mode using specified trigger id
+   * @return {{ trigger: string, appName: string, data: Stream }} built handler zip file
+   * @throws Not found error if trigger not found
+   */
+  async buildShim(triggerId, options) {
+    const trigger = await this.triggersService.findOne(triggerId);
+    if (!trigger) {
+      throw ErrorManager.makeError('Cannot build shim for unknown trigger id', {
+        type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND,
+      });
+    }
+    const build = trigger.ref === REF_TRIGGER_LAMBDA ? buildPlugin : buildBinary;
+    return build(() => this.export(trigger.appId), {
+      ...options,
+      shimTriggerId: normalizeName(trigger.name),
+    });
   }
 
   /**
@@ -232,8 +254,11 @@ export class AppsManager {
    * @return {object} exported object
    * @throws Not found error if app not found
    */
-  static export(appId, { format, flowIds } = {}) {
-    return AppsManager.findOne(appId).then(app => {
+  export(
+    appId,
+    { format, flowIds }: { appModel?: string; format?: string; flowIds?: string[] } = {}
+  ) {
+    return this.findOne(appId).then(app => {
       if (!app) {
         throw ErrorManager.makeError('Application not found', {
           type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND,
@@ -247,7 +272,7 @@ export class AppsManager {
     });
   }
 
-  static validate(app, { clean } = { clean: false }) {
+  validate(app, { clean } = { clean: false }) {
     let options;
     if (clean) {
       options = { removeAdditional: true, useDefaults: true };
@@ -259,11 +284,10 @@ export class AppsManager {
    * Alias for AppsManager::find
    * @param args
    */
-  static list(...args) {
-    return AppsManager.find(args);
+  list(...args) {
+    return this.find(...args);
   }
 }
-export default AppsManager;
 
 function getAppNameForSearch(rawName) {
   return rawName ? escapeRegExp(rawName.trim().toLowerCase()) : undefined;
@@ -277,7 +301,7 @@ function cleanInput(app) {
   return cleanedApp;
 }
 
-function build(app) {
+function appDefaults(app) {
   const now = new Date().toISOString();
   return defaults(app, {
     createdAt: now,
@@ -296,9 +320,9 @@ function nowISO() {
   return new Date().toISOString();
 }
 
-function ensureUniqueName(forName) {
+function ensureUniqueName(forName, appsDb: Database) {
   const normalizedName = escapeRegExp(forName.trim().toLowerCase());
-  return appStore.find({ name: new RegExp(`^${normalizedName}`, 'i') }).then(apps => {
+  return appsDb.find({ name: new RegExp(`^${normalizedName}`, 'i') }).then(apps => {
     const greatestIndex = findGreatestNameIndex(forName, apps);
     return greatestIndex < 0 ? forName : `${forName} (${greatestIndex + 1})`;
   });

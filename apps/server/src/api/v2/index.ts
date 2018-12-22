@@ -19,8 +19,8 @@ export function createRouter(container: Container): Router {
     prefix: config.app.basePathV2,
   });
   router.use(errorMiddleware);
-  apps(router);
-  triggers(router);
+  apps(router, container);
+  triggers(router, container);
   actions(router, container);
   microserviceContribs(router);
   handlers(router, container);
