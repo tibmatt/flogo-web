@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { Dictionary } from '@flogo-web/client/core';
-import { ErrorService } from '@flogo-web/client/core/services';
-import { RESTAPIContributionsService } from '../../core/services/restapi/v2/contributions.service';
+import { ActionBase, Dictionary } from '@flogo-web/client-core';
+import {
+  ErrorService,
+  RESTAPIContributionsService,
+} from '@flogo-web/client-core/services';
+
 import { AbstractModelConverter } from './models/ui-converter.model';
 import { MicroServiceModelConverter } from './models/profiles/microservice-converter.model';
-import { ActionBase } from '@flogo-web/client/core';
 
 @Injectable()
 export class UIModelConverterService {

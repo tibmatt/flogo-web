@@ -7,12 +7,10 @@ import {
   ItemSubflow,
   ItemTask,
   NodeType,
-} from '@flogo-web/client/core';
-import {
+  isSubflowTask,
   mergeItemWithSchema,
   PartialActivitySchema,
-} from '@flogo-web/client/core/models';
-import { isSubflowTask } from '@flogo-web/client/shared/utils';
+} from '@flogo-web/client-core';
 import { makeErrorTask } from '../make-error-task';
 import { FlowMetadata } from '@flogo-web/client/flow/task-configurator/models/flow-metadata';
 

@@ -5,27 +5,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-import { ActivitySchema, Task } from '@flogo-web/client/core/interfaces';
-import {
-  mergeItemWithSchema,
-  SingleEmissionSubject,
-} from '@flogo-web/client/core/models';
-import { NotificationsService } from '@flogo-web/client/core/notifications';
-
-import {
-  MapperTranslator,
-  MapperControllerFactory,
-  MapperController,
-} from '../shared/mapper';
-
-import { FlogoFlowService as FlowsService } from '@flogo-web/client/flow/core';
-import { Tabs } from '../shared/tabs/models/tabs.model';
-import { SubFlowConfig } from './subflow-config';
-import {
-  isIterableTask,
-  isMapperActivity,
-  isSubflowTask,
-} from '@flogo-web/client/shared/utils';
 import {
   ActionBase,
   FLOGO_TASK_TYPE,
@@ -33,14 +12,31 @@ import {
   ItemActivityTask,
   ItemSubflow,
   ItemTask,
-} from '@flogo-web/client/core';
+  isIterableTask,
+  isMapperActivity,
+  isSubflowTask,
+  ActivitySchema,
+  Task,
+  mergeItemWithSchema,
+  SingleEmissionSubject,
+} from '@flogo-web/client-core';
+import { NotificationsService } from '@flogo-web/client-core/notifications';
+
+import {
+  MapperTranslator,
+  MapperControllerFactory,
+  MapperController,
+} from '../shared/mapper';
+import { Tabs } from '../shared/tabs/models/tabs.model';
+import { FlogoFlowService as FlowsService } from '@flogo-web/client/flow/core';
+import { FlowState, FlowActions } from '@flogo-web/client/flow/core/state';
 import {
   createIteratorMappingContext,
   getIteratorOutputSchema,
   ITERABLE_VALUE_KEY,
   ITERATOR_OUTPUT_KEY,
 } from './models';
-import { FlowState, FlowActions } from '@flogo-web/client/flow/core/state';
+import { SubFlowConfig } from './subflow-config';
 import {
   getFlowMetadata,
   getInputContext,

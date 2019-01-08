@@ -7,7 +7,7 @@ import { TaskAddComponent, TASKADD_OPTIONS } from './task-add.component';
 import { Activity, TaskAddOptions } from './core/task-add-options';
 import { Observable } from 'rxjs';
 import { createTaskAddAction } from './models/task-add-action-creator';
-import { ActionBase, ActivitySchema } from '@flogo-web/client/core';
+import { ActionBase, ActivitySchema } from '@flogo-web/client-core';
 
 @Injectable()
 export class AddActivityService {

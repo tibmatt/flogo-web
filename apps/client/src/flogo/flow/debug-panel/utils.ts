@@ -1,5 +1,5 @@
-import { Dictionary, StepAttribute } from '@flogo-web/client/core';
 import { FormGroup } from '@angular/forms';
+import { Dictionary, StepAttribute } from '@flogo-web/client-core';
 
 export function mergeFormWithOutputs(
   form: FormGroup,

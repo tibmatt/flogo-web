@@ -1,6 +1,6 @@
 import { get, cloneDeep, fromPairs, isArray, pick } from 'lodash';
-import { ItemActivityTask, ItemBranch, ItemTask } from '../../../../core/index';
-import { FLOGO_TASK_TYPE, ValueType } from '../../../../core/constants';
+import { ItemActivityTask, ItemBranch, ItemTask } from '@flogo-web/client-core';
+import { FLOGO_TASK_TYPE, ValueType } from '@flogo-web/client-core/constants';
 
 export class ItemFactory {
   static getDefaultTaskProperties(installed) {

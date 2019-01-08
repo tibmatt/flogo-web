@@ -1,7 +1,7 @@
-import { Item } from '@flogo-web/client/core';
+import { Item } from '@flogo-web/client-core';
+import { GraphNodeDictionary } from '@flogo-web/client-core/interfaces';
 import { HandlerType } from '@flogo-web/client/flow/core/models';
 import { FlowState } from './flow/flow.state';
-import { NodeDictionary } from '@flogo-web/client/core/interfaces/graph/graph';
 
 export const getItemsDictionaryName = (handlerType: HandlerType) => `${handlerType}Items`;
 
@@ -14,7 +14,7 @@ export const getItem = (
 ): Item => {
   return state[getItemsDictionaryName(handlerType)][itemId];
 };
-export const nodesContainErrors = (nodes: NodeDictionary) => {
+export const nodesContainErrors = (nodes: GraphNodeDictionary) => {
   const nodeKeys = Object.keys(nodes);
   return !!nodeKeys.find(nodeKey => !!nodes[nodeKey].status.executionErrored);
 };

@@ -19,16 +19,16 @@ import {
   Trigger,
   ERROR_CODE,
   CONTRIB_REF_PLACEHOLDER,
-} from '@flogo-web/client/core';
-import { LocalStorageService, SanitizeService } from '@flogo-web/client/core/services';
-import { ShimTriggerBuildApiService } from '@flogo-web/client/core/services/restapi/v2/shim-trigger-build-api.service';
-import { ModalService } from '@flogo-web/client/core/modal';
+} from '@flogo-web/client-core';
+import { LocalStorageService, SanitizeService } from '@flogo-web/client-core/services';
+import { ShimTriggerBuildApiService } from '@flogo-web/client-core/services/restapi/v2/shim-trigger-build-api.service';
+import { ModalService } from '@flogo-web/client-core/modal';
 import {
   ConfirmationResult,
   ConfirmationModalService,
-} from '@flogo-web/client/core/confirmation';
-import { NotificationsService } from '@flogo-web/client/core/notifications';
-import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
+} from '@flogo-web/client-core/confirmation';
+import { NotificationsService } from '@flogo-web/client-core/notifications';
+import { RESTAPIContributionsService } from '@flogo-web/client-core/services/restapi/v2/contributions.service';
 import {
   AppDetailService,
   ApplicationDetail,

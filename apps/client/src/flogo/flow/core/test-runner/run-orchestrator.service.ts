@@ -16,14 +16,14 @@ import { Observable, combineLatest, merge, timer, of, throwError as _throw } fro
 
 import { isEqual, defaults } from 'lodash';
 
-import { Interceptor, Step } from '@flogo-web/client/core';
+import { Interceptor, Step } from '@flogo-web/client-core';
 import {
   RunStateCode,
   RunStatusCode,
   RunApiService,
   StatusResponse,
   ErrorService,
-} from '@flogo-web/client/core/services';
+} from '@flogo-web/client-core/services';
 
 export const ERRORS = {
   MAX_TRIALS_REACHED: 'MaxTrialsReached',

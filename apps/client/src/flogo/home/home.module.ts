@@ -2,11 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BsModalModule } from 'ng2-bs3-modal';
-import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
-import { FlogoHomeComponent } from './home.component';
+
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+
 import { FlogoAppsListComponent } from './apps-list/apps-list.component';
 import { FlogoAppImportComponent } from './app-import/app-import.component';
 import { ImportErrorFormatterService } from './core/import-error-formatter.service';
+import { FlogoHomeComponent } from './home.component';
 import { HomeRoutingModule } from './home-routing.module';
 
 @NgModule({

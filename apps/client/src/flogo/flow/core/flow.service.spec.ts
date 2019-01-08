@@ -1,9 +1,8 @@
 import { FlogoFlowService } from './flow.service';
 import { UIModelConverterService } from './ui-model-converter.service';
 import { resultantFlowModelForCanvas } from './flow-for-canvas.mock';
-import { MockAPIFlowsService } from '../../core/services/restapi/v2/flows-api.service.mock';
-import { HttpUtilsService } from '../../core/services/restapi/http-utils.service';
-import { FlowsService } from '../../core/services/flows.service';
+import { HttpUtilsService, FlowsService } from '@flogo-web/client-core/services';
+import { MockAPIFlowsService } from '@flogo-web/client-core/services/restapi/v2/flows-api.service.mock';
 import Spy = jasmine.Spy;
 
 describe('Service: Flow', function(this: {

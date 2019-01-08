@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { Dictionary, FlowGraph, GraphNode } from '../../../../../core/index';
+import { Dictionary, FlowGraph, GraphNode } from '@flogo-web/client-core';
 
 import { FlowState } from '../../index';
 import { PayloadOf } from '../../utils';

@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { NoDependenciesFakeLanguageModule } from '@flogo-web/client-core/language/testing';
 import { BsModalModule, BsModalService } from 'ng2-bs3-modal';
 import { WalkthroughComponent } from './walkthrough.component';
-import { NoDependenciesFakeLanguageModule } from '../language/testing';
 
 describe('Component: WalkthroughComponent Modal', () => {
   let comp: WalkthroughComponent;

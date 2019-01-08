@@ -7,7 +7,7 @@ import {
   SimpleChanges,
   HostBinding,
 } from '@angular/core';
-import { Trigger, FlowSummary } from '@flogo-web/client/core';
+import { Trigger, FlowSummary } from '@flogo-web/client-core';
 import { DeleteEvent } from '../shared/delete-event';
 
 @Component({

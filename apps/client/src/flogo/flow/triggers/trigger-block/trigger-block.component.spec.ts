@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router } from '@angular/router';
 import { TriggerBlockComponent } from '@flogo-web/client/flow/triggers/trigger-block/trigger-block.component';
 import { Observable } from 'rxjs';
-import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
+import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
 import { By } from '@angular/platform-browser';
 import { Trigger } from '../../core';
 

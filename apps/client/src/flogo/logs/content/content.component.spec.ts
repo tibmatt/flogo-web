@@ -1,9 +1,11 @@
 import { By } from '@angular/platform-browser';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { LogsContentComponent } from './content.component';
+
+import { LogService } from '@flogo-web/client-core/services';
+
 import { SearchPipe } from '../search.pipe';
-import { LogService } from '@flogo-web/client/core/services/log.service';
+import { LogsContentComponent } from './content.component';
 
 const LOG_LINES = [
   {

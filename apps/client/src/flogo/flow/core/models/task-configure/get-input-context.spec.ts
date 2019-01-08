@@ -1,7 +1,7 @@
 import { FlowState, INITIAL_STATE } from '@flogo-web/client/flow/core/state';
 import { getPrecedingTasksForErrorHandler } from '@flogo-web/client/flow/core/models/task-configure/get-input-context';
-import { NodeType } from '@flogo-web/client/core';
-import { FLOGO_TASK_TYPE } from '@flogo-web/client/core/constants';
+import { NodeType } from '@flogo-web/client-core';
+import { FLOGO_TASK_TYPE } from '@flogo-web/client-core/constants';
 
 describe('taskConfigure.getInputContext', function() {
   let state: FlowState;

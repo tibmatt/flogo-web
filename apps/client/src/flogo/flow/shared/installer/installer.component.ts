@@ -7,9 +7,11 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import { has } from 'lodash';
 import { BsModalComponent } from 'ng2-bs3-modal';
-import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
-import { FLOGO_CONTRIB_TYPE } from '@flogo-web/client/core/constants';
+import { RESTAPIContributionsService } from '@flogo-web/client-core/services';
+import { FLOGO_CONTRIB_TYPE } from '@flogo-web/client-core/constants';
+
 import {
   FLOGO_INSTALLER_STATUS_STANDBY,
   FLOGO_INSTALLER_STATUS_IDLE,
@@ -31,8 +33,6 @@ export class FlogoInstallerComponent implements OnChanges {
   @Input()
   isActivated: boolean;
 
-  // TODO
-  //  may add two-way binding later.
   @Output()
   installTypeChange = new EventEmitter();
   @Output()
@@ -63,11 +63,11 @@ export class FlogoInstallerComponent implements OnChanges {
   }
 
   ngOnChanges(changes: { [key: string]: SimpleChange }) {
-    if (_.has(changes, 'installType')) {
+    if (has(changes, 'installType')) {
       this.onInstallTypeChange(changes['installType'].currentValue);
     }
 
-    if (_.has(changes, 'isActivated')) {
+    if (has(changes, 'isActivated')) {
       this.onActivatedStatusChange(changes['isActivated'].currentValue);
     }
   }

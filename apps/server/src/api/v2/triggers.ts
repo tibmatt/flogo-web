@@ -8,12 +8,11 @@ export function triggers(router: Router, container) {
   const triggersServiceMiddleware = appTriggersServiceMiddleware(container);
   router.get(`/apps/:appId/triggers`, triggersServiceMiddleware, listTriggers);
   router.post(`/apps/:appId/triggers`, triggersServiceMiddleware, createTrigger);
-  router.use('triggers/', triggersServiceMiddleware);
   // !!IMPORTANT :shim endpoint should be declared before the other /triggers/{triggerId} urls
-  router.get(`/triggers/:triggerId\\:shim`, buildTrigger);
-  router.get(`/triggers/:triggerId`, getTrigger);
-  router.patch(`/triggers/:triggerId`, updateTrigger);
-  router.del(`/triggers/:triggerId`, deleteTrigger);
+  router.get(`/triggers/:triggerId\\:shim`, triggersServiceMiddleware, buildTrigger);
+  router.get(`/triggers/:triggerId`, triggersServiceMiddleware, getTrigger);
+  router.patch(`/triggers/:triggerId`, triggersServiceMiddleware, updateTrigger);
+  router.del(`/triggers/:triggerId`, triggersServiceMiddleware, deleteTrigger);
 }
 
 async function listTriggers(ctx: Context) {

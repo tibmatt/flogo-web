@@ -1,4 +1,4 @@
-import { pick, uniq } from 'lodash';
+import { pick, uniq, fromPairs } from 'lodash';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { from } from 'rxjs';
@@ -10,23 +10,30 @@ import {
   FlowMetadata,
   TriggerSchema,
   Dictionary,
-} from '@flogo-web/client/core';
-import { TriggersApiService } from '@flogo-web/client/core/services';
-import { TRIGGER_MENU_OPERATION } from '@flogo-web/client/core/constants';
-import { objectFromArray } from '@flogo-web/client/shared/utils';
-import { RESTAPIHandlersService } from '@flogo-web/client/core/services/restapi/v2/handlers-api.service';
+} from '@flogo-web/client-core';
+import {
+  TriggersApiService,
+  RESTAPIHandlersService,
+} from '@flogo-web/client-core/services';
+import { SingleEmissionSubject } from '@flogo-web/client-core/models';
+import { TRIGGER_MENU_OPERATION } from '@flogo-web/client-core/constants';
 
-import { SingleEmissionSubject } from '@flogo-web/client/core/models/single-emission-subject';
 import { UIModelConverterService } from '@flogo-web/client/flow/core/ui-model-converter.service';
 
-import { AppState } from '../core/state/app.state';
-
 import { Trigger } from '../core';
-import { TriggerMenuSelectionEvent } from '@flogo-web/client/flow/triggers/trigger-block/models';
-import { RenderableTrigger } from './interfaces/renderable-trigger';
+import { AppState } from '../core/state/app.state';
 import { getTriggersState } from '../core/state/triggers/triggers.selectors';
 import * as TriggerActions from '../core/state/triggers/triggers.actions';
 import * as TriggerConfigureActions from '../core/state/triggers-configure/trigger-configure.actions';
+import { TriggerMenuSelectionEvent } from './trigger-block/models';
+import { RenderableTrigger } from './interfaces/renderable-trigger';
+
+function settingsToObject(
+  settings: { name: string; value?: any }[],
+  getValue: (s: { value?: any }) => any = s => s.value
+) {
+  return fromPairs(settings.map(s => [s.name, getValue(s)]));
+}
 
 @Component({
   selector: 'flogo-flow-triggers',
@@ -101,8 +108,8 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   }
 
   addTriggerToAction(data) {
-    const settings = objectFromArray(data.triggerData.handler.settings, true);
-    const outputs = objectFromArray(data.triggerData.outputs, true);
+    const settings = settingsToObject(data.triggerData.handler.settings);
+    const outputs = settingsToObject(data.triggerData.outputs);
     this.persistNewTriggerAndHandler(data, settings, outputs)
       .then(triggerId => this.restAPITriggersService.getTrigger(triggerId))
       .then(trigger => {
@@ -116,7 +123,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
     if (data.installType === 'installed') {
       const appId = this.appDetails.appId;
       const triggerInfo: any = pick(data.triggerData, ['name', 'ref', 'description']);
-      triggerInfo.settings = objectFromArray(data.triggerData.settings || [], false);
+      triggerInfo.settings = settingsToObject(data.triggerData.settings, _ => null);
       registerTrigger = this.restAPITriggersService
         .createTrigger(appId, triggerInfo)
         .then(triggerResult => triggerResult.id);

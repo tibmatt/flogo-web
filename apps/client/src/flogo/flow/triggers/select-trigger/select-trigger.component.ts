@@ -8,9 +8,8 @@ import {
   ViewChild,
   Output,
 } from '@angular/core';
-import { TriggersApiService } from '@flogo-web/client/core/services';
-import { FlogoProfileService } from '@flogo-web/client/core/services/profile.service';
 import { BsModalComponent } from 'ng2-bs3-modal';
+import { TriggersApiService, FlogoProfileService } from '@flogo-web/client-core/services';
 
 @Component({
   selector: 'flogo-flow-select-trigger',
@@ -98,8 +97,9 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (_.has(changes, 'isAddTriggerActivated')) {
-      this.onActivatedStatusChange(changes['isAddTriggerActivated'].currentValue);
+    const change = changes.isAddTriggerActivated;
+    if (change) {
+      this.onActivatedStatusChange(change.currentValue);
     }
   }
 

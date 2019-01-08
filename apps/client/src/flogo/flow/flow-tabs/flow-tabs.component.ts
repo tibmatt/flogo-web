@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
+import { takeUntil } from 'rxjs/operators';
+import { SingleEmissionSubject } from '@flogo-web/client-core/models';
 import {
   FlowActions,
   FlowSelectors,
@@ -8,8 +10,6 @@ import {
   getErrorFlowHasExecutionErrors,
   getPrimaryFlowHasExecutionErrors,
 } from '@flogo-web/client/flow/core/state';
-import { takeUntil } from 'rxjs/operators';
-import { SingleEmissionSubject } from '@flogo-web/client/core/models';
 
 @Component({
   selector: 'flogo-flow-tabs',

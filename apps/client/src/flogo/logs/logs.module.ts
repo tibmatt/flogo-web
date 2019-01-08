@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { SharedModule } from '@flogo-web/client/shared';
+import { SharedModule } from '@flogo-web/client-shared';
 
 import { LogsComponent } from './logs.component';
 import { SearchPipe } from './search.pipe';

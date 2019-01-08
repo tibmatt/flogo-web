@@ -5,8 +5,8 @@ import {
   isArray,
   isNumber,
 } from 'lodash';
-import { ValueType } from '@flogo-web/client/core';
 import { ValidationErrors } from '@angular/forms';
+import { ValueType } from '@flogo-web/client-core';
 import { ErrorTypeMismatch, ErrorTypes } from './error-types';
 
 export function getStrictTypeValidator(

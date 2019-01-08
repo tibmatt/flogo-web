@@ -1,9 +1,9 @@
-import { Task } from '../../../core/index';
 import {
+  Task,
   FLOGO_ERROR_ROOT_NAME,
   FLOGO_TASK_TYPE,
   ValueType,
-} from '../../../core/constants';
+} from '@flogo-web/client-core';
 
 export function makeErrorTask(): Task {
   return {

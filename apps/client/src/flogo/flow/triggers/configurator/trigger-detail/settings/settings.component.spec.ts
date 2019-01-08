@@ -1,9 +1,10 @@
 import { ConfigureSettingsComponent } from './settings.component';
-import { ConfirmationService } from '@flogo-web/client/core/confirmation';
-import Spy = jasmine.Spy;
-import { EDITION_DATA_TOKEN } from './confirm-edition/confirm-edition.component';
 import { ElementRef } from '@angular/core';
 import { of } from 'rxjs';
+import Spy = jasmine.Spy;
+
+import { ConfirmationService } from '@flogo-web/client-core/confirmation';
+import { EDITION_DATA_TOKEN } from './confirm-edition/confirm-edition.component';
 
 describe('Component: ConfigureSettingsComponent', function(this: {
   testComponent: ConfigureSettingsComponent;
