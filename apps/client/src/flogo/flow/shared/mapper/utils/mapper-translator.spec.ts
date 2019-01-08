@@ -3,90 +3,40 @@ import { MAPPING_TYPE } from '../constants';
 
 describe('MapperTranslator', function() {
   describe('#translateMappingsIn', function() {
-    const translatedMappings = MapperTranslator.translateMappingsIn([
+    const translatedMappings = MapperTranslator.translateMappingsIn(
       {
-        mapTo: 'simpleNumber',
-        type: MAPPING_TYPE.LITERAL_ASSIGNMENT,
-        value: 1,
-      },
-      {
-        mapTo: 'simpleFalsyValue',
-        type: MAPPING_TYPE.LITERAL_ASSIGNMENT,
-        value: false,
-      },
-      {
-        mapTo: 'simpleString',
-        type: MAPPING_TYPE.LITERAL_ASSIGNMENT,
-        value: 'my string',
-      },
-      {
-        mapTo: 'attrAssignment',
-        type: MAPPING_TYPE.ATTR_ASSIGNMENT,
-        value: '$activity[myActivity].attr',
-      },
-      {
-        mapTo: 'exprAssignment',
-        type: MAPPING_TYPE.EXPRESSION_ASSIGNMENT,
-        value: '$activity[myActivity].attr + 4',
-      },
-      {
-        mapTo: 'objectTemplate',
-        type: MAPPING_TYPE.OBJECT_TEMPLATE,
-        value: {
-          myExample: '{{ someProp }}',
-        },
-      },
-    ]);
+        simpleNumber: '1',
+        simpleFalsyValue: 'false',
+        simpleString: 'my string',
+        attrAssignment: '=$activity[myActivity].attr',
+        exprAssignment: '=$activity[myActivity].attr + 4',
+        objectTemplate: "={ \"myExample\": \"{{ someProp }}\"}"
+      }
+    );
 
     describe('for literal assignments', function() {
       it('translates primitive types', function() {
-        expect(translatedMappings['simpleNumber']).toEqual(
-          jasmine.objectContaining({
-            mappingType: MAPPING_TYPE.LITERAL_ASSIGNMENT,
-            expression: '1',
-          })
-        );
+        expect(translatedMappings['simpleNumber'].expression).toEqual('1');
       });
       it('translates falsy values', function() {
-        expect(translatedMappings['simpleFalsyValue']).toEqual(
-          jasmine.objectContaining({
-            mappingType: MAPPING_TYPE.LITERAL_ASSIGNMENT,
-            expression: 'false',
-          })
-        );
+        expect(translatedMappings['simpleFalsyValue'].expression).toEqual('false');
       });
       it('translates strings', function() {
-        expect(translatedMappings['simpleString']).toEqual(
-          jasmine.objectContaining({
-            mappingType: MAPPING_TYPE.LITERAL_ASSIGNMENT,
-            expression: '"my string"',
-          })
-        );
+        expect(translatedMappings['simpleString'].expression).toEqual('my string');
       });
     });
     it('translates attribute assignments', function() {
-      expect(translatedMappings['attrAssignment']).toEqual(
-        jasmine.objectContaining({
-          mappingType: MAPPING_TYPE.ATTR_ASSIGNMENT,
-          expression: '$activity[myActivity].attr',
-        })
-      );
+      expect(translatedMappings['attrAssignment'].expression).toEqual('$activity[myActivity].attr');
     });
     it('translates expression assignments', function() {
-      expect(translatedMappings['exprAssignment']).toEqual(
-        jasmine.objectContaining({
-          mappingType: MAPPING_TYPE.EXPRESSION_ASSIGNMENT,
-          expression: '$activity[myActivity].attr + 4',
-        })
-      );
+      expect(translatedMappings['exprAssignment'].expression).toEqual('$activity[myActivity].attr + 4');
     });
     it('translates object templates', function() {
       const objectMapping = translatedMappings['objectTemplate'];
       expect(objectMapping).toBeTruthy();
-      expect(objectMapping.mappingType).toEqual(MAPPING_TYPE.OBJECT_TEMPLATE);
       expect(JSON.parse(objectMapping.expression)).toEqual(
         jasmine.objectContaining({
-          myExample: '{{ someProp }}',
+          'myExample': '{{ someProp }}',
         })
       );
     });
@@ -101,64 +51,26 @@ describe('MapperTranslator', function() {
       exprAssignment: { expression: '$activity[myActivity].attr >= 4' },
       objectTemplate: { expression: '{ "myThing": 44 }' },
     });
-    const getMappingFor = (forProperty: string) =>
-      translatedMappings.find(m => m.mapTo === forProperty);
     it('Parses all mappings', function() {
-      expect(translatedMappings.length).toEqual(6);
+      expect(Object.keys(translatedMappings).length).toEqual(6);
     });
     it('translates simple numbers assignments', function() {
-      expect(getMappingFor('simpleNumber')).toEqual(
-        jasmine.objectContaining({
-          mapTo: 'simpleNumber',
-          type: MAPPING_TYPE.LITERAL_ASSIGNMENT,
-          value: 1.2,
-        })
-      );
+      expect(translatedMappings['simpleNumber']).toEqual('1.2');
     });
     it('translates string assignments', function() {
-      expect(getMappingFor('simpleString')).toEqual(
-        jasmine.objectContaining({
-          mapTo: 'simpleString',
-          type: MAPPING_TYPE.LITERAL_ASSIGNMENT,
-          value: 'hello',
-        })
-      );
+      expect(translatedMappings['simpleString']).toEqual( '"hello"');
     });
     it('translates resolver assignments', function() {
-      expect(getMappingFor('resolverAssignment')).toEqual(
-        jasmine.objectContaining({
-          mapTo: 'resolverAssignment',
-          type: MAPPING_TYPE.ATTR_ASSIGNMENT,
-          value: '$activity[myActivity].array[0].id',
-        })
-      );
+      expect(translatedMappings['resolverAssignment']).toEqual('=$activity[myActivity].array[0].id');
     });
     it('translates attribute assignments', function() {
-      expect(getMappingFor('attrAssignment')).toEqual(
-        jasmine.objectContaining({
-          mapTo: 'attrAssignment',
-          type: MAPPING_TYPE.ATTR_ASSIGNMENT,
-          value: 'myProp',
-        })
-      );
+      expect(translatedMappings['attrAssignment']).toEqual('=myProp');
     });
     it('translates expression assignments', function() {
-      expect(getMappingFor('exprAssignment')).toEqual(
-        jasmine.objectContaining({
-          mapTo: 'exprAssignment',
-          type: MAPPING_TYPE.EXPRESSION_ASSIGNMENT,
-          value: '$activity[myActivity].attr >= 4',
-        })
-      );
+      expect(translatedMappings['exprAssignment']).toEqual('=$activity[myActivity].attr >= 4');
     });
     it('translates object mappings', function() {
-      expect(getMappingFor('objectTemplate')).toEqual(
-        jasmine.objectContaining({
-          mapTo: 'objectTemplate',
-          type: MAPPING_TYPE.OBJECT_TEMPLATE,
-          value: jasmine.objectContaining({ myThing: 44 }),
-        })
-      );
+      expect(translatedMappings['objectTemplate']).toEqual('={ "myThing": 44 }' );
     });
   });
 

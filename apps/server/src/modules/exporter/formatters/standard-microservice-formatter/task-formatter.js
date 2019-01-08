@@ -4,7 +4,7 @@ import keyBy from 'lodash/keyBy';
 
 import { TASK_TYPE } from '../../../transfer/common/type-mapper';
 import { isIterableTask } from '../../../../common/utils';
-import { isOutputMapperField } from '../../../../common/utils/flow';
+import { isOutputMapperField, isMapperActivity } from '../../../../common/utils/flow';
 import { isSubflowTask } from '../../../../common/utils/subflow';
 
 import { portAndFormatMappings } from './port-and-format-mappings';
@@ -21,11 +21,13 @@ export class TaskFormatter {
     return this;
   }
 
-  convert() {
-    const { id, name, description, activityRef } = this.sourceTask;
-    const { type, taskSettings, activitySettings } = this.resolveTypeAndSettings();
-    const mappings = this.convertInputMappings();
-    const input = this.convertAttributes();
+  convert(activitySchema) {
+    const {id, name, description, activityRef} = this.sourceTask;
+    const {type, taskSettings, activitySettings} = this.resolveTypeAndSettings();
+    let input = this.sourceTask.inputMappings;
+    if (isMapperActivity(activitySchema)) {
+      input = this.convertAttributes();
+    }
     return {
       id,
       type,
@@ -36,7 +38,6 @@ export class TaskFormatter {
         ref: activityRef,
         input: !isEmpty(input) ? input : undefined,
         settings: !isEmpty(activitySettings) ? activitySettings : undefined,
-        mappings: !isEmpty(mappings) ? mappings : undefined,
       },
     };
   }
@@ -81,9 +82,4 @@ export class TaskFormatter {
     }, {});
   }
 
-  convertInputMappings() {
-    return portAndFormatMappings({
-      input: this.sourceTask.inputMappings || [],
-    });
-  }
 }

@@ -88,13 +88,11 @@ describe('Function: activitySchemaToTask', function() {
   it('Should create configurations for inputs with default values for normal activities', () => {
     const normalTask = activitySchemaToTask(schemasUnderTest.normal);
     expect(normalTask.inputMappings).toBeDefined();
-    expect(normalTask.inputMappings).toEqual([
+    expect(normalTask.inputMappings).toEqual(
       {
-        mapTo: 'flowInfo',
-        type: 2,
-        value: 'false',
+       flowInfo: 'false',
       },
-    ]);
+    );
   });
 
   it('Should not create configurations for inputs for normal activities', () => {

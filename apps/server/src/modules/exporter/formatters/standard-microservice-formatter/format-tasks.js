@@ -12,11 +12,9 @@ export function formatTasks(activitySchemas, tasks = []) {
       task = { ...task, activityRef: REF_SUBFLOW };
     }
     const activitySchema = schemas[task.activityRef];
-    // preparing task attribute from inputMappings while formatting the tasks
-    task = mappingsToAttributes(task, activitySchema);
     return taskFormatter
-      .setSchemaInputs(activitySchema.inputs || [])
+      .setSchemaInputs(activitySchema.inputs || {})
       .setSourceTask(task)
-      .convert();
+      .convert(activitySchema);
   });
 }
