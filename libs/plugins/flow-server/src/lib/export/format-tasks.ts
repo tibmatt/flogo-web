@@ -1,8 +1,8 @@
 import keyBy from 'lodash/keyBy';
-import { TaskFormatter } from './task-formatter';
-import { REF_SUBFLOW } from '../../../../common/constants';
-import { isSubflowTask } from '../../../../common/utils/subflow';
-import { mappingsToAttributes } from '../../mappings-to-attributes';
+import { TaskFormatter } from '../../../../../../apps/server/src/modules/exporter/formatters/standard-microservice-formatter/task-formatter';
+import { REF_SUBFLOW } from '../../../../../../apps/server/src/common/constants';
+import { isSubflowTask } from '../../../../../../apps/server/src/common/utils/subflow';
+import { mappingsToAttributes } from '../../../../../../apps/server/src/modules/exporter/mappings-to-attributes';
 
 export function formatTasks(activitySchemas, tasks = []) {
   const taskFormatter = new TaskFormatter();

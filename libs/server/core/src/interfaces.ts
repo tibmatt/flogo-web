@@ -24,6 +24,10 @@ export interface BeforeUpdateHookParams<T> {
   updatedResource: Resource<T>;
 }
 
+export interface ResourceExportContext {
+  contributionSchemas: any[];
+}
+
 export interface ResourceHooks<TResourceData = unknown> {
   beforeCreate(
     resource: Partial<Resource<TResourceData>>
@@ -32,7 +36,7 @@ export interface ResourceHooks<TResourceData = unknown> {
   beforeUpdate(
     params: BeforeUpdateHookParams<TResourceData>
   ): Promise<Resource<TResourceData>>;
-  beforeExport(resource: Resource<TResourceData>): Promise<object>;
+  beforeExport(resource: Resource<TResourceData>, context: ResourceExportContext): Promise<object>;
   beforeList(resource: Resource<TResourceData>): Promise<Resource<TResourceData>>;
 }
 

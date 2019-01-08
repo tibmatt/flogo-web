@@ -15,6 +15,7 @@ import { exportApplication } from '../exporter';
 import { buildBinary, buildPlugin } from './build';
 import { Validator } from './validator';
 import { AppTriggersService } from './triggers';
+import { ResourceHooks } from '@flogo-web/server/core';
 
 const EDITABLE_FIELDS = ['name', 'version', 'description'];
 const PUBLISH_FIELDS = [
@@ -37,6 +38,8 @@ export class AppsService {
     @inject(TOKENS.AppsDb) private appsDb: Database,
     @inject(TOKENS.Logger) private logger: Logger,
     @inject(TOKENS.ActionsManager) private actionsManager,
+    @inject(TOKENS.ResourcePluginFactory)
+    private resourceHooksResolver: (resourceType: string) => ResourceHooks,
     private triggersService: AppTriggersService
   ) {}
 
@@ -268,7 +271,7 @@ export class AppsService {
       const isFullExportMode = format !== EXPORT_MODE.FORMAT_FLOWS;
       const exportOptions = { isFullExportMode, onlyThisActions: flowIds };
 
-      return exportApplication(app, exportOptions);
+      return exportApplication(app, this.resourceHooksResolver, exportOptions);
     });
   }
 

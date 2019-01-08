@@ -1,17 +1,7 @@
-import {
-  ResourceHooks,
-  BeforeUpdateHookParams,
-  Resource,
-  ValidationError,
-} from '@flogo-web/server/core';
+import { ResourceHooks, BeforeUpdateHookParams, Resource, ValidationError, ResourceExportContext, } from '@flogo-web/server/core';
 import { validateFlowData } from './validation';
-
-interface FlowData extends Resource {
-  tasks: any[];
-  // for test purposes
-  // todo: remove
-  internalInfo: string;
-}
+import { FlowData } from './flow-data';
+import { exportFlow } from './export';
 
 export class FlowResourceHooks implements ResourceHooks<FlowData> {
   async beforeCreate(flowResource: Partial<Resource<FlowData>>) {
@@ -29,8 +19,8 @@ export class FlowResourceHooks implements ResourceHooks<FlowData> {
     return updatedResource;
   }
 
-  async beforeExport(resource: Resource<FlowData>) {
-    return resource;
+  async beforeExport(resource: Resource<FlowData>, context: ResourceExportContext) {
+    return Promise.resolve(exportFlow(resource, context));
   }
 
   async beforeList(resource: Resource<FlowData>) {
