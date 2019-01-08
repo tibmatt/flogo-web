@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import { objectFromArray } from '../../../../../apps/client/src/flogo/shared/utils';
+import { objectFromArray } from '@flogo-web/client-shared/utils';
 
-import { TriggersApiService } from './restapi';
-import { RESTAPIHandlersService as HandlersService } from './restapi/v2/handlers-api.service';
-import { APIFlowsService as FlowsApiService } from './restapi/v2/flows-api.service';
-import { TriggerSchema } from '..';
-import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
+import { TriggersApiService, RESTAPIHandlersService as HandlersService, APIFlowsService as FlowsApiService, RESTAPIContributionsService } from './restapi';
+import { TriggerSchema } from '../interfaces';
 
 @Injectable()
 export class FlowsService {

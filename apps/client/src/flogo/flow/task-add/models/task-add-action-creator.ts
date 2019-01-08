@@ -1,13 +1,19 @@
+import { assign } from 'lodash';
 import { select, Store } from '@ngrx/store';
 import { FlowState, FlowActions, FlowSelectors } from '../../core/state/index';
 import { Observable } from 'rxjs';
+
 import { map, take } from 'rxjs/operators';
-import { PayloadOf } from '../../core/state/utils';
 import {
   activitySchemaToTask,
   createSubFlowTask,
   isSubflowTask,
-} from '@flogo-web/client/shared/utils';
+} from '@flogo-web/client-shared/utils';
+import {
+  extractItemInputsFromTask,
+  taskIdGenerator,
+} from '@flogo-web/client-core/models';
+
 import {
   CONTRIB_REF_PLACEHOLDER,
   ItemActivityTask,
@@ -15,12 +21,8 @@ import {
   NodeType,
   Task,
 } from '@flogo-web/client-core';
-import { assign } from 'lodash';
 import { uniqueTaskName } from '@flogo-web/client/flow/core/models/unique-task-name';
-import {
-  extractItemInputsFromTask,
-  taskIdGenerator,
-} from '@flogo-web/client-core/models';
+import { PayloadOf } from '../../core/state/utils';
 import { makeNode } from '@flogo-web/client/flow/core/models/graph-and-items/graph-creator';
 import { HandlerType, InsertTaskSelection } from '@flogo-web/client/flow/core/models';
 

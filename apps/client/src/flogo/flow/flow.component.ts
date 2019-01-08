@@ -9,14 +9,14 @@ import {
 } from '@angular/animations';
 import { MetadataAttribute, Task, LanguageService, Item } from '@flogo-web/client-core';
 
-import { ConfirmationResult, ConfirmationModalService } from '@flogo-web/client-core';
-import { FLOGO_TASK_TYPE } from '@flogo-web/client-core/constants';
+import { ConfirmationResult, ConfirmationModalService, FLOGO_TASK_TYPE } from '@flogo-web/client-core';
 import { mergeItemWithSchema, SingleEmissionSubject } from '@flogo-web/client-core/models';
 import { NotificationsService } from '@flogo-web/client-core/notifications';
 import { AppsApiService, RESTAPIHandlersService } from '@flogo-web/client-core/services';
 
-import { isMapperActivity } from '@flogo-web/client/shared/utils';
+import { isMapperActivity } from '@flogo-web/client-shared/utils';
 import { TestRunnerService } from '@flogo-web/client/flow/core/test-runner/test-runner.service';
+
 import { MonacoEditorLoaderService } from '@flogo-web/client/flow/shared/monaco-editor';
 
 import { FlowData } from './core';

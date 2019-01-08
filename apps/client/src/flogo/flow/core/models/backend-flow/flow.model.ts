@@ -14,7 +14,7 @@ import {
   convertTaskID,
   getDefaultValue,
   isSubflowTask,
-} from '@flogo-web/client/shared/utils';
+} from '@flogo-web/client-shared/utils';
 
 import {
   FlowMetadata,

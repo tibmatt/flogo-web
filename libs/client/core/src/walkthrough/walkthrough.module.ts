@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule as NgCommonModule } from '@angular/common';
-
-import { SharedModule as FlogoSharedModule } from '../../../../../apps/client/src/flogo/shared/shared.module';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
 
 import { WalkthroughComponent } from './walkthrough.component';
 

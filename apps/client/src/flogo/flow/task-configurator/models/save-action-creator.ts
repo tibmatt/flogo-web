@@ -11,7 +11,7 @@ import {
   ItemSubflow,
   ItemTask,
 } from '@flogo-web/client-core';
-import { isMapperActivity } from '@flogo-web/client/shared/utils';
+import { isMapperActivity } from '@flogo-web/client-shared/utils';
 
 import { AppState } from '@flogo-web/client/flow/core/state/app.state';
 import { FlowState, FlowSelectors, FlowActions } from '@flogo-web/client/flow/core/state';

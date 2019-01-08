@@ -36,6 +36,12 @@
       ],
       "@flogo-web/client-core/*": [
         "libs/client/core/src/*"
+      ],
+      "@flogo-web/client-shared": [
+        "libs/client/shared/src/index.ts"
+      ],
+      "@flogo-web/client-shared/utils": [
+        "libs/client/shared/src/utils.ts"
       ]
     }
   },

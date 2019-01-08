@@ -3,8 +3,7 @@ import { By } from '@angular/platform-browser';
 import { Component, Output, EventEmitter, DebugElement } from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
 import { FlogoApplicationFlowsComponent } from './flows.component';
-import { TimeFromNowPipe } from '@flogo-web/client/shared/pipes/time-from-now.pipe';
-import { FlogoDeletePopupComponent } from '@flogo-web/client/shared/components/delete.popup.component';
+import { TimeFromNowPipe, FlogoDeletePopupComponent } from '@flogo-web/client-shared';
 import { NoDependenciesFakeLanguageModule } from '@flogo-web/client-core/language/testing';
 
 @Component({

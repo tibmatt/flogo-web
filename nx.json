@@ -39,6 +39,9 @@
     },
     "client-core": {
       "tags": []
+    },
+    "client-shared": {
+      "tags": []
     }
   }
 }

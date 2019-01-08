@@ -5,10 +5,10 @@ import { of as observableOfValue } from 'rxjs';
 
 import { Action, Dictionary, UiFlow } from '@flogo-web/client-core';
 import { APIFlowsService, FlowsService } from '@flogo-web/client-core/services';
-import { isSubflowTask } from '@flogo-web/client/shared/utils';
-import { savableFlow } from './models/backend-flow/flow.model';
+import { isSubflowTask } from '@flogo-web/client-shared/utils';
 
 import { UIModelConverterService } from './ui-model-converter.service';
+import { savableFlow } from './models/backend-flow/flow.model';
 import { FlogoFlowDetails } from './models/flow-details.model';
 import { FlowData } from './flow-data';
 import { AppState } from './state/app.state';

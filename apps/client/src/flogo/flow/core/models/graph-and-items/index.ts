@@ -11,7 +11,7 @@ import {
   GraphNode,
   Item,
 } from '@flogo-web/client-core';
-import { isSubflowTask } from '@flogo-web/client/shared/utils';
+import { isSubflowTask } from '@flogo-web/client-shared/utils';
 
 import { makeTaskNodes, makeBranchNode } from './graph-creator';
 import { makeBranchItem, makeTaskItems } from './items-creator';

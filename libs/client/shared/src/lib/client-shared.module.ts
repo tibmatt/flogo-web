@@ -5,18 +5,16 @@ import { BsModalModule } from 'ng2-bs3-modal';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { CopyToClipboardComponent } from './components';
-import { TimeFromNowPipe } from './pipes';
+import { TimeFromNowPipe, ObjectPropertiesPipe } from './pipes';
 import {
   AutofocusDirective,
   ContenteditableDirective,
   DraggableDirective,
   EditableInputDirective,
   JsonDownloaderDirective,
+  ClickOutsideDirective
 } from './directives';
-import { LoadingIndicatorComponent } from './components/loading-indicator.component';
-import { ClickOutsideDirective } from './directives/click-outside.directive';
-import { FlogoDeletePopupComponent } from './components/delete.popup.component';
-import { ObjectPropertiesPipe } from './pipes/objectProperties.pipe';
+import { LoadingIndicatorComponent, FlogoDeletePopupComponent,  } from './components';
 
 const ALL_MODULE_DECLARABLES = [
   CopyToClipboardComponent,

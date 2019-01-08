@@ -17,7 +17,7 @@ import {
   flogoGenTriggerID,
   flogoGenNodeID,
   isSubflowTask,
-} from '@flogo-web/client/shared/utils';
+} from '@flogo-web/client-shared/utils';
 
 import { ItemFactory } from './graph-and-items/item-factory';
 import { makeGraphAndItems } from './graph-and-items';

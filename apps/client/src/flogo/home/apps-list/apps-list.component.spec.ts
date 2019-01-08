@@ -8,9 +8,8 @@ import { NotificationsService } from '@flogo-web/client-core/notifications';
 import { NotificationsServiceMock } from '@flogo-web/client-core/notifications/testing';
 import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
 import { AppsApiServiceMock } from '@flogo-web/client-core/services/restapi/v2/apps-api.service.mock';
+import { TimeFromNowPipe, FlogoDeletePopupComponent } from '@flogo-web/client-shared';
 
-import { TimeFromNowPipe } from '../../shared/pipes';
-import { FlogoDeletePopupComponent } from '../../shared/components/delete.popup.component';
 import { FlogoAppImportComponent } from '../app-import/app-import.component';
 import { FlogoAppsListComponent } from './apps-list.component';
 

@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { Action } from '@flogo-web/client-core';
 import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
 
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
 import { FlowsListComponent } from '@flogo-web/client/flow/shared/flows-list/flows-list.component';
 
 describe('Component: FlowsListComponent', () => {

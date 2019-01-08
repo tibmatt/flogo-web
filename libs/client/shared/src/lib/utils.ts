@@ -13,7 +13,7 @@ import {
 
 import { Item, Task, ValueType, FLOGO_TASK_TYPE } from '@flogo-web/client-core';
 
-import { TYPE_LITERAL_ASSIGNMENT } from '@flogo-web/client/flow/shared/mapper';
+import { TYPE_LITERAL_ASSIGNMENT } from '../../../../../apps/client/src/flogo/flow/shared/mapper';
 
 export function flogoGenTriggerID(): string {
   return `Flogo::Trigger::${Date.now()}`;

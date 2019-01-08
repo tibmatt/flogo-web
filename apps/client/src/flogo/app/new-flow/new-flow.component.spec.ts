@@ -1,13 +1,16 @@
+import { BsModalModule } from 'ng2-bs3-modal';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { BsModalModule } from 'ng2-bs3-modal';
-import { MODAL_TOKEN, ModalControl } from '@flogo-web/client-core/modal';
-import { APIFlowsService } from '@flogo-web/client-core/services';
-import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
+
 import { CoreModule as FlogoCoreModule } from '@flogo-web/client-core';
-import { FlogoNewFlowComponent, NewFlowData } from './new-flow.component';
+import { APIFlowsService } from '@flogo-web/client-core/services';
+import { MODAL_TOKEN, ModalControl } from '@flogo-web/client-core/modal';
 import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
+
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+
+import { FlogoNewFlowComponent, NewFlowData } from './new-flow.component';
 
 const EXISTING_FLOW_NAME = 'existing';
 const flowsServiceStub = {

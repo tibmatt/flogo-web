@@ -15,24 +15,25 @@ import {
   withLatestFrom,
 } from 'rxjs/operators';
 
-import { SingleEmissionSubject } from '@flogo-web/client-core/models';
-import { TestRunnerService } from '@flogo-web/client/flow/core/test-runner/test-runner.service';
-import { createSaveChangesAction } from '@flogo-web/client/flow/debug-panel/save-changes-action.creator';
-
-import { FlowActions, FlowSelectors, FlowState } from '@flogo-web/client/flow/core/state';
 import {
   ActivitySchema,
   Dictionary,
   ItemActivityTask,
   StepAttribute,
 } from '@flogo-web/client-core';
+import { SingleEmissionSubject } from '@flogo-web/client-core/models';
+import { isMapperActivity } from '@flogo-web/client-shared/utils';
+
+import { FlowActions, FlowSelectors, FlowState } from '@flogo-web/client/flow/core/state';
+import { TestRunnerService } from '@flogo-web/client/flow/core/test-runner/test-runner.service';
 import { FormBuilderService } from '@flogo-web/client/flow/shared/dynamic-form';
+
+import { createSaveChangesAction } from './save-changes-action.creator';
 import { debugPanelAnimations } from './debug-panel.animations';
 import { mergeFormWithOutputs } from './utils';
 import { FieldsInfo } from './fields-info';
 import { DebugActivityTask, combineToDebugActivity } from './debug-activity-task';
-import { isMapperActivity } from '@flogo-web/client/shared/utils';
-import { TogglerRefService } from '@flogo-web/client/flow/debug-panel/toggler-ref.service';
+import { TogglerRefService } from './toggler-ref.service';
 import { DEFAULT_MINIMIZED_HEIGHT } from './variables';
 
 const SELECTOR_FOR_CURRENT_ELEMENT = 'flogo-diagram-tile-task.is-selected';

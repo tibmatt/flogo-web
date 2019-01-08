@@ -1,12 +1,14 @@
 import { map, assign, remove } from 'lodash';
 import { Injectable } from '@angular/core';
-import { CONTRIB_REF_PLACEHOLDER, FLOGO_CONTRIB_TYPE } from '../constants';
-import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
+
 import {
   activitySchemaToTask,
   activitySchemaToTrigger,
   createSubFlowTask,
-} from '../../../../../apps/client/src/flogo/shared/utils';
+} from '@flogo-web/client-shared/utils';
+
+import { CONTRIB_REF_PLACEHOLDER, FLOGO_CONTRIB_TYPE } from '../constants';
+import { RESTAPIContributionsService } from './restapi';
 
 @Injectable()
 export class FlogoProfileService {

@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
 import { BsModalModule } from 'ng2-bs3-modal';
 import { NotificationsServiceMock } from '@flogo-web/client-core/notifications/testing';
 import { NotificationsService } from '@flogo-web/client-core/notifications/notifications.service';
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared/shared.module';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
 import { CoreModule as FlogoCoreModule } from '@flogo-web/client-core/core.module';
 import { FlogoApplicationDetailComponent } from './app-detail.component';
 import { AppDetailService, ApplicationDetail } from '../core';

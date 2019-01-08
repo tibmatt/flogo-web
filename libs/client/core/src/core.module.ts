@@ -4,6 +4,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+
 import {
   createDefaultRestApiHttpHeaders,
   DEFAULT_REST_HEADERS,
@@ -29,8 +31,6 @@ import { FileDownloaderService } from './services/file-downloader.service';
 import { ConfirmationModalComponent, ConfirmationModalService, ConfirmationService  } from './confirmation';
 import { NotificationsModule } from './notifications';
 import { ModalService } from './modal';
-
-import { SharedModule as FlogoSharedModule } from '../../../../apps/client/src/flogo/shared';
 
 @NgModule({
   imports: [

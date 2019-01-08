@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { Dictionary, Item } from '@flogo-web/client-core';
-import { isIterableTask, isSubflowTask } from '@flogo-web/client/shared/utils';
+import { isIterableTask, isSubflowTask } from '@flogo-web/client-shared/utils';
 
 const isNotRunnableTask = task => isSubflowTask(task.type) || isIterableTask(task);
 const findNotRunnableTasks = (tasks: Dictionary<Item>) =>

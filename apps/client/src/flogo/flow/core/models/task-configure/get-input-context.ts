@@ -12,7 +12,7 @@ import {
   mergeItemWithSchema,
   PartialActivitySchema,
 } from '@flogo-web/client-core/models';
-import { isSubflowTask } from '@flogo-web/client/shared/utils';
+import { isSubflowTask } from '@flogo-web/client-shared/utils';
 import { makeErrorTask } from '../make-error-task';
 import { FlowMetadata } from '@flogo-web/client/flow/task-configurator/models/flow-metadata';
 

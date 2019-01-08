@@ -12,7 +12,7 @@ import {
   isBranchConfigured,
   isIterableTask,
   isSubflowTask,
-} from '@flogo-web/client/shared/utils';
+} from '@flogo-web/client-shared/utils';
 
 const defaultFeatures: NodeFeatures = {
   selectable: true,
