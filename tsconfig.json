@@ -30,6 +30,9 @@
       ],
       "@flogo-web/plugins/flow-server": [
         "libs/plugins/flow-server/src/index.ts"
+      ],
+      "@flogo-web/client-core": [
+        "libs/client/core/src/index.ts"
       ]
     }
   },

@@ -36,6 +36,9 @@
         "server",
         "plugin"
       ]
+    },
+    "client-core": {
+      "tags": []
     }
   }
 }

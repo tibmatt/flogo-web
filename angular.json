@@ -335,6 +335,41 @@
           }
         }
       }
+    },
+    "client-core": {
+      "root": "libs/client/core",
+      "sourceRoot": "libs/client/core/src",
+      "projectType": "library",
+      "prefix": "flogo-web",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "libs/client/core/tsconfig.lib.json",
+            "project": "libs/client/core/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/client/core/src/test.ts",
+            "tsConfig": "libs/client/core/tsconfig.spec.json",
+            "karmaConfig": "libs/client/core/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/client/core/tsconfig.lib.json",
+              "libs/client/core/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "cli": {
