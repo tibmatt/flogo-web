@@ -7,30 +7,26 @@ import {
   transition,
   animateChild,
 } from '@angular/animations';
-import { MetadataAttribute, Task, LanguageService, Item } from '@flogo-web/client/core';
+import { MetadataAttribute, Task, LanguageService, Item } from '@flogo-web/client-core';
 
-import { NotificationsService } from '@flogo-web/client/core/notifications';
+import { ConfirmationResult, ConfirmationModalService } from '@flogo-web/client-core';
+import { FLOGO_TASK_TYPE } from '@flogo-web/client-core/constants';
+import { mergeItemWithSchema, SingleEmissionSubject } from '@flogo-web/client-core/models';
+import { NotificationsService } from '@flogo-web/client-core/notifications';
+import { AppsApiService, RESTAPIHandlersService } from '@flogo-web/client-core/services';
+
+import { isMapperActivity } from '@flogo-web/client/shared/utils';
+import { TestRunnerService } from '@flogo-web/client/flow/core/test-runner/test-runner.service';
+import { MonacoEditorLoaderService } from '@flogo-web/client/flow/shared/monaco-editor';
 
 import { FlowData } from './core';
 import { FlowMetadata } from './task-configurator/models/flow-metadata';
-
-import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
-import { RESTAPIHandlersService } from '../core/services/restapi/v2/handlers-api.service';
-import { FLOGO_TASK_TYPE } from '../core/constants';
-import { isMapperActivity } from '@flogo-web/client/shared/utils';
-
 import { FlogoFlowService as FlowsService } from './core/flow.service';
-import { ParamsSchemaComponent } from './params-schema/params-schema.component';
-import { mergeItemWithSchema } from '@flogo-web/client/core/models';
+import { ParamsSchemaComponent } from './params-schema';
 import { HandlerType, SelectionType } from './core/models';
 import { FlowState } from './core/state';
 
-import { SingleEmissionSubject } from '@flogo-web/client/core/models';
 import { Trigger } from './core';
-import { TestRunnerService } from '@flogo-web/client/flow/core/test-runner/test-runner.service';
-import { ConfirmationResult } from '@flogo-web/client/core';
-import { ConfirmationModalService } from '@flogo-web/client/core/confirmation/confirmation-modal/confirmation-modal.service';
-import { MonacoEditorLoaderService } from '@flogo-web/client/flow/shared/monaco-editor';
 
 interface TaskContext {
   isTrigger: boolean;

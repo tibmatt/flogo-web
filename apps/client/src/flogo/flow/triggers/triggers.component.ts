@@ -10,13 +10,13 @@ import {
   FlowMetadata,
   TriggerSchema,
   Dictionary,
-} from '@flogo-web/client/core';
-import { TriggersApiService } from '@flogo-web/client/core/services';
-import { TRIGGER_MENU_OPERATION } from '@flogo-web/client/core/constants';
+} from '@flogo-web/client-core';
+import { TriggersApiService } from '@flogo-web/client-core/services';
+import { TRIGGER_MENU_OPERATION } from '@flogo-web/client-core/constants';
 import { objectFromArray } from '@flogo-web/client/shared/utils';
-import { RESTAPIHandlersService } from '@flogo-web/client/core/services/restapi/v2/handlers-api.service';
+import { RESTAPIHandlersService } from '@flogo-web/client-core/services/restapi/v2/handlers-api.service';
 
-import { SingleEmissionSubject } from '@flogo-web/client/core/models/single-emission-subject';
+import { SingleEmissionSubject } from '@flogo-web/client-core/models/single-emission-subject';
 import { UIModelConverterService } from '@flogo-web/client/flow/core/ui-model-converter.service';
 
 import { AppState } from '../core/state/app.state';

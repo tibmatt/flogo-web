@@ -1,5 +1,5 @@
 import { isBoolean, isString, isUndefined, toNumber } from 'lodash';
-import { ValueType } from '@flogo-web/client/core';
+import { ValueType } from '@flogo-web/client-core';
 import { parseResolver } from '@flogo-web/parser';
 import { SettingValue } from '../settings-value';
 

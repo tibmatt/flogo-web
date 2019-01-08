@@ -1,4 +1,4 @@
-import { FlowGraph } from '@flogo-web/client/core';
+import { FlowGraph } from '@flogo-web/client-core';
 import { createTileMatrix } from './create-tile-matrix';
 import { nodesToNodeMatrix } from './nodes-to-node-matrix';
 import { TileMatrix } from './matrix';

@@ -1,4 +1,4 @@
-import { Action, Dictionary, StepAttribute, UiFlow } from '@flogo-web/client/core';
+import { Action, Dictionary, StepAttribute, UiFlow } from '@flogo-web/client-core';
 import * as fromRoot from '../../../../store';
 import { CurrentSelection } from '../../models/selection';
 import { Trigger, TriggerHandler, TriggerConfigureState } from '../../interfaces/index';

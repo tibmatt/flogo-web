@@ -2,8 +2,9 @@ import { Component, DebugElement, EventEmitter, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
+import { SanitizeService } from '@flogo-web/client-core/services';
+
 import { ContenteditableDirective } from './contenteditable.directive';
-import { SanitizeService } from '../../core/services/sanitize.service';
 
 @Component({
   selector: 'flogo-test-container',

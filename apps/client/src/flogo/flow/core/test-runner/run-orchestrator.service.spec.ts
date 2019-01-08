@@ -7,7 +7,7 @@ import {
   RunApiService,
   StatusResponse,
   ErrorService,
-} from '@flogo-web/client/core/services';
+} from '@flogo-web/client-core/services';
 import {
   ERRORS,
   RunStatusCode,

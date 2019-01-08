@@ -1,4 +1,4 @@
-import { FlowMetadata } from '../../../core/index';
+import { FlowMetadata } from '@flogo-web/client-core';
 import { RenderableTrigger } from './renderable-trigger';
 
 export interface TriggersState {

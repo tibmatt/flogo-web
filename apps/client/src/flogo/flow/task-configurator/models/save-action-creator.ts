@@ -10,7 +10,7 @@ import {
   ItemBranch,
   ItemSubflow,
   ItemTask,
-} from '@flogo-web/client/core';
+} from '@flogo-web/client-core';
 import { isMapperActivity } from '@flogo-web/client/shared/utils';
 
 import { AppState } from '@flogo-web/client/flow/core/state/app.state';

@@ -1,9 +1,9 @@
 import { Component, HostBinding, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 
-import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
+import { MODAL_TOKEN, modalAnimate, ModalControl } from '@flogo-web/client-core/modal';
+import { APIFlowsService } from '@flogo-web/client-core/services';
 import { UniqueNameValidator } from './unique-name.validator';
-import { MODAL_TOKEN, modalAnimate, ModalControl } from '@flogo-web/client/core/modal';
 
 export interface NewFlowData {
   appId: string;

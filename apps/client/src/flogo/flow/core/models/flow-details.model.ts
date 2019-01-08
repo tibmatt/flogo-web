@@ -2,7 +2,7 @@ import { isEqual } from 'lodash';
 import { Store, select } from '@ngrx/store';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-import { GraphNode, Item, UiFlow } from '@flogo-web/client/core';
+import { GraphNode, Item, UiFlow } from '@flogo-web/client-core';
 
 import { FlowActions, FlowSelectors } from '../state';
 import { AppState } from '../state/app.state';

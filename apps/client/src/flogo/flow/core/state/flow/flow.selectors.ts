@@ -1,14 +1,16 @@
+import { remove } from 'lodash';
 import { createSelector, createFeatureSelector, MemoizedSelector } from '@ngrx/store';
 import {
   ContribSchema,
   Dictionary,
   FLOGO_CONTRIB_TYPE_VALUES,
+  CONTRIB_REF_PLACEHOLDER,
   Item,
   ItemActivityTask,
   FLOGO_TASK_TYPE,
   FlowGraph,
-} from '@flogo-web/client/core';
-import { remove } from 'lodash';
+  GraphNodeDictionary
+} from '@flogo-web/client-core';
 
 import { FlowState } from './flow.state';
 import { getGraphName, getItemsDictionaryName, nodesContainErrors } from '../utils';
@@ -22,8 +24,6 @@ import {
 } from '../../models';
 import { DiagramSelectionType } from '@flogo-web/client/packages/diagram/interfaces';
 import { Activity } from '@flogo-web/client/flow/task-add';
-import { CONTRIB_REF_PLACEHOLDER } from '@flogo-web/client/core/constants';
-import { NodeDictionary } from '@flogo-web/client/core/interfaces/graph/graph';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(
@@ -164,13 +164,13 @@ export const getCurrentItems: MemoizedSelector<
 
 export const getCurrentNodes: MemoizedSelector<
   FlowState,
-  NodeDictionary
+  GraphNodeDictionary
 > = createSelector(
   getCurrentHandlerType,
   selectFlowState,
   (currentHandlerType, flowState) =>
     currentHandlerType
-      ? (flowState[getGraphName(currentHandlerType)].nodes as NodeDictionary)
+      ? (flowState[getGraphName(currentHandlerType)].nodes as GraphNodeDictionary)
       : null
 );
 

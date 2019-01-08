@@ -1,5 +1,5 @@
-import { ValueType } from '@flogo-web/client/core';
 import { ValidatorFn, Validator } from '@angular/forms';
+import { ValueType } from '@flogo-web/client-core';
 
 export abstract class BaseField<T> {
   name: string;

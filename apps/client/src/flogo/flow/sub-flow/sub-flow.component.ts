@@ -7,9 +7,9 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FlogoFlowService as FlowsService } from '@flogo-web/client/flow/core/flow.service';
 import { BsModalComponent } from 'ng2-bs3-modal';
-import { ActionBase } from '@flogo-web/client/core';
+import { ActionBase } from '@flogo-web/client-core';
+import { FlogoFlowService as FlowsService } from '@flogo-web/client/flow/core/flow.service';
 
 @Component({
   selector: 'flogo-flow-sub-flow',

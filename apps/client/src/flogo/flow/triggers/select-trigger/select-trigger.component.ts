@@ -8,9 +8,8 @@ import {
   ViewChild,
   Output,
 } from '@angular/core';
-import { TriggersApiService } from '@flogo-web/client/core/services';
-import { FlogoProfileService } from '@flogo-web/client/core/services/profile.service';
 import { BsModalComponent } from 'ng2-bs3-modal';
+import { TriggersApiService, FlogoProfileService } from '@flogo-web/client-core/services';
 
 @Component({
   selector: 'flogo-flow-select-trigger',

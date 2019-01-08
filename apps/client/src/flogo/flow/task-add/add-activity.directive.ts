@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import {
   Directive,
   ElementRef,
@@ -8,13 +9,13 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
+import { BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS } from '@flogo-web/client-core';
+
 import { AddActivityService } from './add-activity.service';
 import {
   DiagramSelection,
   DiagramSelectionType,
 } from '@flogo-web/client/packages/diagram/interfaces';
-import { isEqual } from 'lodash';
-import { BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS } from '@flogo-web/client/core';
 
 const BRANCH_ANIMATION_DURATION = 300;
 

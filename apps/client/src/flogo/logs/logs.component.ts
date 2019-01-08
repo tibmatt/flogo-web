@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ChildWindowService, ChildWindow } from '../core/services/child-window.service';
+import { ChildWindowService, ChildWindow } from '@flogo-web/client-core/services';
 
 @Component({
   selector: 'flogo-logs',

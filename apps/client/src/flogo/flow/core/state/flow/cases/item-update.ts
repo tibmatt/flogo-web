@@ -4,7 +4,7 @@ import {
   Item,
   ItemBranch,
   NodeType,
-} from '@flogo-web/client/core';
+} from '@flogo-web/client-core';
 import { isBranchConfigured, isIterableTask } from '@flogo-web/client/shared/utils';
 import { FlowState } from '../flow.state';
 import { getGraphName, getItemsDictionaryName } from '../../utils';

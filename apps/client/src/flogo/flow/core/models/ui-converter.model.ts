@@ -1,4 +1,4 @@
-import { get, fromPairs, uniqueId } from 'lodash';
+import { fromPairs, uniqueId } from 'lodash';
 import {
   ActionBase,
   FlowMetadata,
@@ -9,10 +9,10 @@ import {
   ItemSubflow,
   TriggerSchema,
   FLOGO_CONTRIB_TYPE,
-  ActivitySchema,
-} from '@flogo-web/client/core';
-import { ErrorService } from '@flogo-web/client/core/services/error.service';
-import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
+  ActivitySchema
+} from '@flogo-web/client-core';
+import { ErrorService, RESTAPIContributionsService } from '@flogo-web/client-core/services';
+
 import {
   flogoGenTriggerID,
   flogoGenNodeID,

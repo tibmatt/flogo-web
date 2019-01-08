@@ -7,9 +7,9 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { App } from '@flogo-web/client/core';
-import { NotificationsService } from '@flogo-web/client/core/notifications';
-import { AppsApiService } from '@flogo-web/client/core/services/restapi/v2/apps-api.service';
+import { App } from '@flogo-web/client-core';
+import { NotificationsService } from '@flogo-web/client-core/notifications';
+import { AppsApiService } from '@flogo-web/client-core/services';
 
 @Component({
   selector: 'flogo-home-apps-list',

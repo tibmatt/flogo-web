@@ -8,7 +8,7 @@ import {
   SimpleChanges,
   ElementRef,
 } from '@angular/core';
-import { FlowSummary } from '@flogo-web/client/core';
+import { FlowSummary } from '@flogo-web/client-core';
 
 @Component({
   selector: 'flogo-apps-flows',

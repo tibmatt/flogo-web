@@ -4,13 +4,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "flogo-web",
+      "fg",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "flogo-web",
+      "flogo",
       "kebab-case"
     ]
   }

@@ -14,13 +14,13 @@ import {
   ItemSubflow,
   NodeType,
   Task,
-} from '@flogo-web/client/core';
+} from '@flogo-web/client-core';
 import { assign } from 'lodash';
 import { uniqueTaskName } from '@flogo-web/client/flow/core/models/unique-task-name';
 import {
   extractItemInputsFromTask,
   taskIdGenerator,
-} from '@flogo-web/client/core/models';
+} from '@flogo-web/client-core/models';
 import { makeNode } from '@flogo-web/client/flow/core/models/graph-and-items/graph-creator';
 import { HandlerType, InsertTaskSelection } from '@flogo-web/client/flow/core/models';
 

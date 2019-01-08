@@ -1,6 +1,6 @@
 import { fromPairs } from 'lodash';
 import { FormGroup } from '@angular/forms';
-import { AttributeMapping } from '@flogo-web/client/core';
+import { AttributeMapping } from '@flogo-web/client-core';
 import { TriggerHandler } from '@flogo-web/client/flow/core';
 import { MapperController, MapperTranslator } from '@flogo-web/client/flow/shared/mapper';
 import { SettingControlGroup } from '../../interfaces';

@@ -5,12 +5,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-import { ActivitySchema, Task } from '@flogo-web/client/core/interfaces';
+import { ActivitySchema, Task } from '@flogo-web/client-core/interfaces';
 import {
   mergeItemWithSchema,
   SingleEmissionSubject,
-} from '@flogo-web/client/core/models';
-import { NotificationsService } from '@flogo-web/client/core/notifications';
+} from '@flogo-web/client-core/models';
+import { NotificationsService } from '@flogo-web/client-core/notifications';
 
 import {
   MapperTranslator,
@@ -33,7 +33,7 @@ import {
   ItemActivityTask,
   ItemSubflow,
   ItemTask,
-} from '@flogo-web/client/core';
+} from '@flogo-web/client-core';
 import {
   createIteratorMappingContext,
   getIteratorOutputSchema,

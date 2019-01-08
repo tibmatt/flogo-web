@@ -15,7 +15,7 @@ import {
   withLatestFrom,
 } from 'rxjs/operators';
 
-import { SingleEmissionSubject } from '@flogo-web/client/core/models';
+import { SingleEmissionSubject } from '@flogo-web/client-core/models';
 import { TestRunnerService } from '@flogo-web/client/flow/core/test-runner/test-runner.service';
 import { createSaveChangesAction } from '@flogo-web/client/flow/debug-panel/save-changes-action.creator';
 
@@ -25,7 +25,7 @@ import {
   Dictionary,
   ItemActivityTask,
   StepAttribute,
-} from '@flogo-web/client/core';
+} from '@flogo-web/client-core';
 import { FormBuilderService } from '@flogo-web/client/flow/shared/dynamic-form';
 import { debugPanelAnimations } from './debug-panel.animations';
 import { mergeFormWithOutputs } from './utils';

@@ -6,7 +6,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
-import { ModalService } from '@flogo-web/client/core/modal/modal.service';
+import { ModalService } from '@flogo-web/client-core/modal';
 
 import { FlogoApplicationComponent } from './app.component';
 import { FlogoApplicationDetailComponent } from './app-detail/app-detail.component';

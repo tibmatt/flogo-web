@@ -1,5 +1,5 @@
 import { Trigger, TriggerHandler } from '../../../interfaces/index';
-import { Dictionary, TriggerSchema, SchemaAttribute } from '@flogo-web/client/core/index';
+import { Dictionary, TriggerSchema, SchemaAttribute } from '@flogo-web/client-core';
 import { ConfigureTriggerDetails } from '../../../../triggers/configurator/interfaces';
 
 export function createTriggerConfigureFields(

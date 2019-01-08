@@ -7,7 +7,7 @@ import {
   Dictionary,
   flow as backendFlow,
   ItemActivityTask,
-} from '@flogo-web/client/core';
+} from '@flogo-web/client-core';
 import {
   isBranchConfigured,
   isIterableTask,

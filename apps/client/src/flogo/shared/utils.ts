@@ -10,8 +10,9 @@ import {
   uniqueId,
   trimStart,
 } from 'lodash';
-import { ValueType, FLOGO_TASK_TYPE } from '@flogo-web/client/core/constants';
-import { Item, Task } from '@flogo-web/client/core';
+
+import { Item, Task, ValueType, FLOGO_TASK_TYPE } from '@flogo-web/client-core';
+
 import { TYPE_LITERAL_ASSIGNMENT } from '@flogo-web/client/flow/shared/mapper';
 
 export function flogoGenTriggerID(): string {

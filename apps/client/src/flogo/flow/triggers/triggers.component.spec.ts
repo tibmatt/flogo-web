@@ -7,20 +7,16 @@ import { Store, StoreModule } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { BsModalModule } from 'ng2-bs3-modal';
 
+import { App } from '@flogo-web/client-core';
+import { TriggersApiService, RESTAPIHandlersService, HttpUtilsService, RESTAPIContributionsService, FlogoProfileService } from '@flogo-web/client-core/services';
+import { FlogoProfileServiceMock } from '@flogo-web/client-core/services/profile.service.mock';
+import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
+
 import { InstallerModule } from '@flogo-web/client/flow/shared/installer';
 import { UIModelConverterService } from '@flogo-web/client/flow/core/ui-model-converter.service';
-import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
 import { FlogoFlowTriggersPanelComponent } from './triggers.component';
 import { FlogoSelectTriggerComponent } from './select-trigger/select-trigger.component';
 
-import { TriggersApiService } from '@flogo-web/client/core/services';
-import { RESTAPIHandlersService } from '@flogo-web/client/core/services/restapi/v2/handlers-api.service';
-import { HttpUtilsService } from '@flogo-web/client/core/services/restapi/http-utils.service';
-import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
-import { FlogoProfileService } from '@flogo-web/client/core/services/profile.service';
-import { FlogoProfileServiceMock } from '@flogo-web/client/core/services/profile.service.mock';
-
-import { App } from '@flogo-web/client/core/interfaces/flow/app';
 import { featureReducer, FlowState, Init, INITIAL_STATE } from '../core/state';
 import { TriggerBlockComponent } from './trigger-block';
 import { ConfiguratorModule as TriggersConfiguratorModule } from './configurator';

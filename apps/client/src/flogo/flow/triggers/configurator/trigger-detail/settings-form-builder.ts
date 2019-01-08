@@ -1,14 +1,13 @@
 import { isEmpty, isString, mapValues, isUndefined, isNull } from 'lodash';
 import { Injectable } from '@angular/core';
-import { Dictionary } from '@flogo-web/client/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators, AsyncValidatorFn } from '@angular/forms';
+import { Dictionary } from '@flogo-web/client-core';
 import {
   SettingControlInfo,
   SettingControlGroup,
   TriggerInformation,
 } from '../interfaces';
 import { SettingValue } from './settings-value';
-import { AsyncValidatorFn } from '@angular/forms/src/directives/validators';
 
 @Injectable()
 export class SettingsFormBuilder {
