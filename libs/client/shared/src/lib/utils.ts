@@ -11,9 +11,7 @@ import {
   trimStart,
 } from 'lodash';
 
-import { Item, Task, ValueType, FLOGO_TASK_TYPE } from '@flogo-web/client-core';
-
-import { TYPE_LITERAL_ASSIGNMENT } from '../../../../../apps/client/src/flogo/flow/shared/mapper';
+import { Item, Task, ValueType, FLOGO_TASK_TYPE, TYPE_LITERAL_ASSIGNMENT } from '@flogo-web/client-core';
 
 export function flogoGenTriggerID(): string {
   return `Flogo::Trigger::${Date.now()}`;

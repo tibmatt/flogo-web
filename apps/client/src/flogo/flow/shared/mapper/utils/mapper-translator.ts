@@ -6,10 +6,10 @@ import {
   AttributeMapping as FlowMapping,
   FLOGO_ERROR_ROOT_NAME,
   FLOGO_TASK_TYPE,
-  ValueType,
+  ValueType, MAPPING_TYPE,
 } from '@flogo-web/client-core';
 
-import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL, ROOT_TYPES } from '../constants';
+import { REGEX_INPUT_VALUE_EXTERNAL, ROOT_TYPES } from '../constants';
 // todo: shared models should be moved to core
 import {
   FlowMetadata,
