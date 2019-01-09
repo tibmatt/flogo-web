@@ -7,7 +7,7 @@ export class HttpUtilsService {
 
   constructor(@Optional() @Inject(HOSTNAME) hostname?: string) {
     hostname = hostname || '';
-    this.prefix = hostname + '/api/v2';
+    this.prefix = hostname + '/api/v2/';
   }
 
   apiPrefix(path?: string) {

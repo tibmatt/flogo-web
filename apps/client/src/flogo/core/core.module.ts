@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { WalkthroughModule } from './walkthrough/walkthrough.module';
 import { FlogoNavbarComponent } from './navbar/navbar.component';
 
@@ -9,7 +11,9 @@ import { FlogoNavbarComponent } from './navbar/navbar.component';
   ],
   imports: [
     CommonModule,
-    WalkthroughModule
+    RouterModule,
+    WalkthroughModule,
+    TranslateModule
   ],
   exports: [
     FlogoNavbarComponent

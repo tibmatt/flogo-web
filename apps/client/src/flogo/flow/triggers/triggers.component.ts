@@ -26,7 +26,7 @@ import { TriggerMenuSelectionEvent } from './trigger-block/models';
 import { RenderableTrigger } from './interfaces/renderable-trigger';
 
 function settingsToObject(settings: {name: string, value?: any}[], getValue: (s: { value?: any }) => any = s => s.value) {
-  return fromPairs(settings.map(getValue));
+  return fromPairs(settings.map((s) => [s.name, getValue(s)]));
 }
 
 @Component({
