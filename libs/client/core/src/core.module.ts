@@ -4,8 +4,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
-
 import {
   createDefaultRestApiHttpHeaders,
   DEFAULT_REST_HEADERS,
@@ -24,8 +22,6 @@ import { FlogoProfileService } from './services/profile.service';
 import { RESTAPIContributionsService } from './services/restapi/v2/contributions.service';
 import { SvgRefFixerService } from './services/svg-ref-fixer.service';
 import { LogService } from './services/log.service';
-import { FlogoNavbarComponent } from './navbar/navbar.component';
-import { WalkthroughModule } from './walkthrough/walkthrough.module';
 import { ShimTriggerBuildApiService } from './services/restapi/v2/shim-trigger-build-api.service';
 import { FileDownloaderService } from './services/file-downloader.service';
 import { ConfirmationModalComponent, ConfirmationModalService, ConfirmationService  } from './confirmation';
@@ -37,9 +33,7 @@ import { ModalService } from './modal';
     HttpClientModule,
     RouterModule,
     OverlayModule,
-    WalkthroughModule,
     TranslateModule,
-    FlogoSharedModule,
     NotificationsModule,
   ],
   providers: [
@@ -74,8 +68,8 @@ import { ModalService } from './modal';
     ConfirmationModalService,
     ModalService,
   ],
-  declarations: [FlogoNavbarComponent, ConfirmationModalComponent],
-  exports: [FlogoNavbarComponent, NotificationsModule],
+  declarations: [ConfirmationModalComponent],
+  exports: [NotificationsModule],
   entryComponents: [ConfirmationModalComponent],
 })
 export class CoreModule {}

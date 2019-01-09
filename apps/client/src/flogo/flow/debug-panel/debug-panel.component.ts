@@ -20,9 +20,9 @@ import {
   Dictionary,
   ItemActivityTask,
   StepAttribute,
+  isMapperActivity,
+  SingleEmissionSubject
 } from '@flogo-web/client-core';
-import { SingleEmissionSubject } from '@flogo-web/client-core/models';
-import { isMapperActivity } from '@flogo-web/client-shared/utils';
 
 import { FlowActions, FlowSelectors, FlowState } from '@flogo-web/client/flow/core/state';
 import { TestRunnerService } from '@flogo-web/client/flow/core/test-runner/test-runner.service';

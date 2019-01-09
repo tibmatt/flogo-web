@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
-import { objectFromArray } from '@flogo-web/client-shared/utils';
 
-import { TriggersApiService, RESTAPIHandlersService as HandlersService, APIFlowsService as FlowsApiService, RESTAPIContributionsService } from './restapi';
+import {
+  TriggersApiService,
+  RESTAPIHandlersService as HandlersService,
+  APIFlowsService as FlowsApiService,
+  RESTAPIContributionsService,
+} from './restapi';
 import { TriggerSchema } from '../interfaces';
+
+const mapSettingsArrayToObject = (settings: { name: string; value?: any }[]) =>
+  (settings || []).reduce((all, c) => ({ ...all, [c.name]: c.value }), {});
 
 @Injectable()
 export class FlowsService {
@@ -31,8 +38,8 @@ export class FlowsService {
       })
       .then(({ flow, contribTrigger }) => {
         const handlerSchema = contribTrigger.handler || ({} as TriggerSchema);
-        const settings = objectFromArray(handlerSchema.settings);
-        const outputs = objectFromArray(contribTrigger.outputs);
+        const settings = mapSettingsArrayToObject(handlerSchema.settings);
+        const outputs = mapSettingsArrayToObject(contribTrigger.outputs);
         return this.handlersService.updateHandler(triggerId, flow.id, {
           settings,
           outputs,

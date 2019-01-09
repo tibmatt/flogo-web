@@ -1,30 +1,26 @@
 import { assign } from 'lodash';
 import { select, Store } from '@ngrx/store';
-import { FlowState, FlowActions, FlowSelectors } from '../../core/state/index';
 import { Observable } from 'rxjs';
-
 import { map, take } from 'rxjs/operators';
-import {
-  activitySchemaToTask,
-  createSubFlowTask,
-  isSubflowTask,
-} from '@flogo-web/client-shared/utils';
-import {
-  extractItemInputsFromTask,
-  taskIdGenerator,
-} from '@flogo-web/client-core/models';
 
+import { FlowState, FlowActions, FlowSelectors } from '../../core/state';
 import {
   CONTRIB_REF_PLACEHOLDER,
   ItemActivityTask,
   ItemSubflow,
   NodeType,
   Task,
+  activitySchemaToTask,
+  createSubFlowTask,
+  isSubflowTask,
+  extractItemInputsFromTask,
+  taskIdGenerator,
 } from '@flogo-web/client-core';
-import { uniqueTaskName } from '@flogo-web/client/flow/core/models/unique-task-name';
+
 import { PayloadOf } from '../../core/state/utils';
 import { makeNode } from '@flogo-web/client/flow/core/models/graph-and-items/graph-creator';
 import { HandlerType, InsertTaskSelection } from '@flogo-web/client/flow/core/models';
+import { uniqueTaskName } from '../../core/models/unique-task-name';
 
 interface TaskAddData {
   ref: string;

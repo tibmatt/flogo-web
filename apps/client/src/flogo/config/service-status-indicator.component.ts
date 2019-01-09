@@ -8,7 +8,7 @@ import {
 import { catchError, distinctUntilChanged, retry, switchMap } from 'rxjs/operators';
 import { Component, Input, OnInit, DoCheck, OnDestroy } from '@angular/core';
 
-import { getURL } from '@flogo-web/client-shared/utils';
+import { getURL } from '@flogo-web/client-shared';
 import { ConfigurationService, ServiceUrlConfig } from '@flogo-web/client-core/services';
 
 const PING_INTERVAL_MS = 5000;

@@ -9,15 +9,12 @@ import {
   ItemSubflow,
   TriggerSchema,
   FLOGO_CONTRIB_TYPE,
-  ActivitySchema
-} from '@flogo-web/client-core';
-import { ErrorService, RESTAPIContributionsService } from '@flogo-web/client-core/services';
-
-import {
+  ActivitySchema,
   flogoGenTriggerID,
   flogoGenNodeID,
-  isSubflowTask,
-} from '@flogo-web/client-shared/utils';
+  isSubflowTask
+} from '@flogo-web/client-core';
+import { ErrorService, RESTAPIContributionsService } from '@flogo-web/client-core/services';
 
 import { ItemFactory } from './graph-and-items/item-factory';
 import { makeGraphAndItems } from './graph-and-items';

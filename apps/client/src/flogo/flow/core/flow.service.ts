@@ -3,9 +3,8 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { of as observableOfValue } from 'rxjs';
 
-import { Action, Dictionary, UiFlow, TriggerHandler } from '@flogo-web/client-core';
+import { Action, Dictionary, UiFlow, TriggerHandler, isSubflowTask } from '@flogo-web/client-core';
 import { APIFlowsService, FlowsService } from '@flogo-web/client-core/services';
-import { isSubflowTask } from '@flogo-web/client-shared/utils';
 
 import { UIModelConverterService } from './ui-model-converter.service';
 import { savableFlow } from './models/backend-flow/flow.model';

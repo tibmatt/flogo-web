@@ -10,18 +10,15 @@ import {
   isString,
   isUndefined
 } from 'lodash';
-import {
-  convertTaskID,
-  getDefaultValue,
-  isSubflowTask,
-} from '@flogo-web/client-shared/utils';
 
 import {
   FlowMetadata,
   MetadataAttribute,
-  FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE
+  FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
+  isSubflowTask,
+  getDefaultValue,
+  mergeItemWithSchema
 } from '@flogo-web/client-core';
-import { mergeItemWithSchema } from '@flogo-web/client-core/models';
 
 import {
   AttributeMapping as DiagramTaskAttributeMapping,
@@ -105,8 +102,8 @@ const generateDiagramTraverser = schemas => {
         if (node.type === NodeType.Task) {
           linksDest.push({
             id: _genLinkId(),
-            from: convertTaskID(node.id),
-            to: convertTaskID(childNode.id),
+            from: node.id,
+            to: childNode.id,
             type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.DEFAULT,
           });
         } else if (node.type === NodeType.Branch && node.parents.length === 1) {
@@ -115,8 +112,8 @@ const generateDiagramTraverser = schemas => {
 
           linksDest.push({
             id: _genLinkId(),
-            from: convertTaskID(parentNode.id),
-            to: convertTaskID(childNode.id),
+            from: parentNode.id,
+            to: childNode.id,
             type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH,
             value: branch.condition,
           });
@@ -133,7 +130,7 @@ const generateDiagramTraverser = schemas => {
     const task = mergeItemWithSchema(item, schema);
     const taskInfo = <flowToJSON_Task>{};
     if (_isValidInternalTaskInfo(task)) {
-      taskInfo.id = convertTaskID(task.id);
+      taskInfo.id = task.id;
       taskInfo.name = get(task, 'name', '');
       taskInfo.description = get(task, 'description', '');
       taskInfo.type = task.type;

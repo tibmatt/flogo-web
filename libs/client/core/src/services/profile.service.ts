@@ -5,7 +5,7 @@ import {
   activitySchemaToTask,
   activitySchemaToTrigger,
   createSubFlowTask,
-} from '@flogo-web/client-shared/utils';
+} from '../models';
 
 import { CONTRIB_REF_PLACEHOLDER, FLOGO_CONTRIB_TYPE } from '../constants';
 import { RESTAPIContributionsService } from './restapi';

@@ -2,9 +2,9 @@ import {
   BaseItemTask,
   GraphNode,
   Item,
-  ItemBranch
+  ItemBranch,
+  isBranchConfigured
 } from '@flogo-web/client-core';
-import { isBranchConfigured } from '@flogo-web/client-shared/utils';
 import { FlowState } from '../flow.state';
 import { getGraphName, getItemsDictionaryName } from '../../utils';
 import { HandlerType } from '@flogo-web/client/flow/core/models/handler-type';

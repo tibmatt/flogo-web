@@ -12,18 +12,15 @@ import {
   ItemActivityTask,
   ItemSubflow,
   ItemTask,
-} from '@flogo-web/client-core';
-import { ActivitySchema, Task } from '@flogo-web/client-core/interfaces';
-import {
-  mergeItemWithSchema,
-  SingleEmissionSubject,
-} from '@flogo-web/client-core/models';
-import { NotificationsService } from '@flogo-web/client-core/notifications';
-import {
   isIterableTask,
   isMapperActivity,
   isSubflowTask,
-} from '@flogo-web/client-shared/utils';
+  ActivitySchema,
+  Task,
+  mergeItemWithSchema,
+  SingleEmissionSubject,
+} from '@flogo-web/client-core';
+import { NotificationsService } from '@flogo-web/client-core/notifications';
 
 import {
   MapperTranslator,
