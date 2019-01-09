@@ -5,7 +5,7 @@ import { HOSTNAME } from './hostname.token';
 export class HttpUtilsService {
   private prefix: string;
 
-  constructor(@Optional() @Inject(HOSTNAME) hostname: string) {
+  constructor(@Optional() @Inject(HOSTNAME) hostname?: string) {
     hostname = hostname || '';
     this.prefix = hostname + '/api/v2';
   }

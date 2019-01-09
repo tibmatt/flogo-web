@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActionBase } from '@flogo-web/client-core';
 
@@ -20,7 +21,7 @@ export class FlowsListComponent {
   searchText: string;
 
   get filteredFlows() {
-    if (this.searchText && !_.isEmpty(this.searchText.trim())) {
+    if (this.searchText && !isEmpty(this.searchText.trim())) {
       return this.list.filter(flow => {
         return (
           (flow.name || '').toLowerCase().includes(this.searchText.toLowerCase()) ||

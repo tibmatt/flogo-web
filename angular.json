@@ -354,7 +354,12 @@
           "options": {
             "main": "libs/client/core/src/test.ts",
             "tsConfig": "libs/client/core/tsconfig.spec.json",
-            "karmaConfig": "libs/client/core/karma.conf.js"
+            "karmaConfig": "libs/client/core/karma.conf.js",
+            "scripts": [
+              "node_modules/lodash/lodash.min.js",
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
           }
         },
         "lint": {

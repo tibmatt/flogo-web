@@ -1,3 +1,4 @@
+import { remove } from 'lodash';
 import { Injectable } from '@angular/core';
 
 import { App } from '../../../interfaces';
@@ -77,7 +78,7 @@ export class AppsApiServiceMock extends AppsApiService {
   }
 
   deleteApp(id: string): Promise<boolean> {
-    _.remove(this.mockApplications, (n: App) => {
+    remove(this.mockApplications, (n: App) => {
       return n.id === id;
     });
     return Promise.resolve(true);

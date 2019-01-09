@@ -118,7 +118,7 @@ export class AppsApiService {
   }
 
   private apiPrefix(path) {
-    return this.httpUtils.apiPrefix(path, 'v2');
+    return this.httpUtils.apiPrefix(path);
   }
 
   private extractErrors(error: HttpErrorResponse | any) {

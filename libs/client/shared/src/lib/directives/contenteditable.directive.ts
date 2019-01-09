@@ -156,8 +156,8 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
     if (this.placeholderEl) {
       return;
     }
-    Array.from(this.elementRef.nativeElement.children).forEach(
-      this.removeChild.bind(this)
+    Array.from(this.elementRef.nativeElement.children).forEach(child =>
+      this.renderer.removeChild(this.elementRef.nativeElement, child)
     );
     const placeholderText = this.renderer.createText(this.placeholder);
     this.placeholderEl = this.renderer.createElement('span');
@@ -167,14 +167,13 @@ export class ContenteditableDirective implements OnInit, OnChanges, OnDestroy {
   }
 
   private removePlaceholder() {
-    if (this.placeholderEl) {
-      this.removeChild(this.placeholderEl);
+    if (
+      this.placeholderEl &&
+      this.renderer.parentNode(this.placeholderEl) === this.elementRef.nativeElement
+    ) {
+      this.renderer.removeChild(this.elementRef.nativeElement, this.placeholderEl);
       this.placeholderEl = null;
     }
-  }
-
-  private removeChild(child) {
-    this.renderer.removeChild(this.elementRef.nativeElement, child);
   }
 
   private updateStyles() {

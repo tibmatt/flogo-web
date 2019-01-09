@@ -1,4 +1,5 @@
 import { of, from, throwError as _throw, concat } from 'rxjs';
+import { isEqual, last } from 'lodash';
 
 import { finalize } from 'rxjs/operators';
 import Spy = jasmine.Spy;
@@ -359,7 +360,7 @@ describe('Service: RunOrchestratorService', function(this: {
       const emittedSteps = [];
       const subscriber = {
         onNext(next) {
-          if (!_.isEqual(next.steps, _.last(emittedSteps))) {
+          if (!isEqual(next.steps, last(emittedSteps))) {
             emittedSteps.push(next.steps);
           }
         },
@@ -423,7 +424,7 @@ describe('Service: RunOrchestratorService', function(this: {
       const emittedSteps = [];
       const subscriber = {
         onNext(next) {
-          if (!_.isEqual(next.steps, _.last(emittedSteps))) {
+          if (!isEqual(next.steps, last(emittedSteps))) {
             emittedSteps.push(next.steps);
           }
         },
@@ -490,7 +491,7 @@ describe('Service: RunOrchestratorService', function(this: {
       const emittedSteps = [];
       const subscriber = {
         onNext: next => {
-          if (!_.isEqual(next.steps, _.last(emittedSteps))) {
+          if (!isEqual(next.steps, last(emittedSteps))) {
             emittedSteps.push(next.steps);
           }
         },

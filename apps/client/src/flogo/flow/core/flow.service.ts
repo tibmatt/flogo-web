@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { of as observableOfValue } from 'rxjs';
 
-import { Action, Dictionary, UiFlow } from '@flogo-web/client-core';
+import { Action, Dictionary, UiFlow, TriggerHandler } from '@flogo-web/client-core';
 import { APIFlowsService, FlowsService } from '@flogo-web/client-core/services';
 import { isSubflowTask } from '@flogo-web/client-shared/utils';
 
@@ -13,7 +13,7 @@ import { FlogoFlowDetails } from './models/flow-details.model';
 import { FlowData } from './flow-data';
 import { AppState } from './state/app.state';
 import { FlowState, Init } from './state';
-import { Trigger, TriggerHandler } from './interfaces';
+import { Trigger } from './interfaces';
 
 function normalizeTriggersAndHandlersForAction(
   actionId: string,

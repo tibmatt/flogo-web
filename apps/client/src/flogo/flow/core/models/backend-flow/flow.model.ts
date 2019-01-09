@@ -247,15 +247,6 @@ function _parseFlowAttributes(inAttrs: any[]): flowToJSON_Attribute[] {
       return;
     }
 
-    // NOTE
-    //  empty value may be fed from upstream results - mapping
-    //  hence comment out this validation
-    // if ( !_.isNumber( attr.value ) && !_.isBoolean( attr.value ) && _.isEmpty( attr.value ) ) {
-    //   DEBUG && console.warn( 'Empty attribute value found' );
-    //   DEBUG && console.log( inAttr );
-    //   return;
-    // }
-
     // the attribute default attribute type is STRING
     attr.type = inAttr.type || ValueType.String;
 

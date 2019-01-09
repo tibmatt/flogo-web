@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
-import { Dictionary, TriggerSchema } from '@flogo-web/client-core';
-import { Trigger, TriggerHandler } from '../../index';
+import { Dictionary, TriggerSchema, TriggerHandler } from '@flogo-web/client-core';
+import { Trigger } from '../../index';
 
 export enum TriggerActionType {
   UpdateTrigger = '[Flow][Trigger] Update trigger',

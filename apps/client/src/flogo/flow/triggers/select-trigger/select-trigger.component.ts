@@ -97,8 +97,9 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (_.has(changes, 'isAddTriggerActivated')) {
-      this.onActivatedStatusChange(changes['isAddTriggerActivated'].currentValue);
+    const change = changes.isAddTriggerActivated;
+    if (change) {
+      this.onActivatedStatusChange(change.currentValue);
     }
   }
 
