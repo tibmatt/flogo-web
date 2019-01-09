@@ -32,13 +32,13 @@
         "libs/plugins/flow-server/src/index.ts"
       ],
       "@flogo-web/client-core": [
-        "libs/client/core/src/index.ts"
+        "libs/client-core/src/index.ts"
       ],
       "@flogo-web/client-core/*": [
-        "libs/client/core/src/*"
+        "libs/client-core/src/*"
       ],
       "@flogo-web/client-shared": [
-        "libs/client/shared/src/index.ts"
+        "libs/client-shared/src/index.ts"
       ]
     }
   },

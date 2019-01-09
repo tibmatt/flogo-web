@@ -38,10 +38,10 @@
       ]
     },
     "client-core": {
-      "tags": []
+      "tags": ["client"]
     },
     "client-shared": {
-      "tags": []
+      "tags": ["client"]
     }
   }
 }
