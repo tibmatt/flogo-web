@@ -3,4 +3,5 @@ module.exports = {
   preset: '../../jest.config.js',
   coverageDirectory: '../../coverage/apps/server',
   setupTestFrameworkScriptFile: '../../jest.setup.ts',
+  testEnvironment: 'node',
 };

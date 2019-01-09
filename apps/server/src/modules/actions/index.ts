@@ -1,14 +1,14 @@
-import { container } from '../../injector/root';
+import { injectable, Container } from 'inversify';
 import { pick, omit } from 'lodash';
 
-import { dbUtils } from '../../common/db';
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
 import { Validator } from './validator';
 
-import { HandlersManager } from '../apps/handlers';
-
+import { HandlersService } from '../apps/handlers-service';
+import { generateShortId } from '../../common/utils';
 import { findGreatestNameIndex } from '../../common/utils/collection';
 import { ResourceRepository } from '../resources/resource.repository';
+import { flowifyApp, flowify } from '../resources/transitional-resource.repository';
 
 const EDITABLE_FIELDS_CREATION = [
   'name',
@@ -28,10 +28,26 @@ const EDITABLE_FIELDS_UPDATE = [
   'errorHandler',
 ];
 
+@injectable()
+/**
+ * @deprectated will be replaced by ResourceService
+ * @See ../resouces/resource-service.ts
+ */
 export class ActionsManager {
+  private static container: Container;
+
+  static setContainer(container: Container) {
+    this.container = container;
+  }
+
   private static get repository() {
     // todo: container shouldn't be used this way, we should use @inject annotations to inject the dependencies
-    return container.resolve(ResourceRepository);
+    return this.container.resolve(ResourceRepository);
+  }
+
+  private static get handlersManager() {
+    // todo: container shouldn't be used this way, we should use @inject annotations to inject the dependencies
+    return this.container.resolve(HandlersService);
   }
 
   static async create(appId: string, actionData) {
@@ -60,16 +76,16 @@ export class ActionsManager {
 
     actionData.name = ensureUniqueName(app.actions, actionData.name);
     actionData = cleanInput(actionData, EDITABLE_FIELDS_CREATION);
-    actionData.id = dbUtils.generateShortId();
+    actionData.id = generateShortId();
     actionData.name = actionData.name.trim();
 
     const action = await resourceRepository.create(appId, actionData);
-    return ActionsManager.findOne(action.id);
+    return ActionsManager.findOne(actionData.id).then(flowify);
   }
 
   static async update(actionId, actionData) {
     const resourceRepository = this.repository;
-    const existingAction = await ActionsManager.findOne(actionId);
+    const existingAction = await ActionsManager.findOne(actionId).then(flowify);
     if (!existingAction) {
       throw ErrorManager.makeError('Action not found', {
         type: ERROR_TYPES.COMMON.NOT_FOUND,
@@ -82,11 +98,11 @@ export class ActionsManager {
       throw ErrorManager.createValidationError('Validation error', errors);
     }
     await resourceRepository.update(appId, { ...actionData, id: actionId });
-    return ActionsManager.findOne(actionId);
+    return ActionsManager.findOne(actionId).then(flowify);
   }
 
   static async findOne(actionId) {
-    let app = await this.repository.findAppByResourceId(actionId);
+    let app = await this.repository.findAppByResourceId(actionId).then(flowifyApp);
     if (!app) {
       return null;
     }
@@ -104,7 +120,7 @@ export class ActionsManager {
   }
 
   static async list(appId, options) {
-    const app = await this.repository.getApp(appId);
+    const app = await this.repository.getApp(appId).then(flowifyApp);
     let actions = app && app.actions ? app.actions : [];
     if (options && options.filter && options.filter.by === 'name') {
       const comparableName = options.filter.value.trim().toLowerCase();
@@ -117,15 +133,14 @@ export class ActionsManager {
   }
 
   static listRecent() {
-    const resourceRepository = container.resolve(ResourceRepository);
-    return resourceRepository.listRecent();
+    return this.repository.listRecent();
   }
 
   static async remove(actionId) {
     const resourceRepository = this.repository;
     const wasRemoved = await resourceRepository.remove(actionId);
     if (wasRemoved) {
-      await HandlersManager.removeByActionId(actionId);
+      await this.handlersManager.removeByActionId(actionId);
     }
     return wasRemoved;
   }

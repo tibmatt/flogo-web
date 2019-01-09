@@ -77,7 +77,7 @@ export class Database {
     return deferred.promise;
   }
 
-  remove(query, options) {
+  remove(query, options?): Promise<number> {
     const deferred = defer();
     const args = Array.prototype.slice.call(arguments);
     args.push(deferred.callback);

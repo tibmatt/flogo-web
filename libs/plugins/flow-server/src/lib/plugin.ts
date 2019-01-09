@@ -1,4 +1,10 @@
-import { ResourceHooks, Resource } from '@flogo-web/server/core';
+import {
+  ResourceHooks,
+  BeforeUpdateHookParams,
+  Resource,
+  ValidationError,
+} from '@flogo-web/server/core';
+import { validateFlowData } from './validation';
 
 interface FlowData extends Resource {
   tasks: any[];
@@ -8,16 +14,19 @@ interface FlowData extends Resource {
 }
 
 export class FlowResourceHooks implements ResourceHooks<FlowData> {
-  async beforeCreate(flowResource: Resource<FlowData>) {
-    return flowResource;
+  async beforeCreate(flowResource: Partial<Resource<FlowData>>) {
+    runValidation(flowResource.data);
+    return Promise.resolve(flowResource);
   }
 
   async onImport(data: object) {
     return data as Resource<FlowData>;
   }
 
-  async beforeUpdate(resource: Resource<FlowData>) {
-    return resource;
+  async beforeUpdate(params: BeforeUpdateHookParams<FlowData>) {
+    const { updatedResource } = params;
+    runValidation(updatedResource.data);
+    return updatedResource;
   }
 
   async beforeExport(resource: Resource<FlowData>) {
@@ -25,8 +34,13 @@ export class FlowResourceHooks implements ResourceHooks<FlowData> {
   }
 
   async beforeList(resource: Resource<FlowData>) {
-    const data = { ...resource.data };
-    delete data.internalInfo;
-    return { ...resource, data };
+    return resource;
+  }
+}
+
+function runValidation(data: FlowData) {
+  const errors = validateFlowData(data);
+  if (errors) {
+    throw new ValidationError('Flow data validation errors', errors);
   }
 }

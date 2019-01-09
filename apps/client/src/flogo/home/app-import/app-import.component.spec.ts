@@ -1,7 +1,7 @@
 import { FlogoAppImportComponent } from './app-import.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { BsModalModule } from 'ng2-bs3-modal';
+import { BsModalModule, BsModalService } from 'ng2-bs3-modal';
 import { ImportErrorFormatterService } from '../core/import-error-formatter.service';
 import { By } from '@angular/platform-browser';
 import { mockImportErrorResponse } from './mocks/error.response.mock';
@@ -30,10 +30,6 @@ describe('Component: FlogoAppImportComponent', () => {
   let comp: ContainerComponent;
   let fixture: ComponentFixture<ContainerComponent>;
 
-  function compileComponent() {
-    return TestBed.compileComponents();
-  }
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [NoDependenciesFakeLanguageModule, BsModalModule],
@@ -41,34 +37,33 @@ describe('Component: FlogoAppImportComponent', () => {
       providers: [ImportErrorFormatterService],
       schemas: [NO_ERRORS_SCHEMA],
     });
+    return TestBed.compileComponents();
   });
 
-  it('Should list 3 errors', done => {
-    compileComponent().then(() => {
-      fixture = TestBed.createComponent(ContainerComponent);
-      comp = fixture.componentInstance;
-      comp.errors = mockImportErrorResponse[0].meta.details;
-      fixture.detectChanges();
-      const res: Array<DebugElement> = fixture.debugElement.queryAll(
-        By.css('.flogo-error__list')
-      );
-      expect(res.length).toEqual(3);
-      done();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ContainerComponent);
+    comp = fixture.componentInstance;
+    comp.errors = mockImportErrorResponse[0].meta.details;
+    fixture.detectChanges();
   });
 
-  it('Should list the last error as an activity missing error', done => {
-    compileComponent().then(() => {
-      fixture = TestBed.createComponent(ContainerComponent);
-      comp = fixture.componentInstance;
-      comp.errors = mockImportErrorResponse[0].meta.details;
-      fixture.detectChanges();
-      const res: Array<DebugElement> = fixture.debugElement.queryAll(
-        By.css('.flogo-error__list-container .flogo-error__content')
-      );
-      const el: HTMLElement = res[2].nativeElement;
-      expect(el.innerHTML).toEqual('IMPORT-ERROR:ACTIVITY_MISSING_CONTENT');
-      done();
-    });
+  afterEach(() => {
+    const modalService = fixture.debugElement.injector.get(BsModalService);
+    return modalService.dismissAll().then(() => fixture.destroy());
+  });
+
+  it('Should list 3 errors', () => {
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(
+      By.css('.flogo-error__list')
+    );
+    expect(res.length).toEqual(3);
+  });
+
+  it('Should list the last error as an activity missing error', () => {
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(
+      By.css('.flogo-error__list-container .flogo-error__content')
+    );
+    const el: HTMLElement = res[2].nativeElement;
+    expect(el.innerHTML).toEqual('IMPORT-ERROR:ACTIVITY_MISSING_CONTENT');
   });
 });

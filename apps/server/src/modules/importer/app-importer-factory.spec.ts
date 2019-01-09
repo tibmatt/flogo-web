@@ -2,16 +2,29 @@ import sinon from 'sinon';
 import { LegacyAppImporterFactory } from './legacy/factory';
 import { AppImporterFactory } from './app-importer-factory';
 import { AppImporter } from './app-importer';
+import { AppsService } from '../apps/apps-service';
+
+interface FakeDependenciesFactory {
+  name: string;
+}
 
 describe('importer.AppImporterFactory', () => {
   let sandbox = sinon.createSandbox();
   let context;
-  let appImporterFactory;
+  let appImporterFactory: AppImporterFactory;
 
   beforeAll(function() {
     sandbox = sinon.createSandbox();
     context = createTestContext(sandbox);
-    appImporterFactory = new AppImporterFactory(context.appsManagerMock);
+    appImporterFactory = new AppImporterFactory(
+      null,
+      {
+        name: 'legacyDependenciesFactory',
+      } as any,
+      {
+        name: 'standardDependenciesFactory',
+      } as any
+    );
   });
 
   afterEach(() => {
@@ -55,12 +68,10 @@ describe('importer.AppImporterFactory', () => {
   });
 
   function assertFactorySelected(factorySelector, testApp) {
-    const dependenciesFactoryCreator = sandbox
-      .stub(appImporterFactory, factorySelector)
-      .returns({ id: factorySelector });
-    const dependenciesFactory = appImporterFactory.getDependenciesFactory(testApp);
-    expect(dependenciesFactory.id).toBe(factorySelector);
-    expect(dependenciesFactoryCreator.calledOnce).toBe(true);
+    const dependenciesFactory = appImporterFactory.getDependenciesFactory(
+      testApp
+    ) as unknown;
+    expect((dependenciesFactory as FakeDependenciesFactory).name).toBe(factorySelector);
   }
 
   function createTestContext(sandboxInstance) {

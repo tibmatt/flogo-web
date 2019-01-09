@@ -1,5 +1,6 @@
-import { FlogoError } from './flogo-error';
+import { FlogoError, ValidationError } from '@flogo-web/server/core';
 import { ERROR_TYPES } from './error-types';
+import { RestError } from './rest-errors';
 
 export class ErrorManager {
   /**
@@ -20,14 +21,12 @@ export class ErrorManager {
    * @param details
    * @param [ctr]
    */
-  static createValidationError(message, details, ctr) {
-    return ErrorManager.makeError(message, {
-      type: ERROR_TYPES.COMMON.VALIDATION,
-      details: {
-        errors: details,
-      },
-      ctr: ctr || ErrorManager.createValidationError,
-    });
+  static createValidationError(message, errors, ctr) {
+    return new ValidationError(
+      message,
+      errors,
+      ctr || ErrorManager.createValidationError
+    );
   }
 
   /**
@@ -67,12 +66,12 @@ export class ErrorManager {
    * @param [ctr]
    */
   static createRestError(message = 'REST Api Error', details, ctr) {
-    details.status = details.status || 400;
-    return ErrorManager.makeError(message, {
-      type: ERROR_TYPES.COMMON.REST_API,
+    return new RestError(
+      message,
+      details.status,
       details,
-      ctr: ctr || ErrorManager.createRestError,
-    });
+      ctr || ErrorManager.createRestError
+    );
   }
 
   /**
@@ -83,38 +82,40 @@ export class ErrorManager {
    * @param details.detail {string} (optional) A human-readable explanation specific to this occurrence of the problem.
    * @param details.meta {object} (optional) A meta object containing non-standard meta-information about the error. Ex. for validation the property details
    */
-  static createRestNotFoundError(message = 'Resource not found', details) {
-    details = Object.assign(
-      {
-        status: 404,
-        code: ERROR_TYPES.COMMON.NOT_FOUND,
-        title: 'Resource not found',
-      },
-      details
-    );
-    return ErrorManager.createRestError(
+  static createRestNotFoundError(message = 'Resource not found', details = {}) {
+    return new RestError(
       message,
-      details,
+      details.status || 404,
+      {
+        title: 'Resource not found',
+        code: ERROR_TYPES.COMMON.NOT_FOUND,
+        ...details,
+      },
       ErrorManager.createRestNotFoundError
     );
   }
 
   static validationToRestErrors(validationErrors = []) {
-    return validationErrors.map(validationError =>
-      ErrorManager.createRestError(
-        validationError.title,
-        {
-          status: 400,
-          code: validationError.type,
-          title: validationError.title,
-          detail: validationError.detail,
-          meta: {
-            property: validationError.property,
-            value: validationError.value,
-          },
-        },
-        ErrorManager.validationToRestErrors
-      )
+    return validationErrors.map(
+      validationError =>
+        new RestError(
+          validationError.title,
+          400,
+          validationErrorToErrorDetails(validationError),
+          ErrorManager.validationToRestErrors
+        )
     );
   }
+}
+
+function validationErrorToErrorDetails(validationError) {
+  return {
+    code: validationError.type,
+    title: validationError.title,
+    detail: validationError.detail,
+    meta: {
+      property: validationError.property,
+      value: validationError.value,
+    },
+  };
 }

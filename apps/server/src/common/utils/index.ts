@@ -10,6 +10,7 @@ import { runShellCMD } from './process';
 
 export * from './file';
 export * from './json';
+export * from './common';
 
 export function atob(str) {
   return Buffer.from(str, 'base64').toString('binary');

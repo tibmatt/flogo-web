@@ -12,19 +12,19 @@ import { handlers } from './handlers';
 import { mountServices } from './services';
 import { mountEngine } from './engine';
 import { mountTestRunner } from './runner';
-import { resources as mountResources } from './resources';
+import { mountResourceRoutes } from './resources';
 
 export function createRouter(container: Container): Router {
   const router = new RouterConstructor({
     prefix: config.app.basePathV2,
   });
   router.use(errorMiddleware);
-  apps(router);
-  triggers(router);
-  actions(router);
+  apps(router, container);
+  triggers(router, container);
+  actions(router, container);
   microserviceContribs(router);
-  handlers(router);
-  mountResources(router, container);
+  handlers(router, container);
+  mountResourceRoutes(router, container);
   mountServices(router);
   mountEngine(router);
   mountTestRunner(router);

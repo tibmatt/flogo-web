@@ -1,13 +1,5 @@
 import { Dictionary } from '@flogo-web/client/core';
 
-export interface LegacyFlowWrapper {
-  id: string;
-  name: string;
-  description?: string;
-  flow: LegacyFlow;
-  metadata: any;
-}
-
 // Disabling tslint rule for legacy purposes
 /* tslint:disable-next-line:class-name */
 export interface flowToJSON_Attribute {
@@ -70,28 +62,4 @@ export interface triggerToJSON_TriggerInfo {
 /* tslint:disable-next-line:class-name */
 export interface triggerToJSON_Trigger {
   triggers: triggerToJSON_TriggerInfo[];
-}
-
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */
-export interface LegacyFlow {
-  type: number;
-  name: string;
-  model: string;
-  attributes: flowToJSON_Attribute[];
-  rootTask: flowToJSON_RootTask;
-  errorHandlerTask?: flowToJSON_RootTask;
-  explicitReply?: boolean;
-}
-
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */
-export interface flowToJSON_RootTask {
-  id: any;
-  type?: number;
-  activityType?: string;
-  ref?: string;
-  name?: string;
-  tasks: flowToJSON_Task[];
-  links: flowToJSON_Link[];
 }

@@ -1,7 +1,7 @@
 import { pick } from 'lodash';
 import { prepareUpdateQuery } from './prepare-update-query';
 
-describe('ActionsManager: prepareUpdateQuery', () => {
+describe('resources: prepareUpdateQuery', () => {
   const MockOldActionData = {
     name: 'sample',
     metadata: {},
