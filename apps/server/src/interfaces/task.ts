@@ -5,7 +5,7 @@ export interface Task {
   name?: string;
   description?: string;
   attributes?: Attribute[];
-  inputMappings?: Mapping[];
+  inputMappings?: {[property: string]: any};
   settings?: {
     flowPath?: string;
     iterate: string;
