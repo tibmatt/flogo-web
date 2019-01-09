@@ -3,16 +3,14 @@ import { MAPPING_TYPE } from '../constants';
 
 describe('MapperTranslator', function() {
   describe('#translateMappingsIn', function() {
-    const translatedMappings = MapperTranslator.translateMappingsIn(
-      {
-        simpleNumber: '1',
-        simpleFalsyValue: 'false',
-        simpleString: 'my string',
-        attrAssignment: '=$activity[myActivity].attr',
-        exprAssignment: '=$activity[myActivity].attr + 4',
-        objectTemplate: "={ \"myExample\": \"{{ someProp }}\"}"
-      }
-    );
+    const translatedMappings = MapperTranslator.translateMappingsIn({
+      simpleNumber: '1',
+      simpleFalsyValue: 'false',
+      simpleString: 'my string',
+      attrAssignment: '=$activity[myActivity].attr',
+      exprAssignment: '=$activity[myActivity].attr + 4',
+      objectTemplate: '={ "myExample": "{{ someProp }}"}',
+    });
 
     describe('for literal assignments', function() {
       it('translates primitive types', function() {
@@ -26,17 +24,21 @@ describe('MapperTranslator', function() {
       });
     });
     it('translates attribute assignments', function() {
-      expect(translatedMappings['attrAssignment'].expression).toEqual('$activity[myActivity].attr');
+      expect(translatedMappings['attrAssignment'].expression).toEqual(
+        '$activity[myActivity].attr'
+      );
     });
     it('translates expression assignments', function() {
-      expect(translatedMappings['exprAssignment'].expression).toEqual('$activity[myActivity].attr + 4');
+      expect(translatedMappings['exprAssignment'].expression).toEqual(
+        '$activity[myActivity].attr + 4'
+      );
     });
     it('translates object templates', function() {
       const objectMapping = translatedMappings['objectTemplate'];
       expect(objectMapping).toBeTruthy();
       expect(JSON.parse(objectMapping.expression)).toEqual(
         jasmine.objectContaining({
-          'myExample': '{{ someProp }}',
+          myExample: '{{ someProp }}',
         })
       );
     });
@@ -58,19 +60,23 @@ describe('MapperTranslator', function() {
       expect(translatedMappings['simpleNumber']).toEqual('1.2');
     });
     it('translates string assignments', function() {
-      expect(translatedMappings['simpleString']).toEqual( '"hello"');
+      expect(translatedMappings['simpleString']).toEqual('"hello"');
     });
     it('translates resolver assignments', function() {
-      expect(translatedMappings['resolverAssignment']).toEqual('=$activity[myActivity].array[0].id');
+      expect(translatedMappings['resolverAssignment']).toEqual(
+        '=$activity[myActivity].array[0].id'
+      );
     });
     it('translates attribute assignments', function() {
       expect(translatedMappings['attrAssignment']).toEqual('=myProp');
     });
     it('translates expression assignments', function() {
-      expect(translatedMappings['exprAssignment']).toEqual('=$activity[myActivity].attr >= 4');
+      expect(translatedMappings['exprAssignment']).toEqual(
+        '=$activity[myActivity].attr >= 4'
+      );
     });
     it('translates object mappings', function() {
-      expect(translatedMappings['objectTemplate']).toEqual('={ "myThing": 44 }' );
+      expect(translatedMappings['objectTemplate']).toEqual('={ "myThing": 44 }');
     });
   });
 

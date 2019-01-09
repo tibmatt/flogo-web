@@ -25,8 +25,8 @@ export class TaskFormatter {
   }
 
   convert(activitySchema) {
-    const {id, name, description, activityRef} = this.sourceTask;
-    const {type, taskSettings, activitySettings} = this.resolveTypeAndSettings();
+    const { id, name, description, activityRef } = this.sourceTask;
+    const { type, taskSettings, activitySettings } = this.resolveTypeAndSettings();
     let input = this.sourceTask.inputMappings;
     if (isMapperActivity(activitySchema)) {
       input = this.convertAttributes();
@@ -88,5 +88,4 @@ export class TaskFormatter {
       return input;
     }, {});
   }
-
 }

@@ -6,10 +6,7 @@ import {
   FLOGO_TASK_TYPE,
   ValueType,
 } from '@flogo-web/client/core/constants';
-import {
-  Task as FlowTile,
-  Dictionary,
-} from '@flogo-web/client/core';
+import { Task as FlowTile, Dictionary } from '@flogo-web/client/core';
 import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL, ROOT_TYPES } from '../constants';
 // todo: shared models should be moved to core
 import {
@@ -114,7 +111,9 @@ export class MapperTranslator {
   static translateMappingsIn(inputMappings: any) {
     inputMappings = inputMappings || {};
     return Object.keys(inputMappings).reduce((mappings, input) => {
-      const { value, mappingType } = MapperTranslator.processInputValue(inputMappings[input]);
+      const { value, mappingType } = MapperTranslator.processInputValue(
+        inputMappings[input]
+      );
       mappings[input] = { expression: value, mappingType };
       return mappings;
     }, {});
@@ -129,22 +128,25 @@ export class MapperTranslator {
   static translateMappingsOut(mappings: {
     [attr: string]: { expression: string; mappingType?: number };
   }): Dictionary<any> {
-    const EXPR_PREFIX = "=";
+    const EXPR_PREFIX = '=';
     return (
       Object.keys(mappings || {})
         // filterOutEmptyExpressions
         .filter(
           attrName =>
             mappings[attrName].expression && mappings[attrName].expression.trim()
-        ).reduce((inputs, attrName) => {
+        )
+        .reduce((inputs, attrName) => {
           const mapping = mappings[attrName];
           const { value: inputValue, mappingType } = MapperTranslator.parseExpression(
             mapping.expression
           );
           let value = inputValue;
-          if (mappingType === MAPPING_TYPE.ATTR_ASSIGNMENT
-            || mappingType === MAPPING_TYPE.EXPRESSION_ASSIGNMENT
-            || mappingType === MAPPING_TYPE.OBJECT_TEMPLATE) {
+          if (
+            mappingType === MAPPING_TYPE.ATTR_ASSIGNMENT ||
+            mappingType === MAPPING_TYPE.EXPRESSION_ASSIGNMENT ||
+            mappingType === MAPPING_TYPE.OBJECT_TEMPLATE
+          ) {
             value = EXPR_PREFIX + value;
           }
           inputs[attrName] = value;
@@ -192,7 +194,7 @@ export class MapperTranslator {
     return isValidExpression(expression);
   }
 
-  private static processInputValue (inputValue: string) {
+  private static processInputValue(inputValue: string) {
     let value = inputValue;
     let literalAssignment;
     if (/^=/g.test(value)) {
@@ -203,8 +205,8 @@ export class MapperTranslator {
     }
     value = MapperTranslator.upgradeLegacyMappingIfNeeded(value);
     value = MapperTranslator.rawExpressionToString(value, literalAssignment);
-    const {mappingType} = MapperTranslator.parseExpression(value);
-    return {value, mappingType};
+    const { mappingType } = MapperTranslator.parseExpression(value);
+    return { value, mappingType };
   }
 
   private static upgradeLegacyMappingIfNeeded(mappingValue: string) {
