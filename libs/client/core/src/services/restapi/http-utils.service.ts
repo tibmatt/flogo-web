@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../../../../../apps/client/src/environments/environment';
-
-export const domainURL = environment.hostname;
-export const API_PREFIX = domainURL + '/v1/api/';
-export const API_PREFIX_V2 = domainURL + '/api/v2/';
+import { Injectable, Inject, Optional } from '@angular/core';
+import { HOSTNAME } from './hostname.token';
 
 @Injectable()
 export class HttpUtilsService {
-  constructor() {}
+  private prefix: string;
 
-  apiPrefix(path?: string, version?: 'v1' | 'v2') {
-    const prefix = version === 'v1' ? API_PREFIX : API_PREFIX_V2;
-    return `${prefix}${path}`;
+  constructor(@Optional() @Inject(HOSTNAME) hostname: string) {
+    hostname = hostname || '';
+    this.prefix = hostname + '/api/v2';
+  }
+
+  apiPrefix(path?: string) {
+    return `${this.prefix}${path}`;
   }
 }

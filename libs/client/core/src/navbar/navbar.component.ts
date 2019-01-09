@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
-import { Component, OnInit } from '@angular/core';
-import { environment } from '../../../../../apps/client/src/environments/environment';
+import { Component, OnInit, Inject } from '@angular/core';
+import { FLOGO_VERSION } from '../flogo-version.token';
 
 @Component({
   selector: 'flogo-navbar',
@@ -11,12 +11,10 @@ import { environment } from '../../../../../apps/client/src/environments/environ
 export class FlogoNavbarComponent implements OnInit {
   public currentYear: number;
   public isWalkthroughActivated = false;
-  public version: string;
   isOpenMenu = false;
 
-  constructor() {
+  constructor(@Inject(FLOGO_VERSION) public version: string) {
     this.currentYear = new Date().getFullYear();
-    this.version = environment.version;
   }
 
   ngOnInit() {

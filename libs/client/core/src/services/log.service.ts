@@ -1,17 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { format } from 'date-fns';
 import * as io from 'socket.io-client';
-
-import { environment } from '../../../../../apps/client/src/environments/environment';
+import { HOSTNAME } from './restapi';
 
 @Injectable()
 export class LogService {
+
   // TODO define config interface
   public lines: any[];
 
-  constructor() {
+  constructor(@Inject(HOSTNAME) hostname: string) {
     this.lines = [];
-    const socket = io(environment.hostname);
+    const socket = io(hostname);
     socket.on('on-connecting', this.onData.bind(this));
     socket.on('on-log', this.onData.bind(this));
   }

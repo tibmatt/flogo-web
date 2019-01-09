@@ -2,6 +2,7 @@ export {
   DEFAULT_REST_HEADERS,
   createDefaultRestApiHttpHeaders,
 } from './rest-api-http-headers';
+export { HOSTNAME } from './hostname.token';
 export { RestApiOptions, RestApiService } from './rest-api.service';
 export { HttpUtilsService } from './http-utils.service';
 

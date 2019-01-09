@@ -11,7 +11,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BsModalModule } from 'ng2-bs3-modal';
 
-import { CoreModule, LanguageService } from '@flogo-web/client-core';
+import { CoreModule, LanguageService, FLOGO_VERSION } from '@flogo-web/client-core';
+import { HOSTNAME } from '@flogo-web/client-core/services';
 import { createTranslateLoader } from '@flogo-web/client-core/language';
 import { initializer } from '@flogo-web/client-core/initializer';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
@@ -52,6 +53,8 @@ import { environment } from '../environments/environment';
   declarations: [FlogoAppComponent],
   bootstrap: [FlogoAppComponent],
   providers: [
+    { provide: HOSTNAME, useValue: environment.hostname },
+    { provide: FLOGO_VERSION, useValue: environment.version },
     { provide: LanguageService, useExisting: TranslateService },
     {
       provide: APP_INITIALIZER,
