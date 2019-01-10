@@ -90,9 +90,10 @@
     "directive-class-suffix": true,
 
     "nx-enforce-module-boundaries": [
-      true,
+      false,
       {
-        "allow": [],
+        "allow": [
+        ],
         "depConstraints": [
           { "sourceTag": "*", "onlyDependOnLibsWithTags": ["*"] }
         ]

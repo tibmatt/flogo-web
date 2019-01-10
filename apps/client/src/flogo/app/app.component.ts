@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApplicationDetail, AppDetailService } from './core';
 
-import { FlowsService } from '@flogo-web/client-core/services/flows.service';
+import { FlowsService } from '@flogo-web/client-core/services';
 import { NotificationsService } from '@flogo-web/client-core/notifications';
 
 @Component({

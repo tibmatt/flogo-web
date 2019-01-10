@@ -2,8 +2,7 @@ import { defaultsDeep, cloneDeep } from 'lodash';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { AppsApiService } from '@flogo-web/client-core/services/restapi/v2/apps-api.service';
-import { ErrorService } from '@flogo-web/client-core/services/error.service';
+import { AppsApiService, ErrorService } from '@flogo-web/client-core/services';
 
 import { App } from './app.interface';
 import { ApplicationDetail } from './application-detail.interface';
