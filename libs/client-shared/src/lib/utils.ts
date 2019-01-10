@@ -1,9 +1,8 @@
-import { kebabCase, } from 'lodash';
+import { kebabCase } from 'lodash';
 
 export function normalizeTaskName(taskName: string) {
   return kebabCase(taskName);
 }
-
 
 export function getURL(config: {
   protocol?: string;

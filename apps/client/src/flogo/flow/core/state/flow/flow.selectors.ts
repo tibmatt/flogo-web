@@ -9,7 +9,7 @@ import {
   ItemActivityTask,
   FLOGO_TASK_TYPE,
   FlowGraph,
-  GraphNodeDictionary
+  GraphNodeDictionary,
 } from '@flogo-web/client-core';
 
 import { FlowState } from './flow.state';

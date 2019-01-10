@@ -8,7 +8,13 @@ import { Observable } from 'rxjs';
 import { BsModalModule } from 'ng2-bs3-modal';
 
 import { App } from '@flogo-web/client-core';
-import { TriggersApiService, RESTAPIHandlersService, HttpUtilsService, RESTAPIContributionsService, FlogoProfileService } from '@flogo-web/client-core/services';
+import {
+  TriggersApiService,
+  RESTAPIHandlersService,
+  HttpUtilsService,
+  RESTAPIContributionsService,
+  FlogoProfileService,
+} from '@flogo-web/client-core/services';
 import { FlogoProfileServiceMock } from '@flogo-web/client-core/services/profile.service.mock';
 import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
 

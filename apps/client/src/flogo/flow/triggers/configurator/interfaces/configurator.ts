@@ -1,4 +1,9 @@
-import { TriggerSchema, AppProperty, FlowMetadata, TriggerHandler } from '@flogo-web/client-core';
+import {
+  TriggerSchema,
+  AppProperty,
+  FlowMetadata,
+  TriggerHandler,
+} from '@flogo-web/client-core';
 
 import { Trigger, TriggerConfigureState } from '../../../core';
 import { Tabs } from '../../../shared/tabs/models/tabs.model';

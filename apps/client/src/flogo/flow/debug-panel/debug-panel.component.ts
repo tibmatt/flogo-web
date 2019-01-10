@@ -21,7 +21,7 @@ import {
   ItemActivityTask,
   StepAttribute,
   isMapperActivity,
-  SingleEmissionSubject
+  SingleEmissionSubject,
 } from '@flogo-web/client-core';
 
 import { FlowActions, FlowSelectors, FlowState } from '@flogo-web/client/flow/core/state';

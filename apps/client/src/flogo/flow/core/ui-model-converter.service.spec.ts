@@ -1,6 +1,9 @@
 import { cloneDeep } from 'lodash';
 import { ActionBase, Dictionary } from '@flogo-web/client-core';
-import { ErrorService, RESTAPIContributionsService } from '@flogo-web/client-core/services';
+import {
+  ErrorService,
+  RESTAPIContributionsService,
+} from '@flogo-web/client-core/services';
 import { UIModelConverterService } from './ui-model-converter.service';
 import {
   mockActivitiesDetails,

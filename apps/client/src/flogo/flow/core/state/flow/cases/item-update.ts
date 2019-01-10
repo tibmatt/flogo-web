@@ -3,7 +3,7 @@ import {
   GraphNode,
   Item,
   ItemBranch,
-  isBranchConfigured
+  isBranchConfigured,
 } from '@flogo-web/client-core';
 import { FlowState } from '../flow.state';
 import { getGraphName, getItemsDictionaryName } from '../../utils';

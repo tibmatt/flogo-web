@@ -2,10 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, timer, Observable, Subscription } from 'rxjs';
 import { Router, NavigationStart } from '@angular/router';
 import { filter, take, takeUntil } from 'rxjs/operators';
-import {
-  Notification,
-  NotificationMessage,
-} from './notifications';
+import { Notification, NotificationMessage } from './notifications';
 
 const keepPersistableOnly = (notifications: Notification[]) =>
   notifications.filter(n => n.persistAfterNavigation);

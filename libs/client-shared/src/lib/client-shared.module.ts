@@ -12,9 +12,9 @@ import {
   DraggableDirective,
   EditableInputDirective,
   JsonDownloaderDirective,
-  ClickOutsideDirective
+  ClickOutsideDirective,
 } from './directives';
-import { LoadingIndicatorComponent, FlogoDeletePopupComponent,  } from './components';
+import { LoadingIndicatorComponent, FlogoDeletePopupComponent } from './components';
 
 const ALL_MODULE_DECLARABLES = [
   CopyToClipboardComponent,

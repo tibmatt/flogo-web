@@ -24,7 +24,11 @@ import { SvgRefFixerService } from './services/svg-ref-fixer.service';
 import { LogService } from './services/log.service';
 import { ShimTriggerBuildApiService } from './services/restapi/v2/shim-trigger-build-api.service';
 import { FileDownloaderService } from './services/file-downloader.service';
-import { ConfirmationModalComponent, ConfirmationModalService, ConfirmationService  } from './confirmation';
+import {
+  ConfirmationModalComponent,
+  ConfirmationModalService,
+  ConfirmationService,
+} from './confirmation';
 import { NotificationsModule } from './notifications';
 import { ModalService } from './modal';
 

@@ -7,10 +7,23 @@ import {
   transition,
   animateChild,
 } from '@angular/animations';
-import { MetadataAttribute, Task, LanguageService, Item, isMapperActivity } from '@flogo-web/client-core';
+import {
+  MetadataAttribute,
+  Task,
+  LanguageService,
+  Item,
+  isMapperActivity,
+} from '@flogo-web/client-core';
 
-import { ConfirmationResult, ConfirmationModalService, FLOGO_TASK_TYPE } from '@flogo-web/client-core';
-import { mergeItemWithSchema, SingleEmissionSubject } from '@flogo-web/client-core/models';
+import {
+  ConfirmationResult,
+  ConfirmationModalService,
+  FLOGO_TASK_TYPE,
+} from '@flogo-web/client-core';
+import {
+  mergeItemWithSchema,
+  SingleEmissionSubject,
+} from '@flogo-web/client-core/models';
 import { NotificationsService } from '@flogo-web/client-core/notifications';
 import { AppsApiService, RESTAPIHandlersService } from '@flogo-web/client-core/services';
 

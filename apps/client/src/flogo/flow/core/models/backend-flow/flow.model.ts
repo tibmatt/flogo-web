@@ -8,7 +8,7 @@ import {
   isEmpty,
   isNumber,
   isString,
-  isUndefined
+  isUndefined,
 } from 'lodash';
 
 import {
@@ -17,7 +17,7 @@ import {
   FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
   isSubflowTask,
   getDefaultValue,
-  mergeItemWithSchema
+  mergeItemWithSchema,
 } from '@flogo-web/client-core';
 
 import {

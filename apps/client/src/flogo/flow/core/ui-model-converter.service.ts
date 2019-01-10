@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 
 import { ActionBase, Dictionary } from '@flogo-web/client-core';
-import { ErrorService, RESTAPIContributionsService } from '@flogo-web/client-core/services';
+import {
+  ErrorService,
+  RESTAPIContributionsService,
+} from '@flogo-web/client-core/services';
 
 import { AbstractModelConverter } from './models/ui-converter.model';
 import { MicroServiceModelConverter } from './models/profiles/microservice-converter.model';

@@ -3,7 +3,11 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { ErrorService, AppsApiService, HttpUtilsService } from '@flogo-web/client-core/services';
+import {
+  ErrorService,
+  AppsApiService,
+  HttpUtilsService,
+} from '@flogo-web/client-core/services';
 import { NotificationsService } from '@flogo-web/client-core/notifications';
 import { NotificationsServiceMock } from '@flogo-web/client-core/notifications/testing';
 import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';

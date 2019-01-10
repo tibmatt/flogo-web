@@ -12,9 +12,12 @@ import {
   ActivitySchema,
   flogoGenTriggerID,
   flogoGenNodeID,
-  isSubflowTask
+  isSubflowTask,
 } from '@flogo-web/client-core';
-import { ErrorService, RESTAPIContributionsService } from '@flogo-web/client-core/services';
+import {
+  ErrorService,
+  RESTAPIContributionsService,
+} from '@flogo-web/client-core/services';
 
 import { ItemFactory } from './graph-and-items/item-factory';
 import { makeGraphAndItems } from './graph-and-items';

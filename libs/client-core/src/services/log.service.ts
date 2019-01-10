@@ -5,7 +5,6 @@ import { HOSTNAME } from './restapi';
 
 @Injectable()
 export class LogService {
-
   // TODO define config interface
   public lines: any[];
 

@@ -8,7 +8,7 @@ import { WalkthroughComponent } from './walkthrough.component';
   imports: [
     // module dependencies
     NgCommonModule,
-    SharedModule
+    SharedModule,
   ],
   declarations: [WalkthroughComponent],
   exports: [WalkthroughComponent],

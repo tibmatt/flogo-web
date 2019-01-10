@@ -1,4 +1,9 @@
-import { Dictionary, TriggerSchema, SchemaAttribute, TriggerHandler } from '@flogo-web/client-core';
+import {
+  Dictionary,
+  TriggerSchema,
+  SchemaAttribute,
+  TriggerHandler,
+} from '@flogo-web/client-core';
 import { Trigger } from '../../../interfaces';
 import { ConfigureTriggerDetails } from '../../../../triggers/configurator/interfaces';
 

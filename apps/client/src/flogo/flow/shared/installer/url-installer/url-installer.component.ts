@@ -31,7 +31,7 @@ export class FlogoUrlInstallerComponent implements OnChanges {
   }
 
   ngOnChanges(changes: { [key: string]: SimpleChange }): any {
-    if(changes.status) {
+    if (changes.status) {
       this.onInstallerStatusChange(changes.status.currentValue);
     }
   }

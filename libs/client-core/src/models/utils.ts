@@ -1,4 +1,14 @@
-import { assign, get, isObject, isUndefined, uniqueId, cloneDeep, each, isEmpty, trimStart } from 'lodash';
+import {
+  assign,
+  get,
+  isObject,
+  isUndefined,
+  uniqueId,
+  cloneDeep,
+  each,
+  isEmpty,
+  trimStart,
+} from 'lodash';
 import { ValueType, FLOGO_TASK_TYPE, TYPE_LITERAL_ASSIGNMENT } from '../constants';
 import { Task, Item } from '../interfaces';
 
@@ -12,7 +22,7 @@ export function flogoGenNodeID() {
 
 /**
  * get default value of a given type
-  */
+ */
 export function getDefaultValue(forType: ValueType): any {
   return ValueType.defaultValueForType.get(forType);
 }
@@ -31,7 +41,7 @@ function portAttribute(
       value: any;
       [key: string]: any;
     }
-    >assign({}, inAttr);
+  >assign({}, inAttr);
 
   if (withDefault && isUndefined(outAttr.value)) {
     outAttr.value = getDefaultValue(outAttr.type);
@@ -124,7 +134,7 @@ export function activitySchemaToTrigger(schema: any): any {
     homepage: get(schema, 'homepage', ''),
     settings: get(schema, 'settings', ''),
     outputs: get(schema, 'outputs', ''),
-    handler: {settings: get(schema, 'handler.settings', [])}, // ,
+    handler: { settings: get(schema, 'handler.settings', []) }, // ,
     // __schema: cloneDeep(schema)
   };
 

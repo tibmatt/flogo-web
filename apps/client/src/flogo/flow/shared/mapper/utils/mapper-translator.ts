@@ -6,7 +6,8 @@ import {
   AttributeMapping as FlowMapping,
   FLOGO_ERROR_ROOT_NAME,
   FLOGO_TASK_TYPE,
-  ValueType, MAPPING_TYPE,
+  ValueType,
+  MAPPING_TYPE,
 } from '@flogo-web/client-core';
 
 import { REGEX_INPUT_VALUE_EXTERNAL, ROOT_TYPES } from '../constants';

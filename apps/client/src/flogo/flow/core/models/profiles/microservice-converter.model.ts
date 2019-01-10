@@ -1,5 +1,10 @@
 import { isUndefined } from 'lodash';
-import { ActivitySchema, FlowMetadata, MetadataAttribute, ValueType } from '@flogo-web/client-core';
+import {
+  ActivitySchema,
+  FlowMetadata,
+  MetadataAttribute,
+  ValueType,
+} from '@flogo-web/client-core';
 import { AbstractModelConverter } from '../ui-converter.model';
 
 export class MicroServiceModelConverter extends AbstractModelConverter {

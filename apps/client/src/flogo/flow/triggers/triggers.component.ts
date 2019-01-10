@@ -11,7 +11,10 @@ import {
   TriggerSchema,
   Dictionary,
 } from '@flogo-web/client-core';
-import { TriggersApiService, RESTAPIHandlersService } from '@flogo-web/client-core/services';
+import {
+  TriggersApiService,
+  RESTAPIHandlersService,
+} from '@flogo-web/client-core/services';
 import { SingleEmissionSubject } from '@flogo-web/client-core/models';
 import { TRIGGER_MENU_OPERATION } from '@flogo-web/client-core/constants';
 
@@ -25,8 +28,11 @@ import * as TriggerConfigureActions from '../core/state/triggers-configure/trigg
 import { TriggerMenuSelectionEvent } from './trigger-block/models';
 import { RenderableTrigger } from './interfaces/renderable-trigger';
 
-function settingsToObject(settings: {name: string, value?: any}[], getValue: (s: { value?: any }) => any = s => s.value) {
-  return fromPairs(settings.map((s) => [s.name, getValue(s)]));
+function settingsToObject(
+  settings: { name: string; value?: any }[],
+  getValue: (s: { value?: any }) => any = s => s.value
+) {
+  return fromPairs(settings.map(s => [s.name, getValue(s)]));
 }
 
 @Component({
@@ -117,7 +123,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
     if (data.installType === 'installed') {
       const appId = this.appDetails.appId;
       const triggerInfo: any = pick(data.triggerData, ['name', 'ref', 'description']);
-      triggerInfo.settings = settingsToObject(data.triggerData.settings, (_) => null);
+      triggerInfo.settings = settingsToObject(data.triggerData.settings, _ => null);
       registerTrigger = this.restAPITriggersService
         .createTrigger(appId, triggerInfo)
         .then(triggerResult => triggerResult.id);

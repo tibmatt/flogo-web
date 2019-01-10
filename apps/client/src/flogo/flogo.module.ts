@@ -11,7 +11,11 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BsModalModule } from 'ng2-bs3-modal';
 
-import { CoreModule as GlobalCoreModule, LanguageService, FLOGO_VERSION } from '@flogo-web/client-core';
+import {
+  CoreModule as GlobalCoreModule,
+  LanguageService,
+  FLOGO_VERSION,
+} from '@flogo-web/client-core';
 import { HOSTNAME } from '@flogo-web/client-core/services';
 import { createTranslateLoader } from '@flogo-web/client-core/language';
 import { initializer } from '@flogo-web/client-core/initializer';
