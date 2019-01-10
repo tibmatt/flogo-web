@@ -11,7 +11,7 @@ import {
   ItemSubflow,
   ItemTask,
   isMapperActivity,
-  Dictionary
+  Dictionary,
 } from '@flogo-web/client-core';
 
 import { AppState } from '@flogo-web/client/flow/core/state/app.state';
