@@ -1,4 +1,4 @@
-import { Action as ActionSchema } from '@flogo-web/client/core';
+import { Action as ActionSchema } from '@flogo-web/client-core';
 import { FlowState } from '../flow.state';
 import { getGraphName, getItemsDictionaryName, PayloadOf } from '../../utils';
 import { TaskItemCreated } from '../flow.actions';

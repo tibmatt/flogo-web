@@ -4,9 +4,9 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 
-import { SingleEmissionSubject } from '@flogo-web/client/core/models/single-emission-subject';
-import { MapperController } from '@flogo-web/client/flow/shared/mapper/services/mapper-controller/mapper-controller';
+import { SingleEmissionSubject } from '@flogo-web/client-core/models';
 
+import { MapperController } from '@flogo-web/client/flow/shared/mapper/services/mapper-controller/mapper-controller';
 import {
   TriggerConfigureSelectors,
   TriggerConfigureActions,
@@ -18,8 +18,8 @@ import {
 } from '@flogo-web/client/flow/core/interfaces';
 
 import { CurrentTriggerState, TriggerInformation } from '../interfaces';
-import { ConfigureDetailsService } from './details.service';
 import { ConfiguratorService } from '../services/configurator.service';
+import { ConfigureDetailsService } from './details.service';
 
 type MapperSubscriberFn = (
   controller: MapperController,

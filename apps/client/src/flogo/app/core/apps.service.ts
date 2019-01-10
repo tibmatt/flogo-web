@@ -2,14 +2,13 @@ import { defaultsDeep, cloneDeep } from 'lodash';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { AppsApiService } from '@flogo-web/client/core/services/restapi/v2/apps-api.service';
-import { ErrorService } from '@flogo-web/client/core/services/error.service';
+import { AppsApiService, ErrorService } from '@flogo-web/client-core/services';
 
 import { App } from './app.interface';
 import { ApplicationDetail } from './application-detail.interface';
 import { TriggerGroup } from './trigger-group.interface';
 import { FlowGroup } from './flow-group.interface';
-import { App as BackendApp } from '@flogo-web/client/core';
+import { App as BackendApp } from '@flogo-web/client-core';
 
 const DEFAULT_STATE = {
   name: {

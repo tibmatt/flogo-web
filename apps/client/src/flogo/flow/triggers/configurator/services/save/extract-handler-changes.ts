@@ -1,7 +1,6 @@
 import { fromPairs } from 'lodash';
 import { FormGroup } from '@angular/forms';
-import { Dictionary } from '@flogo-web/client/core';
-import { TriggerHandler } from '@flogo-web/client/flow/core';
+import { Dictionary, TriggerHandler } from '@flogo-web/client-core';
 import { MapperController, MapperTranslator } from '@flogo-web/client/flow/shared/mapper';
 import { SettingControlGroup } from '../../interfaces';
 import { SaveParams } from './save-params';

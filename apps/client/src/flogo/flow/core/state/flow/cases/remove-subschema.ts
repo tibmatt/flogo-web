@@ -1,5 +1,5 @@
 import { FlowState } from '@flogo-web/client/flow/core/state';
-import { ItemSubflow } from '@flogo-web/client/core';
+import { ItemSubflow } from '@flogo-web/client-core';
 import { getLinkedSubflow } from './get-linked-subflow';
 
 export function removeSubschemaIfNotUsed(state: FlowState, subflowId: string) {

@@ -1,5 +1,5 @@
 import { isEmpty, partialRight, times } from 'lodash';
-import { GraphNode, GraphNodeDictionary, NodeType } from '@flogo-web/client/core';
+import { GraphNode, GraphNodeDictionary, NodeType } from '@flogo-web/client-core';
 import { NodeMatrix } from './matrix';
 
 interface TranslateContext {

@@ -3,10 +3,13 @@ import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { of as observableOf, forkJoin } from 'rxjs';
 import { mergeMap, take, tap } from 'rxjs/operators';
-import { RESTAPIHandlersService } from '@flogo-web/client/core/services/restapi/v2/handlers-api.service';
-import { TriggersApiService } from '@flogo-web/client/core/services';
 
-import { TriggerHandler } from '@flogo-web/client/flow/core';
+import { TriggerHandler } from '@flogo-web/client-core';
+import {
+  RESTAPIHandlersService,
+  TriggersApiService,
+} from '@flogo-web/client-core/services';
+
 import { AppState } from '@flogo-web/client/flow/core/state/app.state';
 import * as TriggerActions from '@flogo-web/client/flow/core/state/triggers/triggers.actions';
 import {

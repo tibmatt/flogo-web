@@ -75,11 +75,9 @@ export class WalkthroughComponent implements OnChanges {
     this.currentStep = this.steps[this.currentIndex];
   }
 
-  ngOnChanges(changes: { [key: string]: SimpleChange }) {
-    if (_.has(changes, 'isActivated')) {
-      if (changes['isActivated'].currentValue) {
-        this.openModal();
-      }
+  ngOnChanges(changes: { isActivated?: SimpleChange }) {
+    if (changes.isActivated && changes.isActivated.currentValue) {
+      this.openModal();
     }
   }
 

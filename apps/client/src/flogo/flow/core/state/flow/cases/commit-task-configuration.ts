@@ -1,11 +1,11 @@
-import { ItemSubflow } from '@flogo-web/client/core';
+import { ItemSubflow } from '@flogo-web/client-core';
 import { PayloadOf, getItem } from '../../utils';
 import { FlowState } from '../flow.state';
 import { CommitItemConfiguration } from '../flow.actions';
 import { subflowSchemaUpdate } from './subflow-schema-update';
 import { getLinkedSubflow } from './get-linked-subflow';
 import { graphUpdate, itemUpdate } from './item-update';
-import { removeSubschemaIfNotUsed } from '@flogo-web/client/flow/core/state/flow/cases/remove-subschema';
+import { removeSubschemaIfNotUsed } from './remove-subschema';
 
 export function commitTaskConfiguration(
   state: FlowState,

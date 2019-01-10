@@ -1,5 +1,5 @@
 import { chain, cloneDeep, get, isEmpty, isNil } from 'lodash';
-import { MetadataAttribute } from '@flogo-web/client/core';
+import { MetadataAttribute } from '@flogo-web/client-core';
 import { FlowState } from '@flogo-web/client/flow/core/state';
 import { RunOptions } from './run-orchestrator.service';
 

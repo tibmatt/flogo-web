@@ -1,11 +1,11 @@
+import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo-web/client-core';
+import { ValidatorFn } from '@angular/forms';
 import {
   TriggerConfigureTab,
   TriggerConfigureField,
   TriggerConfigureFields,
   TriggerConfigureTabType,
 } from '@flogo-web/client/flow/core';
-import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo-web/client/core';
-import { ValidatorFn } from '@angular/forms';
 
 export interface ConfigureTriggerDetails {
   tabs: TriggerConfigureTab[];

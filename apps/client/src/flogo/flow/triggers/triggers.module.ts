@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared';
-import { CoreModule as FlogoCoreModule } from '@flogo-web/client/core';
+import { CoreModule as FlogoCoreModule } from '@flogo-web/client-core';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
 import { CoreModule as FlowCoreModule } from '@flogo-web/client/flow/core';
 import { InstallerModule as ContribInstallerModule } from '@flogo-web/client/flow/shared/installer';
 import { FlogoFlowTriggersPanelComponent } from './triggers.component';

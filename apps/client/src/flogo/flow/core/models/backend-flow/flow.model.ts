@@ -9,20 +9,16 @@ import {
   isNumber,
   isString,
   isUndefined,
-  trim,
 } from 'lodash';
-import {
-  convertTaskID,
-  getDefaultValue,
-  isSubflowTask,
-} from '@flogo-web/client/shared/utils';
 
-import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '@flogo-web/client/core/constants';
 import {
   FlowMetadata,
   MetadataAttribute,
-} from '@flogo-web/client/core/interfaces/flow/index';
-import { mergeItemWithSchema } from '@flogo-web/client/core/models';
+  FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
+  isSubflowTask,
+  getDefaultValue,
+  mergeItemWithSchema,
+} from '@flogo-web/client-core';
 
 import {
   AttributeMapping as DiagramTaskAttributeMapping,
@@ -44,7 +40,7 @@ import {
   GraphNode,
   NodeType,
   Action,
-} from '@flogo-web/client/core';
+} from '@flogo-web/client-core';
 
 const DEBUG = false;
 const INFO = true;
@@ -106,8 +102,8 @@ const generateDiagramTraverser = schemas => {
         if (node.type === NodeType.Task) {
           linksDest.push({
             id: _genLinkId(),
-            from: convertTaskID(node.id),
-            to: convertTaskID(childNode.id),
+            from: node.id,
+            to: childNode.id,
             type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.DEFAULT,
           });
         } else if (node.type === NodeType.Branch && node.parents.length === 1) {
@@ -116,8 +112,8 @@ const generateDiagramTraverser = schemas => {
 
           linksDest.push({
             id: _genLinkId(),
-            from: convertTaskID(parentNode.id),
-            to: convertTaskID(childNode.id),
+            from: parentNode.id,
+            to: childNode.id,
             type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH,
             value: branch.condition,
           });
@@ -134,7 +130,7 @@ const generateDiagramTraverser = schemas => {
     const task = mergeItemWithSchema(item, schema);
     const taskInfo = <flowToJSON_Task>{};
     if (_isValidInternalTaskInfo(task)) {
-      taskInfo.id = convertTaskID(task.id);
+      taskInfo.id = task.id;
       taskInfo.name = get(task, 'name', '');
       taskInfo.description = get(task, 'description', '');
       taskInfo.type = task.type;
@@ -245,15 +241,6 @@ function _parseFlowAttributes(inAttrs: any[]): flowToJSON_Attribute[] {
       DEBUG && console.log(inAttr);
       return;
     }
-
-    // NOTE
-    //  empty value may be fed from upstream results - mapping
-    //  hence comment out this validation
-    // if ( !_.isNumber( attr.value ) && !_.isBoolean( attr.value ) && _.isEmpty( attr.value ) ) {
-    //   DEBUG && console.warn( 'Empty attribute value found' );
-    //   DEBUG && console.log( inAttr );
-    //   return;
-    // }
 
     // the attribute default attribute type is STRING
     attr.type = inAttr.type || ValueType.String;

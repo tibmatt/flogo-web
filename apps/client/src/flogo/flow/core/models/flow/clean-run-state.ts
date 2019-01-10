@@ -1,5 +1,5 @@
 import { mapValues } from 'lodash';
-import { FlowGraph, GraphNode } from '@flogo-web/client/core';
+import { FlowGraph, GraphNode } from '@flogo-web/client-core';
 
 const cleanNodeRunStatus = (node: GraphNode): GraphNode => ({
   ...node,

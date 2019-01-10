@@ -1,5 +1,10 @@
+import { cloneDeep } from 'lodash';
+import { ActionBase, Dictionary } from '@flogo-web/client-core';
+import {
+  ErrorService,
+  RESTAPIContributionsService,
+} from '@flogo-web/client-core/services';
 import { UIModelConverterService } from './ui-model-converter.service';
-import { ErrorService } from '../../core/services/error.service';
 import {
   mockActivitiesDetails,
   mockErrorFlow,
@@ -11,10 +16,7 @@ import {
   mockTransformationData,
 } from './ui-model-flow.mock';
 import { mockTriggerDetails } from './ui-model-trigger.mock';
-import { RESTAPIContributionsService } from '../../core/services/restapi/v2/contributions.service';
 import Spy = jasmine.Spy;
-import { ActionBase, Dictionary } from '@flogo-web/client/core';
-import { cloneDeep } from 'lodash';
 
 describe('Service: UI Model Converter', function(this: {
   service: UIModelConverterService;

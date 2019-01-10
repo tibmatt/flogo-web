@@ -4,8 +4,12 @@ import {
   MapperController,
   MapperControllerFactory,
 } from '@flogo-web/client/flow/shared/mapper';
-import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo-web/client/core';
-import { TriggerHandler } from '@flogo-web/client/flow/core';
+import {
+  Dictionary,
+  SchemaAttribute,
+  TriggerSchema,
+  TriggerHandler,
+} from '@flogo-web/client-core';
 import {
   CurrentTriggerState,
   SettingControlInfo,

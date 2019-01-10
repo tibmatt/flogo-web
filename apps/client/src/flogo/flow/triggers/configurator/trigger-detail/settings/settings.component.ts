@@ -10,8 +10,10 @@ import {
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
+
+import { ConfirmationService, ConfirmationResult } from '@flogo-web/client-core';
+
 import { TriggerInformation } from '../../interfaces';
-import { ConfirmationService, ConfirmationResult } from '@flogo-web/client/core';
 import {
   ConfirmEditionComponent,
   EDITION_DATA_TOKEN,

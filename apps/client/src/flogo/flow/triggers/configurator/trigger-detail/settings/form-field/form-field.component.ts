@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import {
   Component,
   ElementRef,
@@ -9,8 +10,9 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ValueType } from '@flogo-web/client/core/constants';
-import { Observable } from 'rxjs';
+
+import { ValueType } from '@flogo-web/client-core';
+
 import { SettingValue } from '../../settings-value';
 import { SettingControlInfo } from '../../../interfaces';
 import { parseValue } from '../parse-value';

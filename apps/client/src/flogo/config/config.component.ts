@@ -2,7 +2,7 @@ import { startCase } from 'lodash';
 
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ConfigurationService } from '../core/services/configuration.service';
+import { ConfigurationService } from '@flogo-web/client-core/services';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 

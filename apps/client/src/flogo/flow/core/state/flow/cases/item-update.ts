@@ -3,9 +3,8 @@ import {
   GraphNode,
   Item,
   ItemBranch,
-  NodeType,
-} from '@flogo-web/client/core';
-import { isBranchConfigured, isIterableTask } from '@flogo-web/client/shared/utils';
+  isBranchConfigured,
+} from '@flogo-web/client-core';
 import { FlowState } from '../flow.state';
 import { getGraphName, getItemsDictionaryName } from '../../utils';
 import { HandlerType } from '@flogo-web/client/flow/core/models/handler-type';

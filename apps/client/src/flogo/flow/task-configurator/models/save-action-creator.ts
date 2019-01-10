@@ -10,9 +10,9 @@ import {
   ItemBranch,
   ItemSubflow,
   ItemTask,
-  Dictionary,
-} from '@flogo-web/client/core';
-import { isMapperActivity } from '@flogo-web/client/shared/utils';
+  isMapperActivity,
+  Dictionary
+} from '@flogo-web/client-core';
 
 import { AppState } from '@flogo-web/client/flow/core/state/app.state';
 import { FlowState, FlowSelectors, FlowActions } from '@flogo-web/client/flow/core/state';

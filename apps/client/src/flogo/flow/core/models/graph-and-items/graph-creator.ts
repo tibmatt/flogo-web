@@ -7,12 +7,10 @@ import {
   Dictionary,
   flow as backendFlow,
   ItemActivityTask,
-} from '@flogo-web/client/core';
-import {
   isBranchConfigured,
   isIterableTask,
   isSubflowTask,
-} from '@flogo-web/client/shared/utils';
+} from '@flogo-web/client-core';
 
 const defaultFeatures: NodeFeatures = {
   selectable: true,

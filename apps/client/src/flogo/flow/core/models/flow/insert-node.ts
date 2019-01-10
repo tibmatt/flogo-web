@@ -1,4 +1,4 @@
-import { FlowGraph, GraphNode } from '@flogo-web/client/core';
+import { FlowGraph, GraphNode } from '@flogo-web/client-core';
 
 export function insertNode(
   flowGraph: FlowGraph,

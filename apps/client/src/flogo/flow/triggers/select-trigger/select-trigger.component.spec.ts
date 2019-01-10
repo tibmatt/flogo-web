@@ -1,15 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { TriggersApiService } from '@flogo-web/client/core/services';
-import { TriggersApiServiceMock } from '@flogo-web/client/core/services/restapi/v2/triggers-api.service.mock';
-import { FlogoSelectTriggerComponent } from './select-trigger.component';
-import { RESTAPIContributionsService } from '@flogo-web/client/core/services/restapi/v2/contributions.service';
-import { HttpUtilsService } from '@flogo-web/client/core/services/restapi/http-utils.service';
-import { FlogoProfileService } from '@flogo-web/client/core/services/profile.service';
-import { FlogoProfileServiceMock } from '@flogo-web/client/core/services/profile.service.mock';
+
+import {
+  TriggersApiService,
+  RESTAPIContributionsService,
+  HttpUtilsService,
+  FlogoProfileService,
+} from '@flogo-web/client-core/services';
+import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
+import { TriggersApiServiceMock } from '@flogo-web/client-core/services/restapi/v2/triggers-api.service.mock';
+import { FlogoProfileServiceMock } from '@flogo-web/client-core/services/profile.service.mock';
+
 import { TriggersModule } from '@flogo-web/client/flow/triggers';
-import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
+import { FlogoSelectTriggerComponent } from './select-trigger.component';
 
 describe('FlogoSelectTrigger component', () => {
   let comp: FlogoSelectTriggerComponent;

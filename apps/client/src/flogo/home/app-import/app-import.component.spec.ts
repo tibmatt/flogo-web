@@ -1,11 +1,13 @@
-import { FlogoAppImportComponent } from './app-import.component';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BsModalModule, BsModalService } from 'ng2-bs3-modal';
-import { ImportErrorFormatterService } from '../core/import-error-formatter.service';
+import { Component, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+
+import { NoDependenciesFakeLanguageModule } from '@flogo-web/client-core/language/testing';
+
+import { FlogoAppImportComponent } from './app-import.component';
 import { mockImportErrorResponse } from './mocks/error.response.mock';
-import { NoDependenciesFakeLanguageModule } from '@flogo-web/client/core/language/testing';
+import { ImportErrorFormatterService } from '../core/import-error-formatter.service';
 
 @Component({
   selector: 'flogo-container-component',

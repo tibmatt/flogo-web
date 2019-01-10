@@ -2,12 +2,15 @@ import { isString, isArray, fromPairs } from 'lodash';
 import { resolveExpressionType } from '@flogo-web/parser';
 
 import {
+  Task as FlowTile,
   FLOGO_ERROR_ROOT_NAME,
   FLOGO_TASK_TYPE,
   ValueType,
-} from '@flogo-web/client/core/constants';
-import { Task as FlowTile, Dictionary } from '@flogo-web/client/core';
-import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL, ROOT_TYPES } from '../constants';
+  MAPPING_TYPE,
+  Dictionary,
+} from '@flogo-web/client-core';
+
+import { REGEX_INPUT_VALUE_EXTERNAL, ROOT_TYPES } from '../constants';
 // todo: shared models should be moved to core
 import {
   FlowMetadata,

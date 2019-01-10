@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { SchemaAttribute } from '@flogo-web/client/core';
+import { SchemaAttribute } from '@flogo-web/client-core';
 import { FormFieldService } from './form-field.service';
 import { BaseField } from './field-base';
 

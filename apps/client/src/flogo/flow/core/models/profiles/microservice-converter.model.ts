@@ -1,7 +1,11 @@
-import { FlowMetadata, MetadataAttribute } from '@flogo-web/client/core/interfaces';
-import { ValueType } from '@flogo-web/client/core/constants';
+import { isUndefined } from 'lodash';
+import {
+  ActivitySchema,
+  FlowMetadata,
+  MetadataAttribute,
+  ValueType,
+} from '@flogo-web/client-core';
 import { AbstractModelConverter } from '../ui-converter.model';
-import { ActivitySchema } from '@flogo-web/client/core';
 
 export class MicroServiceModelConverter extends AbstractModelConverter {
   normalizeActivitySchema(schema: ActivitySchema) {
@@ -21,7 +25,7 @@ export class MicroServiceModelConverter extends AbstractModelConverter {
         name: input.name,
         type: input.type || ValueType.String,
       };
-      if (!_.isUndefined(input.value)) {
+      if (!isUndefined(input.value)) {
         inputMetadata.value = input.value;
       }
       return inputMetadata;

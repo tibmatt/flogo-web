@@ -36,6 +36,12 @@
         "server",
         "plugin"
       ]
+    },
+    "client-core": {
+      "tags": ["client"]
+    },
+    "client-shared": {
+      "tags": ["client"]
     }
   }
 }

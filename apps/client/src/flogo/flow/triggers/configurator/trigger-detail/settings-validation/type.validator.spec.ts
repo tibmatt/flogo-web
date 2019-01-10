@@ -1,3 +1,4 @@
+import { ValueType } from '@flogo-web/client-core';
 import {
   arrayValidator,
   booleanValidator,
@@ -5,7 +6,6 @@ import {
   getObjectValidator,
 } from './type.validator';
 import { makeExpectationFunctions } from './testing/make-expectation-functions';
-import { ValueType } from '@flogo-web/client/core';
 
 describe('booleanValidator', function() {
   it('Should correctly validate boolean values', function() {

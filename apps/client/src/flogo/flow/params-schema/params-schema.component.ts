@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import * as _ from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { BsModalComponent } from 'ng2-bs3-modal';
 
-import { ValueType } from '@flogo-web/client/core/constants';
+import { ValueType } from '@flogo-web/client-core/constants';
 
 @Component({
   selector: 'flogo-flow-params-schema',
@@ -130,7 +130,7 @@ export class ParamsSchemaComponent implements OnInit {
         if (newErrors) {
           delete newErrors['uniqueName'];
         }
-        nameControl.setErrors(!_.isEmpty(newErrors) ? newErrors : null);
+        nameControl.setErrors(!isEmpty(newErrors) ? newErrors : null);
       }
     });
     return formArrayHasErrors ? uniqueError : null;

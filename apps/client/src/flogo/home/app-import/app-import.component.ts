@@ -8,8 +8,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
+
+import { ValidationDetail } from '@flogo-web/client-core';
+
 import { ImportErrorFormatterService } from '../core/import-error-formatter.service';
-import { ValidationDetail } from '@flogo-web/client/core';
 
 @Component({
   selector: 'flogo-home-app-import',

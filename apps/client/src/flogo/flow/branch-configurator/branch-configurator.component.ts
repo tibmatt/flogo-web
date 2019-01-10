@@ -8,14 +8,14 @@ import {
   GraphNode,
   ItemBranch,
   LanguageService,
-} from '@flogo-web/client/core';
+} from '@flogo-web/client-core';
 import {
   MapperController,
   MapperControllerFactory,
 } from '@flogo-web/client/flow/shared/mapper';
 import { getStateWhenConfigureChanges } from '@flogo-web/client/flow/shared/configurator/configurator.selector';
 import { skip, takeUntil } from 'rxjs/operators';
-import { SingleEmissionSubject } from '@flogo-web/client/core/models';
+import { SingleEmissionSubject } from '@flogo-web/client-core/models';
 import { cloneDeep } from 'lodash';
 import { getInputContext } from '@flogo-web/client/flow/core/models/task-configure/get-input-context';
 import { Subscription } from 'rxjs';

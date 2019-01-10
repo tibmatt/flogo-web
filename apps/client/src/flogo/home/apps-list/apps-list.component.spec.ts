@@ -1,18 +1,21 @@
+import { BsModalComponent } from 'ng2-bs3-modal';
+import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
-import { FlogoAppsListComponent } from './apps-list.component';
-import { ErrorService } from '../../core/services/error.service';
-import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
-import { AppsApiServiceMock } from '../../core/services/restapi/v2/apps-api.service.mock';
-import { TimeFromNowPipe } from '../../shared/pipes/time-from-now.pipe';
-import { HttpUtilsService } from '../../core/services/restapi/http-utils.service';
-import { FlogoDeletePopupComponent } from '../../shared/components/delete.popup.component';
+
+import {
+  ErrorService,
+  AppsApiService,
+  HttpUtilsService,
+} from '@flogo-web/client-core/services';
+import { NotificationsService } from '@flogo-web/client-core/notifications';
+import { NotificationsServiceMock } from '@flogo-web/client-core/notifications/testing';
+import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
+import { AppsApiServiceMock } from '@flogo-web/client-core/services/restapi/v2/apps-api.service.mock';
+import { TimeFromNowPipe, FlogoDeletePopupComponent } from '@flogo-web/client-shared';
+
 import { FlogoAppImportComponent } from '../app-import/app-import.component';
-import { BsModalComponent } from 'ng2-bs3-modal';
-import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
-import { NotificationsService } from '@flogo-web/client/core/notifications/notifications.service';
-import { NotificationsServiceMock } from '@flogo-web/client/core/notifications/testing';
+import { FlogoAppsListComponent } from './apps-list.component';
 
 describe('FlogoAppList component', () => {
   const applications = [

@@ -10,7 +10,9 @@ import {
   SimpleChanges,
   TrackByFunction,
 } from '@angular/core';
-import { FlowGraph } from '@flogo-web/client/core';
+
+import { FlowGraph } from '@flogo-web/client-core';
+
 import { DiagramAction, DiagramSelection, Tile } from '../interfaces';
 import { EMPTY_MATRIX } from '../shared';
 import { makeRenderableMatrix, TileMatrix } from '../renderable-model';

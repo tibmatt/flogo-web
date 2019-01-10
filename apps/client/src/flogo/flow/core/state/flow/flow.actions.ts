@@ -7,7 +7,7 @@ import {
   Item,
   ItemTask,
   StepAttribute,
-} from '@flogo-web/client/core';
+} from '@flogo-web/client-core';
 import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
 

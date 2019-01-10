@@ -35,9 +35,9 @@ import {
   NodeType,
   ItemActivityTask,
   ActivitySchema,
-} from '@flogo-web/client/core';
-import { NotificationsService } from '@flogo-web/client/core/notifications';
-import { OperationalError } from '@flogo-web/client/core/services';
+} from '@flogo-web/client-core';
+import { NotificationsService } from '@flogo-web/client-core/notifications';
+import { OperationalError } from '@flogo-web/client-core/services';
 import { FlowActions, FlowSelectors } from '@flogo-web/client/flow/core/state';
 import { isBranchExecuted } from '@flogo-web/client/flow/core/models/flow/branch-execution-status';
 import { logRunStatus } from '@flogo-web/client/flow/core/test-runner/log-run-status';

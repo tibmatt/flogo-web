@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
 import { LogsModule as FlogoLogsModule } from '@flogo-web/client/logs';
 import { DiagramModule } from '@flogo-web/client/packages/diagram';
 import { ScrollingModule } from '@angular/cdk/scrolling';

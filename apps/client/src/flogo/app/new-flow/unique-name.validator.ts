@@ -1,7 +1,7 @@
-import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { Observable, timer, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { APIFlowsService } from '@flogo-web/client-core/services';
 
 export class UniqueNameValidator {
   static make(flowsService: APIFlowsService, appId: string): AsyncValidatorFn {

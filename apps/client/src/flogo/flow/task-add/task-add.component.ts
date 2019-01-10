@@ -5,7 +5,7 @@ import {
   ActionBase,
   ActivitySchema,
   CONTRIB_REF_PLACEHOLDER,
-} from '@flogo-web/client/core';
+} from '@flogo-web/client-core';
 import { Activity, TaskAddOptions } from './core/task-add-options';
 
 export const TASKADD_OPTIONS = new InjectionToken<TaskAddOptions>('flogo-flow-task-add');
