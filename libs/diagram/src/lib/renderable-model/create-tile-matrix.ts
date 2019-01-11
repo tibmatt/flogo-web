@@ -2,7 +2,7 @@ import { times } from 'lodash';
 
 import { GraphNodeDictionary, NodeType } from '@flogo-web/client-core';
 
-import { Tile } from '../interfaces/tile';
+import { Tile } from '../interfaces';
 import { NodeMatrix, TileMatrix } from './matrix';
 import { tileFactory } from './tile-factory';
 

@@ -104,9 +104,6 @@ export const CONTRIB_REF_PLACEHOLDER = {
   REF_CLI: 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli',
 };
 
-export const SELECTED_INSERT_TILE_CLASS = 'logic-selected';
-export const BUTTON_INSERT_CLASS = 'btn-insert';
-
 export const TYPE_ATTR_ASSIGNMENT = 1;
 export const TYPE_LITERAL_ASSIGNMENT = 2;
 export const TYPE_EXPRESSION_ASSIGNMENT = 3;

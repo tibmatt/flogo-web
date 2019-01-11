@@ -4,7 +4,7 @@ import ObjectContaining = jasmine.ObjectContaining;
 import { createTileMatrix } from './create-tile-matrix';
 import { GraphNode, NodeType } from '@flogo-web/client-core';
 import { InsertTile, TaskTile, Tile, TileType } from '../interfaces';
-import { NodeMatrix } from '../renderable-model/matrix';
+import { NodeMatrix } from './matrix';
 
 describe('diagram.createTileMatrix', function() {
   it('should create a renderable matrix from a node matrix', function() {

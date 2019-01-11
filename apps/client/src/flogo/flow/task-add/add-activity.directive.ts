@@ -9,13 +9,14 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import { BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS } from '@flogo-web/client-core';
 
 import { AddActivityService } from './add-activity.service';
 import {
   DiagramSelection,
   DiagramSelectionType,
-} from '@flogo-web/client/packages/diagram/interfaces';
+  BUTTON_INSERT_CLASS,
+  SELECTED_INSERT_TILE_CLASS,
+} from '@flogo-web/diagram';
 
 const BRANCH_ANIMATION_DURATION = 300;
 

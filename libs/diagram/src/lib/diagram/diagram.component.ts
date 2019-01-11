@@ -14,9 +14,8 @@ import {
 import { FlowGraph } from '@flogo-web/client-core';
 
 import { DiagramAction, DiagramSelection, Tile } from '../interfaces';
-import { EMPTY_MATRIX } from '../shared';
+import { EMPTY_MATRIX, RowIndexService } from '../shared';
 import { makeRenderableMatrix, TileMatrix } from '../renderable-model';
-import { RowIndexService } from '../shared/row-index.service';
 import { diagramAnimations } from './diagram.animations';
 import { diagramRowTracker } from './diagram-row-tracker';
 

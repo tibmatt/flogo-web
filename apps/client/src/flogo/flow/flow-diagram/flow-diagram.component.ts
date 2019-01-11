@@ -3,19 +3,15 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { FlowGraph } from '@flogo-web/client-core';
-
+import { FlowGraph, SingleEmissionSubject } from '@flogo-web/client-core';
 import {
   DiagramAction,
   DiagramActionType,
   DiagramSelection,
-} from '@flogo-web/client/packages/diagram';
-import { SingleEmissionSubject } from '@flogo-web/client-core/models';
-import { HandlerType } from '@flogo-web/client/flow/core/models';
-import {
   DiagramActionChild,
   DiagramActionSelf,
-} from '@flogo-web/client/packages/diagram/interfaces';
+} from '@flogo-web/diagram';
+import { HandlerType } from '@flogo-web/client/flow/core/models';
 import { newBranchId } from '@flogo-web/client/flow/core/models/flow/id-generator';
 
 import { FlowState, FlowActions, FlowSelectors } from '../core/state';

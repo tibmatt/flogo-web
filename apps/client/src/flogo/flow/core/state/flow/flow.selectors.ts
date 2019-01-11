@@ -22,7 +22,7 @@ import {
   TaskSelection,
   SelectionType,
 } from '../../models';
-import { DiagramSelectionType } from '@flogo-web/client/packages/diagram/interfaces';
+import { DiagramSelectionType } from '@flogo-web/diagram';
 import { Activity } from '@flogo-web/client/flow/task-add';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');

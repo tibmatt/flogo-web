@@ -1,5 +1,5 @@
 import { GraphNode } from '@flogo-web/client-core';
-import { TileType, InsertTile, TaskTile } from '../interfaces/tile';
+import { TileType, InsertTile, TaskTile } from '../interfaces';
 
 const PaddingTile = {
   type: TileType.Padding,

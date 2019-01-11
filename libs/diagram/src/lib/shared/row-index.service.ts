@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TileMatrix } from '../renderable-model';
 import { Tile } from '../interfaces';
-import { isTaskTile } from '../shared/tile-guards';
+import { isTaskTile } from './tile-guards';
 
 @Injectable()
 export class RowIndexService {

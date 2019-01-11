@@ -1,8 +1,5 @@
 import { DiagramActionType } from './interfaces';
-import {
-  DiagramActionChild,
-  DiagramActionSelf,
-} from '@flogo-web/client/packages/diagram/interfaces';
+import { DiagramActionChild, DiagramActionSelf } from './interfaces';
 
 export const actionEventFactory = {
   insert(parentId: string): DiagramActionChild {
