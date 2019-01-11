@@ -20,7 +20,7 @@ describe('importer.standard.StandardTaskConverter', () => {
       const taskConverter = new StandardTaskConverter(sourceTask, activitySchema);
 
       const convertedAttributes = taskConverter.convertAttributes();
-      expect(convertedAttributes).toEqual({'baz': 'hello world'});
+      expect(convertedAttributes).toEqual({ baz: 'hello world' });
     });
 
     test("should take task's input value on priority before schema's default values", () => {
@@ -41,7 +41,7 @@ describe('importer.standard.StandardTaskConverter', () => {
       const taskConverter = new StandardTaskConverter(sourceTask, activitySchema);
 
       const convertedAttributes = taskConverter.convertAttributes();
-      expect(convertedAttributes).toEqual({'baz': 'hello world'});
+      expect(convertedAttributes).toEqual({ baz: 'hello world' });
     });
   });
 });

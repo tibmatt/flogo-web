@@ -14,8 +14,7 @@ export abstract class AbstractActionsImporter {
   abstract extractActions(fromRawApp): Action[];
 
   async importAll(appId, fromRawApp) {
-    const rawActions = this.extractActions(fromRawApp)
-      .map(actionValueTypesNormalizer);
+    const rawActions = this.extractActions(fromRawApp).map(actionValueTypesNormalizer);
 
     const actionPairs = await this.storeActions(appId, rawActions);
     let actionRegistry = new Map(actionPairs);
