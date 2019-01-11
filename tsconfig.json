@@ -39,6 +39,12 @@
       ],
       "@flogo-web/client-shared": [
         "libs/client-shared/src/index.ts"
+      ],
+      "@flogo-web/plugins/flow-client": [
+        "libs/plugins/flow-client/src/index.ts"
+      ],
+      "@flogo-web/diagram": [
+        "libs/diagram/src/index.ts"
       ]
     }
   },

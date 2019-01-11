@@ -410,6 +410,76 @@
           }
         }
       }
+    },
+    "plugins-flow-client": {
+      "root": "libs/plugins/flow-client",
+      "sourceRoot": "libs/plugins/flow-client/src",
+      "projectType": "library",
+      "prefix": "flogo",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "libs/plugins/flow-client/tsconfig.lib.json",
+            "project": "libs/plugins/flow-client/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/plugins/flow-client/src/test.ts",
+            "tsConfig": "libs/plugins/flow-client/tsconfig.spec.json",
+            "karmaConfig": "libs/plugins/flow-client/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/flow-client/tsconfig.lib.json",
+              "libs/plugins/flow-client/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "diagram": {
+      "root": "libs/diagram",
+      "sourceRoot": "libs/diagram/src",
+      "projectType": "library",
+      "prefix": "flogo-libs/diagram",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "libs/diagram/tsconfig.lib.json",
+            "project": "libs/diagram/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/diagram/src/test.ts",
+            "tsConfig": "libs/diagram/tsconfig.spec.json",
+            "karmaConfig": "libs/diagram/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/diagram/tsconfig.lib.json",
+              "libs/diagram/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "cli": {

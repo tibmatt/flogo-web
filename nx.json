@@ -38,10 +38,26 @@
       ]
     },
     "client-core": {
-      "tags": ["client"]
+      "tags": [
+        "client"
+      ]
     },
     "client-shared": {
-      "tags": ["client"]
+      "tags": [
+        "client"
+      ]
+    },
+    "plugins-flow-client": {
+      "tags": [
+        "client",
+        "plugin"
+      ]
+    },
+    "diagram": {
+      "tags": [
+        "client",
+        "component"
+      ]
     }
   }
 }
