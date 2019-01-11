@@ -3,7 +3,6 @@ import {
   forEachSubflowTaskInAction,
 } from '../../../common/utils/subflow';
 import { actionValueTypesNormalizer } from './action-value-type-normalizer';
-import { taskAttributesToMappingsUnifier } from './task-attributes-to-mappings-unifier';
 
 // TODO: add Action interface
 type Action = any;
@@ -16,8 +15,7 @@ export abstract class AbstractActionsImporter {
 
   async importAll(appId, fromRawApp) {
     const rawActions = this.extractActions(fromRawApp)
-      .map(actionValueTypesNormalizer)
-      .map(action => taskAttributesToMappingsUnifier(action, this.activitySchemas));
+      .map(actionValueTypesNormalizer);
 
     const actionPairs = await this.storeActions(appId, rawActions);
     let actionRegistry = new Map(actionPairs);

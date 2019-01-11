@@ -59,41 +59,4 @@ describe('importer.common.actionValueTypesNormalizer', () => {
       expect.arrayContaining([{ out1: 'integer' }, { out2: 'long' }])
     );
   });
-
-  test('should correctly normalize task value types for root task', () => {
-    const taskAttributeTypes = extractTaskHandlerAttributeTypes('rootTask');
-    const [task1Types, task2Types] = taskAttributeTypes;
-    expect(task1Types).toEqual(
-      expect.arrayContaining([{ attr1: 'double' }, { attr2: 'complexObject' }])
-    );
-    expect(task2Types).toEqual(
-      expect.arrayContaining([
-        { attr1: 'double' },
-        { attr2: 'complexObject' },
-        { attr3: 'any' },
-      ])
-    );
-  });
-
-  test('should correctly normalize task value types for error task', () => {
-    const taskAttributeTypes = extractTaskHandlerAttributeTypes('errorHandler');
-    const [taskTypes] = taskAttributeTypes;
-    expect(taskTypes).toEqual(
-      expect.arrayContaining([
-        { attr1: 'array' },
-        { attr2: 'params' },
-        { attr3: 'integer' },
-      ])
-    );
-  });
-
-  function extractTaskHandlerAttributeTypes(handlerName) {
-    let handler;
-    if (handlerName === 'rootTask') {
-      handler = normalizedAction;
-    } else {
-      handler = normalizedAction[handlerName];
-    }
-    return handler.tasks.map(task => extractValues(task.attributes));
-  }
 });

@@ -20,9 +20,6 @@ export function actionValueTypesNormalizer(action) {
     action.metadata = normalizeMetadataValueTypes(action.metadata);
   }
 
-  normalizeValueTypesForTasksInHandler(action, TASK_HANDLER_NAME_ROOT);
-  normalizeValueTypesForTasksInHandler(action, TASK_HANDLER_NAME_ERROR);
-
   return action;
 }
 
@@ -34,18 +31,4 @@ function normalizeMetadataValueTypes(metadata) {
     metadata.output = metadata.output.map(normalizeAttrType);
   }
   return metadata;
-}
-
-function normalizeValueTypesInTask(task) {
-  if (task.attributes) {
-    task.attributes = task.attributes.map(normalizeAttrType);
-  }
-  return task;
-}
-
-function normalizeValueTypesForTasksInHandler(action, handlerName) {
-  const tasks = safeGetTasksInHandler(action, handlerName);
-  if (!isEmpty(tasks)) {
-    set(action, getInternalTasksPath(handlerName), tasks.map(normalizeValueTypesInTask));
-  }
 }

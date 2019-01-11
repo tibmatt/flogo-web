@@ -31,8 +31,7 @@ export class StandardTaskConverter {
       activity: { ref: activityRef },
     } = this.resourceTask;
     const { type, settings } = this.resolveTypeAndSettings();
-    const inputMappings = this.convertInputMappings();
-    const attributes = this.convertAttributes();
+    const inputMappings = this.prepareInputMappings();
     return {
       id,
       name: name || id,
@@ -40,7 +39,6 @@ export class StandardTaskConverter {
       type,
       activityRef,
       settings,
-      attributes,
       inputMappings,
     };
   }
@@ -71,6 +69,20 @@ export class StandardTaskConverter {
     return this.resourceTask.type === TASK_TYPE.ITERATOR;
   }
 
+  prepareInputMappings() {
+    const inputMappings = this.convertAttributes();
+    return this.safeGetMappings().reduce((inputs, mapping) => {
+      inputs[mapping.mapTo] = '=' + JSON.stringify(mapping.value);
+      return inputs;
+    }, inputMappings);
+  }
+
+  safeGetMappings() {
+    const mappings = this.resourceTask.activity.mappings || {};
+    const { input: resourceInputMappings = [] } = mappings;
+    return resourceInputMappings;
+  }
+
   convertAttributes() {
     const schemaInputs = this.activitySchema.inputs || [];
     const activityInput = this.resourceTask.activity.input || {};
@@ -82,14 +94,8 @@ export class StandardTaskConverter {
       if (isOutputMapperField(schemaInput) && isArray(value)) {
         value = value.map(outputMapping => portMappingType(outputMapping));
       }
-      attributes.push({ ...schemaInput, value });
+      attributes[schemaInput.name] = value;
       return attributes;
-    }, []);
-  }
-
-  convertInputMappings() {
-    const mappings = this.resourceTask.activity.mappings || {};
-    const { input: resourceInputMappings = [] } = mappings;
-    return resourceInputMappings.map(mapping => portMappingType(mapping));
+    }, {});
   }
 }

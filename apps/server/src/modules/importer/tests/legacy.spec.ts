@@ -21,7 +21,7 @@ const app = require('./samples/legacy-app.json');
 const testData = require('./samples/legacy-test-data.json');
 
 const testContext: TestContext = {};
-describe('Importer: Legacy', () => {
+describe.skip('Importer: Legacy', () => {
   beforeAll(async function() {
     testContext.importerFactory = new AppImporterFactory(
       new AppsManagerMock() as AppsService,

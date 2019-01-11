@@ -32,14 +32,9 @@
             "type": 1,
             "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
             "settings": {},
-            "attributes": [],
-            "inputMappings": [
-              {
-                "mapTo": "message",
-                "type": 1,
-                "value": "$flow.id"
-              }
-            ]
+            "inputMappings": {
+              "message": "=\"$flow.id\""
+            }
           }
         ],
         "links": [],
@@ -52,20 +47,9 @@
               "type": 1,
               "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
               "settings": {},
-              "attributes": [
-                {
-                  "name": "message",
-                  "type": "string",
-                  "value": "log in error handler"
-                }
-              ],
-              "inputMappings": [
-                {
-                  "mapTo": "message",
-                  "type": 2,
-                  "value": "log in error handler"
-                }
-              ]
+              "inputMappings": {
+                "message": "log in error handler"
+              }
             }
           ],
           "links": []
