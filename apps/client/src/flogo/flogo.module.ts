@@ -3,11 +3,9 @@ import { APP_BASE_HREF } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BsModalModule } from 'ng2-bs3-modal';
 
@@ -20,8 +18,8 @@ import { HOSTNAME } from '@flogo-web/client-core/services';
 import { createTranslateLoader } from '@flogo-web/client-core/language';
 import { initializer } from '@flogo-web/client-core/initializer';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+import { LogsModule as FlogoLogsModule } from '@flogo-web/client-logs';
 
-import { LogsModule as FlogoLogsModule } from '@flogo-web/client/logs';
 import { CoreModule as LocalCoreModule } from './core';
 import { appRoutingProviders, routing } from './flogo.routing';
 import { FlogoAppComponent } from './flogo.component';

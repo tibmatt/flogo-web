@@ -2,12 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
-import { DiagramModule } from '@flogo-web/diagram';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-// TODO: share logs module
-import { LogsModule as FlogoLogsModule } from '../../../../../apps/client/src/flogo/logs';
+
+import { DiagramModule } from '@flogo-web/diagram';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+import { LogsModule as FlogoLogsModule } from '@flogo-web/client-logs';
 
 import { MonacoEditorModule } from './shared/monaco-editor';
 import { FormBuilderModule as FlogoCommonFormBuilderModule } from './shared/dynamic-form';

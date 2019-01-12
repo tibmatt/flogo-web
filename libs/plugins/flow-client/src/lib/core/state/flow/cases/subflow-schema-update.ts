@@ -1,5 +1,5 @@
 import { Action as ActionSchema } from '@flogo-web/client-core';
-import { FlowState } from '../interfaces';
+import { FlowState } from '../flow.state';
 
 export function subflowSchemaUpdate(
   state: FlowState,

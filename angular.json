@@ -480,6 +480,41 @@
           }
         }
       }
+    },
+    "client-logs": {
+      "root": "libs/client-logs",
+      "sourceRoot": "libs/client-logs/src",
+      "projectType": "library",
+      "prefix": "flogo-logs",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "libs/client-logs/tsconfig.lib.json",
+            "project": "libs/client-logs/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/client-logs/src/test.ts",
+            "tsConfig": "libs/client-logs/tsconfig.spec.json",
+            "karmaConfig": "libs/client-logs/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/client-logs/tsconfig.lib.json",
+              "libs/client-logs/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "cli": {

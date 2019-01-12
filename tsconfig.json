@@ -45,6 +45,9 @@
       ],
       "@flogo-web/diagram": [
         "libs/diagram/src/index.ts"
+      ],
+      "@flogo-web/client-logs": [
+        "libs/client-logs/src/index.ts"
       ]
     }
   },

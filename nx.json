@@ -58,6 +58,12 @@
         "client",
         "component"
       ]
+    },
+    "client-logs": {
+      "tags": [
+        "client",
+        "component"
+      ]
     }
   }
 }
