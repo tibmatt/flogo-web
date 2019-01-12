@@ -1,5 +1,5 @@
-@import "../_styles";
-@import "../../../../../apps/client/src/assets/_variables";
+@import '../_styles';
+@import '~@flogo-web/client-assets/styles/_variables';
 
 :host {
   .tile-container();
@@ -7,7 +7,6 @@
 }
 
 :host(.has-run) {
-
   .branch-option-container {
     background-color: @color-secondary;
   }
@@ -26,7 +25,7 @@
     }
 
     & + .main-child-link {
-      border-right-color:@color-secondary;
+      border-right-color: @color-secondary;
       &::before {
         background-color: @color-secondary;
       }
@@ -38,7 +37,6 @@
       background-color: @color-secondary;
     }
   }
-
 }
 
 :host(.--configured) {
@@ -99,7 +97,6 @@
   cursor: pointer;
   padding: 9px 0;
   &:hover {
-
     .branch-child-line {
       box-shadow: -1px 3px 6px 0 rgba(0, 0, 0, 0.3);
       border-top: solid 4px @branch-color-secondary;
@@ -154,7 +151,6 @@
   }
 }
 
-
 .branch-option-container {
   position: absolute;
   top: 5px;
@@ -190,6 +186,6 @@
   display: none;
 }
 
-.branch-menu-open{
+.branch-menu-open {
   color: @primary-blue;
 }

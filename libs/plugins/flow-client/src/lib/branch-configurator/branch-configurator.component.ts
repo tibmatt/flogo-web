@@ -23,10 +23,7 @@ import { createBranchMappingContext } from './branch-configurator-context';
 
 @Component({
   selector: 'flogo-flow-branch-configurator',
-  styleUrls: [
-    '../../../../../../apps/client/src/assets/_mapper-modal.less',
-    'branch-configurator.component.less',
-  ],
+  styleUrls: ['branch-configurator.component.less'],
   templateUrl: 'branch-configurator.component.html',
   animations: [
     trigger('dialog', [

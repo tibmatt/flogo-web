@@ -48,6 +48,9 @@
       ],
       "@flogo-web/client-logs": [
         "libs/client-logs/src/index.ts"
+      ],
+      "@flogo-web/client-assets": [
+        "libs/client-assets/src/index.ts"
       ]
     }
   },

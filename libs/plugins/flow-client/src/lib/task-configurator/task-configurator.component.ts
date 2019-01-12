@@ -67,10 +67,7 @@ const MAPPINGS_TAB_INFO = {
 
 @Component({
   selector: 'flogo-flow-task-configurator',
-  styleUrls: [
-    '../../../../../../apps/client/src/assets/_mapper-modal.less',
-    'task-configurator.component.less',
-  ],
+  styleUrls: ['task-configurator.component.less'],
   templateUrl: 'task-configurator.component.html',
   animations: [
     trigger('dialog', [

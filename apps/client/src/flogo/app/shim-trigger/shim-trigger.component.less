@@ -1,7 +1,7 @@
-@import '../../../assets/_variables';
-@import "../../../assets/_mixins";
-@import (reference) '../../../assets/uxpl/dropdown';
-@import '../../../assets/uxpl/modal';
+@import '~@flogo-web/client-assets/styles/_variables';
+@import '~@flogo-web/client-assets/styles/_mixins';
+@import (reference) '~@flogo-web/client-assets/styles/uxpl/dropdown';
+@import '~@flogo-web/client-assets/styles/uxpl/modal';
 
 @trigger-height: 47px;
 @arrow-width: 8px;
@@ -72,7 +72,7 @@
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: @trigger-height/2 0 @trigger-height/2 @arrow-width;
+    border-width: @trigger-height / 2 0 @trigger-height / 2 @arrow-width;
     border-color: transparent transparent transparent @color-trigger-bg-color;
     top: 0;
     right: -8px;
@@ -138,7 +138,7 @@
 }
 
 .trigger-build-options {
-  border : solid 1px @light-grey;
+  border: solid 1px @light-grey;
   margin-top: 10px;
   margin-bottom: 10px;
   border-radius: 3px;

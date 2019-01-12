@@ -48,7 +48,8 @@
     "release:build-palette": "node -r esm tools/release/build-palette.js",
     "release:client-version": "node -r esm tools/release/client-version.js",
     "release:build-engines": "node -r esm tools/release/build-engines.js",
-    "release:copy-docker-files": "node -r esm tools/release/copy-docker-files.js"
+    "release:copy-docker-files": "node -r esm tools/release/copy-docker-files.js",
+    "preinstall": "yarn --cwd libs/client-assets link && yarn link @flogo-web/client-assets"
   },
   "author": "TIBCO Software Inc.",
   "dependencies": {
@@ -83,6 +84,7 @@
     "winston": "^3.1.0"
   },
   "devDependencies": {
+    "@flogo-web/client-assets": "file:./libs/client-assets",
     "@angular-devkit/build-angular": "~0.11.0",
     "@angular-devkit/build-ng-packagr": "~0.11.0",
     "@angular/animations": "~7.1.1",

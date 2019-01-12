@@ -64,6 +64,11 @@
         "client",
         "component"
       ]
+    },
+    "client-assets": {
+      "tags": [
+        "client"
+      ]
     }
   }
 }

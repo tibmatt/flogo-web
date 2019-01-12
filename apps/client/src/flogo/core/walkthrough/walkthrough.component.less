@@ -1,5 +1,5 @@
-@import "../../../assets/_mixins";
-@import "../../../assets/_variables";
+@import '~@flogo-web/client-assets/styles/_mixins';
+@import '~@flogo-web/client-assets/styles/_variables';
 
 :host {
   display: block;
@@ -8,7 +8,7 @@
 }
 
 // need to use a string as less throws an error if we try to use /deep/ directly
-@deep: ~"/deep/";
+@deep: ~'/deep/';
 @{deep} .walkthrough-modal {
   max-width: 980px;
 }
@@ -43,13 +43,12 @@
     margin: 0 auto;
     width: 95%;
   }
-
 }
 
 .walkthrough-footer {
   padding-top: 32px;
   text-align: right;
-  .flogo-button--default{
+  .flogo-button--default {
     margin-left: 20px;
   }
 }
@@ -58,7 +57,6 @@
   margin: 0;
   list-style-type: none;
   padding: 0;
-
 }
 
 .walkthrough-panel__content {
@@ -83,7 +81,6 @@
 
   height: 18px;
   width: 18px;
-
 }
 
 .walkthrough-button {
@@ -119,7 +116,6 @@
     border-color: @color-bg;
     color: @color-bg;
   }
-
 }
 
 .walkthrough-screenshot {
@@ -141,4 +137,3 @@
   color: @color-plain;
   font-size: 14px;
 }
-

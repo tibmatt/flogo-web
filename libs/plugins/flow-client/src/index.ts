@@ -1,1 +1,1 @@
-export * from './lib/plugins-flow-client.module';
+export * from './lib/flow.module';

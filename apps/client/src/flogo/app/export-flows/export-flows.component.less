@@ -1,8 +1,8 @@
-@import '../../../assets/_variables';
-@import '../../../assets/uxpl/modal';
+@import '~@flogo-web/client-assets/styles/_variables';
+@import '~@flogo-web/client-assets/styles/uxpl/modal';
 
 :host {
-.uxpl-modal-confirmation;
+  .uxpl-modal-confirmation;
   width: 900px;
   max-width: 900px;
 }
@@ -58,7 +58,7 @@
   letter-spacing: 0.4px;
 }
 
-.flogo-select-separator{
+.flogo-select-separator {
   color: @warm-grey;
   padding: 3px;
 }
@@ -90,7 +90,7 @@
   padding-left: 5px;
 }
 .flogo-checkbox label::before {
-  content: "";
+  content: '';
   display: inline-block;
   position: absolute;
   width: 17px;
@@ -119,19 +119,18 @@
   color: @color-disabled;
 }
 
-.flogo-checkbox input[type="checkbox"] {
+.flogo-checkbox input[type='checkbox'] {
   display: none;
 }
 
-.flogo-checkbox input[type="checkbox"]:checked + label::after {
+.flogo-checkbox input[type='checkbox']:checked + label::after {
   font-family: 'FontAwesome';
-  content: "\f00c";
+  content: '\f00c';
 }
-.flogo-checkbox-primary input[type="checkbox"]:checked + label::before {
+.flogo-checkbox-primary input[type='checkbox']:checked + label::before {
   background-color: @alice-blue;
   border-color: @alice-blue;
 }
-.flogo-checkbox-primary input[type="checkbox"]:checked + label::after {
+.flogo-checkbox-primary input[type='checkbox']:checked + label::after {
   color: @color-bg;
 }
-

@@ -1,5 +1,5 @@
-@import "../../../../../apps/client/src/assets/_variables";
-@import "../_styles";
+@import '~@flogo-web/client-assets/styles/_variables';
+@import '../_styles';
 
 @menu-tab-width: 36px;
 @menu-tab-radius: 8px;
@@ -180,7 +180,6 @@
   & + .badge {
     margin-left: 4px;
   }
-
 }
 
 .badge--iterator {
@@ -210,7 +209,7 @@
   width: 19px;
   position: absolute;
   right: -10px;
-  top: (@tile-height/2)-2;
+  top: (@tile-height / 2)-2;
 
   &::after {
     content: '';
@@ -242,7 +241,6 @@
   }
 }
 
-
 :host(.is-selected) {
   .task-container {
     transform: scale(1.04);
@@ -250,12 +248,15 @@
   .tile__bg {
     fill: @color-link-hover;
   }
-  .content__text, .menu-content, .kebabmenu {
+  .content__text,
+  .menu-content,
+  .kebabmenu {
     color: @color-bg;
   }
-  .menu__icon, .kebabmenu {
+  .menu__icon,
+  .kebabmenu {
     &:hover {
-      background-color: rgba(255, 255, 255, 0.2);;
+      background-color: rgba(255, 255, 255, 0.2);
       color: @color-bg;
     }
   }

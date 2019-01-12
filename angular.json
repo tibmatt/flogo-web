@@ -92,8 +92,7 @@
       "prefix": "flogo-web",
       "schematics": {
         "@schematics/angular:component": {
-          "prefix": "flogo",
-          "styleext": "less"
+          "prefix": "flogo"
         },
         "@schematics/angular:directive": {
           "prefix": "fg"
@@ -116,6 +115,11 @@
             "assets": [
               "apps/client/src/favicon.ico",
               "apps/client/src/assets",
+              {
+                "input": "libs/client-assets/assets",
+                "glob": "**/*",
+                "output": "/assets"
+              },
               {
                 "glob": "**/*",
                 "input": "node_modules/monaco-editor/min",
@@ -198,11 +202,6 @@
             "polyfills": "apps/client/src/polyfills.ts",
             "tsConfig": "apps/client/tsconfig.spec.json",
             "karmaConfig": "apps/client/karma.conf.js",
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "apps/client/src"
-              ]
-            },
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/font-awesome/css/font-awesome.min.css",
@@ -220,6 +219,11 @@
             "assets": [
               "apps/client/src/favicon.ico",
               "apps/client/src/assets",
+              {
+                "input": "libs/client-assets/assets",
+                "glob": "**/*",
+                "output": "/assets"
+              },
               {
                 "glob": "**/*",
                 "input": "node_modules/monaco-editor/min",
@@ -512,6 +516,21 @@
             "exclude": [
               "**/node_modules/**"
             ]
+          }
+        }
+      }
+    },
+    "client-assets": {
+      "root": "libs/client-assets",
+      "sourceRoot": "libs/client-assets/src",
+      "projectType": "library",
+      "prefix": "flogo-web",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "libs/client-assets/tsconfig.lib.json",
+            "project": "libs/client-assets/ng-package.json"
           }
         }
       }

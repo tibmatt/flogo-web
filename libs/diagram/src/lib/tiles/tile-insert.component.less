@@ -1,5 +1,5 @@
 @import '../_styles';
-@import (reference) '../../../../../apps/client/src/assets/_variables';
+@import (reference) '~@flogo-web/client-assets/styles/_variables';
 
 :host {
   .tile-container();
@@ -32,9 +32,9 @@
   width: @tile-placeholder-dimension / 3;
 }
 
-
 :host(.is-selected) {
-  .btn-insert, .btn-insert:hover {
+  .btn-insert,
+  .btn-insert:hover {
     box-shadow: 1px 2px 9px 0 rgba(0, 0, 0, 0.3);
     transform: translateY(0);
     background-color: @tile-color-bg--selected;

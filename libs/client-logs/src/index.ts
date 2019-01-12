@@ -1,3 +1,3 @@
-export { LogsModule } from './logs.module';
-export { LogsComponent } from './logs.component';
-export { ExternalWindowComponent } from './external-window/external-window.component';
+export { LogsModule } from './lib/logs.module';
+export { LogsComponent } from './lib/logs.component';
+export { ExternalWindowComponent } from './lib/external-window/external-window.component';

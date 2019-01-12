@@ -22,10 +22,7 @@ import { TRIGGER_STATUS_TOKEN } from './confirmation/status.token';
 @Component({
   selector: 'flogo-triggers-configuration',
   templateUrl: 'configurator.component.html',
-  styleUrls: [
-    '../../../../../../../apps/client/src/assets/_mapper-modal.less',
-    'configurator.component.less',
-  ],
+  styleUrls: ['configurator.component.less'],
   animations: configuratorAnimations,
   providers: [ConfirmationService],
 })

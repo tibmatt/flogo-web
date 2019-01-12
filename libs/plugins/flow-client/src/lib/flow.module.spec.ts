@@ -1,5 +1,5 @@
 import { async, TestBed } from '@angular/core/testing';
-import { PluginsFlowClientModule } from './plugins-flow-client.module';
+import { FlowModule as PluginsFlowClientModule } from './flow.module';
 
 describe('PluginsFlowClientModule', () => {
   beforeEach(async(() => {
