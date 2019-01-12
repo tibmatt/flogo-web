@@ -1,0 +1,40 @@
+@import '../../../../../../apps/client/src/assets/uxpl/dropdown';
+@import '../../../../../../apps/client/src/assets/_typography';
+@import (reference) '_variables';
+@import (reference) 'styles/panel';
+
+:host {
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.debug-panel-container {
+  height: 0;
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+.debug-panel-container__content {
+  .panel();
+  position: absolute;
+  top: 0;
+  transform: translate3d(0, -@panel-height-minimized, 0);
+}
+
+.debug-panel__content {
+  background-color: #fff;
+  flex: 1;
+  width: 100%;
+  overflow-y: auto;
+}

@@ -1,0 +1,25 @@
+@import '../../../../../../apps/client/src/assets/_mixins';
+
+@deep: ~'>>>';
+
+@{deep} .modal-dialog.sub-flow__modal {
+  width: 75%;
+}
+
+@{deep} .sub-flow__modal .header-block {
+  padding-left: 52px;
+  background: url(/assets/svg/subflow.svg) no-repeat left center;
+  font-size: 1.5em;
+}
+
+@{deep} .sub-flow__modal .header-cancel {
+  display: none;
+}
+
+@{deep} .sub-flow__modal .flogo-list__container {
+  margin-top: 2em;
+}
+
+.flows-list__close {
+  .modal__close;
+}

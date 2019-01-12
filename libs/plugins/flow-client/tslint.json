@@ -4,7 +4,7 @@
     "directive-selector": [
       true,
       "attribute",
-      "flogo",
+      "fg",
       "camelCase"
     ],
     "component-selector": [
