@@ -17,7 +17,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'flows',
-    loadChildren: './flow/flow.module#FlowModule',
+    loadChildren: '@flogo-web/plugins/flow-client#FlowModule',
   },
   {
     path: '_config',
