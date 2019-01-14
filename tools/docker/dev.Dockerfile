@@ -21,7 +21,7 @@ COPY / ${BUILD_DIR}/
 WORKDIR ${BUILD_DIR}
 RUN yarn --pure-lockfile && yarn release && \
   cd dist/apps/server && \
-  yarn --pure-lockfile --production && \
+  yarn --pure-lockfile --production=true && \
   npx modclean -Pr -n default:safe,default:caution
 
 
