@@ -107,11 +107,6 @@
             "main": "apps/client/src/main.ts",
             "polyfills": "apps/client/src/polyfills.ts",
             "tsConfig": "apps/client/tsconfig.app.json",
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "apps/client/src"
-              ]
-            },
             "assets": [
               "apps/client/src/favicon.ico",
               "apps/client/src/assets",
@@ -433,7 +428,29 @@
           "options": {
             "main": "libs/plugins/flow-client/src/test.ts",
             "tsConfig": "libs/plugins/flow-client/tsconfig.spec.json",
-            "karmaConfig": "libs/plugins/flow-client/karma.conf.js"
+            "karmaConfig": "libs/plugins/flow-client/karma.conf.js",
+            "scripts": [
+              "node_modules/lodash/lodash.min.js",
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ],
+            "assets": [
+              {
+                "input": "libs/client-assets/assets",
+                "glob": "**/*",
+                "output": "/assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/monaco-editor/min",
+                "output": "/assets/monaco-editor"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/monaco-editor/min-maps",
+                "output": "/assets/min-maps"
+              }
+            ]
           }
         },
         "lint": {
