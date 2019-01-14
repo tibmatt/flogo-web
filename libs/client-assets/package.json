@@ -1,5 +1,5 @@
 {
-  "name": "@flogo-logs/client-assets",
+  "name": "@flogo-web/client-assets",
   "version": "1.0.0",
   "peerDependencies": {
   }
