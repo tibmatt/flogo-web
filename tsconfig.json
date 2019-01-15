@@ -51,6 +51,9 @@
       ],
       "@flogo-web/client-assets": [
         "libs/client-assets/src/index.ts"
+      ],
+      "@flogo-web/core": [
+        "libs/core/src/index.ts"
       ]
     }
   },

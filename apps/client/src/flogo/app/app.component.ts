@@ -56,7 +56,8 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
   }
 
   public onFlowSelected(flow) {
-    this.router.navigate(['/flows', flow.id]);
+    // TODO: make resource type dynamic instead of hardcoding 'flow'
+    this.router.navigate(['/resources', flow.id, 'flow']);
   }
 
   public onFlowDeleted(eventData) {
