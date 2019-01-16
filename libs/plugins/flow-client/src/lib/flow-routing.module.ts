@@ -6,16 +6,11 @@ import { FlowDataResolver } from './flow-data.resolver';
 
 const flowRoutes: Routes = [
   {
-    path: ':id',
+    path: '',
     component: FlowComponent,
     resolve: {
       flowData: FlowDataResolver,
     },
-  },
-  {
-    path: '**',
-    redirectTo: '/',
-    pathMatch: 'full',
   },
 ];
 

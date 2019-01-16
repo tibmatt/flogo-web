@@ -12,3 +12,4 @@ export * from './service-url-config.model';
 export * from './flows.service';
 export * from './profile.service';
 export * from './log.service';
+export * from './activated-resource-route';

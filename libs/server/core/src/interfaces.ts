@@ -1,3 +1,6 @@
+import { Resource } from '@flogo-web/core';
+export { Resource };
+
 export interface Newable<T> {
   new (...args: any[]): T;
 }
@@ -7,16 +10,6 @@ export interface ResourceRegistrarParams {
   resourceHooks: Newable<ResourceHooks>;
 }
 export type ResourceRegistrarFn = (params: ResourceRegistrarParams) => void;
-
-export interface Resource<TResourceData = unknown> {
-  id: string;
-  name: string;
-  type: string;
-  createdAt: string;
-  updatedAt: string;
-  description?: string;
-  data: TResourceData;
-}
 
 export interface BeforeUpdateHookParams<T> {
   changes: Partial<Resource<T>>;

@@ -12,4 +12,5 @@ export { RESTAPIContributionsService } from './v2/contributions.service';
 export { APIFlowsService } from './v2/flows-api.service';
 export { RESTAPIHandlersService } from './v2/handlers-api.service';
 export { ShimTriggerBuildApiService } from './v2/shim-trigger-build-api.service';
+export { ResourceService } from './v2/resource.service';
 export * from './run-api.service';

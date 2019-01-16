@@ -2,6 +2,9 @@ import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { ExternalWindowComponent } from '@flogo-web/client-logs';
 
+import { resourceRoutes } from '../plugins';
+import { ResourceGuard } from './core/resource.guard';
+
 export const appRoutes: Routes = [
   {
     path: '',
@@ -16,8 +19,12 @@ export const appRoutes: Routes = [
     component: ExternalWindowComponent,
   },
   {
-    path: 'flows',
-    loadChildren: '@flogo-web/plugins/flow-client#FlowModule',
+    path: 'resources/:resourceId',
+    data: {
+      id: 'resourceParent',
+    },
+    canActivate: [ResourceGuard],
+    children: resourceRoutes,
   },
   {
     path: '_config',
@@ -34,4 +41,5 @@ export const appRoutingProviders: any[] = [];
 
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, {
   preloadingStrategy: PreloadAllModules,
+  enableTracing: true,
 });

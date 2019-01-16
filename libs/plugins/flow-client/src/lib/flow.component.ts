@@ -139,10 +139,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   private onFlowStateUpdate(nextState: FlowState) {
     const prevState = this.flowState;
     this.flowState = nextState;
-    if (prevState && prevState.isErrorPanelOpen !== nextState.isErrorPanelOpen) {
-      // todo: this shouldn't be necessary once we move away from route based state
-      this._navigateFromModuleRoot();
-    }
   }
 
   ngOnDestroy() {
@@ -233,16 +229,6 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private getTaskInHandler(handlerId: string, taskId: string) {
     return this.getItemsByHandlerId(handlerId)[taskId];
-  }
-
-  /**
-   *
-   * @param urlParts empty to navigate to module root
-   * @returns {Promise<boolean>}
-   * @private
-   */
-  private _navigateFromModuleRoot(urlParts = []) {
-    return this._router.navigate(['/flows', this.flowId, ...urlParts]);
   }
 
   /*-------------------------------*
