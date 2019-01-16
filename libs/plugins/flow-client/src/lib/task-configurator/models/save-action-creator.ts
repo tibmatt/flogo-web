@@ -9,7 +9,6 @@ import {
   ItemBranch,
   ItemSubflow,
   ItemTask,
-  isMapperActivity,
   Dictionary,
 } from '@flogo-web/client-core';
 import { AppState } from '../../core/state/app.state';
@@ -92,15 +91,7 @@ function getChanges(
       flowPath: changedSubflowSchema.id,
     };
   }
-  const activitySchema = flowState.schemas[tile.ref];
-  const isMapperTask = isMapperActivity(activitySchema);
-  if (isMapperTask) {
-    itemChanges.input = {
-      mappings: cloneDeep(saveData.inputMappings),
-    };
-  } else {
-    itemChanges.inputMappings = cloneDeep(saveData.inputMappings);
-  }
+  itemChanges.inputMappings = cloneDeep(saveData.inputMappings);
 
   const iteratorInfo = saveData.iterator;
   itemChanges.settings = {

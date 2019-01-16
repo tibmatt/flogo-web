@@ -1,4 +1,4 @@
-import { cloneDeep, filter as _filter, get, isEmpty } from 'lodash';
+import { cloneDeep, filter as _filter, get, isEmpty, pick } from 'lodash';
 import { takeUntil, switchMap, take, filter } from 'rxjs/operators';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -441,10 +441,11 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     const propCollectionToRegistry = from =>
       new Map(<Array<[string, boolean]>>from.map((o: any) => [o.name, true]));
-
-    const outputRegistry = propCollectionToRegistry(newMetadata.output);
+    //TODO: Make the following cleaning much simpler as the mappings are now key value pairs
+    const getAllProps = from => from.map(o => o.name);
+    const outputNames = getAllProps(newMetadata.output);
     const inputRegistry = propCollectionToRegistry(newMetadata.input);
-    this.cleanDanglingTaskOutputMappings(outputRegistry);
+    this.cleanDanglingTaskOutputMappings(outputNames);
 
     this.cleanDanglingTriggerMappingsToFlow(inputRegistry);
     this._updateFlow();
@@ -499,16 +500,13 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   // when flow schema's output change we need to remove the task mappings that were referencing them
-  private cleanDanglingTaskOutputMappings(outputRegistry: Map<string, boolean>) {
+  private cleanDanglingTaskOutputMappings(outputNames: string[]) {
     const isMapperContribAndHasMapping = (task: Task) => {
       const schema = this.flowState.schemas[task.ref];
-      const inputs = (task.attributes || {}).inputs || [];
-      return isMapperActivity(schema) && inputs.length > 0;
+      return isMapperActivity(schema) && !isEmpty(task.inputMappings);
     };
     _filter(this._getAllTasks(), isMapperContribAndHasMapping).forEach((task: Task) => {
-      task.attributes.inputs.forEach(mapping => {
-        mapping.value = mapping.value.filter(m => outputRegistry.has(m.mapTo));
-      });
+      task.inputMappings = pick(task.inputMappings, outputNames);
     });
   }
 }
