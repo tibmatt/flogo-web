@@ -6,12 +6,18 @@ const EDITABLE_FIELDS_CREATION: Array<keyof Resource> = [
   'type',
   'description',
   'data',
+  'metadata',
 ];
 export function cleanInputOnCreate(resource): Partial<Resource> {
   return cleanInput(resource, EDITABLE_FIELDS_CREATION);
 }
 
-const EDITABLE_FIELDS_UPDATE: Array<keyof Resource> = ['name', 'description', 'data'];
+const EDITABLE_FIELDS_UPDATE: Array<keyof Resource> = [
+  'name',
+  'description',
+  'data',
+  'metadata',
+];
 export function cleanInputOnUpdate(resource): Partial<Resource> {
   return cleanInput(resource, EDITABLE_FIELDS_UPDATE);
 }

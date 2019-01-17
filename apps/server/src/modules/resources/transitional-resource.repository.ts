@@ -13,6 +13,7 @@ const RESOURCE_FIELDS: Array<keyof Resource> = [
   'createdAt',
   'updatedAt',
   'description',
+  'metadata',
 ];
 
 /**
