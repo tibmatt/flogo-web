@@ -41,7 +41,6 @@ import { ModalService } from './modal';
     NotificationsModule,
   ],
   providers: [
-    // services
     {
       provide: DEFAULT_REST_HEADERS,
       useValue: createDefaultRestApiHttpHeaders(),

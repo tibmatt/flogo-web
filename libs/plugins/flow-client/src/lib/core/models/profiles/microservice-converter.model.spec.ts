@@ -1,10 +1,12 @@
 import { cloneDeep } from 'lodash';
 import { ActionBase, Dictionary } from '@flogo-web/client-core';
+
 import {
   ErrorService,
   RESTAPIContributionsService,
 } from '@flogo-web/client-core/services';
-import { UIModelConverterService } from './ui-model-converter.service';
+
+import { mockTriggerDetails } from '../../ui-model-trigger.mock';
 import {
   mockActivitiesDetails,
   mockErrorFlow,
@@ -15,11 +17,11 @@ import {
   mockResultantUIFlowWithTransformations,
   mockTransformationData,
 } from './ui-model-flow.mock';
-import { mockTriggerDetails } from './ui-model-trigger.mock';
+import { MicroServiceModelConverter } from './microservice-converter.model';
 import Spy = jasmine.Spy;
 
-describe('Service: UI Model Converter', function(this: {
-  service: UIModelConverterService;
+describe('Service: Microservice converter model', function(this: {
+  service: MicroServiceModelConverter;
   errorService: ErrorService;
   contribServiceMock: RESTAPIContributionsService;
   emptySchemaRegistry: Dictionary<ActionBase>;
@@ -30,11 +32,10 @@ describe('Service: UI Model Converter', function(this: {
       ['getContributionDetails', 'listContribs']
     );
     this.errorService = new ErrorService();
-    this.service = new UIModelConverterService(
+    this.service = new MicroServiceModelConverter(
       this.contribServiceMock,
       this.errorService
     );
-    this.service.setProfile();
     this.emptySchemaRegistry = {};
   });
 
@@ -43,7 +44,7 @@ describe('Service: UI Model Converter', function(this: {
     try {
       const spy = <Spy>this.contribServiceMock.listContribs;
       spy.and.returnValue([]);
-      this.service.getWebFlowModel(mockErrorFlow, this.emptySchemaRegistry);
+      this.service.convertToWebFlowModel(mockErrorFlow, this.emptySchemaRegistry);
     } catch (error) {
       thrownError = error;
       expect(error.name).toEqual('Activity: Wrong input json file');
@@ -59,7 +60,7 @@ describe('Service: UI Model Converter', function(this: {
     const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     spyActivityService.and.returnValue(Promise.resolve(mockActivitiesDetails));
     this.service
-      .getWebFlowModel(thisTestData, this.emptySchemaRegistry)
+      .convertToWebFlowModel(thisTestData, this.emptySchemaRegistry)
       .then((flow: any) => {
         expect(flow).toEqual(mockResultantUIFlow);
         done();
@@ -74,7 +75,7 @@ describe('Service: UI Model Converter', function(this: {
     spyActivityService.and.returnValue(Promise.resolve(mockActivitiesDetails));
     thisTestData.errorHandler = mockErrorHandler;
     this.service
-      .getWebFlowModel(thisTestData, this.emptySchemaRegistry)
+      .convertToWebFlowModel(thisTestData, this.emptySchemaRegistry)
       .then((flow: any) => {
         expect(flow).toEqual(mockResultantUIFlowWithError);
         done();
@@ -90,7 +91,7 @@ describe('Service: UI Model Converter', function(this: {
     thisTestData.tasks[0].attributes = mockTransformationData.attributes;
     thisTestData.tasks[0].inputMappings = mockTransformationData.inputMappings;
     this.service
-      .getWebFlowModel(thisTestData, this.emptySchemaRegistry)
+      .convertToWebFlowModel(thisTestData, this.emptySchemaRegistry)
       .then((flow: any) => {
         expect(flow).toEqual(mockResultantUIFlowWithTransformations);
         done();

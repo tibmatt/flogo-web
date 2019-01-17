@@ -12,8 +12,8 @@ import {
 } from '@flogo-web/client-core';
 import { APIFlowsService, FlowsService } from '@flogo-web/client-core/services';
 
-import { UIModelConverterService } from './ui-model-converter.service';
 import { savableFlow } from './models/backend-flow/flow.model';
+import { MicroServiceModelConverter } from './models/profiles/microservice-converter.model';
 import { FlogoFlowDetails } from './models/flow-details.model';
 import { FlowData } from './flow-data';
 import { AppState } from './state/app.state';
@@ -42,7 +42,7 @@ export class FlogoFlowService {
 
   constructor(
     private _flowAPIService: APIFlowsService,
-    private _converterService: UIModelConverterService,
+    private converterService: MicroServiceModelConverter,
     private _commonFlowsService: FlowsService,
     private store: Store<AppState>
   ) {}
@@ -82,9 +82,8 @@ export class FlogoFlowService {
         ][]);
         this.currentFlowDetails = new FlogoFlowDetails(flow, this.store);
 
-        this._converterService.setProfile();
-        return this._converterService
-          .getWebFlowModel(flowDiagramDetails, linkedSubflows)
+        return this.converterService
+          .convertToWebFlowModel(flowDiagramDetails, linkedSubflows)
           .then(convertedFlow => {
             this.previousSavedFlow = savableFlow(convertedFlow);
             this.store.dispatch(
