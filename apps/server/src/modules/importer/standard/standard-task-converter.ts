@@ -94,9 +94,10 @@ export class StandardTaskConverter {
       }
       if (isOutputMapperField(schemaInput) && isArray(value)) {
         value = value.reduce((mapping, outputMapping) => {
-          mapping[outputMapping.mapTo] = (outputMapping.type !== EXPRESSION_TYPE.LITERAL)
-            ? EXPR_PREFIX + outputMapping.value
-            : outputMapping.value;
+          mapping[outputMapping.mapTo] =
+            outputMapping.type !== EXPRESSION_TYPE.LITERAL
+              ? EXPR_PREFIX + outputMapping.value
+              : outputMapping.value;
           return mapping;
         }, {});
         return { ...attributes, ...value };
