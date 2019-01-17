@@ -21,7 +21,7 @@ export function createResourceRegistrar(container: Container): ResourceRegistrar
 }
 
 function isInjectable(target) {
-  return Reflect.hasOwnMetadata(METADATA_KEY.PARAM_TYPES, target);
+  return (Reflect as any).hasOwnMetadata(METADATA_KEY.PARAM_TYPES, target);
 }
 
 function validatePluginOptions(
