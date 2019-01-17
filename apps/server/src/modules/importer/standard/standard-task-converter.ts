@@ -2,8 +2,8 @@ import isUndefined from 'lodash/isUndefined';
 import isArray from 'lodash/isArray';
 import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '../../../common/constants';
 import { isOutputMapperField } from '../../../common/utils/flow';
-import { TASK_TYPE } from '../../transfer/common/type-mapper';
-import { parseResourceIdFromResourceUri, portMappingType } from './utils';
+import { TASK_TYPE, EXPRESSION_TYPE } from '../../transfer/common/type-mapper';
+import { parseResourceIdFromResourceUri } from './utils';
 
 export class StandardTaskConverter {
   private resourceTask;
@@ -84,6 +84,7 @@ export class StandardTaskConverter {
   }
 
   convertAttributes() {
+    const EXPR_PREFIX = '=';
     const schemaInputs = this.activitySchema.inputs || [];
     const activityInput = this.resourceTask.activity.input || {};
     return schemaInputs.reduce((attributes, schemaInput) => {
@@ -92,9 +93,16 @@ export class StandardTaskConverter {
         return attributes;
       }
       if (isOutputMapperField(schemaInput) && isArray(value)) {
-        value = value.map(outputMapping => portMappingType(outputMapping));
+        value = value.reduce((mapping, outputMapping) => {
+          mapping[outputMapping.mapTo] = (outputMapping.type !== EXPRESSION_TYPE.LITERAL)
+            ? EXPR_PREFIX + outputMapping.value
+            : outputMapping.value;
+          return mapping;
+        }, {});
+        return { ...attributes, ...value };
+      } else {
+        attributes[schemaInput.name] = value;
       }
-      attributes[schemaInput.name] = value;
       return attributes;
     }, {});
   }
