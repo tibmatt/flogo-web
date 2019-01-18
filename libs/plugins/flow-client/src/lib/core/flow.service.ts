@@ -1,39 +1,20 @@
-import { get, uniq, fromPairs, isEqual, omit } from 'lodash';
+import { isEqual } from 'lodash';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { of as observableOfValue } from 'rxjs';
+import { of as observableOfValue, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
-import {
-  Action,
-  Dictionary,
-  UiFlow,
-  TriggerHandler,
-  isSubflowTask,
-} from '@flogo-web/client-core';
+import { Action, UiFlow, ResourceService } from '@flogo-web/client-core';
 import { APIFlowsService, FlowsService } from '@flogo-web/client-core/services';
 
 import { savableFlow } from './models/backend-flow/flow.model';
 import { MicroServiceModelConverter } from './models/profiles/microservice-converter.model';
 import { FlogoFlowDetails } from './models/flow-details.model';
+import { loadFlow } from './models/load-flow';
 import { FlowData } from './flow-data';
 import { AppState } from './state/app.state';
 import { FlowState, Init } from './state';
-import { Trigger } from './interfaces';
-
-function normalizeTriggersAndHandlersForAction(
-  actionId: string,
-  originalTriggers: Trigger[]
-) {
-  const triggers: Dictionary<Trigger> = {};
-  const handlers: Dictionary<TriggerHandler> = {};
-  const findHandlerForAction = (handler: TriggerHandler) => handler.actionId === actionId;
-  originalTriggers.forEach(trigger => {
-    triggers[trigger.id] = trigger;
-    const handler = trigger.handlers.find(findHandlerForAction);
-    handlers[trigger.id] = { ...handler, triggerId: trigger.id };
-  });
-  return { triggers, handlers };
-}
+import { FlowResource } from './interfaces';
 
 @Injectable()
 export class FlogoFlowService {
@@ -44,62 +25,36 @@ export class FlogoFlowService {
     private _flowAPIService: APIFlowsService,
     private converterService: MicroServiceModelConverter,
     private _commonFlowsService: FlowsService,
+    private resourceService: ResourceService,
     private store: Store<AppState>
   ) {}
 
-  loadFlow(flowId: string): Promise<FlowData> {
+  loadFlow(resource: FlowResource): Observable<FlowData> {
     this.previousSavedFlow = null;
-    return this._flowAPIService
-      .getFlow(flowId)
-      .then(
-        (flow: Action): PromiseLike<[Action, Action[]]> => {
-          const allTasks = ((flow && flow.tasks) || []).concat(
-            get(flow, 'errorHandler.tasks', [])
-          );
-          const subFlowTasks = allTasks.filter(t => isSubflowTask(t.type));
-          const flowIdsToFetch = uniq<string>(
-            subFlowTasks.map(t => (t.settings || {}).flowPath)
-          );
-          if (flowIdsToFetch.length > 0) {
-            return Promise.all([
-              flow,
-              this._flowAPIService.getSubFlows(flow.appId, flowIdsToFetch),
-            ]);
-          }
-          return Promise.resolve([flow, []] as [Action, Action[]]);
-        }
-      )
-      .then(([flow, subflows]) => {
-        const flowTriggers = flow.triggers || [];
-        const flowDiagramDetails = omit(flow, ['triggers']);
-        const { triggers, handlers } = normalizeTriggersAndHandlersForAction(
-          flow.id,
-          flowTriggers
-        );
-        const linkedSubflows = fromPairs(subflows.map(a => [a.id, a]) as [
-          string,
-          Action
-        ][]);
-        this.currentFlowDetails = new FlogoFlowDetails(flow, this.store);
 
-        return this.converterService
-          .convertToWebFlowModel(flowDiagramDetails, linkedSubflows)
-          .then(convertedFlow => {
-            this.previousSavedFlow = savableFlow(convertedFlow);
-            this.store.dispatch(
-              new Init({
-                ...convertedFlow,
-                triggers,
-                handlers,
-                linkedSubflows,
-              } as FlowState)
-            );
-            return {
-              flow: convertedFlow,
-              triggers: flowTriggers,
-            };
-          });
-      });
+    const fetchSubflows = subflowIds =>
+      this._flowAPIService.getSubFlows(resource.id, subflowIds);
+    const convertServerToUIModel = (fromResource, linkedSubflows) =>
+      this.converterService.convertToWebFlowModel(fromResource, linkedSubflows);
+
+    return loadFlow(fetchSubflows, convertServerToUIModel, resource).pipe(
+      tap(({ convertedFlow, triggers, handlers, linkedSubflows }) => {
+        this.currentFlowDetails = new FlogoFlowDetails(resource.id, this.store);
+        this.previousSavedFlow = savableFlow(convertedFlow);
+        this.store.dispatch(
+          new Init({
+            ...convertedFlow,
+            triggers,
+            handlers,
+            linkedSubflows,
+          } as FlowState)
+        );
+      }),
+      map(({ convertedFlow, flowTriggers }) => ({
+        flow: convertedFlow,
+        triggers: flowTriggers,
+      }))
+    );
   }
 
   saveFlow(flowId, uiFlow: UiFlow) {

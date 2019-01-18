@@ -2,7 +2,7 @@ import { isEqual } from 'lodash';
 import { Store, select } from '@ngrx/store';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-import { GraphNode, Item, UiFlow } from '@flogo-web/client-core';
+import { GraphNode, Item } from '@flogo-web/client-core';
 
 import { FlowActions, FlowSelectors } from '../state';
 import { AppState } from '../state/app.state';
@@ -10,13 +10,8 @@ import { HandlerType } from './handler-type';
 
 export class FlogoFlowDetails {
   id: string;
-  associatedToAppId: string;
-  flow: UiFlow;
 
-  constructor(flow, private store: Store<AppState>) {
-    this.id = flow.id;
-    this.associatedToAppId = flow.app.id;
-  }
+  constructor(id: string, private store: Store<AppState>) {}
 
   get runnableState$() {
     return this.store.pipe(select(FlowSelectors.getRunnableState));

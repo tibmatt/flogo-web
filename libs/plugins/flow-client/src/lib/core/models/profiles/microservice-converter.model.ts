@@ -9,7 +9,6 @@ import {
   flogoGenTriggerID,
   flogoGenNodeID,
   Dictionary,
-  ActionBase,
   ErrorService,
   RESTAPIContributionsService,
   TriggerSchema,
@@ -19,8 +18,10 @@ import {
   Item,
   ItemSubflow,
 } from '@flogo-web/client-core';
+import { Resource } from '@flogo-web/core';
 import { makeGraphAndItems } from '../graph-and-items';
 import { ItemFactory } from '../graph-and-items/item-factory';
+import { FlowResource } from '../../interfaces';
 
 export interface FlowInfo {
   id: string;
@@ -33,16 +34,16 @@ export interface FlowInfo {
 
 @Injectable()
 export class MicroServiceModelConverter {
-  subflowSchemaRegistry: Dictionary<ActionBase>;
+  subflowSchemaRegistry: Dictionary<Resource>;
 
   constructor(
     private contribService: RESTAPIContributionsService,
     private errorService: ErrorService
   ) {}
 
-  getFlowInformation(flowJSON): FlowInfo {
-    const flowInputs = (flowJSON.metadata && flowJSON.metadata.input) || [];
-    const flowOutputs = (flowJSON.metadata && flowJSON.metadata.output) || [];
+  getFlowInformation(resource: FlowResource): FlowInfo {
+    const flowInputs = (resource.metadata && resource.metadata.input) || [];
+    const flowOutputs = (resource.metadata && resource.metadata.output) || [];
     const metadata: FlowMetadata = {
       input: [],
       output: [],
@@ -51,7 +52,7 @@ export class MicroServiceModelConverter {
     metadata.input = flowInputs.map(input => {
       const inputMetadata: MetadataAttribute = {
         name: input.name,
-        type: input.type || ValueType.String,
+        type: (input.type as ValueType) || ValueType.String,
       };
       if (!isUndefined(input.value)) {
         inputMetadata.value = input.value;
@@ -60,15 +61,15 @@ export class MicroServiceModelConverter {
     });
     metadata.output = flowOutputs.map(input => ({
       name: input.name,
-      type: input.type || ValueType.String,
+      type: (input.type as ValueType) || ValueType.String,
     }));
 
     return {
-      id: flowJSON.id,
-      appId: flowJSON.app.id,
-      name: flowJSON.name || flowJSON.id,
-      description: flowJSON.description || '',
-      app: flowJSON.app,
+      id: resource.id,
+      appId: resource.app.id,
+      name: resource.name || resource.id,
+      description: resource.description || '',
+      app: resource.app,
       metadata,
     };
   }
@@ -93,15 +94,15 @@ export class MicroServiceModelConverter {
     }
   }
 
-  convertToWebFlowModel(flowObj, subflowSchema: Dictionary<ActionBase>) {
+  convertToWebFlowModel(resource: FlowResource, subflowSchema: Dictionary<Resource>) {
     this.subflowSchemaRegistry = subflowSchema;
-    this.hasProperTasks(flowObj);
+    this.verifyHasProperTasks(resource);
     return this.getAllActivitySchemas().then(installedActivities =>
-      this.processFlowObj(flowObj, installedActivities)
+      this.processFlowObj(resource, installedActivities)
     );
   }
 
-  hasProperTasks(flow: any) {
+  verifyHasProperTasks(flow: any) {
     let tasks = (flow && flow.tasks) || [];
     // add tiles from error diagram
     tasks = tasks.concat((flow && flow.errorHandler && flow.errorHandler.tasks) || []);
@@ -126,13 +127,12 @@ export class MicroServiceModelConverter {
     });
   }
 
-  processFlowObj(flowJSON, installedContribs) {
-    const flowInfo = this.getFlowInformation(flowJSON);
+  processFlowObj(resource: FlowResource, installedContribs) {
+    const flowInfo = this.getFlowInformation(resource);
 
-    // const mainFlowParts = this.getFlowParts(installedContribs, tasks, links);
-
-    const tasks = (flowJSON && flowJSON.tasks) || [];
-    const links = (flowJSON && flowJSON.links) || [];
+    const resourceData = resource && resource.data;
+    const tasks = (resourceData && resourceData.tasks) || [];
+    const links = (resourceData && resourceData.links) || [];
     const branchIdGenerator = () => uniqueId('::branch::');
 
     const mainComponents = makeGraphAndItems(
@@ -141,10 +141,9 @@ export class MicroServiceModelConverter {
       installedContribs,
       branchIdGenerator
     );
-    const errorHandlerTasks =
-      (flowJSON && flowJSON.errorHandler && flowJSON.errorHandler.tasks) || [];
-    const errorHandlerLinks =
-      (flowJSON && flowJSON.errorHandler && flowJSON.errorHandler.links) || [];
+    const errorHandler = resourceData && resourceData.errorHandler;
+    const errorHandlerTasks = (errorHandler && errorHandler.tasks) || [];
+    const errorHandlerLinks = (errorHandler && errorHandler.links) || [];
     const errorHandlerComponents = makeGraphAndItems(
       errorHandlerTasks,
       errorHandlerLinks,

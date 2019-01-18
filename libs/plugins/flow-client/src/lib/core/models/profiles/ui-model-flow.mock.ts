@@ -138,6 +138,10 @@ export let mockErrorFlow = {
   id: 'test_flow_1',
   name: 'Test flow 1',
   description: 'Hello world!!',
+  appId: 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
+  type: 'flow',
+  createdAt: null,
+  updatedAt: null,
   app: {
     id: 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
     name: 'Sample Application',
@@ -147,33 +151,35 @@ export let mockErrorFlow = {
     createdAt: '2017-03-21T09:43:38.614Z',
     updatedAt: '2017-03-21T09:43:53.073Z',
   },
-  ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow',
-  tasks: [
-    {
-      id: 2,
-      name: 'First Log',
-      description: 'log',
-      type: 1,
-      attributes: [
-        {
-          name: 'message',
-          value: 'I am here 1',
-          type: 'string',
-        },
-        {
-          name: 'flowInfo',
-          value: 'true',
-          type: 'boolean',
-        },
-        {
-          name: 'addToFlow',
-          value: 'true',
-          type: 'boolean',
-        },
-      ],
-    },
-  ],
-  links: [],
+  data: {
+    ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow',
+    tasks: [
+      {
+        id: 2,
+        name: 'First Log',
+        description: 'log',
+        type: 1,
+        attributes: [
+          {
+            name: 'message',
+            value: 'I am here 1',
+            type: 'string',
+          },
+          {
+            name: 'flowInfo',
+            value: 'true',
+            type: 'boolean',
+          },
+          {
+            name: 'addToFlow',
+            value: 'true',
+            type: 'boolean',
+          },
+        ],
+      },
+    ],
+    links: [],
+  },
 };
 
 export let mockTransformationData = {
