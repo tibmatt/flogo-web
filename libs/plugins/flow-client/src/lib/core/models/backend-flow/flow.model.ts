@@ -36,8 +36,8 @@ import {
   FlowGraph,
   GraphNode,
   NodeType,
-  Action,
 } from '@flogo-web/client-core';
+import { FlowResource, ResourceFlowData } from '../../interfaces';
 
 const DEBUG = false;
 const INFO = true;
@@ -251,84 +251,58 @@ function _parseFlowAttributes(inAttrs: any[]): flowToJSON_Attribute[] {
 /**
  * Convert the action to server model
  */
-export function savableFlow(inFlow: UiFlow): Action {
-  const flowJSON = <Action>{};
-  /* validate the required fields */
-
-  const flowID = inFlow.id;
-
-  if (isEmpty(flowID)) {
+export function savableFlow(inFlow: UiFlow): FlowResource {
+  if (!inFlow || isEmpty(inFlow.id)) {
     /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.error('No id in the given flow');
     /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.log(inFlow);
-    return flowJSON;
+    return {} as FlowResource;
   }
 
-  const flowPath = inFlow.mainGraph;
-  const errorPath: FlowGraph = inFlow.errorGraph;
-  const flowPathRoot = flowPath.rootId;
-  const flowPathNodes = flowPath.nodes;
-  const errorPathRoot = errorPath.rootId;
-  const errorPathNodes = errorPath.nodes;
-  const isMainFlowEmpty = isEmpty(flowPath) || !flowPathRoot || isEmpty(flowPathNodes);
-  const isErrorFlowEmpty =
-    isEmpty(errorPath) || !errorPathRoot || isEmpty(errorPathNodes);
+  const resource: FlowResource = {
+    id: inFlow.id,
+    type: 'flow',
+    name: inFlow.name || '',
+    description: inFlow.description || '',
+    metadata: _parseMetadata(
+      inFlow.metadata || {
+        input: [],
+        output: [],
+      }
+    ),
+    data: {} as ResourceFlowData,
+  };
 
-  flowJSON.id = flowID;
-  flowJSON.name = inFlow.name || '';
-  flowJSON.description = inFlow.description || '';
-  flowJSON.metadata = _parseMetadata(
-    inFlow.metadata || {
-      input: [],
-      output: [],
-    }
-  );
-
-  if (isMainFlowEmpty && isErrorFlowEmpty) {
-    /* tslint:disable-next-line:no-unused-expression */
-    DEBUG && console.warn('Invalid path information in the given flow');
-    /* tslint:disable-next-line:no-unused-expression */
-    DEBUG && console.log(inFlow);
-    return flowJSON;
+  const mainHandler = buildHandler(inFlow.mainGraph, inFlow.mainItems, inFlow);
+  if (mainHandler) {
+    resource.data.tasks = mainHandler.tasks as ResourceFlowData['tasks'];
+    resource.data.links = mainHandler.links;
   }
 
-  const flowItems = inFlow.mainItems;
-  const errorItems = inFlow.errorItems;
-  if (isEmpty(flowItems) && isEmpty(errorItems)) {
-    /* tslint:disable-next-line:no-unused-expression */
-    DEBUG && console.warn('Invalid items information in the given flow');
-    /* tslint:disable-next-line:no-unused-expression */
-    DEBUG && console.log(inFlow);
-    return flowJSON;
+  const errorHandler = buildHandler(inFlow.errorGraph, inFlow.errorItems, inFlow);
+  if (errorHandler) {
+    resource.data.errorHandler = {
+      tasks: errorHandler.tasks as ResourceFlowData['errorHandler']['tasks'],
+      links: errorHandler.links,
+    };
   }
 
-  if (!isEmpty(flowItems)) {
+  return resource;
+}
+
+function buildHandler(graph: FlowGraph, flowItems: Dictionary<Item>, inFlow: UiFlow) {
+  const flowPathRoot = graph.rootId;
+  const flowPathNodes = graph.nodes;
+  const isHandlerEmpty = isEmpty(graph) || !flowPathRoot || isEmpty(flowPathNodes);
+  if (!isHandlerEmpty && !isEmpty(flowItems)) {
     const rootNode = flowPathNodes[flowPathRoot];
     if (!isEmpty(rootNode)) {
       const _traversalDiagram = generateDiagramTraverser(inFlow.schemas);
-      const { tasks, links } = _traversalDiagram(rootNode, flowPathNodes, flowItems);
-      flowJSON.tasks = tasks as Action['tasks'];
-      flowJSON.links = links;
+      return _traversalDiagram(rootNode, flowPathNodes, flowItems);
     }
   }
-
-  if (!isEmpty(errorItems)) {
-    const rootNode = errorPathNodes[errorPathRoot];
-    if (!isEmpty(rootNode)) {
-      const _traversalDiagram = generateDiagramTraverser(inFlow.schemas);
-      const { tasks, links } = _traversalDiagram(rootNode, errorPathNodes, errorItems);
-      flowJSON.errorHandler = {
-        tasks: tasks as Action['tasks'],
-        links,
-      };
-    }
-  }
-
-  /* tslint:disable-next-line:no-unused-expression */
-  INFO && console.log('Generated flow.json: ', flowJSON);
-
-  return flowJSON;
+  return null;
 }
 
 function _hasExplicitReply(tasks?: any): boolean {

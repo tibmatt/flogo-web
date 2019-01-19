@@ -2,7 +2,7 @@ import { Component, HostBinding, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 
 import { MODAL_TOKEN, modalAnimate, ModalControl } from '@flogo-web/client-core/modal';
-import { APIFlowsService } from '@flogo-web/client-core/services';
+import { ResourceService } from '@flogo-web/client-core';
 import { UniqueNameValidator } from './unique-name.validator';
 
 export interface NewFlowData {
@@ -22,7 +22,7 @@ export class FlogoNewFlowComponent {
   private triggerId: string;
 
   constructor(
-    private flowsService: APIFlowsService,
+    private resourceService: ResourceService,
     private formBuilder: FormBuilder,
     @Inject(MODAL_TOKEN) public newFlowData: NewFlowData,
     public control: ModalControl
@@ -53,7 +53,7 @@ export class FlogoNewFlowComponent {
         Validators.composeAsync([
           // we need to wrap into a compose async validator, otherwise async validators overwrite sync validators
           (control: AbstractControl) => Promise.resolve(Validators.required(control)),
-          UniqueNameValidator.make(this.flowsService, this.newFlowData.appId),
+          UniqueNameValidator.make(this.resourceService, this.newFlowData.appId),
         ]),
       ],
       description: [''],

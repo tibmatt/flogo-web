@@ -1,5 +1,5 @@
+import { Resource } from '@flogo-web/core';
 import {
-  Action,
   Dictionary,
   StepAttribute,
   UiFlow,
@@ -15,7 +15,7 @@ export interface FlowState extends UiFlow {
   triggers: Dictionary<Trigger>;
   handlers: Dictionary<TriggerHandler>;
   triggerConfigure: TriggerConfigureState;
-  linkedSubflows: Dictionary<Action>;
+  linkedSubflows: Dictionary<Resource>;
   taskConfigure: string | null;
   configChangedSinceLastExecution: boolean;
   structureChangedSinceLastFullExecution: boolean;

@@ -1,8 +1,8 @@
 import { uniq, fromPairs } from 'lodash';
-import { SubscribableOrPromise, Observable, from } from 'rxjs';
+import { SubscribableOrPromise, Observable, from, NEVER, of } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 
-import { Resource } from '@flogo-web/core';
+import { Resource, ApiResource } from '@flogo-web/core';
 import {
   Dictionary,
   UiFlow,
@@ -13,19 +13,21 @@ import {
 import { FlowResource, Trigger, ResourceFlowData } from '../interfaces';
 
 export const loadFlow = (
-  fetchSubflows: (ids: string[]) => SubscribableOrPromise<Resource<ResourceFlowData>[]>,
+  fetchSubflows: (ids: string[]) => Observable<ApiResource[]>,
   convertToWebFlowModel: (
     flowObj: FlowResource,
-    subflowSchema: Dictionary<Resource<ResourceFlowData>>
-  ) => Promise<UiFlow>,
+    subflowSchema: Dictionary<Resource>
+  ) => SubscribableOrPromise<UiFlow>,
   resource: FlowResource
 ) => {
   return getSubflows(fetchSubflows, resource).pipe(
     switchMap(linkedSubflows => {
-      return convertToWebFlowModel(resource, linkedSubflows).then(convertedFlow => ({
-        convertedFlow,
-        linkedSubflows,
-      }));
+      return from(convertToWebFlowModel(resource, linkedSubflows)).pipe(
+        map(convertedFlow => ({
+          convertedFlow,
+          linkedSubflows,
+        }))
+      );
     }),
     map(({ convertedFlow, linkedSubflows }) => {
       const flowTriggers = resource.data.triggers || [];
@@ -70,16 +72,14 @@ function getSubflowIds(flowData: ResourceFlowData): string[] {
 }
 
 function getSubflows(
-  fetchSubflows: (ids: string[]) => SubscribableOrPromise<Resource<ResourceFlowData>[]>,
+  fetchSubflows: (ids: string[]) => SubscribableOrPromise<Resource[]>,
   fromResource: FlowResource
-): Observable<{ [subflowId: string]: Resource<ResourceFlowData> }> {
+): Observable<{ [subflowId: string]: Resource }> {
   const subflowIds = getSubflowIds(fromResource.data);
-  return from(subflowIds.length > 0 ? fetchSubflows(subflowIds) : []).pipe(
-    map((subflows: Resource<ResourceFlowData>[]) => {
-      return fromPairs(subflows.map(a => [a.id, a]) as [
-        string,
-        Resource<ResourceFlowData>
-      ][]);
+  const source = subflowIds.length > 0 ? from(fetchSubflows(subflowIds)) : of([]);
+  return source.pipe(
+    map((subflows: Resource[]) => {
+      return fromPairs(subflows.map(a => [a.id, a]) as [string, Resource][]);
     })
   );
 }

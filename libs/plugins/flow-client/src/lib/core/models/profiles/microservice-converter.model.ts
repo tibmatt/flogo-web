@@ -21,7 +21,7 @@ import {
 import { Resource } from '@flogo-web/core';
 import { makeGraphAndItems } from '../graph-and-items';
 import { ItemFactory } from '../graph-and-items/item-factory';
-import { FlowResource } from '../../interfaces';
+import { FlowResource, ApiFlowResource } from '../../interfaces';
 
 export interface FlowInfo {
   id: string;
@@ -41,7 +41,7 @@ export class MicroServiceModelConverter {
     private errorService: ErrorService
   ) {}
 
-  getFlowInformation(resource: FlowResource): FlowInfo {
+  getFlowInformation(resource: ApiFlowResource): FlowInfo {
     const flowInputs = (resource.metadata && resource.metadata.input) || [];
     const flowOutputs = (resource.metadata && resource.metadata.output) || [];
     const metadata: FlowMetadata = {
@@ -94,7 +94,7 @@ export class MicroServiceModelConverter {
     }
   }
 
-  convertToWebFlowModel(resource: FlowResource, subflowSchema: Dictionary<Resource>) {
+  convertToWebFlowModel(resource: ApiFlowResource, subflowSchema: Dictionary<Resource>) {
     this.subflowSchemaRegistry = subflowSchema;
     this.verifyHasProperTasks(resource);
     return this.getAllActivitySchemas().then(installedActivities =>
@@ -102,10 +102,13 @@ export class MicroServiceModelConverter {
     );
   }
 
-  verifyHasProperTasks(flow: any) {
-    let tasks = (flow && flow.tasks) || [];
+  verifyHasProperTasks(flow: ApiFlowResource) {
+    const flowData = flow && flow.data;
+    let tasks = (flowData && flowData.tasks) || [];
     // add tiles from error diagram
-    tasks = tasks.concat((flow && flow.errorHandler && flow.errorHandler.tasks) || []);
+    tasks = tasks.concat(
+      (flowData && flowData.errorHandler && flowData.errorHandler.tasks) || []
+    );
     // filter only tasks of type activity and ignore subflows
     tasks = tasks.filter(t => !isSubflowTask(t.type));
 
@@ -127,7 +130,7 @@ export class MicroServiceModelConverter {
     });
   }
 
-  processFlowObj(resource: FlowResource, installedContribs) {
+  processFlowObj(resource: ApiFlowResource, installedContribs) {
     const flowInfo = this.getFlowInformation(resource);
 
     const resourceData = resource && resource.data;

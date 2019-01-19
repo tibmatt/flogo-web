@@ -1,9 +1,9 @@
-import { Action as ActionSchema } from '@flogo-web/client-core';
+import { Resource } from '@flogo-web/core';
 import { FlowState } from '../flow.state';
 
 export function subflowSchemaUpdate(
   state: FlowState,
-  payload: { newSubflowSchema?: ActionSchema }
+  payload: { newSubflowSchema?: Resource }
 ) {
   const { newSubflowSchema } = payload;
   if (!newSubflowSchema) {

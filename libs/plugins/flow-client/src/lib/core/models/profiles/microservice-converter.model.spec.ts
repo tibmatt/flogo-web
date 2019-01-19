@@ -1,10 +1,10 @@
 import { cloneDeep } from 'lodash';
-import { ActionBase, Dictionary } from '@flogo-web/client-core';
 
 import {
+  Dictionary,
   ErrorService,
   RESTAPIContributionsService,
-} from '@flogo-web/client-core/services';
+} from '@flogo-web/client-core';
 
 import { mockTriggerDetails } from '../../ui-model-trigger.mock';
 import {
@@ -19,12 +19,13 @@ import {
 } from './ui-model-flow.mock';
 import { MicroServiceModelConverter } from './microservice-converter.model';
 import Spy = jasmine.Spy;
+import { ApiFlowResource, FlowResource } from '../../interfaces';
 
 describe('Service: Microservice converter model', function(this: {
   service: MicroServiceModelConverter;
   errorService: ErrorService;
   contribServiceMock: RESTAPIContributionsService;
-  emptySchemaRegistry: Dictionary<ActionBase>;
+  emptySchemaRegistry: Dictionary<ApiFlowResource>;
 }) {
   beforeEach(() => {
     this.contribServiceMock = jasmine.createSpyObj<RESTAPIContributionsService>(
@@ -44,7 +45,11 @@ describe('Service: Microservice converter model', function(this: {
     try {
       const spy = <Spy>this.contribServiceMock.listContribs;
       spy.and.returnValue([]);
-      this.service.convertToWebFlowModel(mockErrorFlow, this.emptySchemaRegistry);
+      const mock = mockErrorFlow as unknown;
+      this.service.convertToWebFlowModel(
+        mock as ApiFlowResource,
+        this.emptySchemaRegistry
+      );
     } catch (error) {
       thrownError = error;
       expect(error.name).toEqual('Activity: Wrong input json file');
@@ -68,12 +73,12 @@ describe('Service: Microservice converter model', function(this: {
   });
 
   it('Should have error handler in UI Flow model', done => {
-    const thisTestData: any = cloneDeep(mockFlow);
+    const thisTestData: FlowResource = cloneDeep(mockFlow);
     const spyTriggerService = <Spy>this.contribServiceMock.getContributionDetails;
     spyTriggerService.and.returnValue(mockTriggerDetails);
     const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     spyActivityService.and.returnValue(Promise.resolve(mockActivitiesDetails));
-    thisTestData.errorHandler = mockErrorHandler;
+    thisTestData.data.errorHandler = mockErrorHandler;
     this.service
       .convertToWebFlowModel(thisTestData, this.emptySchemaRegistry)
       .then((flow: any) => {
@@ -83,13 +88,13 @@ describe('Service: Microservice converter model', function(this: {
   });
 
   it('Should maintain the transformation details of a tile', done => {
-    const thisTestData: any = cloneDeep(mockFlow);
+    const thisTestData: FlowResource = cloneDeep(mockFlow);
     const spyTriggerService = <Spy>this.contribServiceMock.getContributionDetails;
     spyTriggerService.and.returnValue(mockTriggerDetails);
     const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     spyActivityService.and.returnValue(Promise.resolve(mockActivitiesDetails));
-    thisTestData.tasks[0].attributes = mockTransformationData.attributes;
-    thisTestData.tasks[0].inputMappings = mockTransformationData.inputMappings;
+    thisTestData.data.tasks[0].attributes = mockTransformationData.attributes;
+    thisTestData.data.tasks[0].inputMappings = mockTransformationData.inputMappings;
     this.service
       .convertToWebFlowModel(thisTestData, this.emptySchemaRegistry)
       .then((flow: any) => {

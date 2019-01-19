@@ -1,25 +1,26 @@
-import { BsModalModule } from 'ng2-bs3-modal';
+import { of } from 'rxjs';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { BsModalModule } from 'ng2-bs3-modal';
 
-import { CoreModule as FlogoCoreModule } from '@flogo-web/client-core';
-import { APIFlowsService } from '@flogo-web/client-core/services';
+import { CoreModule as FlogoCoreModule, ResourceService } from '@flogo-web/client-core';
 import { MODAL_TOKEN, ModalControl } from '@flogo-web/client-core/modal';
 import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
 
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
-
 import { FlogoNewFlowComponent, NewFlowData } from './new-flow.component';
 
 const EXISTING_FLOW_NAME = 'existing';
-const flowsServiceStub = {
-  findFlowsByName(name: string) {
+const resourceServiceStub: {
+  listResourcesWithName: ResourceService['listResourcesWithName'];
+} = {
+  listResourcesWithName(name: string) {
     let flowArr = [];
     if (name === EXISTING_FLOW_NAME) {
       flowArr = [{ id: '123', name: EXISTING_FLOW_NAME }];
     }
-    return Promise.resolve(flowArr);
+    return of(flowArr);
   },
 };
 
@@ -55,7 +56,7 @@ describe('Component: FlogoNewFlow', () => {
       ],
       declarations: [FlogoNewFlowComponent], // declare the test component
       providers: [
-        { provide: APIFlowsService, useValue: flowsServiceStub },
+        { provide: ResourceService, useValue: resourceServiceStub },
         { provide: ModalControl, useValue: modalControlStub },
         { provide: MODAL_TOKEN, useValue: newFlowDataStub },
       ],

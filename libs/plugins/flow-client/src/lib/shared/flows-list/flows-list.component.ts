@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ActionBase } from '@flogo-web/client-core';
+import { Resource } from '@flogo-web/core';
 
 @Component({
   selector: 'flogo-flow-flows-list',
@@ -9,12 +9,10 @@ import { ActionBase } from '@flogo-web/client-core';
 })
 export class FlowsListComponent {
   @Input()
-  list: ActionBase[];
+  list: Resource[];
 
   @Output()
-  flowSelected: EventEmitter<ActionBase | string> = new EventEmitter<
-    ActionBase | string
-  >();
+  flowSelected: EventEmitter<Resource | string> = new EventEmitter<Resource | string>();
   @Output()
   flowSelectionCancel: EventEmitter<string> = new EventEmitter<string>();
 
@@ -37,7 +35,7 @@ export class FlowsListComponent {
     this.flowSelectionCancel.emit('cancel');
   }
 
-  selectFlow(flow: ActionBase) {
+  selectFlow(flow: Resource) {
     this.flowSelected.emit(flow);
   }
 }

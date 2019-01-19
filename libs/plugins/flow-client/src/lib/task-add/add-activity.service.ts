@@ -4,7 +4,8 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { Observable } from 'rxjs';
 
-import { ActionBase, ActivitySchema } from '@flogo-web/client-core';
+import { Resource } from '@flogo-web/core';
+import { ActivitySchema } from '@flogo-web/client-core';
 
 import { FlowActions, FlowSelectors, FlowState } from '../core/state';
 import { TaskAddComponent, TASKADD_OPTIONS } from './task-add.component';
@@ -97,7 +98,7 @@ export class AddActivityService {
     const taskAddOptions: TaskAddOptions = {
       activities$: this.installedActivities$,
       appAndFlowInfo$: this.appAndFlowInfo$,
-      selectActivity: (ref: string, selectedSubFlow?: ActionBase) =>
+      selectActivity: (ref: string, selectedSubFlow?: Resource) =>
         this.selectedActivity(ref, selectedSubFlow),
       installedActivity: (schema: ActivitySchema) =>
         this.store.dispatch(new FlowActions.ActivityInstalled(schema)),
@@ -109,7 +110,7 @@ export class AddActivityService {
     );
   }
 
-  private selectedActivity(ref: string, flowData?: ActionBase) {
+  private selectedActivity(ref: string, flowData?: Resource) {
     createTaskAddAction(this.store, { ref, flowData }).subscribe(
       (action: FlowActions.TaskItemCreated) => {
         this.store.dispatch(action);

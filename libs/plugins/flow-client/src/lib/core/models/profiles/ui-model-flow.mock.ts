@@ -1,7 +1,10 @@
-export let mockFlow = {
+import { ApiFlowResource } from '../../interfaces';
+
+export let mockFlow: ApiFlowResource = {
   id: 'test_flow_1',
   name: 'Test flow 1',
   description: 'Hello world!!',
+  type: 'flow',
   app: {
     id: 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
     name: 'Sample Application',
@@ -11,127 +14,128 @@ export let mockFlow = {
     createdAt: '2017-03-21T09:43:38.614Z',
     updatedAt: '2017-03-21T09:43:53.073Z',
   },
-  ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow',
-  tasks: [
-    {
-      id: 'log_1',
-      name: 'First Log',
-      description: 'description log 1',
-      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      type: 1,
-      attributes: [
-        {
-          name: 'message',
-          value: 'I am here 1',
-          type: 'string',
-        },
-        {
-          name: 'flowInfo',
-          value: 'true',
-          type: 'boolean',
-        },
-        {
-          name: 'addToFlow',
-          value: 'true',
-          type: 'boolean',
-        },
-      ],
-    },
-    {
-      id: 'counter_1',
-      name: 'Counter1',
-      description: 'description counter 1',
-      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-      type: 1,
-      attributes: [
-        {
-          name: 'counterName',
-          value: 'counter1',
-          type: 'string',
-        },
-        {
-          name: 'increment',
-          value: 'true',
-          type: 'boolean',
-        },
-        {
-          name: 'reset',
-          value: false,
-          type: 'boolean',
-        },
-      ],
-    },
-    {
-      id: 'log_2',
-      name: 'Second Log',
-      description: 'description second log',
-      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      type: 1,
-      attributes: [
-        {
-          name: 'message',
-          value: 'I am here 2',
-          type: 'string',
-        },
-        {
-          name: 'flowInfo',
-          value: 'true',
-          type: 'boolean',
-        },
-        {
-          name: 'addToFlow',
-          value: 'true',
-          type: 'boolean',
-        },
-      ],
-    },
-    {
-      id: 'log_3',
-      name: 'Third Log',
-      description: 'description third Log',
-      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      type: 1,
-      attributes: [
-        {
-          name: 'message',
-          value: 'I am here 3',
-          type: 'string',
-        },
-        {
-          name: 'flowInfo',
-          value: 'true',
-          type: 'boolean',
-        },
-        {
-          name: 'addToFlow',
-          value: 'true',
-          type: 'boolean',
-        },
-      ],
-    },
-  ],
-  links: [
-    {
-      id: 1,
-      from: 'log_1',
-      to: 'counter_1',
-      type: 0,
-    },
-    {
-      id: 2,
-      from: 'counter_1',
-      to: 'log_2',
-      type: 1,
-      value: 'true',
-    },
-    {
-      id: 3,
-      from: 'log_2',
-      to: 'log_3',
-      type: 1,
-      value: 'false',
-    },
-  ],
+  data: {
+    tasks: [
+      {
+        id: 'log_1',
+        name: 'First Log',
+        description: 'description log 1',
+        activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        type: 1,
+        attributes: [
+          {
+            name: 'message',
+            value: 'I am here 1',
+            type: 'string',
+          },
+          {
+            name: 'flowInfo',
+            value: 'true',
+            type: 'boolean',
+          },
+          {
+            name: 'addToFlow',
+            value: 'true',
+            type: 'boolean',
+          },
+        ],
+      },
+      {
+        id: 'counter_1',
+        name: 'Counter1',
+        description: 'description counter 1',
+        activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
+        type: 1,
+        attributes: [
+          {
+            name: 'counterName',
+            value: 'counter1',
+            type: 'string',
+          },
+          {
+            name: 'increment',
+            value: 'true',
+            type: 'boolean',
+          },
+          {
+            name: 'reset',
+            value: false,
+            type: 'boolean',
+          },
+        ],
+      },
+      {
+        id: 'log_2',
+        name: 'Second Log',
+        description: 'description second log',
+        activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        type: 1,
+        attributes: [
+          {
+            name: 'message',
+            value: 'I am here 2',
+            type: 'string',
+          },
+          {
+            name: 'flowInfo',
+            value: 'true',
+            type: 'boolean',
+          },
+          {
+            name: 'addToFlow',
+            value: 'true',
+            type: 'boolean',
+          },
+        ],
+      },
+      {
+        id: 'log_3',
+        name: 'Third Log',
+        description: 'description third Log',
+        activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        type: 1,
+        attributes: [
+          {
+            name: 'message',
+            value: 'I am here 3',
+            type: 'string',
+          },
+          {
+            name: 'flowInfo',
+            value: 'true',
+            type: 'boolean',
+          },
+          {
+            name: 'addToFlow',
+            value: 'true',
+            type: 'boolean',
+          },
+        ],
+      },
+    ],
+    links: [
+      {
+        id: 1,
+        from: 'log_1',
+        to: 'counter_1',
+        type: 0,
+      },
+      {
+        id: 2,
+        from: 'counter_1',
+        to: 'log_2',
+        type: 1,
+        value: 'true',
+      },
+      {
+        id: 3,
+        from: 'log_2',
+        to: 'log_3',
+        type: 1,
+        value: 'false',
+      },
+    ],
+  },
 };
 
 export let mockErrorFlow = {

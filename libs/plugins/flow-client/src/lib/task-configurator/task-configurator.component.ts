@@ -5,8 +5,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
+import { Resource } from '@flogo-web/core';
 import {
-  ActionBase,
   FLOGO_TASK_TYPE,
   Item,
   ItemActivityTask,
@@ -100,9 +100,9 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   iteratorModeOn = false;
   iterableValue: string;
   isSubflowType: boolean;
-  currentSubflowSchema: ActionBase;
+  currentSubflowSchema: Resource;
   subFlowConfig: SubFlowConfig;
-  subflowList: ActionBase[];
+  subflowList: Resource[];
   showSubflowList = false;
   isActive = false;
   flowState: FlowState;
@@ -153,7 +153,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   selectSubFlow() {
-    this._flowService.listFlowsForApp(this.appId).then(flows => {
+    this._flowService.listFlowsForApp(this.appId).subscribe(flows => {
       this.subflowList = flows.filter(
         flow =>
           !(flow.id === this.actionId || flow.id === this.currentTile.settings.flowPath)
@@ -429,7 +429,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       });
   }
 
-  private createSubflowConfig(subflowSchema: ActionBase) {
+  private createSubflowConfig(subflowSchema: Resource) {
     this.subFlowConfig = {
       name: subflowSchema.name,
       description: subflowSchema.description,

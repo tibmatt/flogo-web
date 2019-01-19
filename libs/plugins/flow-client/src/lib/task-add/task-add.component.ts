@@ -1,14 +1,11 @@
 import { Component, Inject, InjectionToken, OnInit } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 
-import {
-  ActionBase,
-  ActivitySchema,
-  CONTRIB_REF_PLACEHOLDER,
-} from '@flogo-web/client-core';
+import { ActivitySchema, CONTRIB_REF_PLACEHOLDER } from '@flogo-web/client-core';
 
 import { filterActivitiesBy } from './core/filter-activities-by';
 import { Activity, TaskAddOptions } from './core/task-add-options';
+import { Resource } from '@flogo-web/core';
 
 export const TASKADD_OPTIONS = new InjectionToken<TaskAddOptions>('flogo-flow-task-add');
 
@@ -52,9 +49,9 @@ export class TaskAddComponent implements OnInit {
     this.updateWindowState();
   }
 
-  handleFlowSelection(selectedFlow: ActionBase | string) {
-    if (selectedFlow !== 'dismiss') {
-      this.options.selectActivity(this.SUBFLOW_REF, selectedFlow as ActionBase);
+  handleFlowSelection(selectedFlow: Resource | string) {
+    if (typeof selectedFlow !== 'string') {
+      this.options.selectActivity(this.SUBFLOW_REF, selectedFlow);
     }
     this.setSubflowWindowState(false);
   }

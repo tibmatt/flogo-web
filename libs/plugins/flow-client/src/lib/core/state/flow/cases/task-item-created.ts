@@ -1,4 +1,4 @@
-import { Action as ActionSchema } from '@flogo-web/client-core';
+import { Resource } from '@flogo-web/core';
 import { FlowState } from '../flow.state';
 import { getGraphName, getItemsDictionaryName, PayloadOf } from '../../utils';
 import { TaskItemCreated } from '../flow.actions';
@@ -26,10 +26,7 @@ export function taskItemCreated(
   return state;
 }
 
-function registerSubflowSchema(
-  state: FlowState,
-  subflowSchema?: ActionSchema
-): FlowState {
+function registerSubflowSchema(state: FlowState, subflowSchema?: Resource): FlowState {
   if (subflowSchema) {
     state = {
       ...state,

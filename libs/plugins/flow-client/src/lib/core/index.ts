@@ -7,3 +7,4 @@ export {
 } from './models/profiles/microservice-converter.model';
 export * from './test-runner/run-orchestrator.service';
 export * from './interfaces';
+export * from './constants';

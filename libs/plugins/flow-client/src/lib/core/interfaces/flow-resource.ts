@@ -1,10 +1,8 @@
-import { ApiResource } from '@flogo-web/core';
+import { ApiResource, Resource } from '@flogo-web/core';
 import { flow } from '@flogo-web/client-core';
 
 export interface ResourceFlowData {
-  appId?: string;
   triggers?: any[];
-  updatedAt: string;
   tasks: flow.Task[];
   links: flow.Link[];
   errorHandler?: {
@@ -14,4 +12,5 @@ export interface ResourceFlowData {
   explicitReply?: boolean;
 }
 
-export type FlowResource = ApiResource<ResourceFlowData>;
+export type FlowResource = Resource<ResourceFlowData>;
+export type ApiFlowResource = ApiResource<ResourceFlowData>;

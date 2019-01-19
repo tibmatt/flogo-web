@@ -99,16 +99,16 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   get flowId() {
-    return this.flowDetails.id;
+    return this.flowState && this.flowState.id;
   }
 
   public ngOnInit() {
     const flowData: FlowData = this._route.snapshot.data['flowData'];
-    this.flowDetails.flowState$
+    this._flowService.currentFlowDetails.flowState$
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(flowState => this.onFlowStateUpdate(flowState));
     this.initFlowData(flowData);
-    this.flowDetails.runnableState$
+    this._flowService.currentFlowDetails.runnableState$
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(runnableState => (this.runnableInfo = runnableState));
     this.monacoLoaderService.isMonacoLoaded
@@ -130,10 +130,6 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   closeFlowMenu() {
     this.isflowMenuOpen = false;
-  }
-
-  private get flowDetails() {
-    return this._flowService.currentFlowDetails;
   }
 
   private onFlowStateUpdate(nextState: FlowState) {
@@ -375,7 +371,7 @@ export class FlowComponent implements OnInit, OnDestroy {
         }
         if (result === ConfirmationResult.Confirm) {
           this._isDiagramEdited = true;
-          this.flowDetails.removeItem(handlerType, taskId);
+          this._flowService.currentFlowDetails.removeItem(handlerType, taskId);
         }
       });
   }

@@ -1,16 +1,16 @@
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { Observable, timer, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { APIFlowsService } from '@flogo-web/client-core/services';
+import { ResourceService } from '@flogo-web/client-core';
 
 export class UniqueNameValidator {
-  static make(flowsService: APIFlowsService, appId: string): AsyncValidatorFn {
-    return createUniqueNameValidator(flowsService, appId);
+  static make(resourceService: ResourceService, appId: string): AsyncValidatorFn {
+    return createUniqueNameValidator(resourceService, appId);
   }
 }
 
 function createUniqueNameValidator(
-  flowsService: APIFlowsService,
+  resourceService: ResourceService,
   appId: string
 ): AsyncValidatorFn {
   return (control: AbstractControl): Observable<any> | Promise<any> => {
@@ -19,7 +19,7 @@ function createUniqueNameValidator(
         if (!control.value || !control.value.trim()) {
           return of(null);
         }
-        return flowsService.findFlowsByName(control.value, appId);
+        return resourceService.listResourcesWithName(control.value, appId);
       }),
       map(result => {
         let validationResult = null;

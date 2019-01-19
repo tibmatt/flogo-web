@@ -37,7 +37,7 @@ describe('Component: TaskAddComponent', () => {
     updateActiveState: () => {},
   };
   const mockFlowService = {
-    listFlowsForApp: () => Promise.resolve([]),
+    listFlowsForApp: () => of([]),
   };
   const mockContribsAPIService = {
     installContributions: () => Promise.resolve({}),
