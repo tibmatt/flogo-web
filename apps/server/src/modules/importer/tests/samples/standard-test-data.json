@@ -195,25 +195,13 @@
               },
               "actionId": "flow:get_status",
               "actionMappings": {
-                "input": [
-                  {
-                    "mapTo": "id",
-                    "type": 1,
-                    "value": "$.params.id"
-                  }
-                ],
-                "output": [
-                  {
-                    "mapTo": "code",
-                    "type": 1,
-                    "value": "$.code"
-                  },
-                  {
-                    "mapTo": "data",
-                    "type": 1,
-                    "value": "$.status"
-                  }
-                ]
+                "input": {
+                  "id": "=\"$.params.id\""
+                },
+                "output": {
+                  "code": "=\"$.code\"",
+                  "data": "=\"$.status\""
+                }
               }
             },
             "actionId": "flow:get_status-processed"

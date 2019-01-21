@@ -1,16 +1,33 @@
 import { isString } from 'lodash';
-import { parse, parseResolver } from '@flogo-web/parser';
+import { parse } from '@flogo-web/parser';
 import { MAPPING_EXPRESSION_TYPE } from '../../../common/constants';
 
 const CURRENT_SCOPE_RESOLVER = '$';
+const EXPR_PREFIX = '=';
 
 export function normalizeHandlerMappings(handler) {
   if (!handler.actionMappings) {
     return handler;
   }
   let { input, output } = handler.actionMappings;
-  input = input && input.map(normalizeSingleHandlerMapping);
-  output = output && output.map(normalizeSingleHandlerMapping);
+  input =
+    input &&
+    input.map(normalizeSingleHandlerMapping).reduce((inputs, mapping) => {
+      inputs[mapping.mapTo] =
+        mapping.type !== MAPPING_EXPRESSION_TYPE.LITERAL
+          ? EXPR_PREFIX + JSON.stringify(mapping.value)
+          : mapping.value;
+      return inputs;
+    }, {});
+  output =
+    output &&
+    output.map(normalizeSingleHandlerMapping).reduce((outputs, mapping) => {
+      outputs[mapping.mapTo] =
+        mapping.type !== MAPPING_EXPRESSION_TYPE.LITERAL
+          ? EXPR_PREFIX + JSON.stringify(mapping.value)
+          : mapping.value;
+      return outputs;
+    }, {});
   return { ...handler, actionMappings: { input, output } };
 }
 
