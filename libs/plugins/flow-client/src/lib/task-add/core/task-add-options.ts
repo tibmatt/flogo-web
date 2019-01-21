@@ -15,6 +15,14 @@ export interface Activity {
   ref: string;
 }
 
+export interface Functions {
+  name: string;
+  ref: string;
+  functions: any[],
+  type: string;
+  namespace: string;
+}
+
 interface AppAndFlowInfo {
   appId: string;
   actionId: string;

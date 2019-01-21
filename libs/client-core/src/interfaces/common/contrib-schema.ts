@@ -1,6 +1,6 @@
 import { ValueType } from '../../constants';
 
-export type ContribSchema = ActivitySchema | TriggerSchema;
+export type ContribSchema = ActivitySchema | TriggerSchema | FunctionSchema;
 
 export interface ActivitySchema extends BaseSchema {
   type: 'flogo:activity';
@@ -18,7 +18,11 @@ export interface TriggerSchema extends BaseSchema {
     settings: SchemaAttribute[];
   };
 }
-
+export interface FunctionSchema extends BaseSchema {
+  type: 'flogo:function';
+  functions: any[];
+  namespace: string;
+}
 export interface SchemaAttribute {
   name: string;
   type: ValueType;
@@ -37,7 +41,7 @@ interface SchemaDisplay {
 
 export interface BaseSchema {
   name: string;
-  type: 'flogo:trigger' | 'flogo:activity';
+  type: 'flogo:trigger' | 'flogo:activity' | 'flogo:function';
   ref: string;
   version: string;
   title: string;

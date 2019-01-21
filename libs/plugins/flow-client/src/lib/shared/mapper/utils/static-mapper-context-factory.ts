@@ -5,13 +5,14 @@ export class StaticMapperContextFactory {
   static create(
     inputSchemas: any,
     outputSchemas: any,
-    mappings: { [lhs: string]: MapExpression }
+    mappings: { [lhs: string]: MapExpression },
+    functions: any
   ): MapperContext {
     return {
       mappings,
       outputSchemas,
       inputSchemas,
-      functions: getFunctions(),
+      functions,
     };
   }
 }

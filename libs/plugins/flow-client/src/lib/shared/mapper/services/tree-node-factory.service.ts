@@ -118,13 +118,13 @@ export class TreeNodeFactoryService {
     let node = {};
     Object.keys(functionMap).forEach(func => {
       const currentFunction = functionMap[func];
-      if (currentFunction.type === 'namespace') {
+      if (currentFunction.namespace) {
         Object.keys(currentFunction.functions).forEach(subFunc => {
           const currentChildFunction = currentFunction.functions[subFunc];
-          node = this.createFromFunctionsNode(currentChildFunction, func);
-          pushToCategory(func, node);
+          node = this.createFromFunctionsNode(currentChildFunction, currentFunction.namespace);
+          pushToCategory(currentFunction.namespace, node);
         });
-      } else if (currentFunction.type === 'function') {
+      } else if(!currentFunction.namespace) {
         node = this.createFromFunctionsNode(currentFunction);
         nodes.push(node);
       } else {

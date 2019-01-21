@@ -18,6 +18,7 @@ import { ConfiguratorService as TriggerConfiguratorService } from './services/co
 import { TriggerStatus } from './interfaces';
 import { ConfirmationComponent } from './confirmation';
 import { TRIGGER_STATUS_TOKEN } from './confirmation/status.token';
+import {Activity, Functions} from "../../task-add";
 
 @Component({
   selector: 'flogo-triggers-configuration',
@@ -34,6 +35,7 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
   isOpen: boolean;
 
   private ngDestroy$ = SingleEmissionSubject.create();
+
 
   constructor(
     private triggerConfiguratorService: TriggerConfiguratorService,

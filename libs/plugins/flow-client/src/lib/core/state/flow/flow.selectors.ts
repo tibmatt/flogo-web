@@ -9,7 +9,7 @@ import {
   ItemActivityTask,
   FLOGO_TASK_TYPE,
   FlowGraph,
-  GraphNodeDictionary,
+  GraphNodeDictionary, FunctionSchema,
 } from '@flogo-web/client-core';
 import { DiagramSelectionType } from '@flogo-web/diagram';
 
@@ -23,7 +23,7 @@ import {
   TaskSelection,
   SelectionType,
 } from '../../models';
-import { Activity } from '../../../task-add';
+import {Activity, Functions} from '../../../task-add';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(
@@ -315,5 +315,20 @@ export const getInstalledActivities = createSelector(
       activities.unshift(subflowActivity);
     }
     return activities;
+  }
+);
+export const getInstalledFunctions = createSelector(
+  selectSchemas,
+  (schemas: Dictionary<FunctionSchema>): Functions[] => {
+    console.log(schemas);
+    return Object.values(schemas)
+      .filter(schema => schema.type === FLOGO_CONTRIB_TYPE_VALUES.MICRO_SERVICE_FUNCTION)
+      .map(schema => ({
+        functions: schema.functions,
+        name: schema.name,
+        type: schema.type,
+        namespace: schema.namespace,
+        ref: schema.ref,
+      }));
   }
 );

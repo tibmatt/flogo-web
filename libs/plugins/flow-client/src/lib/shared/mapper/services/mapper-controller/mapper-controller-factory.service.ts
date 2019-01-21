@@ -26,9 +26,10 @@ export class MapperControllerFactory {
   createController(
     input: AttributeDescriptor[],
     output: AttributeDescriptor[],
-    mappings: any
+    mappings: any,
+    functions
   ): MapperController {
-    const context = createMapperContext(input, output, mappings);
+    const context = createMapperContext(input, output, mappings, functions);
     return new MapperController(
       this.createStateFromContext(context),
       this.nodeFactory,
