@@ -69,15 +69,15 @@ describe('importer.common.normalize-handler-mappings', () => {
 
     expect(result.actionMappings).toEqual({
       input: {
-        field1: '="$.fromTrigger"',
-        field2: '="$.property.subaccess"',
-        field3: '="$.property.someArray[0]"',
-        field4: '="$.alreadyPrefixed"',
-        field5: '="$activity[myActivity].foo.bar"',
+        field1: '=$.fromTrigger',
+        field2: '=$.property.subaccess',
+        field3: '=$.property.someArray[0]',
+        field4: '=$.alreadyPrefixed',
+        field5: '=$activity[myActivity].foo.bar',
       },
       output: {
-        field1: '="$.fromFlow"',
-        field2: '="property.subaccess"',
+        field1: '=$.fromFlow',
+        field2: '=property.subaccess',
         field3: '={"x":"1"}',
         field4: 'foobar',
       },

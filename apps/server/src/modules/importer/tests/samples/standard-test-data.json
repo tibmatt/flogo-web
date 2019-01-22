@@ -196,11 +196,11 @@
               "actionId": "flow:get_status",
               "actionMappings": {
                 "input": {
-                  "id": "=\"$.params.id\""
+                  "id": "=$.params.id"
                 },
                 "output": {
-                  "code": "=\"$.code\"",
-                  "data": "=\"$.status\""
+                  "code": "=$.code",
+                  "data": "=$.status"
                 }
               }
             },

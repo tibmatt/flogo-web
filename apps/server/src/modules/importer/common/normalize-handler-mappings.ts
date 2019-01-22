@@ -1,33 +1,28 @@
-import { isString } from 'lodash';
+import { isString, isPlainObject } from 'lodash';
 import { parse } from '@flogo-web/parser';
 import { MAPPING_EXPRESSION_TYPE } from '../../../common/constants';
+import { EXPR_PREFIX } from '@flogo-web/core';
 
 const CURRENT_SCOPE_RESOLVER = '$';
-const EXPR_PREFIX = '=';
+const mappingsReducer = (reducedMappings, mapping) => {
+  let value = mapping.value;
+  if (isPlainObject(mapping.value)) {
+    value = EXPR_PREFIX + JSON.stringify(mapping.value);
+  } else if (mapping.type !== MAPPING_EXPRESSION_TYPE.LITERAL) {
+    value = EXPR_PREFIX + mapping.value;
+  }
+  reducedMappings[mapping.mapTo] = value;
+  return reducedMappings;
+};
 
 export function normalizeHandlerMappings(handler) {
   if (!handler.actionMappings) {
     return handler;
   }
   let { input, output } = handler.actionMappings;
-  input =
-    input &&
-    input.map(normalizeSingleHandlerMapping).reduce((inputs, mapping) => {
-      inputs[mapping.mapTo] =
-        mapping.type !== MAPPING_EXPRESSION_TYPE.LITERAL
-          ? EXPR_PREFIX + JSON.stringify(mapping.value)
-          : mapping.value;
-      return inputs;
-    }, {});
+  input = input && input.map(normalizeSingleHandlerMapping).reduce(mappingsReducer, {});
   output =
-    output &&
-    output.map(normalizeSingleHandlerMapping).reduce((outputs, mapping) => {
-      outputs[mapping.mapTo] =
-        mapping.type !== MAPPING_EXPRESSION_TYPE.LITERAL
-          ? EXPR_PREFIX + JSON.stringify(mapping.value)
-          : mapping.value;
-      return outputs;
-    }, {});
+    output && output.map(normalizeSingleHandlerMapping).reduce(mappingsReducer, {});
   return { ...handler, actionMappings: { input, output } };
 }
 
