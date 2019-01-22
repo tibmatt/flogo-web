@@ -13,5 +13,10 @@ export function createMapperContext(
   const inputSchema = MapperTranslator.attributesToObjectDescriptor(input || []);
   const outputSchema = MapperTranslator.createOutputSchema(output || []);
   const mappings = MapperTranslator.translateMappingsIn(handlerMappings || []);
-  return StaticMapperContextFactory.create(inputSchema, outputSchema, mappings, functions);
+  return StaticMapperContextFactory.create(
+    inputSchema,
+    outputSchema,
+    mappings,
+    functions
+  );
 }

@@ -2,7 +2,7 @@ import { isEmpty, cloneDeep } from 'lodash';
 import { skip, takeUntil } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {select, Store} from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 import { Resource } from '@flogo-web/core';
@@ -193,7 +193,6 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     this.checkIsIteratorDirty();
     this.adjustIteratorInInputMapper();
   }
-
 
   save() {
     const isIterable = this.iteratorModeOn && !isEmpty(this.iterableValue);

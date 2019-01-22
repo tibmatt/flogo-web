@@ -47,7 +47,7 @@ class Engine {
     this.tasks = {
       activities: [],
       triggers: [],
-      functions: []
+      functions: [],
     };
     this.libVersion = libVersion;
     this.runLogger = runLogger;
@@ -124,7 +124,6 @@ class Engine {
   getFunctions() {
     return this.tasks.functions;
   }
-
 
   hasActivity(nameOrPath: string) {
     return this._hasItem(this.getActivities(), nameOrPath);

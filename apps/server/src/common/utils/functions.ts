@@ -22,9 +22,9 @@ export function getFunctions() {
               example: 'array.length(someArray)\n Returns 3',
               usage: 'array.length(<<array>>)',
             },
-          }
-        ]
-      }
+          },
+        ],
+      },
     },
     {
       path: 'githubPath/function/string',
@@ -51,9 +51,10 @@ export function getFunctions() {
               description:
                 'Returns the concatenation of the arguments. You can concatenate two or more strings.',
               example: "string.concat('Hello',' ', 'World')\nReturns\nHello World",
-              usage: 'string.concat(<< string1 >>, << string2,... >>)\nReturn Type\nstring',
+              usage:
+                'string.concat(<< string1 >>, << string2,... >>)\nReturn Type\nstring',
             },
-            return: {type: 'string'},
+            return: { type: 'string' },
           },
           {
             name: 'equals',
@@ -67,13 +68,14 @@ export function getFunctions() {
                 type: 'string',
               },
             ],
-            return: {type: 'boolean'},
+            return: { type: 'boolean' },
             help: {
               description: 'Returns whether strings str1 and str2 are equal.',
               usage: 'string.equals(<<str1>>, <<str2>>)',
               example: "string.equals('Flogo Web', 'Flogo Web')\nReturns\ntrue",
             },
-          }, {
+          },
+          {
             name: 'equalsignorecase',
             args: [
               {
@@ -85,7 +87,7 @@ export function getFunctions() {
                 type: 'string',
               },
             ],
-            return: {type: 'boolean'},
+            return: { type: 'boolean' },
             help: {
               description:
                 'Compares this one string to another string, ignoring case considerations. Returns true if equal.',
@@ -101,7 +103,7 @@ export function getFunctions() {
                 type: 'string',
               },
             ],
-            return: {type: 'integer'},
+            return: { type: 'integer' },
             help: {
               description: 'Returns the length of a string.',
               usage: 'string.length(<< str >>)\nReturn Type\nint',
@@ -124,7 +126,7 @@ export function getFunctions() {
                 type: 'integer',
               },
             ],
-            return: {type: 'string'},
+            return: { type: 'string' },
             help: {
               description:
                 'Returns a substring starting at the position specified by the second argument. Character positions are numbered from 0.',
@@ -133,8 +135,8 @@ export function getFunctions() {
                 'string.substring("Flogo is the most awesome project ever", 18, 7) \nReturns "awesome"',
             },
           },
-        ]
-      }
+        ],
+      },
     },
     {
       path: 'githubPath/function/number',
@@ -159,9 +161,9 @@ export function getFunctions() {
               usage: 'number.random(<< limit >>)\nReturn Type\nint',
               example: 'number.random(10)\nReturns 9',
             },
-          }
-        ]
-      }
+          },
+        ],
+      },
     },
-  ]
+  ];
 }

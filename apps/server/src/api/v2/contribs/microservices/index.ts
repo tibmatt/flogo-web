@@ -9,7 +9,7 @@ import { logger } from '../../../../common/logging';
 import { install as installContributionToEngine } from '../../../../modules/contrib-installer/microservice';
 import { TYPE_ACTIVITY, TYPE_TRIGGER, TYPE_FUNCTION } from '../../../../common/constants';
 import { ERROR_TYPES, ErrorManager } from '../../../../common/errors';
-import {FunctionManager} from "../../../../modules/functions";
+import { FunctionManager } from '../../../../modules/functions';
 
 const contributionTypes = {
   activity: {

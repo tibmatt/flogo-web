@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {select, Store} from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { cloneDeep } from 'lodash';
-import {Observable, Subscription} from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { skip, takeUntil } from 'rxjs/operators';
 import { animate, style, transition, trigger } from '@angular/animations';
 import {
@@ -20,8 +20,7 @@ import { getInputContext } from '../core/models/task-configure/get-input-context
 import * as FlowActions from '../core/state/flow/flow.actions';
 import { createSaveBranchAction } from '../task-configurator/models/save-action-creator';
 import { createBranchMappingContext } from './branch-configurator-context';
-import * as FlowSelectors from "../core/state/flow/flow.selectors";
-import {Functions} from "../task-add";
+import * as FlowSelectors from '../core/state/flow/flow.selectors';
 
 @Component({
   selector: 'flogo-flow-branch-configurator',

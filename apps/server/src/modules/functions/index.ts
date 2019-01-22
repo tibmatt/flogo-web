@@ -1,9 +1,8 @@
-import {ContributionsService} from "../contribs";
-import {functionsDBService} from "../../common/db";
-import get from "lodash/get";
+import { ContributionsService } from '../contribs';
+import { functionsDBService } from '../../common/db';
+import get from 'lodash/get';
 
 class FunctionManagerImpl implements ContributionsService {
-
   find(terms?) {
     terms = terms || {};
 

@@ -46,9 +46,15 @@ export class ConfigureDetailsService {
       flowInputMapper: this.createInputMapperController(
         flowMetadata,
         triggerSchema,
-        input
+        input,
+        state.functions
       ),
-      replyMapper: this.createReplyMapperController(flowMetadata, triggerSchema, output),
+      replyMapper: this.createReplyMapperController(
+        flowMetadata,
+        triggerSchema,
+        output,
+        state.functions
+      ),
       triggerInformation,
     };
   }
@@ -81,7 +87,8 @@ export class ConfigureDetailsService {
   private createReplyMapperController(
     flowMetadata,
     triggerSchema,
-    output: any
+    output: any,
+    functions
   ): null | MapperController {
     const flowOutput = flowMetadata && flowMetadata.output ? flowMetadata.output : null;
     if (isEmpty(flowOutput) || isEmpty(triggerSchema.reply)) {
@@ -90,14 +97,16 @@ export class ConfigureDetailsService {
     return this.mapperControllerFactory.createController(
       triggerSchema.reply || [],
       flowMetadata && flowMetadata.output ? flowMetadata.output : [],
-      output
+      output,
+      functions
     );
   }
 
   private createInputMapperController(
     flowMetadata,
     triggerSchema,
-    input: any
+    input: any,
+    functions
   ): null | MapperController {
     const flowInput = flowMetadata && flowMetadata.input ? flowMetadata.input : null;
     if (isEmpty(flowInput) || isEmpty(triggerSchema.outputs)) {
@@ -106,7 +115,8 @@ export class ConfigureDetailsService {
     return this.mapperControllerFactory.createController(
       flowInput,
       triggerSchema.outputs || [],
-      input
+      input,
+      functions
     );
   }
 

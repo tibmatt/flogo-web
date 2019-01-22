@@ -121,10 +121,13 @@ export class TreeNodeFactoryService {
       if (currentFunction.namespace) {
         Object.keys(currentFunction.functions).forEach(subFunc => {
           const currentChildFunction = currentFunction.functions[subFunc];
-          node = this.createFromFunctionsNode(currentChildFunction, currentFunction.namespace);
+          node = this.createFromFunctionsNode(
+            currentChildFunction,
+            currentFunction.namespace
+          );
           pushToCategory(currentFunction.namespace, node);
         });
-      } else if(!currentFunction.namespace) {
+      } else if (!currentFunction.namespace) {
         node = this.createFromFunctionsNode(currentFunction);
         nodes.push(node);
       } else {

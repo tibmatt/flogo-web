@@ -29,6 +29,7 @@ describe('Serive: ConfigureDetailsService', function(this: {
         },
       ],
     },
+    functions: [],
   };
 
   beforeEach(() => {
@@ -65,6 +66,7 @@ describe('Serive: ConfigureDetailsService', function(this: {
         MockData.schema.reply,
         MockData.flowMetadata.output,
         MockData.handler.actionMappings.output,
+        MockData.functions,
       ]
     );
   });

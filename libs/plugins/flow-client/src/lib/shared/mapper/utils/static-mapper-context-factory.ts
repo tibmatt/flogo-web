@@ -1,5 +1,4 @@
 import { MapExpression, MapperContext } from '../models';
-import { getFunctions } from './functions';
 
 export class StaticMapperContextFactory {
   static create(

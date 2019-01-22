@@ -5,7 +5,7 @@
 export enum FLOGO_CONTRIB_TYPE {
   TRIGGER = 'trigger',
   ACTIVITY = 'activity',
-  FUNCTION = 'function'
+  FUNCTION = 'function',
 }
 
 export enum FLOGO_CONTRIB_TYPE_VALUES {

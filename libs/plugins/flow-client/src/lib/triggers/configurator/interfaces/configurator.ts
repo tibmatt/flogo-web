@@ -58,4 +58,5 @@ export interface CurrentTriggerState {
   // todo: define
   fields: any;
   appProperties?: AppProperty[];
+  functions: any[];
 }

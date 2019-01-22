@@ -55,5 +55,9 @@ export function syncTasks(engine) {
       return Promise.reject(err);
     });
 
-  return Promise.all([registerActivitiesPromise, registerTriggersPromise, registerFunctionsPromise]);
+  return Promise.all([
+    registerActivitiesPromise,
+    registerTriggersPromise,
+    registerFunctionsPromise,
+  ]);
 }
