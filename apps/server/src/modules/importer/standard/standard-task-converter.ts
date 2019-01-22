@@ -4,6 +4,7 @@ import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '../../../common/constants';
 import { isOutputMapperField } from '../../../common/utils/flow';
 import { TASK_TYPE, EXPRESSION_TYPE } from '../../transfer/common/type-mapper';
 import { parseResourceIdFromResourceUri } from './utils';
+import { EXPR_PREFIX } from '@flogo-web/core';
 
 export class StandardTaskConverter {
   private resourceTask;
@@ -72,7 +73,7 @@ export class StandardTaskConverter {
   prepareInputMappings() {
     const inputMappings = this.convertAttributes();
     return this.safeGetMappings().reduce((inputs, mapping) => {
-      inputs[mapping.mapTo] = '=' + JSON.stringify(mapping.value);
+      inputs[mapping.mapTo] = EXPR_PREFIX + JSON.stringify(mapping.value);
       return inputs;
     }, inputMappings);
   }
@@ -84,7 +85,6 @@ export class StandardTaskConverter {
   }
 
   convertAttributes() {
-    const EXPR_PREFIX = '=';
     const schemaInputs = this.activitySchema.inputs || [];
     const activityInput = this.resourceTask.activity.input || {};
     return schemaInputs.reduce((attributes, schemaInput) => {
