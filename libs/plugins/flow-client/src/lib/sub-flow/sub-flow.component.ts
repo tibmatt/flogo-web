@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
 
-import { ActionBase } from '@flogo-web/client-core';
+import { Resource } from '@flogo-web/core';
 
 import { FlogoFlowService as FlowsService } from '../core/flow.service';
 
@@ -24,17 +24,15 @@ export class SubFlowComponent implements AfterViewInit, OnInit {
   @Input()
   currentFlow: string;
   @Output()
-  flowSelected: EventEmitter<ActionBase | string> = new EventEmitter<
-    ActionBase | string
-  >();
+  flowSelected: EventEmitter<Resource | string> = new EventEmitter<Resource | string>();
 
   @ViewChild('listModal') modal: BsModalComponent;
-  flowsList: ActionBase[];
+  flowsList: Resource[];
 
   constructor(private flowService: FlowsService) {}
 
   ngOnInit() {
-    this.flowService.listFlowsForApp(this.appId).then(flows => {
+    this.flowService.listFlowsForApp(this.appId).subscribe(flows => {
       this.flowsList = flows.filter(flow => flow.id !== this.currentFlow);
     });
   }
@@ -55,7 +53,7 @@ export class SubFlowComponent implements AfterViewInit, OnInit {
     this.modal.close();
   }
 
-  selectedFlow(flow: ActionBase) {
+  selectedFlow(flow: Resource) {
     this.flowSelected.emit(flow);
   }
 }

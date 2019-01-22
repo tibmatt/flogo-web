@@ -16,9 +16,8 @@ import {
 } from '@flogo-web/client-core/services';
 import { FlogoProfileServiceMock } from '@flogo-web/client-core/services/profile.service.mock';
 import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
-
 import { InstallerModule } from '../shared/installer';
-import { UIModelConverterService } from '../core';
+import { MicroServiceModelConverter } from '../core/models/profiles/microservice-converter.model';
 import { featureReducer, FlowState, Init, INITIAL_STATE } from '../core/state';
 import { FlogoFlowTriggersPanelComponent } from './triggers.component';
 
@@ -200,7 +199,7 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
         },
         { provide: TriggersApiService, useClass: MockTriggerServiceV2 },
         { provide: RESTAPIHandlersService, useClass: MockHandlerService },
-        { provide: UIModelConverterService, useClass: MockUIConverterService },
+        { provide: MicroServiceModelConverter, useClass: MockUIConverterService },
         HttpUtilsService,
       ],
     }).compileComponents();

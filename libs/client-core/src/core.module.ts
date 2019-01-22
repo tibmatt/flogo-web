@@ -12,7 +12,6 @@ import {
   TriggersApiService,
 } from './services/restapi';
 import { RESTAPIHandlersService as RESTAPIHandlersServiceV2 } from './services/restapi/v2/handlers-api.service';
-import { APIFlowsService } from './services/restapi/v2/flows-api.service';
 import { AppsApiService } from './services/restapi/v2/apps-api.service';
 import { ConfigurationService } from './services/configuration.service';
 import { ErrorService, WindowRef, SanitizeService, RunApiService } from './services';
@@ -41,7 +40,6 @@ import { ModalService } from './modal';
     NotificationsModule,
   ],
   providers: [
-    // services
     {
       provide: DEFAULT_REST_HEADERS,
       useValue: createDefaultRestApiHttpHeaders(),
@@ -54,7 +52,6 @@ import { ModalService } from './modal';
 
     RESTAPIHandlersServiceV2,
     AppsApiService,
-    APIFlowsService,
     RESTAPIContributionsService,
 
     RunApiService,

@@ -1,4 +1,4 @@
-import { Action } from '../common/action';
+import { Resource } from '@flogo-web/core';
 import { FlowSummary } from './flow-summary';
 import { Trigger } from './trigger';
 
@@ -10,7 +10,8 @@ export interface App {
   createdAt: any;
   updatedAt: any;
   flows?: FlowSummary[];
-  triggers?: Array<Trigger>;
-  actions?: Array<Action>;
+  triggers?: Trigger[];
+  actions?: Array<Resource>;
+  resources?: Resource[];
   type?: string;
 }

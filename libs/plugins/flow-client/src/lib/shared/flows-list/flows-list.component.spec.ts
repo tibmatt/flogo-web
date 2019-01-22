@@ -3,10 +3,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
-import { Action } from '@flogo-web/client-core';
-import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
+import { Resource } from '@flogo-web/core';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
 
+import { RESOURCE_TYPE_FLOW } from '../../core';
 import { FlowsListComponent } from './flows-list.component';
 
 describe('Component: FlowsListComponent', () => {
@@ -63,34 +64,43 @@ describe('Component: FlowsListComponent', () => {
     firstSelectFlowButton.click();
   });
 
-  function getFlowsList(): Action[] {
+  function getFlowsList(): Resource[] {
     return [
       {
         name: 'hello flow',
         description: '',
         id: 'flow_1',
+        type: RESOURCE_TYPE_FLOW,
         createdAt: '2018-01-25T09:50:29.664Z',
         updatedAt: '2018-01-25T09:55:11.088Z',
-        tasks: [],
-        links: [],
+        data: {
+          tasks: [],
+          links: [],
+        },
       },
       {
         name: 'test flow',
         description: 'hello',
         id: 'flow_2',
+        type: RESOURCE_TYPE_FLOW,
         createdAt: '2018-01-25T09:50:29.664Z',
         updatedAt: '2018-01-25T09:55:11.088Z',
-        tasks: [],
-        links: [],
+        data: {
+          tasks: [],
+          links: [],
+        },
       },
       {
         name: 'flow something',
         description: '',
         id: 'flow_3',
+        type: RESOURCE_TYPE_FLOW,
         createdAt: '2018-01-25T09:50:29.664Z',
         updatedAt: '2018-01-25T09:55:11.088Z',
-        tasks: [],
-        links: [],
+        data: {
+          tasks: [],
+          links: [],
+        },
       },
     ];
   }

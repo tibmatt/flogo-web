@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import {
   TriggersApiService,
   RESTAPIHandlersService as HandlersService,
-  APIFlowsService as FlowsApiService,
+  ResourceService,
   RESTAPIContributionsService,
 } from './restapi';
 import { TriggerSchema } from '../interfaces';
@@ -15,7 +15,7 @@ const mapSettingsArrayToObject = (settings: { name: string; value?: any }[]) =>
 export class FlowsService {
   constructor(
     private handlersService: HandlersService,
-    private flowsService: FlowsApiService,
+    private resourceService: ResourceService,
     private triggersService: TriggersApiService,
     private contribTriggerService: RESTAPIContributionsService
   ) {}
@@ -25,11 +25,14 @@ export class FlowsService {
     newFlow: { name: string; description: string },
     triggerId
   ): Promise<any> {
+    const createFlow = () =>
+      this.resourceService
+        .createResource(appId, { ...newFlow, type: 'flow' })
+        .toPromise();
     if (!triggerId) {
-      return this.flowsService.createFlow(appId, newFlow);
+      return createFlow();
     }
-    return this.flowsService
-      .createFlow(appId, newFlow)
+    return createFlow()
       .then(flow => {
         return this.getContribInfo(triggerId).then(contribTrigger => ({
           flow,
@@ -48,11 +51,12 @@ export class FlowsService {
   }
 
   deleteFlow(flowId) {
-    return this.flowsService.deleteFlow(flowId);
+    return this.resourceService.deleteResource(flowId);
   }
 
   deleteFlowWithTrigger(flowId: string, triggerId: string) {
     return this.deleteFlow(flowId)
+      .toPromise()
       .then(() => {
         if (triggerId) {
           return this.triggersService.getTrigger(triggerId).then(triggerDetails => {

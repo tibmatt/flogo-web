@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
+import { Resource } from '@flogo-web/core';
 import {
-  Action as ActionSchema,
   ActivitySchema,
   Dictionary,
   GraphNode,
@@ -78,7 +78,7 @@ export class TaskItemCreated implements BaseFlowAction {
       handlerType: HandlerType;
       item: ItemTask;
       node: GraphNode;
-      subflowSchema?: ActionSchema;
+      subflowSchema?: Resource;
     }
   ) {}
 }
@@ -110,7 +110,7 @@ export class CommitItemConfiguration implements BaseFlowAction {
     public payload: {
       handlerType: HandlerType;
       item: { id: string } & Partial<Item>;
-      newSubflowSchema?: ActionSchema;
+      newSubflowSchema?: Resource;
     }
   ) {}
 }

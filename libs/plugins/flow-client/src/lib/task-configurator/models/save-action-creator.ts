@@ -3,9 +3,8 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 
+import { Resource } from '@flogo-web/core';
 import {
-  Action,
-  ActionBase,
   ItemActivityTask,
   ItemBranch,
   ItemSubflow,
@@ -13,7 +12,6 @@ import {
   isMapperActivity,
   Dictionary,
 } from '@flogo-web/client-core';
-
 import { AppState } from '../../core/state/app.state';
 import { FlowState, FlowSelectors, FlowActions } from '../../core/state';
 import { HandlerType } from '../../core/models';
@@ -29,7 +27,7 @@ export interface SaveTaskConfigEventData {
   };
   inputMappings: Dictionary<any>;
   subflowPath?: string;
-  changedSubflowSchema?: ActionBase;
+  changedSubflowSchema?: Resource;
 }
 export interface SaveBranchConfigEventData {
   id: string;
@@ -112,7 +110,7 @@ function getChanges(
   return {
     handlerType,
     item: itemChanges,
-    newSubflowSchema: changedSubflowSchema as Action,
+    newSubflowSchema: changedSubflowSchema as Resource,
   };
 }
 

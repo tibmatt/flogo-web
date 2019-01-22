@@ -1,15 +1,12 @@
 import { flow } from '../backend';
 import { FlowMetadata } from '../flow/flow-metadata';
 
-export interface ActionBase {
+export interface Action {
   id: string;
   name: string;
   description?: string;
   metadata?: FlowMetadata;
   createdAt: string;
-}
-
-export interface Action extends ActionBase {
   appId?: string;
   triggers?: any[];
   updatedAt: string;

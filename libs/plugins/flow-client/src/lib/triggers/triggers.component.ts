@@ -18,9 +18,8 @@ import {
   RESTAPIHandlersService,
 } from '@flogo-web/client-core/services';
 
-import { UIModelConverterService } from '../core';
-
 import { Trigger } from '../core';
+import { MicroServiceModelConverter } from '../core/models/profiles/microservice-converter.model';
 import { AppState } from '../core/state/app.state';
 import { getTriggersState } from '../core/state/triggers/triggers.selectors';
 import * as TriggerActions from '../core/state/triggers/triggers.actions';
@@ -56,7 +55,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   constructor(
     private restAPITriggersService: TriggersApiService,
     private _restAPIHandlerService: RESTAPIHandlersService,
-    private _converterService: UIModelConverterService,
+    private converterService: MicroServiceModelConverter,
     private _router: Router,
     private _translate: LanguageService,
     private store: Store<AppState>
@@ -77,7 +76,6 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
           appId: triggerState.appId,
           metadata: triggerState.flowMetadata,
         };
-        // todo: modifies computed values based on state, it could be a selector instead
       });
   }
 
@@ -141,7 +139,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
     const refs = uniq(this.triggersList.map(trigger => trigger.ref));
     from(refs)
       .pipe(
-        mergeMap(ref => this._converterService.getTriggerSchema(ref)),
+        mergeMap(ref => this.converterService.getTriggerSchema({ ref })),
         reduce((schemas: Dictionary<TriggerSchema>, schema: TriggerSchema) => {
           return { ...schemas, [schema.ref]: schema };
         }, {})
