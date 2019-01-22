@@ -1,5 +1,4 @@
-import isUndefined from 'lodash/isUndefined';
-import isArray from 'lodash/isArray';
+import { isUndefined, isArray, isPlainObject } from 'lodash';
 import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '../../../common/constants';
 import { isOutputMapperField } from '../../../common/utils/flow';
 import { TASK_TYPE, EXPRESSION_TYPE } from '../../transfer/common/type-mapper';
@@ -102,7 +101,9 @@ export class StandardTaskConverter {
         }, {});
         return { ...attributes, ...value };
       } else {
-        attributes[schemaInput.name] = value;
+        attributes[schemaInput.name] = isPlainObject(value)
+          ? EXPR_PREFIX + JSON.stringify(value, null, 2)
+          : value;
       }
       return attributes;
     }, {});
