@@ -31,7 +31,7 @@ export class FlogoFlowService {
     this.previousSavedFlow = null;
 
     const fetchSubflows = subflowIds =>
-      this.resourceService.listSubresources(resource.id, subflowIds);
+      this.resourceService.listSubresources((resource as any).appId, subflowIds);
     const convertServerToUIModel = (fromResource, linkedSubflows) =>
       this.converterService.convertToWebFlowModel(fromResource, linkedSubflows);
     return loadFlow(fetchSubflows, convertServerToUIModel, resource).pipe(
