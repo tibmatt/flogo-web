@@ -29,7 +29,7 @@ import {
   MapperController,
 } from '../shared/mapper';
 import { Tabs } from '../shared/tabs/models/tabs.model';
-import { FlogoFlowService as FlowsService } from '../core';
+import { FlogoFlowService as FlowsService, InstalledFunctionSchema } from '../core';
 import { FlowState, FlowActions, FlowSelectors } from '../core/state';
 import {
   createIteratorMappingContext,
@@ -111,7 +111,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   isValidTaskName: boolean;
   isTaskDetailEdited: boolean;
   ismapperActivity: boolean;
-  installedFunctions: any[];
+  installedFunctions: InstalledFunctionSchema[];
   private inputMapperStateSubscription: Subscription;
   private contextChange$ = SingleEmissionSubject.create();
   private destroy$ = SingleEmissionSubject.create();

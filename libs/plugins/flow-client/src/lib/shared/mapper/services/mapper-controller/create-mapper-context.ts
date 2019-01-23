@@ -3,12 +3,13 @@ import {
   MapperTranslator,
   StaticMapperContextFactory,
 } from '../../utils';
+import { InstalledFunctionSchema } from '../../../../core/interfaces';
 
 export function createMapperContext(
   input: AttributeDescriptor[],
   output: any[],
   handlerMappings: any[],
-  functions: any[]
+  functions: InstalledFunctionSchema[]
 ) {
   const inputSchema = MapperTranslator.attributesToObjectDescriptor(input || []);
   const outputSchema = MapperTranslator.createOutputSchema(output || []);

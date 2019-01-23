@@ -25,7 +25,7 @@ import {
   SelectionType,
 } from '../../models';
 import { Activity } from '../../../task-add';
-import { InstalledFunctions } from '../../interfaces';
+import { InstalledFunctionSchema } from '../../interfaces';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(
@@ -321,8 +321,7 @@ export const getInstalledActivities = createSelector(
 );
 export const getInstalledFunctions = createSelector(
   selectSchemas,
-  (schemas: Dictionary<FunctionSchema>): InstalledFunctions[] => {
-    console.log(schemas);
+  (schemas: Dictionary<FunctionSchema>): InstalledFunctionSchema[] => {
     return Object.values(schemas)
       .filter(schema => schema.type === FLOGO_CONTRIB_TYPE_VALUES.MICRO_SERVICE_FUNCTION)
       .map(schema => ({

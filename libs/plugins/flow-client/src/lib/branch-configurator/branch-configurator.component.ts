@@ -13,7 +13,7 @@ import {
 } from '@flogo-web/client-core';
 import { FlowState } from '../core/state';
 import { AppState } from '../core/state/app.state';
-import { FlogoFlowService as FlowsService } from '../core';
+import { FlogoFlowService as FlowsService, InstalledFunctionSchema } from '../core';
 import { MapperController, MapperControllerFactory } from '../shared/mapper';
 import { getStateWhenConfigureChanges } from '../shared/configurator/configurator.selector';
 import { getInputContext } from '../core/models/task-configure/get-input-context';
@@ -50,7 +50,7 @@ export class BranchConfiguratorComponent implements OnInit {
   private contextChange$ = SingleEmissionSubject.create();
   private inputMapperStateSubscription: Subscription;
   private destroy$ = SingleEmissionSubject.create();
-  private installedFunctions;
+  private installedFunctions: InstalledFunctionSchema[];
   constructor(
     private store: Store<AppState>,
     private _flowService: FlowsService,

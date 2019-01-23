@@ -15,6 +15,7 @@ import { TreeService } from '../tree.service';
 import { TreeNodeFactoryService } from '../tree-node-factory.service';
 import { MapperController } from './mapper-controller';
 import { createMapperContext } from './create-mapper-context';
+import { InstalledFunctionSchema } from '../../../../core/interfaces';
 
 @Injectable()
 export class MapperControllerFactory {
@@ -27,7 +28,7 @@ export class MapperControllerFactory {
     input: AttributeDescriptor[],
     output: AttributeDescriptor[],
     mappings: any,
-    functions
+    functions: InstalledFunctionSchema[]
   ): MapperController {
     const context = createMapperContext(input, output, mappings, functions);
     return new MapperController(
