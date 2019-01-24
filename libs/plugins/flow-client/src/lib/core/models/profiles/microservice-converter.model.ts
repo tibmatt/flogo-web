@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { fromPairs, isUndefined, uniqueId } from 'lodash';
+import { fromPairs, isUndefined, uniqueId, pick } from 'lodash';
 import {
   ActivitySchema,
   FlowMetadata,
@@ -222,9 +222,10 @@ export class MicroServiceModelConverter {
         (subflowSchema && subflowSchema.metadata && subflowSchema.metadata.input) || [];
       // Remove the dangling inputMappings of old flow inputs. This won't save to the database yet
       // but it will make sure it won't maintain the dangling mappings when next time flow is saved.
-      item.inputMappings = item.inputMappings.filter(mapping =>
-        subflowInputExists(subflowInputs, mapping.mapTo)
+      const filteredInputMappings = Object.keys(item.inputMappings).filter(mapping =>
+        subflowInputExists(subflowInputs, mapping)
       );
+      item.inputMappings = pick(item.inputMappings, filteredInputMappings);
     });
     return items;
   }
