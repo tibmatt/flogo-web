@@ -14,9 +14,8 @@ export class DanglingSubflowReferencesCleaner {
     const linkedFlowInputExists = (flowInputs, propName) =>
       !!flowInputs.find(i => i.name === propName);
 
-    const linkedFlowInputNames = linkedFlowInputMetadata.map(input => input.name);
     const finalMappingNames = Object.keys(task.inputMappings).filter(mapping =>
-      linkedFlowInputExists(linkedFlowInputNames, mapping)
+      linkedFlowInputExists(linkedFlowInputMetadata, mapping)
     );
     task.inputMappings = pick(task.inputMappings, finalMappingNames);
     return task.inputMappings;
