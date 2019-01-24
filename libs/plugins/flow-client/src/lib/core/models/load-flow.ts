@@ -1,5 +1,5 @@
 import { uniq, fromPairs } from 'lodash';
-import { SubscribableOrPromise, Observable, from, NEVER, of } from 'rxjs';
+import { SubscribableOrPromise, Observable, from, of } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 
 import { Resource, ApiResource } from '@flogo-web/core';
@@ -30,7 +30,7 @@ export const loadFlow = (
       );
     }),
     map(({ convertedFlow, linkedSubflows }) => {
-      const flowTriggers = resource.data.triggers || [];
+      const flowTriggers = (resource as any).triggers || [];
       const { triggers, handlers } = normalizeTriggersAndHandlersForAction(
         resource.id,
         flowTriggers
