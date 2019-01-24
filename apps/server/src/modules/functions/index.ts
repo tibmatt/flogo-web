@@ -18,7 +18,7 @@ function prepareForOutput(functionRow) {
   // this is a legacy
   return Object.assign(
     { id: functionRow.id || functionRow._id },
-    { ref: functionRow.ref},
+    { ref: functionRow.ref },
     functionRow.schema
   );
 }

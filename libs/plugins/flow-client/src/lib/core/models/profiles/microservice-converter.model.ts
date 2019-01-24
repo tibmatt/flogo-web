@@ -17,6 +17,7 @@ import {
   FLOGO_CONTRIB_TYPE,
   Item,
   ItemSubflow,
+  FunctionSchema,
 } from '@flogo-web/client-core';
 import { Resource } from '@flogo-web/core';
 import { makeGraphAndItems } from '../graph-and-items';
@@ -97,8 +98,13 @@ export class MicroServiceModelConverter {
   convertToWebFlowModel(resource: ApiFlowResource, subflowSchema: Dictionary<Resource>) {
     this.subflowSchemaRegistry = subflowSchema;
     this.verifyHasProperTasks(resource);
-    return this.getAllActivitySchemas().then(installedActivities =>
-      this.processFlowObj(resource, installedActivities)
+    return Promise.all([this.getAllActivitySchemas(), this.getAllFunctionSchemas()]).then(
+      ([allActivitySchemas, allFunctionSchemas]) => {
+        return this.processFlowObj(resource, [
+          ...allActivitySchemas,
+          ...allFunctionSchemas,
+        ]);
+      }
     );
   }
 
@@ -206,6 +212,10 @@ export class MicroServiceModelConverter {
 
   private getAllActivitySchemas(): Promise<ActivitySchema[]> {
     return this.contribService.listContribs<ActivitySchema>(FLOGO_CONTRIB_TYPE.ACTIVITY);
+  }
+
+  private getAllFunctionSchemas(): Promise<FunctionSchema[]> {
+    return this.contribService.listContribs<FunctionSchema>(FLOGO_CONTRIB_TYPE.FUNCTION);
   }
 
   private cleanDanglingSubflowMappings(items: Dictionary<Item>) {
