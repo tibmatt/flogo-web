@@ -2,7 +2,7 @@ import keyBy from 'lodash/keyBy';
 import { TaskFormatter } from './task-formatter';
 import { REF_SUBFLOW } from '../../../../common/constants';
 import { isSubflowTask } from '../../../../common/utils/subflow';
-import { mappingsToAttributes } from '../../mappings-to-attributes';
+import { isMapperActivity } from '../../../../common/utils/flow';
 
 export function formatTasks(activitySchemas, tasks = []) {
   const taskFormatter = new TaskFormatter();
@@ -11,10 +11,7 @@ export function formatTasks(activitySchemas, tasks = []) {
     if (isSubflowTask(task)) {
       task = { ...task, activityRef: REF_SUBFLOW };
     }
-    const activitySchema = schemas[task.activityRef];
-    return taskFormatter
-      .setSchemaInputs(activitySchema.inputs || {})
-      .setSourceTask(task)
-      .convert(activitySchema);
+    const isMapperType = isMapperActivity(schemas[task.activityRef]);
+    return taskFormatter.setSourceTask(task).convert(isMapperType);
   });
 }

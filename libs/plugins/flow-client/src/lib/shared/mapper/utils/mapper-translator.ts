@@ -18,6 +18,7 @@ import {
   Properties as MapperSchemaProperties,
 } from '../../../task-configurator/models';
 import { Mappings, MapExpression } from '../models';
+import { EXPR_PREFIX } from '@flogo-web/core';
 
 export type MappingsValidatorFn = (mappings: Mappings) => boolean;
 export interface AttributeDescriptor {
@@ -131,7 +132,6 @@ export class MapperTranslator {
   static translateMappingsOut(mappings: {
     [attr: string]: { expression: string; mappingType?: number };
   }): Dictionary<any> {
-    const EXPR_PREFIX = '=';
     return (
       Object.keys(mappings || {})
         // filterOutEmptyExpressions
@@ -141,17 +141,7 @@ export class MapperTranslator {
         )
         .reduce((inputs, attrName) => {
           const mapping = mappings[attrName];
-          const { value: inputValue, mappingType } = MapperTranslator.parseExpression(
-            mapping.expression
-          );
-          let value = inputValue;
-          if (
-            mappingType === MAPPING_TYPE.ATTR_ASSIGNMENT ||
-            mappingType === MAPPING_TYPE.EXPRESSION_ASSIGNMENT ||
-            mappingType === MAPPING_TYPE.OBJECT_TEMPLATE
-          ) {
-            value = EXPR_PREFIX + value;
-          }
+          const { value } = MapperTranslator.parseExpression(mapping.expression);
           inputs[attrName] = value;
           return inputs;
         }, {})
@@ -161,11 +151,10 @@ export class MapperTranslator {
   static parseExpression(expression: string) {
     const mappingType = mappingTypeFromExpression(expression);
     let value = expression;
-    if (
-      mappingType === MAPPING_TYPE.OBJECT_TEMPLATE ||
-      mappingType === MAPPING_TYPE.LITERAL_ASSIGNMENT
-    ) {
-      value = value !== 'nil' ? value : null;
+    if (mappingType === MAPPING_TYPE.LITERAL_ASSIGNMENT) {
+      value = value !== 'nil' ? JSON.parse(value) : null;
+    } else {
+      value = EXPR_PREFIX + value;
     }
     return { mappingType, value };
   }
@@ -197,19 +186,18 @@ export class MapperTranslator {
     return isValidExpression(expression);
   }
 
-  private static processInputValue(inputValue: string) {
+  private static processInputValue(inputValue: any) {
     let value = inputValue;
-    let literalAssignment;
     if (/^=/g.test(value)) {
       value = value.substr(1);
-    }
-    if (value === '') {
-      literalAssignment = MAPPING_TYPE.LITERAL_ASSIGNMENT;
+    } else {
+      value = MapperTranslator.rawExpressionToString(
+        value,
+        MAPPING_TYPE.LITERAL_ASSIGNMENT
+      );
     }
     value = MapperTranslator.upgradeLegacyMappingIfNeeded(value);
-    value = MapperTranslator.rawExpressionToString(value, literalAssignment);
-    const { mappingType } = MapperTranslator.parseExpression(value);
-    return { value, mappingType };
+    return { value, mappingType: mappingTypeFromExpression(value) };
   }
 
   private static upgradeLegacyMappingIfNeeded(mappingValue: string) {

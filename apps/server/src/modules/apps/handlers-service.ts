@@ -57,8 +57,8 @@ export class HandlersService {
           settings: {},
           outputs: {},
           actionMappings: {
-            input: [],
-            output: [],
+            input: {},
+            output: {},
           },
         });
         updateQuery = {

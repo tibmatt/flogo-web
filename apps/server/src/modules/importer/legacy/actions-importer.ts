@@ -2,6 +2,7 @@ import { AbstractActionsImporter, portTaskTypeForIterators } from '../common';
 import omit from 'lodash/omit';
 import get from 'lodash/get';
 import { TASK_HANDLER_NAME_ERROR } from '../../../common/constants';
+import { normalizeTaskInputsToMappings } from './normalizeTaskInputsToMappings';
 
 export class ActionsImporter extends AbstractActionsImporter {
   extractActions(fromRawApp) {
@@ -14,12 +15,16 @@ export class ActionsImporter extends AbstractActionsImporter {
     const errorHandlerTask = get(action, 'data.flow.errorHandlerTask');
     formattedAction.name = get(action, 'data.flow.name', action.name || action.id);
     if (rootTask) {
-      formattedAction.tasks = (rootTask.tasks || []).map(portTaskTypeForIterators);
+      formattedAction.tasks = (rootTask.tasks || [])
+        .map(normalizeTaskInputsToMappings)
+        .map(portTaskTypeForIterators);
       formattedAction.links = rootTask.links || [];
     }
     if (errorHandlerTask) {
       formattedAction[TASK_HANDLER_NAME_ERROR] = {
-        tasks: (errorHandlerTask.tasks || []).map(portTaskTypeForIterators),
+        tasks: (errorHandlerTask.tasks || [])
+          .map(normalizeTaskInputsToMappings)
+          .map(portTaskTypeForIterators),
         links: errorHandlerTask.links || [],
       };
     }

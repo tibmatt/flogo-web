@@ -310,7 +310,6 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
 
     const flowMetadata = getFlowMetadata(state);
     const { propsToMap, mappings } = this.getInputMappingsInfo({
-      selectedItem,
       activitySchema,
       subflowSchema,
       flowMetadata,
@@ -383,13 +382,12 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   private getInputMappingsInfo({
-    selectedItem,
     flowMetadata,
     activitySchema,
     subflowSchema,
   }): { propsToMap: any[]; mappings: Dictionary<any> } {
     let propsToMap = [];
-    let mappings = {};
+    const mappings = this.currentTile.inputMappings;
     const isOutputMapper = isMapperActivity(activitySchema);
     if (isOutputMapper) {
       propsToMap = flowMetadata.output;
@@ -399,12 +397,6 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       propsToMap = this.currentTile.attributes.inputs;
     }
 
-    if (isOutputMapper) {
-      const inputs = selectedItem.input || {};
-      mappings = inputs.mappings || {};
-    } else {
-      mappings = this.currentTile.inputMappings;
-    }
     return { mappings, propsToMap };
   }
 

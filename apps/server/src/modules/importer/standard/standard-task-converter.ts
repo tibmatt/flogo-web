@@ -1,9 +1,9 @@
-import isUndefined from 'lodash/isUndefined';
-import isArray from 'lodash/isArray';
+import { isUndefined, isArray, isPlainObject } from 'lodash';
 import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '../../../common/constants';
 import { isOutputMapperField } from '../../../common/utils/flow';
-import { TASK_TYPE } from '../../transfer/common/type-mapper';
-import { parseResourceIdFromResourceUri, portMappingType } from './utils';
+import { TASK_TYPE, EXPRESSION_TYPE } from '../../transfer/common/type-mapper';
+import { parseResourceIdFromResourceUri } from './utils';
+import { EXPR_PREFIX } from '@flogo-web/core';
 
 export class StandardTaskConverter {
   private resourceTask;
@@ -72,7 +72,7 @@ export class StandardTaskConverter {
   prepareInputMappings() {
     const inputMappings = this.convertAttributes();
     return this.safeGetMappings().reduce((inputs, mapping) => {
-      inputs[mapping.mapTo] = '=' + JSON.stringify(mapping.value);
+      inputs[mapping.mapTo] = EXPR_PREFIX + JSON.stringify(mapping.value);
       return inputs;
     }, inputMappings);
   }
@@ -92,9 +92,19 @@ export class StandardTaskConverter {
         return attributes;
       }
       if (isOutputMapperField(schemaInput) && isArray(value)) {
-        value = value.map(outputMapping => portMappingType(outputMapping));
+        value = value.reduce((mapping, outputMapping) => {
+          mapping[outputMapping.mapTo] =
+            outputMapping.type !== EXPRESSION_TYPE.LITERAL
+              ? EXPR_PREFIX + outputMapping.value
+              : outputMapping.value;
+          return mapping;
+        }, {});
+        return { ...attributes, ...value };
+      } else {
+        attributes[schemaInput.name] = isPlainObject(value)
+          ? EXPR_PREFIX + JSON.stringify(value, null, 2)
+          : value;
       }
-      attributes[schemaInput.name] = value;
       return attributes;
     }, {});
   }

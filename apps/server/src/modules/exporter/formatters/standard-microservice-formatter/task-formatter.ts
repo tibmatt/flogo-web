@@ -1,36 +1,23 @@
-import isArray from 'lodash/isArray';
-import isEmpty from 'lodash/isEmpty';
-import keyBy from 'lodash/keyBy';
+import { isEmpty } from 'lodash';
 
 import { TASK_TYPE } from '../../../transfer/common/type-mapper';
 import { isIterableTask } from '../../../../common/utils';
-import { isOutputMapperField, isMapperActivity } from '../../../../common/utils/flow';
 import { isSubflowTask } from '../../../../common/utils/subflow';
 import { Task } from '../../../../interfaces';
 
-import { portAndFormatMappings } from './port-and-format-mappings';
 import { createFlowUri } from './create-flow-uri';
 
 export class TaskFormatter {
   private sourceTask: Task;
-  private schemaInputsByName: { [name: string]: any };
   setSourceTask(sourceTask) {
     this.sourceTask = sourceTask;
     return this;
   }
 
-  setSchemaInputs(schemaInputs) {
-    this.schemaInputsByName = keyBy(schemaInputs, 'name');
-    return this;
-  }
-
-  convert(activitySchema) {
-    const { id, name, description, activityRef } = this.sourceTask;
+  convert(isMapperType: boolean) {
+    const { id, name, description, activityRef, inputMappings } = this.sourceTask;
     const { type, taskSettings, activitySettings } = this.resolveTypeAndSettings();
-    let input = this.sourceTask.inputMappings;
-    if (isMapperActivity(activitySchema)) {
-      input = this.convertAttributes();
-    }
+    const input = isMapperType ? { mappings: inputMappings } : inputMappings;
     return {
       id,
       type,
@@ -71,21 +58,5 @@ export class TaskFormatter {
 
   isIteratorTask() {
     return isIterableTask(this.sourceTask);
-  }
-
-  convertAttributes() {
-    // todo: for mapper classes need to convert input.mappings too
-    const attributes = this.sourceTask.attributes || [];
-    return attributes.reduce((input, attribute) => {
-      let value = attribute.value;
-      if (
-        isOutputMapperField(this.schemaInputsByName[attribute.name]) &&
-        isArray(attribute.value)
-      ) {
-        value = portAndFormatMappings({ output: value }).output;
-      }
-      input[attribute.name] = value;
-      return input;
-    }, {});
   }
 }

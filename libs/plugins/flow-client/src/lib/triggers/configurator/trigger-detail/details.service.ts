@@ -32,7 +32,7 @@ export class ConfigureDetailsService {
       fields,
       trigger: { handlers },
     } = state;
-    const { input, output } = actionMappings || { input: [], output: [] };
+    const { input, output } = actionMappings || { input: {}, output: {} };
     const disableCommonSettings = handlers.length > 1;
     const triggerInformation = this.getTriggerInformation(handlers, triggerSchema);
     const nameValidator = this.nameValidator.create(state.appId, state.trigger.id);

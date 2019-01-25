@@ -60,17 +60,11 @@
         "data": {
           "$ref": "#/definitions/flowData"
         },
-        "mappings": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "input": {
-              "$ref": "common.json#/definitions/mappingsCollection"
-            },
-            "output": {
-              "$ref": "common.json#/definitions/mappingsCollection"
-            }
-          }
+        "input": {
+          "type": "object"
+        },
+        "output": {
+          "type": "object"
         }
       }
     },

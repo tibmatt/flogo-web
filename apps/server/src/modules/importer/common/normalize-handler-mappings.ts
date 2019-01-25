@@ -1,16 +1,28 @@
-import { isString } from 'lodash';
-import { parse, parseResolver } from '@flogo-web/parser';
+import { isString, isPlainObject } from 'lodash';
+import { parse } from '@flogo-web/parser';
 import { MAPPING_EXPRESSION_TYPE } from '../../../common/constants';
+import { EXPR_PREFIX } from '@flogo-web/core';
 
 const CURRENT_SCOPE_RESOLVER = '$';
+const mappingsReducer = (reducedMappings, mapping) => {
+  let value = mapping.value;
+  if (isPlainObject(mapping.value)) {
+    value = EXPR_PREFIX + JSON.stringify(mapping.value);
+  } else if (mapping.type !== MAPPING_EXPRESSION_TYPE.LITERAL) {
+    value = EXPR_PREFIX + mapping.value;
+  }
+  reducedMappings[mapping.mapTo] = value;
+  return reducedMappings;
+};
 
 export function normalizeHandlerMappings(handler) {
   if (!handler.actionMappings) {
     return handler;
   }
   let { input, output } = handler.actionMappings;
-  input = input && input.map(normalizeSingleHandlerMapping);
-  output = output && output.map(normalizeSingleHandlerMapping);
+  input = input && input.map(normalizeSingleHandlerMapping).reduce(mappingsReducer, {});
+  output =
+    output && output.map(normalizeSingleHandlerMapping).reduce(mappingsReducer, {});
   return { ...handler, actionMappings: { input, output } };
 }
 
