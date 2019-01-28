@@ -2,7 +2,6 @@ import { ApiResource, Resource } from '@flogo-web/core';
 import { flow } from '@flogo-web/client-core';
 
 export interface ResourceFlowData {
-  triggers?: any[];
   tasks: flow.Task[];
   links: flow.Link[];
   errorHandler?: {

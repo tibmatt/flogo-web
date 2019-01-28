@@ -10,7 +10,7 @@ import {
   isSubflowTask,
 } from '@flogo-web/client-core';
 
-import { FlowResource, Trigger, ResourceFlowData } from '../interfaces';
+import { FlowResource, Trigger, ResourceFlowData, ApiFlowResource } from '../interfaces';
 
 export const loadFlow = (
   fetchSubflows: (ids: string[]) => Observable<ApiResource[]>,
@@ -18,7 +18,7 @@ export const loadFlow = (
     flowObj: FlowResource,
     subflowSchema: Dictionary<Resource>
   ) => SubscribableOrPromise<UiFlow>,
-  resource: FlowResource
+  resource: ApiFlowResource
 ) => {
   return getSubflows(fetchSubflows, resource).pipe(
     switchMap(linkedSubflows => {
@@ -30,7 +30,7 @@ export const loadFlow = (
       );
     }),
     map(({ convertedFlow, linkedSubflows }) => {
-      const flowTriggers = (resource as any).triggers || [];
+      const flowTriggers = resource.triggers || [];
       const { triggers, handlers } = normalizeTriggersAndHandlersForAction(
         resource.id,
         flowTriggers
