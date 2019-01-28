@@ -19,18 +19,13 @@ describe('exporter.utils.DanglingSubflowReferencesCleaner', () => {
   );
 
   test('should remove dangling references', () => {
-    expect(
-      Object.keys(cleanMappings).find(mapping => mapping === 'dangling')
-    ).toBeFalsy();
+    expect(cleanMappings.dangling).toBeUndefined();
   });
 
   test('valid mappings should stay', () => {
-    expect(Object.keys(cleanMappings)).toHaveLength(2);
-    expect(cleanMappings).toEqual(
-      expect.objectContaining({
-        foo: 'oof',
-        bar: 'rab',
-      })
-    );
+    expect(cleanMappings).toEqual({
+      foo: 'oof',
+      bar: 'rab',
+    });
   });
 });
