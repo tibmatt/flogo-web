@@ -16,7 +16,6 @@ import { switchMap, map, take, tap, filter } from 'rxjs/operators';
 import {
   LanguageService,
   FlowSummary,
-  Trigger,
   ERROR_CODE,
   CONTRIB_REF_PLACEHOLDER,
 } from '@flogo-web/client-core';
@@ -53,6 +52,7 @@ import {
   ConfirmationResult as MissingTriggerConfirmationResult,
   ConfirmationParams,
 } from '../missing-trigger-confirmation';
+import { Trigger } from '@flogo-web/core';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 

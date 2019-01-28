@@ -8,8 +8,9 @@ import {
   SimpleChanges,
   HostBinding,
 } from '@angular/core';
-import { Trigger, FlowSummary } from '@flogo-web/client-core';
+import { FlowSummary } from '@flogo-web/client-core';
 import { DeleteEvent } from '../shared/delete-event';
+import { Trigger } from '@flogo-web/core';
 
 @Component({
   selector: 'flogo-apps-flows-flow-group',

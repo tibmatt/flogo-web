@@ -1,5 +1,4 @@
-import { Resource } from '@flogo-web/core';
-import { Trigger } from '@flogo-web/client-core';
+import { Resource, Trigger } from '@flogo-web/core';
 
 export interface TriggerGroup {
   triggers: Trigger[] | null;

@@ -1,6 +1,5 @@
-import { Resource } from '@flogo-web/core';
+import { Resource, Trigger } from '@flogo-web/core';
 import { FlowSummary } from './flow-summary';
-import { Trigger } from './trigger';
 
 export interface App {
   id: string;
