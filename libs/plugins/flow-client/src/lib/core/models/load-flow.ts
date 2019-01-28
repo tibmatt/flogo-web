@@ -1,5 +1,5 @@
 import { uniq, fromPairs } from 'lodash';
-import { SubscribableOrPromise, Observable, from, NEVER, of } from 'rxjs';
+import { SubscribableOrPromise, Observable, from, of } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 
 import { Resource, ApiResource } from '@flogo-web/core';
@@ -10,7 +10,7 @@ import {
   isSubflowTask,
 } from '@flogo-web/client-core';
 
-import { FlowResource, Trigger, ResourceFlowData } from '../interfaces';
+import { FlowResource, Trigger, ResourceFlowData, ApiFlowResource } from '../interfaces';
 
 export const loadFlow = (
   fetchSubflows: (ids: string[]) => Observable<ApiResource[]>,
@@ -18,7 +18,7 @@ export const loadFlow = (
     flowObj: FlowResource,
     subflowSchema: Dictionary<Resource>
   ) => SubscribableOrPromise<UiFlow>,
-  resource: FlowResource
+  resource: ApiFlowResource
 ) => {
   return getSubflows(fetchSubflows, resource).pipe(
     switchMap(linkedSubflows => {
@@ -30,7 +30,7 @@ export const loadFlow = (
       );
     }),
     map(({ convertedFlow, linkedSubflows }) => {
-      const flowTriggers = resource.data.triggers || [];
+      const flowTriggers = resource.triggers || [];
       const { triggers, handlers } = normalizeTriggersAndHandlersForAction(
         resource.id,
         flowTriggers

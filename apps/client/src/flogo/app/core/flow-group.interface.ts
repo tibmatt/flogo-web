@@ -1,4 +1,4 @@
-import { Trigger } from '@flogo-web/client-core';
+import { Trigger } from '@flogo-web/core';
 
 export interface FlowGroup {
   trigger: Trigger | null;

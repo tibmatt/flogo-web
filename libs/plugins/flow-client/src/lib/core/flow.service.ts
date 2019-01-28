@@ -13,7 +13,7 @@ import { loadFlow } from './models/load-flow';
 import { FlowData } from './flow-data';
 import { AppState } from './state/app.state';
 import { FlowState, Init } from './state';
-import { FlowResource } from './interfaces';
+import { FlowResource, ApiFlowResource } from './interfaces';
 
 @Injectable()
 export class FlogoFlowService {
@@ -27,11 +27,11 @@ export class FlogoFlowService {
     private store: Store<AppState>
   ) {}
 
-  loadFlow(resource: FlowResource): Observable<FlowData> {
+  loadFlow(resource: ApiFlowResource): Observable<FlowData> {
     this.previousSavedFlow = null;
 
     const fetchSubflows = subflowIds =>
-      this.resourceService.listSubresources((resource as any).appId, subflowIds);
+      this.resourceService.listSubresources(resource.appId, subflowIds);
     const convertServerToUIModel = (fromResource, linkedSubflows) =>
       this.converterService.convertToWebFlowModel(fromResource, linkedSubflows);
     return loadFlow(fetchSubflows, convertServerToUIModel, resource).pipe(
