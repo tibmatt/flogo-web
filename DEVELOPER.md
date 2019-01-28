@@ -22,6 +22,7 @@ This document describes how to set up your development environment to build, run
     - [Running the tests](#running-the-tests)
     - [Running tests for a single subpackage](#running-tests-for-a-single-subpackage)
   - [Customize the server environment](#customize-the-server-environment)
+  - [Build the docker image for development](#build-the-docker-image-for-development)
   - [Other tasks](#other-tasks)
     - [Managing the services:](#managing-the-services)
     - [Managing engine/local data](#managing-enginelocal-data)
@@ -213,6 +214,25 @@ Before starting the server copy and rename the [`.env.example`](/.env.example) t
 the environment variables defined in created `.env` file.
 
 You can alternatively set regular environment variables.
+
+## Build the docker image for development
+
+To build the development docker image locally, run the following command from the project root
+(you can change the `:dev-build` tag to another name you prefer):
+
+```bash
+docker build -f tools/docker/dev.Dockerfile -t flogo/flogo-web:dev-build .
+```
+
+The building process will start, it might take several minutes depending on your machine resources. Once the build is finished
+then you should be able to see the docker image listed when running `docker images`.
+
+To start the container, run and navigate to `http://localhost:5033` once the container starts, note that you can change
+the port `5033` in the command to a different port if needed:
+
+```bash
+docker run -it -p 5033:3303 flogo/flogo-web:dev-build
+```
 
 ## Other tasks
 
