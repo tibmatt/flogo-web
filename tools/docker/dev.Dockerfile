@@ -14,7 +14,7 @@ RUN curl -fsSL "$GOLANG_SRC_URL" -o golang.tar.gz && \
 
 
 FROM base AS builder
-RUN go get -u github.com/TIBCOSoftware/flogo-cli/...
+RUN go get -u github.com/project-flogo/cli/...
 ENV BUILD_DIR /tmp/build
 ENV FLOGO_WEB_LOCALDIR ${BUILD_DIR}/dist/local
 COPY / ${BUILD_DIR}/
