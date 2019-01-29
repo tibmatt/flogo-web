@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { cloneDeep } from 'lodash';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { skip, takeUntil } from 'rxjs/operators';
 import { animate, style, transition, trigger } from '@angular/animations';
 import {
@@ -13,13 +13,14 @@ import {
 } from '@flogo-web/client-core';
 import { FlowState } from '../core/state';
 import { AppState } from '../core/state/app.state';
-import { FlogoFlowService as FlowsService } from '../core';
+import { FlogoFlowService as FlowsService, InstalledFunctionSchema } from '../core';
 import { MapperController, MapperControllerFactory } from '../shared/mapper';
 import { getStateWhenConfigureChanges } from '../shared/configurator/configurator.selector';
 import { getInputContext } from '../core/models/task-configure/get-input-context';
 import * as FlowActions from '../core/state/flow/flow.actions';
 import { createSaveBranchAction } from '../task-configurator/models/save-action-creator';
 import { createBranchMappingContext } from './branch-configurator-context';
+import * as FlowSelectors from '../core/state/flow/flow.selectors';
 
 @Component({
   selector: 'flogo-flow-branch-configurator',
@@ -49,7 +50,7 @@ export class BranchConfiguratorComponent implements OnInit {
   private contextChange$ = SingleEmissionSubject.create();
   private inputMapperStateSubscription: Subscription;
   private destroy$ = SingleEmissionSubject.create();
-
+  private installedFunctions: InstalledFunctionSchema[];
   constructor(
     private store: Store<AppState>,
     private _flowService: FlowsService,
@@ -69,6 +70,14 @@ export class BranchConfiguratorComponent implements OnInit {
         } else if (this.isActive) {
           this.close();
         }
+      });
+    this.store
+      .pipe(
+        select(FlowSelectors.getInstalledFunctions),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(functions => {
+        this.installedFunctions = functions;
       });
   }
 
@@ -116,7 +125,8 @@ export class BranchConfiguratorComponent implements OnInit {
     this.inputMapperController = this.mapperControllerFactory.createController(
       propsToMap,
       inputScope,
-      mappings
+      mappings,
+      this.installedFunctions
     );
     this.inputMapperStateSubscription = this.inputMapperController.state$
       .pipe(
@@ -132,7 +142,6 @@ export class BranchConfiguratorComponent implements OnInit {
   private open() {
     this.isActive = true;
   }
-
   private close() {
     if (!this.contextChange$.closed) {
       this.contextChange$.emitAndComplete();

@@ -5,10 +5,12 @@
 export enum FLOGO_CONTRIB_TYPE {
   TRIGGER = 'trigger',
   ACTIVITY = 'activity',
+  FUNCTION = 'function',
 }
 
 export enum FLOGO_CONTRIB_TYPE_VALUES {
   MICRO_SERVICE_ACTIVITY = 'flogo:activity',
+  MICRO_SERVICE_FUNCTION = 'flogo:function',
 }
 
 export enum FLOGO_TASK_TYPE {

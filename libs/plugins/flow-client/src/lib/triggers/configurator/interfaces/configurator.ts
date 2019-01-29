@@ -5,7 +5,7 @@ import {
   TriggerHandler,
 } from '@flogo-web/client-core';
 
-import { Trigger, TriggerConfigureState } from '../../../core';
+import { InstalledFunctionSchema, Trigger, TriggerConfigureState } from '../../../core';
 import { Tabs } from '../../../shared/tabs/models/tabs.model';
 
 export interface TriggerConfiguration {
@@ -58,4 +58,5 @@ export interface CurrentTriggerState {
   // todo: define
   fields: any;
   appProperties?: AppProperty[];
+  functions: InstalledFunctionSchema[];
 }

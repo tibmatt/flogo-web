@@ -7,8 +7,9 @@ import { getContribInstallationController as getInstallationController } from '.
 import { config } from '../../../../config/app-config';
 import { logger } from '../../../../common/logging';
 import { install as installContributionToEngine } from '../../../../modules/contrib-installer/microservice';
-import { TYPE_ACTIVITY, TYPE_TRIGGER } from '../../../../common/constants';
+import { TYPE_ACTIVITY, TYPE_TRIGGER, TYPE_FUNCTION } from '../../../../common/constants';
 import { ERROR_TYPES, ErrorManager } from '../../../../common/errors';
+import { FunctionManager } from '../../../../modules/functions';
 
 const contributionTypes = {
   activity: {
@@ -21,6 +22,12 @@ const contributionTypes = {
     manager: TriggerManager,
     installerOpts: {
       type: TYPE_TRIGGER,
+    },
+  },
+  function: {
+    manager: FunctionManager,
+    installerOpts: {
+      type: TYPE_FUNCTION,
     },
   },
 };

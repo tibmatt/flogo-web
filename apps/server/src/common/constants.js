@@ -95,6 +95,7 @@ export const MAPPING_EXPRESSION_TYPE = {
 export const TYPE_TRIGGER = 'trigger';
 export const TYPE_ACTIVITY = 'activity';
 export const TYPE_UNKNOWN = 'unknown';
+export const TYPE_FUNCTION = 'function';
 
 export const DEFAULT_APP_VERSION = '0.0.1';
 export const DEFAULT_APP_TYPE = 'flogo:app';

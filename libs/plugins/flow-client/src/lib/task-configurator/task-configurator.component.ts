@@ -2,7 +2,7 @@ import { isEmpty, cloneDeep } from 'lodash';
 import { skip, takeUntil } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 import { Resource } from '@flogo-web/core';
@@ -29,8 +29,8 @@ import {
   MapperController,
 } from '../shared/mapper';
 import { Tabs } from '../shared/tabs/models/tabs.model';
-import { FlogoFlowService as FlowsService } from '../core';
-import { FlowState, FlowActions } from '../core/state';
+import { FlogoFlowService as FlowsService, InstalledFunctionSchema } from '../core';
+import { FlowState, FlowActions, FlowSelectors } from '../core/state';
 import {
   createIteratorMappingContext,
   getIteratorOutputSchema,
@@ -111,7 +111,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   isValidTaskName: boolean;
   isTaskDetailEdited: boolean;
   ismapperActivity: boolean;
-
+  installedFunctions: InstalledFunctionSchema[];
   private inputMapperStateSubscription: Subscription;
   private contextChange$ = SingleEmissionSubject.create();
   private destroy$ = SingleEmissionSubject.create();
@@ -142,6 +142,14 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
         } else if (this.isActive) {
           this.close();
         }
+      });
+    this.store
+      .pipe(
+        select(FlowSelectors.getInstalledFunctions),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(functions => {
+        this.installedFunctions = functions;
       });
   }
 
@@ -376,7 +384,8 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     this.iteratorController = this.mapperControllerFactory.createController(
       iteratorContext.inputContext,
       this.inputScope,
-      iteratorContext.mappings
+      iteratorContext.mappings,
+      this.installedFunctions
     );
     this.adjustIteratorInInputMapper();
   }
@@ -407,7 +416,8 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     this.inputMapperController = this.mapperControllerFactory.createController(
       propsToMap,
       inputScope,
-      mappings
+      mappings,
+      this.installedFunctions
     );
     this.inputMapperStateSubscription = this.inputMapperController.status$
       .pipe(

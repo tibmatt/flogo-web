@@ -4,6 +4,7 @@ import { BaseRegistered } from '../base-registered/index';
 
 import { logger } from '../../common/logging/index';
 import { triggersDBService } from '../../common/db/triggers';
+import { functionsDBService } from '../../common/db/functions';
 
 /*
  * Server start logic
@@ -41,5 +42,22 @@ export function syncTasks(engine) {
       return Promise.reject(err);
     });
 
-  return Promise.all([registerActivitiesPromise, registerTriggersPromise]);
+  const functionsRegistrator = new BaseRegistered(functionsDBService);
+  const registerFunctionsPromise = functionsRegistrator
+    .clean()
+    .then(() => functionsRegistrator.syncDb(engine.getFunctions()))
+    .then(() => {
+      logger.verbose('registerFunctions success');
+      return true;
+    })
+    .catch(err => {
+      logger.error('registerFunctions error');
+      return Promise.reject(err);
+    });
+
+  return Promise.all([
+    registerActivitiesPromise,
+    registerTriggersPromise,
+    registerFunctionsPromise,
+  ]);
 }

@@ -11,6 +11,7 @@ import { buildPlugin } from './build/plugin';
 import { loader } from './loader';
 import { commander } from './commander';
 import { execController as exec } from './exec-controller';
+import { getFunctions } from '../../common/utils/functions';
 
 const DIR_TEST_BIN = 'bin-test';
 const DIR_BUILD_BIN = 'bin-build';
@@ -26,6 +27,7 @@ const DEFAULT_LIBS = [
 interface TaskCollections {
   activities: object[];
   triggers: object[];
+  functions: object[];
 }
 type Options = Record<string, any>;
 
@@ -37,7 +39,7 @@ class Engine {
   private libVersion: string;
   private path: string;
   private runLogger: object;
-  private tasks: { activities: object[]; triggers: object[] };
+  private tasks: { activities: object[]; triggers: object[]; functions: object[] };
 
   constructor(pathToEngine: string, libVersion: string, runLogger: object) {
     this.path = pathToEngine;
@@ -45,6 +47,7 @@ class Engine {
     this.tasks = {
       activities: [],
       triggers: [],
+      functions: [],
     };
     this.libVersion = libVersion;
     this.runLogger = runLogger;
@@ -58,6 +61,7 @@ class Engine {
       })
       .then((contribMetadata: TaskCollections) => {
         this.tasks = contribMetadata;
+        this.tasks.functions = getFunctions();
         return contribMetadata;
       });
   }
@@ -115,6 +119,10 @@ class Engine {
 
   getTriggers() {
     return this.tasks.triggers;
+  }
+
+  getFunctions() {
+    return this.tasks.functions;
   }
 
   hasActivity(nameOrPath: string) {

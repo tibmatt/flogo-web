@@ -14,6 +14,7 @@ import {
   selectTriggers,
   selectApp,
   selectActionId,
+  getInstalledFunctions,
 } from '../flow/flow.selectors';
 import { FlowState } from '../flow/flow.state';
 import { createTriggerConfigureFields } from './cases/create-trigger-configure-fields';
@@ -175,7 +176,8 @@ export const getConfigureState = createSelector(
   getCurrentTrigger,
   getCurrentHandler,
   selectApp,
-  (flowMetadata, schema, trigger, handler, app): CurrentTriggerState => {
+  getInstalledFunctions,
+  (flowMetadata, schema, trigger, handler, app, functions): CurrentTriggerState => {
     return {
       flowMetadata,
       schema,
@@ -184,6 +186,7 @@ export const getConfigureState = createSelector(
       appId: app.id,
       appProperties: app.properties,
       fields: createTriggerConfigureFields(trigger, handler, schema),
+      functions,
     };
   }
 );
