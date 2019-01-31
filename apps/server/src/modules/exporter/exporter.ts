@@ -1,8 +1,8 @@
 import { isEmpty, compact } from 'lodash';
 
-import { DEFAULT_APP_TYPE, DEFAULT_APP_VERSION } from '../../common/constants';
-import { forEachSubflowTaskInAction } from '../../common/utils/subflow';
+import { forEachSubflowTaskInAction } from '@flogo-web/server/core';
 
+import { DEFAULT_APP_TYPE, DEFAULT_APP_VERSION } from '../../common/constants';
 import { normalizeName } from './utils/normalize-name';
 import { DanglingSubflowReferencesCleaner } from './utils/dangling-subflow-references-cleaner';
 import { UniqueIdAgent } from './utils/unique-id-agent';

@@ -1,11 +1,7 @@
 import { isEmpty, get } from 'lodash';
 import { inspect } from 'util';
 
-import {
-  DEFAULT_APP_TYPE,
-  FLOGO_TASK_ATTRIBUTE_TYPE,
-  FLOGO_TASK_TYPE,
-} from '../constants';
+import { DEFAULT_APP_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../constants';
 import { runShellCMD } from './process';
 
 export * from './file';
@@ -127,7 +123,7 @@ export function getDefaultValueByType(type) {
   };
 
   if (!Object.hasOwnProperty.call(defaultValues, type)) {
-    type = FLOGO_TASK_TYPE.STRING;
+    type = FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
   }
 
   return defaultValues[type];

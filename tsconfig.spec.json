@@ -6,7 +6,8 @@
     "types": ["jest", "node"],
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "allowJs": true
+    "allowJs": true,
+    "inlineSourceMap": true
   },
   "files": ["jest.setup.ts"],
   "include": ["**/*.spec.ts", "**/*.spec.js", "**/*.d.ts"]

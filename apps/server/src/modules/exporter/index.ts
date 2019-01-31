@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 
-import * as schemas from '../schemas/v1.0.0';
+import { Schemas } from '@flogo-web/server/core';
 
 import { UniqueIdAgent } from './utils/unique-id-agent';
 
@@ -20,8 +20,8 @@ export function exportApplication(app, options = {}) {
       throw new Error('Can only export microservice applications');
     }
     formatter = new StandardMicroServiceFormatter(activitySchemas);
-    validator = validatorFactory(schemas.app, {
-      schemas: [schemas.common, schemas.trigger, schemas.flow],
+    validator = validatorFactory(Schemas.v1.app, {
+      schemas: [Schemas.v1.common, Schemas.v1.trigger, Schemas.v1.flow],
       useDefaults: false,
     });
 

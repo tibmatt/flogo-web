@@ -14,6 +14,7 @@ const { spawn } = require('cross-spawn');
 const treeKill = require('tree-kill');
 
 interface BuildOptions {
+  inspect: boolean;
   buildTarget: string;
   watch: boolean;
 }
@@ -34,6 +35,7 @@ export default class ServerBuilder implements Builder<BuildOptions> {
       cwd: target.root,
       main: relative(buildTargetOptions.root, buildTargetOptions.options.main),
       tsconfig: relative(buildTargetOptions.root, buildTargetOptions.options.tsConfig),
+      inspect: target.options.inspect,
     }).pipe(
       map(() => ({ success: true })),
       catchError(e => of({ success: false }))
@@ -51,14 +53,24 @@ export default class ServerBuilder implements Builder<BuildOptions> {
 
   private runProcess(
     binary: string | Path,
-    { cwd, main, tsconfig }: { cwd: string; main: string; tsconfig: string }
+    {
+      cwd,
+      main,
+      tsconfig,
+      inspect,
+    }: { cwd: string; main: string; tsconfig: string; inspect?: boolean }
   ) {
     return new Observable(observer => {
-      const subprocess = spawn(binary, [...DEFAULT_ARGS, '-P', tsconfig, main], {
-        cwd,
-        env: process.env,
-        stdio: 'inherit',
-      });
+      const inspectOpts = inspect ? ['--inspect'] : [];
+      const subprocess = spawn(
+        binary,
+        [...DEFAULT_ARGS, ...inspectOpts, '-P', tsconfig, main],
+        {
+          cwd,
+          env: process.env,
+          stdio: 'inherit',
+        }
+      );
       this.subprocess = subprocess;
       const killSubProcess = () => {
         if (!subprocess.killed) {
