@@ -9,7 +9,7 @@ export class DanglingSubflowReferencesCleaner {
   cleanMappings(task, linkedFlow) {
     const linkedFlowInputMetadata = this.getFlowMetadata(linkedFlow);
     if (!linkedFlowInputMetadata || isEmpty(task.inputMappings)) {
-      return [];
+      return {};
     }
 
     const finalMappingNames = linkedFlowInputMetadata.map(input => input.name);
