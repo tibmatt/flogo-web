@@ -1,26 +1,19 @@
 import { ValueType } from '@flogo-web/client-core';
+import { EXPR_PREFIX } from '@flogo-web/core';
 
 export const CONDITION_KEY = 'condition';
 
 export function createBranchMappingContext(
   condition: string
-): { propsToMap: any[]; mappings: any[] } {
-  let propsToMap = [];
-  let mappings = [];
-  propsToMap = [
+): { propsToMap: any[]; mappings: any } {
+  const propsToMap = [
     {
       name: CONDITION_KEY,
       type: ValueType.Boolean,
     },
   ];
-
-  mappings = [
-    {
-      type: ValueType.Boolean,
-      mapTo: CONDITION_KEY,
-      value: condition,
-    },
-  ];
+  const mappings = {};
+  mappings[CONDITION_KEY] = EXPR_PREFIX + condition;
 
   return { mappings, propsToMap };
 }
