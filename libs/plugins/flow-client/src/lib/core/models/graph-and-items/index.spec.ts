@@ -285,7 +285,7 @@ describe('flow.core.models.graph-and-items', function() {
         settings: {},
         ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
         id: 'log_1',
-        inputMappings: [],
+        inputMappings: {},
         type: FLOGO_TASK_TYPE.TASK,
         return: false,
         input: {
@@ -300,7 +300,7 @@ describe('flow.core.models.graph-and-items', function() {
         settings: {},
         ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/awsiot',
         id: 'awsiot_1',
-        inputMappings: [],
+        inputMappings: {},
         type: FLOGO_TASK_TYPE.TASK,
         return: false,
         input: {
@@ -320,7 +320,7 @@ describe('flow.core.models.graph-and-items', function() {
         settings: {},
         ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/reply',
         id: 'reply_1',
-        inputMappings: [],
+        inputMappings: {},
         type: FLOGO_TASK_TYPE.TASK,
         return: false,
         input: {
@@ -334,7 +334,7 @@ describe('flow.core.models.graph-and-items', function() {
         settings: {},
         ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
         id: 'log_6',
-        inputMappings: [],
+        inputMappings: {},
         type: FLOGO_TASK_TYPE.TASK,
         return: false,
         input: {
@@ -349,7 +349,7 @@ describe('flow.core.models.graph-and-items', function() {
         settings: {},
         ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
         id: 'log_7',
-        inputMappings: [],
+        inputMappings: {},
         type: FLOGO_TASK_TYPE.TASK,
         return: false,
         input: {
@@ -364,7 +364,7 @@ describe('flow.core.models.graph-and-items', function() {
         settings: {},
         ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
         id: 'log_4',
-        inputMappings: [],
+        inputMappings: {},
         type: 1,
         return: false,
         input: {
@@ -379,7 +379,7 @@ describe('flow.core.models.graph-and-items', function() {
         settings: {},
         ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
         id: 'log_5',
-        inputMappings: [],
+        inputMappings: {},
         type: FLOGO_TASK_TYPE.TASK,
         return: false,
         input: {

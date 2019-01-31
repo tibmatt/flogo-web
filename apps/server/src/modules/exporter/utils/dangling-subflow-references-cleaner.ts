@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty';
-import intersection from 'lodash/intersection';
+import pick from 'lodash/pick';
 
 export class DanglingSubflowReferencesCleaner {
   static create() {
@@ -9,16 +9,12 @@ export class DanglingSubflowReferencesCleaner {
   cleanMappings(task, linkedFlow) {
     const linkedFlowInputMetadata = this.getFlowMetadata(linkedFlow);
     if (!linkedFlowInputMetadata || isEmpty(task.inputMappings)) {
-      return [];
+      return {};
     }
 
-    const mappedPropNamesInTask = task.inputMappings.map(mapping => mapping.mapTo);
-    const linkedFlowInputNames = linkedFlowInputMetadata.map(input => input.name);
-    const finalMappingNames = intersection(mappedPropNamesInTask, linkedFlowInputNames);
-
-    return task.inputMappings.filter(inputMapping =>
-      finalMappingNames.includes(inputMapping.mapTo)
-    );
+    const finalMappingNames = linkedFlowInputMetadata.map(input => input.name);
+    task.inputMappings = pick(task.inputMappings, finalMappingNames);
+    return task.inputMappings;
   }
 
   getFlowMetadata(linkedFlow) {

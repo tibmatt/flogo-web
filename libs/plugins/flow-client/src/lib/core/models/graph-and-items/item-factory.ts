@@ -91,7 +91,7 @@ export class ItemFactory {
       id: taskInstance.id,
       name: taskInstance.name,
       description: taskInstance.description,
-      inputMappings: taskInstance.inputMappings || [],
+      inputMappings: taskInstance.inputMappings || {},
       type: FLOGO_TASK_TYPE[taskInstance.type]
         ? FLOGO_TASK_TYPE[FLOGO_TASK_TYPE[taskInstance.type]]
         : FLOGO_TASK_TYPE.TASK,

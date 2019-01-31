@@ -204,13 +204,9 @@ export let mockTransformationData = {
       type: 'boolean',
     },
   ],
-  inputMappings: [
-    {
-      type: 1,
-      value: '{T.content}',
-      mapTo: 'message',
-    },
-  ],
+  inputMappings: {
+    message: '{T.content}',
+  },
 };
 
 export let mockErrorHandler = {
@@ -328,7 +324,7 @@ export const mockResultantUIFlow = {
       settings: {},
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
       id: 'log_1',
-      inputMappings: [],
+      inputMappings: {},
       type: 1,
       return: false,
       input: {
@@ -343,7 +339,7 @@ export const mockResultantUIFlow = {
       settings: {},
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
       id: 'counter_1',
-      inputMappings: [],
+      inputMappings: {},
       type: 1,
       return: false,
       input: {
@@ -358,7 +354,7 @@ export const mockResultantUIFlow = {
       settings: {},
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
       id: 'log_2',
-      inputMappings: [],
+      inputMappings: {},
       type: 1,
       return: false,
       input: {
@@ -373,7 +369,7 @@ export const mockResultantUIFlow = {
       settings: {},
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
       id: 'log_3',
-      inputMappings: [],
+      inputMappings: {},
       type: 1,
       return: false,
       input: {
@@ -623,7 +619,7 @@ export const mockResultantUIFlowWithError = {
       settings: {},
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
       id: 'log_1',
-      inputMappings: [],
+      inputMappings: {},
       type: 1,
       return: false,
       input: {
@@ -638,7 +634,7 @@ export const mockResultantUIFlowWithError = {
       settings: {},
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
       id: 'counter_1',
-      inputMappings: [],
+      inputMappings: {},
       type: 1,
       return: false,
       input: {
@@ -653,7 +649,7 @@ export const mockResultantUIFlowWithError = {
       settings: {},
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
       id: 'log_2',
-      inputMappings: [],
+      inputMappings: {},
       type: 1,
       return: false,
       input: {
@@ -668,7 +664,7 @@ export const mockResultantUIFlowWithError = {
       settings: {},
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
       id: 'log_3',
-      inputMappings: [],
+      inputMappings: {},
       type: 1,
       return: false,
       input: {
@@ -695,7 +691,7 @@ export const mockResultantUIFlowWithError = {
       settings: {},
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
       id: 'error_log',
-      inputMappings: [],
+      inputMappings: {},
       type: 1,
       return: false,
       input: {
@@ -957,13 +953,9 @@ export let mockResultantUIFlowWithTransformations = {
       settings: {},
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
       id: 'log_1',
-      inputMappings: [
-        {
-          type: 1,
-          value: '{T.content}',
-          mapTo: 'message',
-        },
-      ],
+      inputMappings: {
+        message: '{T.content}',
+      },
       type: 1,
       return: false,
       input: {
@@ -978,7 +970,7 @@ export let mockResultantUIFlowWithTransformations = {
       settings: {},
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
       id: 'counter_1',
-      inputMappings: [],
+      inputMappings: {},
       type: 1,
       return: false,
       input: {
@@ -993,7 +985,7 @@ export let mockResultantUIFlowWithTransformations = {
       settings: {},
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
       id: 'log_2',
-      inputMappings: [],
+      inputMappings: {},
       type: 1,
       return: false,
       input: {
@@ -1008,7 +1000,7 @@ export let mockResultantUIFlowWithTransformations = {
       settings: {},
       ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
       id: 'log_3',
-      inputMappings: [],
+      inputMappings: {},
       type: 1,
       return: false,
       input: {
