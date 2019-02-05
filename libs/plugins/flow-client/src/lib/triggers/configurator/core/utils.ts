@@ -1,4 +1,7 @@
+import { isString } from 'lodash';
+
 import { FlowMetadata } from '@flogo-web/client-core';
+
 import { Tabs } from '../../../shared/tabs/models/tabs.model';
 import { TRIGGER_TABS } from './constants';
 
@@ -42,4 +45,8 @@ export function createTabs(schema, metadata: FlowMetadata) {
     'TRIGGER-MAPPER:LABEL-FLOW-OUTPUTS';
   tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).enabled = hasTriggerReply && hasFlowOutputs;
   return tabs;
+}
+
+export function isExpression(value: string = '') {
+  return isString(value) && value.startsWith('$');
 }

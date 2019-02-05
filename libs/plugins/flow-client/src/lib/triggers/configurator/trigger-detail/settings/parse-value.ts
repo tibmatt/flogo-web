@@ -1,11 +1,13 @@
 import { isBoolean, isString, isUndefined, toNumber } from 'lodash';
+
 import { ValueType } from '@flogo-web/client-core';
 import { parseResolver } from '@flogo-web/parser';
+
 import { SettingValue } from '../settings-value';
+import { isExpression } from '../../core/utils';
 
 export function parseValue(type: ValueType, viewValue: string): SettingValue {
-  const isExpression = isString(viewValue) && viewValue.startsWith('$');
-  if (isExpression) {
+  if (isExpression(viewValue)) {
     return {
       viewValue,
       parsedValue: viewValue,
