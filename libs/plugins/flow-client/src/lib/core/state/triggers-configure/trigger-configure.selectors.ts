@@ -18,6 +18,7 @@ import {
 } from '../flow/flow.selectors';
 import { FlowState } from '../flow/flow.state';
 import { createTriggerConfigureFields } from './cases/create-trigger-configure-fields';
+import { normalizeSettings } from './cases/normalize-settings';
 
 export const getSchemas = createSelector(
   selectTriggerConfigure,
@@ -177,7 +178,22 @@ export const getConfigureState = createSelector(
   getCurrentHandler,
   selectApp,
   getInstalledFunctions,
-  (flowMetadata, schema, trigger, handler, app, functions): CurrentTriggerState => {
+  (
+    flowMetadata,
+    schema,
+    currentTrigger,
+    currentHandler,
+    app,
+    functions
+  ): CurrentTriggerState => {
+    const trigger = {
+      ...currentTrigger,
+      settings: normalizeSettings(currentTrigger.settings),
+    };
+    const handler = {
+      ...currentHandler,
+      settings: normalizeSettings(currentHandler.settings),
+    };
     return {
       flowMetadata,
       schema,

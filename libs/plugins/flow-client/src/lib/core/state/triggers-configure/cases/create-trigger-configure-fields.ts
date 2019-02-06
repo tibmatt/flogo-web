@@ -34,16 +34,9 @@ function mergeSettingsWithSchema(schemaAttributes, instanceProperties) {
       return [schemaAttribute.name, instanceProperties[schemaAttribute.name]];
     })
     .reduce((props, [name, value]) => {
-      props[name] = handleExpressions(value);
+      props[name] = value;
       return props;
     }, {});
-}
-
-function handleExpressions(value) {
-  if (/^=/g.test(value)) {
-    return value.substr(1);
-  }
-  return value;
 }
 
 function groupBySettings(schema: SchemaAttribute[], instanceProperties: Dictionary<any>) {
