@@ -2,7 +2,7 @@ import { Context } from 'koa';
 import { ActionsManager } from '../../../../modules/actions';
 import { ActivitiesManager } from '../../../../modules/activities';
 import { ErrorManager } from '../../../../common/errors';
-import { LegacyMicroServiceFormatter } from '../../../../modules/exporter/formatters/legacy-microservice-formatter';
+import { LegacyMicroServiceFormatter } from '../../../../modules/transfer/exporter/formatters/legacy-microservice-formatter';
 
 export const findAndExportFlow = async (context: Context, next) => {
   // const action = await ActionsManager.findOne(context.request.body.actionId);

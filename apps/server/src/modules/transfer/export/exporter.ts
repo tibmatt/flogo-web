@@ -2,29 +2,20 @@ import { isEmpty, compact } from 'lodash';
 
 import { forEachSubflowTaskInAction } from '@flogo-web/server/core';
 
-import { DEFAULT_APP_TYPE, DEFAULT_APP_VERSION } from '../../common/constants';
+import { Validator } from '../../../common/validator';
+import { DEFAULT_APP_TYPE, DEFAULT_APP_VERSION } from '../../../common/constants';
 import { normalizeName } from './utils/normalize-name';
 import { DanglingSubflowReferencesCleaner } from './utils/dangling-subflow-references-cleaner';
 import { UniqueIdAgent } from './utils/unique-id-agent';
-import { Validator } from '../../common/validator';
+import { StandardMicroServiceFormatter } from './formatters/standard-microservice-formatter';
 
 export class Exporter {
-  isFullAppExportMode: boolean;
-  formatter: any;
-  validator: Validator;
-  uniqueIdAgent: UniqueIdAgent;
-  /**
-   * @param {boolean} isFullExportMode - full export or flows export
-   * @param {StandardMicroServiceFormatter|LegacyMicroServiceFormatter} formatter
-   * @param {Validator} validator
-   * @param {UniqueIdAgent} uniqueIdAgent
-   */
-  constructor(isFullExportMode, formatter, validator, uniqueIdAgent) {
-    this.isFullAppExportMode = isFullExportMode;
-    this.formatter = formatter;
-    this.validator = validator;
-    this.uniqueIdAgent = uniqueIdAgent;
-  }
+  constructor(
+    private isFullAppExportMode: boolean,
+    private formatter: StandardMicroServiceFormatter,
+    private validator: Validator,
+    private uniqueIdAgent: UniqueIdAgent
+  ) {}
 
   /**
    *

@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty';
-import { ensureKeyOrder } from '../../../../common/utils/object';
+import { ensureKeyOrder } from '../../../../../common/utils/object';
 import { formatHandler } from './format-handler';
 import { formatTaskLinkGroups } from './format-task-link-group';
 import { formatResource } from './format-resource';

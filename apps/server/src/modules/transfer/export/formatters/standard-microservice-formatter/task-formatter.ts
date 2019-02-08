@@ -2,8 +2,8 @@ import { isEmpty } from 'lodash';
 
 import { isSubflowTask, TASK_TYPE } from '@flogo-web/server/core';
 
-import { isIterableTask } from '../../../../common/utils';
-import { Task } from '../../../../interfaces';
+import { isIterableTask } from '../../../../../common/utils';
+import { Task } from '../../../../../interfaces';
 import { createFlowUri } from './create-flow-uri';
 
 export class TaskFormatter {
