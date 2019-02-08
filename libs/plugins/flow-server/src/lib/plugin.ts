@@ -18,7 +18,7 @@ export class FlowResourceHooks implements ResourceHooks<FlowData> {
 
   async onImport(data: Resource, context: ResourceImportContext) {
     const importer = createActionImporter();
-    return importer.importApp(data, context);
+    return importer.importAction(data, context);
   }
 
   async beforeUpdate(params: BeforeUpdateHookParams<FlowData>) {

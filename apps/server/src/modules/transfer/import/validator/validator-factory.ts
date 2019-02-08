@@ -1,3 +1,4 @@
+import { ValidationRuleFactory } from '@flogo-web/server/core';
 import { validatorFactory as commonValidatorFactory } from '../../../../common/validator';
 
 /**
@@ -6,54 +7,15 @@ import { validatorFactory as commonValidatorFactory } from '../../../../common/v
  * @param options
  * @return {Validator}
  */
-export function validatorFactory(schema, contributionRefs, options = {}) {
+export function validatorFactory(schema, contributionRefs: string[], options = {}) {
   const validator = commonValidatorFactory(schema, options);
-  addContributionRule(
-    validator,
-    'trigger-installed',
-    'Trigger',
-    contributionRefs.triggers
-  );
-  addContributionRule(
-    validator,
-    'activity-installed',
-    'Activity',
-    contributionRefs.activities
-  );
-  return validator;
-}
-
-/**
- *
- * @param {Validator} validator
- * @param keyword
- * @param type
- * @param refs
- */
-function addContributionRule(validator, keyword, type, refs) {
-  validator.addValidationRule(
-    keyword,
-    contributionRuleFactory(keyword, type, refs || [])
-  );
-}
-
-function contributionRuleFactory(keyword, type, refs) {
-  return {
+  validator.addValidationRule('trigger-installed', {
     errors: true,
-    validate: function validator(schema, contribRef) {
-      const isInstalled = refs.includes(contribRef);
-      if (!isInstalled) {
-        (validator as any).errors = [
-          {
-            keyword,
-            message: `${type} "${contribRef}" is not installed`,
-            params: {
-              ref: contribRef,
-            },
-          },
-        ];
-      }
-      return isInstalled;
-    },
-  };
+    validate: ValidationRuleFactory.contributionInstalled(
+      'trigger-installed',
+      'Trigger',
+      contributionRefs || []
+    ),
+  });
+  return validator;
 }

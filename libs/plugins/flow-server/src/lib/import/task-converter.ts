@@ -86,7 +86,9 @@ export class TaskConverter {
   }
 
   convertAttributes() {
-    const schemaInputs = this.activitySchema.inputs || [];
+    // in the past schema used name `inputs` but now uses `input`, server model was using inputs
+    // todo: fcastill - support input only
+    const schemaInputs = this.activitySchema.input || this.activitySchema.inputs || [];
     const activityInput = this.resourceTask.activity.input || {};
     return schemaInputs.reduce((attributes, schemaInput) => {
       let value = activityInput[schemaInput.name];

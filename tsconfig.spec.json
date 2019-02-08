@@ -4,9 +4,11 @@
     "outDir": "./dist/out-tsc/spec",
     "module": "commonjs",
     "types": ["jest", "node"],
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
     "allowJs": true,
+    "checkJs": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2018",
     "inlineSourceMap": true
   },
   "files": ["jest.setup.ts"],

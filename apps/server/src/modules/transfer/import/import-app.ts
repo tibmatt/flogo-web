@@ -101,19 +101,9 @@ function normalizeResources(
 }
 
 function createValidator(contributions: ContributionSchema[]) {
-  const contribRefs = contributions.reduce(
-    (all, contrib) => {
-      if (contrib.type === 'flogo:activity') {
-        all.activities.push(contrib.ref);
-      } else if (contrib.type === 'flogo:trigger') {
-        all.triggers.push(contrib.ref);
-      }
-      return all;
-    },
-    { activities: [], triggers: [] }
-  );
+  const contribRefs = contributions.map(c => c.ref);
   return validatorFactory(Schemas.v1.app, contribRefs, {
-    schemas: [Schemas.v1.common, Schemas.v1.trigger, Schemas.v1.flow],
+    schemas: [Schemas.v1.common, Schemas.v1.trigger],
   });
 }
 

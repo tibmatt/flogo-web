@@ -3,10 +3,7 @@ import { validatorFactory } from './validator-factory';
 describe('importer.validator-factory', () => {
   let validator;
   beforeEach(() => {
-    validator = validatorFactory(makeTestSchema(), {
-      activities: ['ref/to/an/activity'],
-      triggers: ['ref/to/a/trigger'],
-    });
+    validator = validatorFactory(makeTestSchema(), ['ref/to/a/trigger']);
   });
 
   test('should error for not installed contributions', () => {
@@ -14,7 +11,6 @@ describe('importer.validator-factory', () => {
     try {
       validator.validate({
         trigger: 'foo',
-        activity: 'bar',
       });
     } catch (error) {
       thrownError = error;
@@ -29,18 +25,12 @@ describe('importer.validator-factory', () => {
       keyword: 'trigger-installed',
       params: { ref: 'foo' },
     });
-    expect(validationDetails[1]).toMatchObject({
-      dataPath: '.activity',
-      keyword: 'activity-installed',
-      params: { ref: 'bar' },
-    });
   });
 
   test('should allow installed contributions', () => {
     expect(() =>
       validator.validate({
         trigger: 'ref/to/a/trigger',
-        activity: 'ref/to/an/activity',
       })
     ).not.toThrowError();
   });
@@ -52,10 +42,6 @@ describe('importer.validator-factory', () => {
         trigger: {
           type: 'string',
           'trigger-installed': true,
-        },
-        activity: {
-          type: 'string',
-          'activity-installed': true,
         },
       },
     };

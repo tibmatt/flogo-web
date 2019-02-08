@@ -21,23 +21,21 @@ export const importedApp = {
       handlers: [
         expect.objectContaining({
           actionId: expect.any(String),
-          handler: expect.objectContaining({
-            settings: {
-              method: 'GET',
-              path: '/status/:id',
-              autoIdReply: null,
-              useReplyHandler: 'true',
+          settings: {
+            method: 'GET',
+            path: '/status/:id',
+            autoIdReply: null,
+            useReplyHandler: 'true',
+          },
+          actionMappings: {
+            input: {
+              id: '=$.params.id',
             },
-            actionMappings: {
-              input: {
-                id: '=$.params.id',
-              },
-              output: {
-                code: '=$.code',
-                data: '=$.status',
-              },
+            output: {
+              code: '=$.code',
+              data: '=$.status',
             },
-          }),
+          },
         }),
       ],
     }),
