@@ -51,6 +51,7 @@ const TASK_TABS = {
   SUBFLOW: 'subFlow',
   ITERATOR: 'iterator',
   INPUT_MAPPINGS: 'inputMappings',
+  SETTINGS: 'settings',
 };
 const ITERATOR_TAB_INFO = {
   name: TASK_TABS.ITERATOR,
@@ -64,7 +65,10 @@ const MAPPINGS_TAB_INFO = {
   name: TASK_TABS.INPUT_MAPPINGS,
   labelKey: 'TASK-CONFIGURATOR:TABS:MAP-INPUTS',
 };
-
+const SETTINGS_TAB_INFO = {
+  name: TASK_TABS.SETTINGS,
+  labelKey: 'TASK-CONFIGURATOR:TABS:SETTINGS',
+};
 @Component({
   selector: 'flogo-flow-task-configurator',
   styleUrls: ['task-configurator.component.less'],
@@ -108,6 +112,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   flowState: FlowState;
   inputMapperController: MapperController;
   iteratorController: MapperController;
+  settingsController: MapperController;
   isValidTaskName: boolean;
   isTaskDetailEdited: boolean;
   ismapperActivity: boolean;
@@ -324,6 +329,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     });
     this.resetInputMappingsController(propsToMap, this.inputScope, mappings);
     this.initIterator(selectedItem);
+    this.initActivitySettings(propsToMap, mappings);
 
     this.resetState();
     if (isMapperActivity(activitySchema)) {
@@ -390,6 +396,16 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     this.adjustIteratorInInputMapper();
   }
 
+  private initActivitySettings(propsToMap, mappings) {
+
+    this.settingsController = this.mapperControllerFactory.createController(
+      this.currentTile.activitySettings,
+      this.inputScope,
+      mappings,
+      this.installedFunctions
+    );
+  }
+
   private getInputMappingsInfo({
     flowMetadata,
     activitySchema,
@@ -444,7 +460,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     if (this.tabs) {
       this.tabs.clear();
     }
-    let tabsInfo = [MAPPINGS_TAB_INFO];
+    let tabsInfo = [MAPPINGS_TAB_INFO, SETTINGS_TAB_INFO];
     this.showSubflowList = false;
     if (this.isSubflowType) {
       tabsInfo = [SUBFLOW_TAB_INFO, ...tabsInfo, ITERATOR_TAB_INFO];

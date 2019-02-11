@@ -1,7 +1,7 @@
 import { FLOGO_TASK_TYPE } from '../../constants';
-import { TaskAttributes } from './attribute';
+import {TaskAttribute, TaskAttributes} from './attribute';
 import { Link } from './link';
-import { Dictionary } from '../common';
+import {Dictionary, SchemaAttribute} from '../common';
 
 export interface Task {
   id: string;
@@ -22,6 +22,8 @@ export interface Task {
     iterate?: string;
     flowPath?: string;
   };
+
+  activitySettings?: SchemaAttribute[];
   condition?: string;
   __props?: {
     [key: string]: any;

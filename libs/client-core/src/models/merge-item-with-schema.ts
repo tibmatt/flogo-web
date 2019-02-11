@@ -6,6 +6,7 @@ export interface PartialActivitySchema {
   version?: ActivitySchema['version'];
   inputs?: ActivitySchema['inputs'];
   outputs?: ActivitySchema['outputs'];
+  settings?: ActivitySchema['settings'];
 }
 
 export function mergeItemWithSchema(item: ItemTask, schema: PartialActivitySchema): Task {
@@ -17,6 +18,7 @@ export function mergeItemWithSchema(item: ItemTask, schema: PartialActivitySchem
     const value = itemInput[input.name];
     return { ...input, value };
   });
+  const activitySettings = schema.settings || [];
   return {
     id: item.id,
     type: item.type,
@@ -29,6 +31,7 @@ export function mergeItemWithSchema(item: ItemTask, schema: PartialActivitySchem
       inputs,
       outputs: <TaskAttribute[]>schema.outputs,
     },
+    activitySettings: activitySettings,
     inputMappings: item.inputMappings,
     settings: item.settings,
     __props: {},

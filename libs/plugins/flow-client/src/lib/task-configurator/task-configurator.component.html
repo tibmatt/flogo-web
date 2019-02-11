@@ -108,6 +108,11 @@
         (selectDifferentFlow)="selectSubFlow($event)"
         class="content"
       ></flogo-flow-task-configurator-subflow>
+      <flogo-flow-task-configurator-settings
+        *ngIf="this.tabs.get('settings').isSelected"
+        [mapperController]="settingsController"
+        class="content"
+      ></flogo-flow-task-configurator-settings>
       <flogo-flow-flows-list
         class="content subflow-list__content"
         *ngIf="showSubflowList"
