@@ -14,5 +14,9 @@
   {
     "name": "rest",
     "ref": "github.com/project-flogo/contrib/trigger/rest"
+  },
+  {
+    "name": "subflow",
+    "ref": "github.com/project-flogo/flow/activity/subflow"
   }
 ]
