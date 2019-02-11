@@ -18,7 +18,6 @@ export function mergeItemWithSchema(item: ItemTask, schema: PartialActivitySchem
     const value = itemInput[input.name];
     return { ...input, value };
   });
-  const activitySettings = schema.settings || [];
   return {
     id: item.id,
     type: item.type,
@@ -30,8 +29,9 @@ export function mergeItemWithSchema(item: ItemTask, schema: PartialActivitySchem
     attributes: {
       inputs,
       outputs: <TaskAttribute[]>schema.outputs,
+      settings: <TaskAttribute[]>schema.settings,
     },
-    activitySettings: activitySettings,
+    activitySettings: item.activitySettings,
     inputMappings: item.inputMappings,
     settings: item.settings,
     __props: {},

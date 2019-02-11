@@ -211,38 +211,7 @@ export class MicroServiceModelConverter {
   }
 
   private getAllActivitySchemas(): Promise<ActivitySchema[]> {
-    return this.contribService.listContribs<ActivitySchema>(FLOGO_CONTRIB_TYPE.ACTIVITY).then(activitySchema =>{
-      console.log(activitySchema);
-      activitySchema.map(activity => {
-        activity.settings = [
-          {
-            "name": "method",
-            "type": ValueType.String,
-            "required": true,
-            "allowed": [ "GET", "POST", "PUT", "PATCH", "DELETE" ]
-          },
-          {
-            "name": "uri",
-            "type": ValueType.String,
-            "required": true
-          },
-          {
-            "name": "proxy",
-            "type": ValueType.String
-          },
-          {
-            "name": "headers",
-            "type": ValueType.Params
-          },
-          {
-            "name": "skipSSL",
-            "type": ValueType.Boolean,
-            "value": "false"
-          }
-        ]
-      });
-      return activitySchema;
-    });
+    return this.contribService.listContribs<ActivitySchema>(FLOGO_CONTRIB_TYPE.ACTIVITY);
   }
 
   private getAllFunctionSchemas(): Promise<FunctionSchema[]> {

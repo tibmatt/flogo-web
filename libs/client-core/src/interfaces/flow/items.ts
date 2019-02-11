@@ -23,6 +23,7 @@ export interface BaseItemTask extends BaseItem {
     [name: string]: any;
   };
   settings?: BaseItemSettings;
+  activitySettings?: Dictionary<any>;
 }
 
 export interface ItemActivityTask extends BaseItemTask {

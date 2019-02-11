@@ -8,7 +8,7 @@ import { FlowsListModule } from '../shared/flows-list';
 import { TaskConfiguratorComponent } from './task-configurator.component';
 import { IteratorComponent } from './iterator/iterator.component';
 import { SubFlowComponent } from './subflow/subflow.component';
-import {SettingsComponent} from "./settings/settings.component";
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   imports: [
@@ -18,7 +18,12 @@ import {SettingsComponent} from "./settings/settings.component";
     MapperModule,
     FlowsListModule,
   ],
-  declarations: [IteratorComponent, SubFlowComponent, TaskConfiguratorComponent, SettingsComponent],
+  declarations: [
+    IteratorComponent,
+    SubFlowComponent,
+    TaskConfiguratorComponent,
+    SettingsComponent,
+  ],
   exports: [TaskConfiguratorComponent],
   providers: [],
 })

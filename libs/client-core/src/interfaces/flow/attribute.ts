@@ -16,4 +16,5 @@ export interface TaskAttribute {
 export interface TaskAttributes {
   inputs?: TaskAttribute[];
   outputs?: TaskAttribute[];
+  settings?: TaskAttribute[];
 }

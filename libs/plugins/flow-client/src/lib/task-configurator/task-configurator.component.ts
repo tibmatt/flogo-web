@@ -327,9 +327,12 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       subflowSchema,
       flowMetadata,
     });
+    const { settingPropsToMap, activitySettings } = this.getActivitySettingsInfo(
+      activitySchema
+    );
     this.resetInputMappingsController(propsToMap, this.inputScope, mappings);
     this.initIterator(selectedItem);
-    this.initActivitySettings(propsToMap, mappings);
+    this.initActivitySettings(settingPropsToMap, activitySettings);
 
     this.resetState();
     if (isMapperActivity(activitySchema)) {
@@ -396,12 +399,13 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     this.adjustIteratorInInputMapper();
   }
 
-  private initActivitySettings(propsToMap, mappings) {
-
+  private initActivitySettings(settingPropsToMap, activitySettings) {
+    //TODO: Available data for activity settings in empty as of now
+    const inputScope = [];
     this.settingsController = this.mapperControllerFactory.createController(
-      this.currentTile.activitySettings,
-      this.inputScope,
-      mappings,
+      settingPropsToMap,
+      inputScope,
+      activitySettings,
       this.installedFunctions
     );
   }
@@ -423,6 +427,15 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     }
 
     return { mappings, propsToMap };
+  }
+
+  private getActivitySettingsInfo(
+    activitySchema
+  ): { settingPropsToMap: any[]; activitySettings: Dictionary<any> } {
+    let settingPropsToMap = [];
+    const activitySettings = this.currentTile.activitySettings;
+    settingPropsToMap = this.currentTile.attributes.settings;
+    return { activitySettings, settingPropsToMap };
   }
 
   private resetInputMappingsController(propsToMap, inputScope, mappings) {
@@ -460,7 +473,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     if (this.tabs) {
       this.tabs.clear();
     }
-    let tabsInfo = [MAPPINGS_TAB_INFO, SETTINGS_TAB_INFO];
+    let tabsInfo = [SETTINGS_TAB_INFO, MAPPINGS_TAB_INFO];
     this.showSubflowList = false;
     if (this.isSubflowType) {
       tabsInfo = [SUBFLOW_TAB_INFO, ...tabsInfo, ITERATOR_TAB_INFO];

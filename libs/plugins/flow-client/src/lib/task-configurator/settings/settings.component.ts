@@ -13,11 +13,6 @@ import { MapperController } from '../../shared/mapper';
   templateUrl: 'settings.component.html',
   styleUrls: ['settings.component.less'],
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent {
   @Input() mapperController: MapperController;
-
-  ngOnInit() {
-console.log(this.mapperController);
-  }
-
 }
