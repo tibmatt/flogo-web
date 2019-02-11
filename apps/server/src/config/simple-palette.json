@@ -1,24 +1,18 @@
-{
-  "name": "simple-rest",
-  "version": "0.0.1",
-  "title": "Simple REST palette",
-  "description": "Default flogo palette",
-  "extensions": [
-    {
-      "type": "action",
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow"
-    },
-    {
-      "type": "activity",
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log"
-    },
-    {
-      "type": "activity",
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/rest"
-    },
-    {
-      "type": "trigger",
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest"
-    }
-  ]
-}
+[
+  {
+    "name": "flow",
+    "ref": "github.com/project-flogo/flow"
+  },
+  {
+    "name": "log",
+    "ref": "github.com/project-flogo/contrib/activity/log"
+  },
+  {
+    "name": "rest",
+    "ref": "github.com/project-flogo/contrib/activity/rest"
+  },
+  {
+    "name": "rest",
+    "ref": "github.com/project-flogo/contrib/trigger/rest"
+  }
+]

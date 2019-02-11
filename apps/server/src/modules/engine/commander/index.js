@@ -13,7 +13,6 @@ export const commander = {
    * @param {string} [options.libVersion] - specify the flogo-lib version this is the same as flogo's flv option and
    * it will be passed as is
    * @param {string} [options.flogoDescriptor] - specify the flogo.json to create project from
-   * @param {string} [options.vendor] - specify existing vendor directory to copy
    * @return {*}
    */
   create(enginePath, options) {
@@ -22,15 +21,11 @@ export const commander = {
 
     const command = ['create'];
     if (options.libVersion && options.libVersion !== 'latest') {
-      command.push('-flv', options.libVersion);
+      command.push('-c', options.libVersion);
     }
 
     if (options.flogoDescriptor) {
       command.push('-f', options.flogoDescriptor);
-    }
-
-    if (options.vendor) {
-      command.push('-vendor', options.vendor);
     }
 
     command.push(enginePathInfo.name);
@@ -53,7 +48,11 @@ export const commander = {
     activity: uninstall,
   },
   list(enginePath) {
-    return _exec(enginePath, ['list', '-json']).then(output => parseJSON(output));
+    // TODO:FIX_0.9.0: A temporary fix as the flogo list -l command always exits with an error
+    return _exec(enginePath, ['list', '-l'])
+      .then(output => parseJSON(output))
+      .catch(output => parseJSON(output));
+    // return _exec(enginePath, ['list']).then(output => parseJSON(output));
   },
 };
 

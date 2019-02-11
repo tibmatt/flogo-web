@@ -41,7 +41,7 @@ async function initEngine(enginePath) {
   const engine = await getInitializedEngine(enginePath, {
     forceCreate: !!process.env['FLOGO_WEB_ENGINE_FORCE_CREATION'],
   });
-  await engine.build({ copyFlogoDescriptor: true });
+  await engine.build();
   await engine.stop().then(() => engine.start());
   await syncTasks(engine);
 }

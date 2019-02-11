@@ -53,14 +53,14 @@ export function getContribInstallationController(enginePath, installContribution
   });
 }
 
-function createEngine(engine, defaultFlogoDescriptorPath, useVendor) {
+function createEngine(engine, defaultFlogoDescriptorPath, skipPalletteInstall) {
   logger.warn('Engine does not exist. Creating...');
   return engine
-    .create(defaultFlogoDescriptorPath, useVendor)
+    .create(defaultFlogoDescriptorPath)
     .then(() => {
       logger.info('New engine created');
       // when vendor provided it's not needed to install a palette
-      if (useVendor) {
+      if (skipPalletteInstall) {
         return Promise.resolve(true);
       }
       // TODO: add palette version
@@ -92,10 +92,10 @@ function createEngine(engine, defaultFlogoDescriptorPath, useVendor) {
  */
 export function initEngine(engine, options) {
   const forceInit = options && options.forceCreate;
-  const useVendor = options && options.vendor;
   const defaultFlogoDescriptorPath =
     (options && options.defaultFlogoDescriptorPath) || config.defaultFlogoDescriptorPath;
   const skipContribLoad = options && options.skipContribLoad;
+  const skipPalletteInstall = options && options.skipPalletteInstall;
 
   return engine
     .exists()
@@ -107,7 +107,7 @@ export function initEngine(engine, options) {
     })
     .then(shouldCreateNewEngine => {
       if (shouldCreateNewEngine) {
-        return createEngine(engine, defaultFlogoDescriptorPath, useVendor);
+        return createEngine(engine, defaultFlogoDescriptorPath, skipPalletteInstall);
       }
       return true;
     })
