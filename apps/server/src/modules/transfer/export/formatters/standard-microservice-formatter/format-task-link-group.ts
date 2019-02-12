@@ -1,8 +1,17 @@
-import isEmpty from 'lodash/isEmpty';
+import { ResourceActionModel } from '@flogo-web/core';
+import { isEmpty } from 'lodash';
 import { formatLinks } from './format-links';
 import { formatTasks } from './format-tasks';
 
-export function formatTaskLinkGroups(activitySchemas, flow) {
+export interface TaskLinkGroup {
+  tasks?: ResourceActionModel.Task[];
+  links?: ResourceActionModel.Link[];
+}
+
+export function formatTaskLinkGroups(
+  activitySchemas,
+  flow
+): { root: TaskLinkGroup; error: TaskLinkGroup } {
   const rootTask = {
     tasks: flow.tasks,
     links: flow.links,

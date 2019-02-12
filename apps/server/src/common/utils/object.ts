@@ -1,5 +1,4 @@
-import pick from 'lodash/pick';
-import without from 'lodash/without';
+import { pick, without } from 'lodash';
 
 /**
  * Ensures the order of the keys of an object.
@@ -10,8 +9,8 @@ import without from 'lodash/without';
  * @param {object} obj - object to sort
  * @param {string[]} keyOrder - wanted key order
  */
-export function ensureKeyOrder(object, keyOrder) {
-  const objectKeys = Object.keys(object);
-  const newKeyOrder = [...keyOrder, ...without(objectKeys, keyOrder)];
+export function ensureKeyOrder<T extends object>(object: T, keyOrder: Array<keyof T>): T {
+  const objectKeys = Object.keys(object) as Array<keyof T>;
+  const newKeyOrder = [...keyOrder, ...without(objectKeys, ...keyOrder)];
   return pick(object, newKeyOrder);
 }

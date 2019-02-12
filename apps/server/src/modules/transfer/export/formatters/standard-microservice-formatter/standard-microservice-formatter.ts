@@ -1,40 +1,44 @@
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'lodash';
+import { ResourceExportContext } from '@flogo-web/server/core';
+import { App, FlogoAppModel, ContributionSchema } from '@flogo-web/core';
+
 import { ensureKeyOrder } from '../../../../../common/utils/object';
+import { ResourceExporterFn } from '../../resource-exporter-fn';
 import { formatHandler } from './format-handler';
-import { formatTaskLinkGroups } from './format-task-link-group';
-import { formatResource } from './format-resource';
 
 const APP_MODEL_VERSION = '1.0.0';
-const APP_KEY_ORDER = [
+const TRIGGER_KEY_ORDER: Array<keyof FlogoAppModel.Trigger> = [
+  'id',
+  'ref',
   'name',
-  'type',
-  'version',
-  'appModel',
   'description',
-  'properties',
-  'triggers',
-  'resources',
+  'settings',
+  'handlers',
 ];
-const TRIGGER_KEY_ORDER = ['id', 'ref', 'name', 'description', 'settings', 'handlers'];
 
 export class StandardMicroServiceFormatter {
-  constructor(private activitySchemas) {}
+  constructor(
+    private activitySchemas: Map<string, ContributionSchema>,
+    private exportResource: ResourceExporterFn
+  ) {}
 
-  preprocess(app) {
-    return app;
-  }
-
-  format(app) {
-    app.appModel = APP_MODEL_VERSION;
-    app.description = !isEmpty(app.description) ? app.description : undefined;
-
+  format(app: App): FlogoAppModel.App {
+    const exportContext: ResourceExportContext = { contributions: this.activitySchemas };
+    const resources = app.actions.map(resource =>
+      this.exportResource(resource, exportContext)
+    );
     const formattedTriggers = this.formatTriggers(app.triggers);
-    app.triggers = !isEmpty(formattedTriggers) ? formattedTriggers : undefined;
 
-    const resources = this.formatResources(app.actions);
-    app.resources = !isEmpty(resources) ? resources : undefined;
-
-    return ensureKeyOrder(app, APP_KEY_ORDER);
+    return {
+      name: app.name,
+      type: 'flogo:app',
+      version: app.version,
+      appModel: APP_MODEL_VERSION,
+      description: app.description,
+      properties: !isEmpty(app.properties) ? app.properties : undefined,
+      triggers: !isEmpty(formattedTriggers) ? formattedTriggers : undefined,
+      resources: !isEmpty(resources) ? resources : undefined,
+    };
   }
 
   formatTriggers(triggers) {
@@ -47,12 +51,5 @@ export class StandardMicroServiceFormatter {
         };
         return ensureKeyOrder(formattedTrigger, TRIGGER_KEY_ORDER);
       });
-  }
-
-  formatResources(actions) {
-    return actions.map(action => {
-      const taskLinkGroup = formatTaskLinkGroups(this.activitySchemas, action || {});
-      return formatResource(action, taskLinkGroup);
-    });
   }
 }

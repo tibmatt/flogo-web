@@ -18,10 +18,13 @@ export interface BeforeUpdateHookParams<T> {
 }
 
 export interface ResourceImportContext {
-  // todo: add contribution type
   contributions: Map<string, ContributionSchema>;
   normalizedTriggerIds: Map<string, string>;
   normalizedResourceIds: Map<string, string>;
+}
+
+export interface ResourceExportContext {
+  contributions: Map<string, ContributionSchema>;
 }
 
 export interface ResourceHooks<TResourceData = unknown> {
@@ -35,7 +38,10 @@ export interface ResourceHooks<TResourceData = unknown> {
   beforeUpdate(
     params: BeforeUpdateHookParams<TResourceData>
   ): Promise<Resource<TResourceData>>;
-  beforeExport(resource: Resource<TResourceData>): Promise<object>;
+  beforeExport(
+    resource: Resource<TResourceData>,
+    context: ResourceExportContext
+  ): Promise<object>;
   beforeList(resource: Resource<TResourceData>): Promise<Resource<TResourceData>>;
 }
 

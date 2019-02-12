@@ -1,8 +1,7 @@
 import { isEmpty, compact } from 'lodash';
 
-import { forEachSubflowTaskInAction } from '@flogo-web/server/core';
+import { forEachSubflowTaskInAction, Resource } from '@flogo-web/server/core';
 
-import { Validator } from '../../../common/validator';
 import { DEFAULT_APP_TYPE, DEFAULT_APP_VERSION } from '../../../common/constants';
 import { normalizeName } from './utils/normalize-name';
 import { DanglingSubflowReferencesCleaner } from './utils/dangling-subflow-references-cleaner';
@@ -13,72 +12,70 @@ export class Exporter {
   constructor(
     private isFullAppExportMode: boolean,
     private formatter: StandardMicroServiceFormatter,
-    private validator: Validator,
     private uniqueIdAgent: UniqueIdAgent
   ) {}
 
   /**
-   *
-   * @param onlyFlows
    * @throws validation error
-   * @return {*}
    */
-  export(app, onlyFlows) {
-    if (!this.isFullAppExportMode) {
-      app.actions = this.selectActions(app.actions, onlyFlows);
-    }
-    app = this.formatter.preprocess(app);
+  export(app, onlyThisResources?: string[]) {
+    // todo: re-enable resource selection
+    // if (!this.isFullAppExportMode) {
+    //   app.actions = this.selectResources(app.actions, onlyThisResources);
+    // }
 
     app = this.applyDefaultAppAttributes(app);
 
-    const { actions, previousActionIdsLinker } = this.humanizeActionIds(app.actions);
-    app.actions = this.updateSubflowReferencesAndDanglingMappings(
-      actions,
-      previousActionIdsLinker
+    const { resources, previousResourceIdsLinker } = this.humanizeResourceIds(
+      app.actions
     );
+    // app.actions = this.updateSubflowReferencesAndDanglingMappings(
+    //   resources,
+    //   previousResourceIdsLinker
+    // );
 
-    app.triggers = this.processTriggers(app.triggers, previousActionIdsLinker);
+    app.triggers = this.processTriggers(app.triggers, previousResourceIdsLinker);
 
     app = this.formatter.format(app);
 
-    this.validator.validate(app);
+    // this.validator.validate(app);
     app = this.postProcess(app);
     return app;
   }
 
-  updateSubflowReferencesAndDanglingMappings(actions, previousActionIdsLinker) {
-    const subflowMappingCleaner = new DanglingSubflowReferencesCleaner();
-    const updateTask = task => {
-      const linkedAction = previousActionIdsLinker.get(task.settings.flowPath);
-      task.settings.flowPath = linkedAction ? linkedAction.id : null;
-      task.inputMappings = subflowMappingCleaner.cleanMappings(task, linkedAction);
-    };
-    return actions.map(action => {
-      forEachSubflowTaskInAction(action, updateTask);
-      return action;
-    });
-  }
+  // updateSubflowReferencesAndDanglingMappings(actions, previousActionIdsLinker) {
+  //   const subflowMappingCleaner = new DanglingSubflowReferencesCleaner();
+  //   const updateTask = task => {
+  //     const linkedAction = previousActionIdsLinker.get(task.settings.flowPath);
+  //     task.settings.flowPath = linkedAction ? linkedAction.id : null;
+  //     task.inputMappings = subflowMappingCleaner.cleanMappings(task, linkedAction);
+  //   };
+  //   return actions.map(action => {
+  //     forEachSubflowTaskInAction(action, updateTask);
+  //     return action;
+  //   });
+  // }
 
-  selectActions(actions, includeOnlyThisActionIds = []) {
-    if (isEmpty(includeOnlyThisActionIds)) {
-      return actions;
-    }
-    const actionRegistry = new Map(actions.map(action => [action.id, action]));
-
-    const finalActionIds = new Set(includeOnlyThisActionIds);
-    const collectSubflowPathFromTask = task => finalActionIds.add(task.settings.flowPath);
-
-    includeOnlyThisActionIds.forEach(actionId => {
-      const action = actionRegistry.get(actionId);
-      if (action) {
-        forEachSubflowTaskInAction(action, collectSubflowPathFromTask);
-      }
-    });
-
-    return compact(
-      Array.from(finalActionIds.values()).map(actionId => actionRegistry.get(actionId))
-    );
-  }
+  // selectResources(resources, includeOnlyThisActionIds = []) {
+  //   if (isEmpty(includeOnlyThisActionIds)) {
+  //     return resources;
+  //   }
+  //   const actionRegistry = new Map(resources.map(action => [action.id, action]));
+  //
+  //   const finalActionIds = new Set(includeOnlyThisActionIds);
+  //   const collectSubflowPathFromTask = task => finalActionIds.add(task.settings.flowPath);
+  //
+  //   includeOnlyThisActionIds.forEach(actionId => {
+  //     const action = actionRegistry.get(actionId);
+  //     if (action) {
+  //       forEachSubflowTaskInAction(action, collectSubflowPathFromTask);
+  //     }
+  //   });
+  //
+  //   return compact(
+  //     Array.from(finalActionIds.values()).map(actionId => actionRegistry.get(actionId))
+  //   );
+  // }
 
   processTriggers(triggers, humanizedActions) {
     if (this.isFullAppExportMode) {
@@ -87,7 +84,7 @@ export class Exporter {
         handlers,
       } = this.humanizeTriggerNamesAndExtractHandlers(triggers);
       triggers = humanizedTriggers;
-      this.reconcileHandlersAndActions(handlers, humanizedActions);
+      this.reconcileHandlersAndResources(handlers, humanizedActions);
     } else {
       triggers = [];
     }
@@ -110,14 +107,19 @@ export class Exporter {
     return app;
   }
 
-  humanizeActionIds(actions) {
-    const previousActionIdsLinker = new Map();
-    actions.forEach(action => {
-      const oldId = action.id;
-      action.id = this.uniqueIdAgent.generateUniqueId(action.name);
-      previousActionIdsLinker.set(oldId, action);
+  humanizeResourceIds(
+    resources: Resource[]
+  ): {
+    resources: Resource[];
+    previousResourceIdsLinker: Map<string, string>;
+  } {
+    const previousResourceIdsLinker = new Map();
+    resources.forEach(resource => {
+      const oldId = resource.id;
+      resource.id = this.uniqueIdAgent.generateUniqueId(resource.name);
+      previousResourceIdsLinker.set(oldId, resource);
     });
-    return { actions, previousActionIdsLinker };
+    return { resources, previousResourceIdsLinker };
   }
 
   humanizeTriggerNamesAndExtractHandlers(triggers) {
@@ -129,10 +131,10 @@ export class Exporter {
     return { triggers, handlers };
   }
 
-  reconcileHandlersAndActions(handlers, humanizedActions) {
+  reconcileHandlersAndResources(handlers, humanizedResources) {
     handlers.forEach(h => {
       const oldActionId = h.actionId;
-      const action = humanizedActions.get(oldActionId);
+      const action = humanizedResources.get(oldActionId);
       if (!action) {
         delete h.actionId;
         return;

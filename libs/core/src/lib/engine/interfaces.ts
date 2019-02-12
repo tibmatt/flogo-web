@@ -1,11 +1,12 @@
 export module FlogoAppModel {
   export interface App {
     name: string;
+    type?: string;
     version: string;
     appModel: string;
+    description?: string;
     // only >= v0.9.0
     imports?: string[];
-    description?: string;
     properties?: AppProperty[];
     triggers?: Trigger[];
     resources?: Resource[];
@@ -23,6 +24,8 @@ export module FlogoAppModel {
     // only >= v0.9.0
     type?: string;
     // todo: confirm required
+    name?: string;
+    description?: string;
     settings?: Settings;
     handlers?: Handler[];
   }

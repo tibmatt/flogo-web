@@ -1,13 +1,21 @@
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'lodash';
+import { Resource, FlogoAppModel, FlowData, ResourceActionModel } from '@flogo-web/core';
+import { formatTaskLinkGroups } from './format-task-link-group';
 
-export function formatResource(fromAction, taskLinkGroup) {
-  const formattedMetadata = formatMetadata(fromAction.metadata);
+function formatFlow(
+  fromResource: Resource<FlowData>,
+  activitySchemas
+): FlogoAppModel.Resource<ResourceActionModel.FlowResourceData> {
+  const formattedMetadata = formatMetadata(fromResource.metadata);
+  const taskLinkGroup = formatTaskLinkGroups(activitySchemas, fromResource || {});
   const { root: rootHandler, error: errorHandler } = taskLinkGroup;
   return {
-    id: `flow:${fromAction.id}`,
+    id: `flow:${fromResource.id}`,
     data: {
-      name: fromAction.name,
-      description: !isEmpty(fromAction.description) ? fromAction.description : undefined,
+      name: fromResource.name,
+      description: !isEmpty(fromResource.description)
+        ? fromResource.description
+        : undefined,
       metadata: !isEmpty(formattedMetadata) ? formattedMetadata : undefined,
       ...rootHandler,
       errorHandler: !isEmpty(errorHandler) ? errorHandler : undefined,
