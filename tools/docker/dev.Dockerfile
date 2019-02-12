@@ -9,12 +9,11 @@ RUN curl -fsSL "$GOLANG_SRC_URL" -o golang.tar.gz && \
   tar -C /usr/local -xzf golang.tar.gz && \
   rm golang.tar.gz && \
   mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH" && \
-  curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh && \
   npm install -g yarn
 
 
 FROM base AS builder
-RUN go get -u github.com/TIBCOSoftware/flogo-cli/...
+RUN go get -u github.com/project-flogo/cli/...
 ENV BUILD_DIR /tmp/build
 ENV FLOGO_WEB_LOCALDIR ${BUILD_DIR}/dist/local
 COPY / ${BUILD_DIR}/
@@ -31,8 +30,6 @@ ENV FLOGO_WEB_LOCALDIR /flogo-web/local
 ENV FLOGO_WEB_PUBLICDIR /flogo-web/apps/client
 COPY --from=builder /tmp/build/dist/ /flogo-web/
 COPY --from=builder $GOPATH/ $GOPATH/
-COPY --from=flogo/flow-service /flogo/flow-service/flow-service /flogo-web/flow-service
-COPY --from=flogo/state-service /flogo/state-service/state-service /flogo-web/state-service
 WORKDIR /flogo-web/
 RUN cd local/engines/flogo-web && flogo build
 CMD ["yarn", "--cwd=apps/server", "start"]
