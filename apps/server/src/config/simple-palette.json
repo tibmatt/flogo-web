@@ -1,9 +1,5 @@
 [
   {
-    "name": "flow",
-    "ref": "github.com/project-flogo/flow"
-  },
-  {
     "name": "log",
     "ref": "github.com/project-flogo/contrib/activity/log"
   },

@@ -37,7 +37,7 @@ export async function orchestrateBuild(exportApp, execBuildCommand) {
     forceCreate: true,
     // noLib: true,
     skipContribLoad: true,
-    skipPalletteInstall: true,
+    skipPaletteInstall: true,
     defaultFlogoDescriptorPath: config.exportedAppBuild,
   };
 

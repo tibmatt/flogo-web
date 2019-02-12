@@ -48,11 +48,7 @@ export const commander = {
     activity: uninstall,
   },
   list(enginePath) {
-    // TODO:FIX_0.9.0: A temporary fix as the flogo list -l command always exits with an error
-    return _exec(enginePath, ['list', '-l'])
-      .then(output => parseJSON(output))
-      .catch(output => parseJSON(output));
-    // return _exec(enginePath, ['list']).then(output => parseJSON(output));
+    return _exec(enginePath, ['list', '-l']).then(parseJSON);
   },
 };
 
