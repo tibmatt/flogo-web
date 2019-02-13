@@ -4,7 +4,7 @@ import { ResourceExportContext } from '@flogo-web/server/core';
 
 import { isValidApplicationType } from '../../../common/utils';
 import { App } from '../../../interfaces';
-import { StandardMicroServiceFormatter } from './formatters/standard-microservice-formatter';
+import { AppFormatter } from './app-formatter';
 import { Exporter } from './exporter';
 import { UniqueIdAgent } from './utils/unique-id-agent';
 import { ResourceExporterFn } from './resource-exporter-fn';
@@ -23,7 +23,7 @@ export function exportApplication(
   if (!isValidApplicationType(app.type)) {
     throw new Error('Can only export microservice applications');
   }
-  const formatter = new StandardMicroServiceFormatter(
+  const formatter = new AppFormatter(
     activitySchemas,
     createExportResolver(resolveExporterFn)
   );

@@ -1,5 +1,3 @@
-export interface FlowData {
-  tasks?: any[];
-  errorHandler?: any;
-  links?: any[];
-}
+import { FlowData } from '@flogo-web/core';
+
+export { FlowData };

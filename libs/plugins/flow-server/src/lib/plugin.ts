@@ -4,11 +4,13 @@ import {
   Resource,
   ValidationError,
   ResourceImportContext,
+  ResourceExportContext,
 } from '@flogo-web/server/core';
 
 import { createActionImporter } from './import';
 import { validateFlowData } from './validation';
 import { FlowData } from './flow';
+import { exportFlow } from './export';
 
 export class FlowResourceHooks implements ResourceHooks<FlowData> {
   async beforeCreate(flowResource: Partial<Resource<FlowData>>) {
@@ -27,8 +29,8 @@ export class FlowResourceHooks implements ResourceHooks<FlowData> {
     return updatedResource;
   }
 
-  async beforeExport(resource: Resource<FlowData>) {
-    return resource;
+  beforeExport(resource: Resource<FlowData>, context: ResourceExportContext) {
+    return exportFlow(resource, context);
   }
 
   async beforeList(resource: Resource<FlowData>) {

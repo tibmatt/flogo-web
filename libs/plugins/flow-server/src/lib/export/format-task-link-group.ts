@@ -1,5 +1,5 @@
-import { ResourceActionModel } from '@flogo-web/core';
 import { isEmpty } from 'lodash';
+import { ResourceActionModel, FlowData } from '@flogo-web/core';
 import { formatLinks } from './format-links';
 import { formatTasks } from './format-tasks';
 
@@ -10,7 +10,7 @@ export interface TaskLinkGroup {
 
 export function formatTaskLinkGroups(
   activitySchemas,
-  flow
+  flow: Partial<FlowData>
 ): { root: TaskLinkGroup; error: TaskLinkGroup } {
   const rootTask = {
     tasks: flow.tasks,
@@ -23,7 +23,7 @@ export function formatTaskLinkGroups(
   };
 }
 
-function formatGroup(activitySchemas, { tasks, links }) {
+function formatGroup(activitySchemas, { tasks, links }: { tasks?; links? }) {
   const group: { tasks?: any[]; links?: any[] } = {};
   const formattedTasks = formatTasks(activitySchemas, tasks);
   if (!isEmpty(formattedTasks)) {

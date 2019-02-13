@@ -1,4 +1,5 @@
 import { isEmpty } from 'lodash';
+import { Task } from '@flogo-web/core';
 import {
   Resource,
   ResourceImportContext,
@@ -12,8 +13,8 @@ import {
   ValidationError,
 } from '@flogo-web/server/core';
 
-import { TaskConverter } from './task-converter';
 import { FlowData } from '../flow';
+import { TaskConverter } from './task-converter';
 
 export class ActionImporter {
   protected activitySchemasByRef: Map<string, any>;
@@ -90,8 +91,8 @@ export class ActionImporter {
     return metadata;
   }
 
-  mapTasks(tasks = []) {
-    return tasks.map(task => this.convertTask(task));
+  mapTasks(tasks = []): Task[] {
+    return tasks.map(task => this.convertTask(task) as Task);
   }
 
   convertTask(resourceTask) {

@@ -6,12 +6,12 @@ import { DEFAULT_APP_TYPE, DEFAULT_APP_VERSION } from '../../../common/constants
 import { normalizeName } from './utils/normalize-name';
 import { DanglingSubflowReferencesCleaner } from './utils/dangling-subflow-references-cleaner';
 import { UniqueIdAgent } from './utils/unique-id-agent';
-import { StandardMicroServiceFormatter } from './formatters/standard-microservice-formatter';
+import { AppFormatter } from './app-formatter';
 
 export class Exporter {
   constructor(
     private isFullAppExportMode: boolean,
-    private formatter: StandardMicroServiceFormatter,
+    private formatter: AppFormatter,
     private uniqueIdAgent: UniqueIdAgent
   ) {}
 

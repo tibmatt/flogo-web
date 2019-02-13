@@ -2,12 +2,12 @@ import { isEmpty } from 'lodash';
 import { Resource, FlogoAppModel, FlowData, ResourceActionModel } from '@flogo-web/core';
 import { formatTaskLinkGroups } from './format-task-link-group';
 
-function formatFlow(
+export function exportFlow(
   fromResource: Resource<FlowData>,
   activitySchemas
 ): FlogoAppModel.Resource<ResourceActionModel.FlowResourceData> {
   const formattedMetadata = formatMetadata(fromResource.metadata);
-  const taskLinkGroup = formatTaskLinkGroups(activitySchemas, fromResource || {});
+  const taskLinkGroup = formatTaskLinkGroups(activitySchemas, fromResource.data || {});
   const { root: rootHandler, error: errorHandler } = taskLinkGroup;
   return {
     id: `flow:${fromResource.id}`,

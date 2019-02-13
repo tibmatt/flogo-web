@@ -2,8 +2,8 @@ import { isEmpty } from 'lodash';
 import { ResourceExportContext } from '@flogo-web/server/core';
 import { App, FlogoAppModel, ContributionSchema } from '@flogo-web/core';
 
-import { ensureKeyOrder } from '../../../../../common/utils/object';
-import { ResourceExporterFn } from '../../resource-exporter-fn';
+import { ensureKeyOrder } from '../../../../common/utils/object';
+import { ResourceExporterFn } from '../resource-exporter-fn';
 import { formatHandler } from './format-handler';
 
 const APP_MODEL_VERSION = '1.0.0';
@@ -16,7 +16,7 @@ const TRIGGER_KEY_ORDER: Array<keyof FlogoAppModel.Trigger> = [
   'handlers',
 ];
 
-export class StandardMicroServiceFormatter {
+export class AppFormatter {
   constructor(
     private activitySchemas: Map<string, ContributionSchema>,
     private exportResource: ResourceExporterFn
