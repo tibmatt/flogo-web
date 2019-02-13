@@ -4,12 +4,12 @@ import { injectable, inject } from 'inversify';
 import { ContributionSchema } from '@flogo-web/core';
 import { ResourceHooks } from '@flogo-web/server/core';
 
-import { TOKENS } from '../../core';
+import { TOKENS, PluginResolverFn } from '../../core';
 import { Database } from '../../common/database.service';
 import { ContributionsService } from '../contribs';
 import { importApp } from '../transfer';
-import { saveNew } from './common';
 import { flowifyApp } from '../resources/transitional-resource.repository';
+import { saveNew } from './common';
 
 const toPairs = c => [c.ref, c] as [string, any];
 
@@ -18,9 +18,7 @@ async function contribsToPairs(contribPromise: Promise<Array<ContributionSchema>
   return contribs.map(toPairs);
 }
 
-type PluginResolver = (resourceType: string) => ResourceHooks;
-
-function resourceImportResolver(resolvePlugin: PluginResolver) {
+function resourceImportResolver(resolvePlugin: PluginResolverFn) {
   return (resourceType: string) => {
     const hooks = resolvePlugin(resourceType);
     return hooks ? hooks.onImport.bind(hooks) : null;

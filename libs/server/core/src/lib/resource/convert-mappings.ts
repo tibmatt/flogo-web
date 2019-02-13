@@ -22,5 +22,3 @@ export function portMappingType(mappingTypesDictionary, mapping) {
 export const fromStandardTypeMapper = typeMapper.fromStandard();
 export const convertMappingsCollectionToStandard = mappings =>
   portMappings(fromStandardTypeMapper.mappingTypes, mappings);
-export const portMappingTypeToStandard = singleMapping =>
-  portMappingType(fromStandardTypeMapper.mappingTypes, singleMapping);

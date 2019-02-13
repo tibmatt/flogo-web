@@ -38,20 +38,6 @@ export function importTriggers(
   };
 }
 
-function reconcileTriggersAndActions(
-  triggers,
-  normalizedResourceIds: Map<string, string>
-) {
-  const normalizeHandlers = handlerNormalizer(normalizedResourceIds);
-  return triggers.map(trigger => {
-    const rawHandlers = extractHandlers(trigger);
-    return {
-      trigger,
-      reconciledHandlers: normalizeHandlers(rawHandlers),
-    };
-  });
-}
-
 function handlerNormalizer(
   normalizedResourceIds: Map<string, string>,
   createdAt: string = null
@@ -89,12 +75,4 @@ function mapHandler(stdHandler) {
     actionId: parseResourceIdFromResourceUri(action.data.flowURI),
     actionMappings: convertMappingsCollectionToStandard(action.mappings),
   };
-}
-
-function importTrigger(triggers = [], generateId: () => string) {
-  return triggers.map(trigger => ({
-    ...trigger,
-    id: generateId(),
-    name: trigger.name || trigger.id,
-  }));
 }
