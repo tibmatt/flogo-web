@@ -33,7 +33,7 @@
     "clean:all-node-modules": "del **/node_modules",
     "clean:engines": "del ./dist/local/engines",
     "clean:local": "del ./dist/local",
-    "update-global-flogo": "go get -u github.com/TIBCOSoftware/flogo-cli/...",
+    "update-global-flogo": "go get -u github.com/project-flogo/cli/...",
     "submodules:link": "yarn --cwd src/parser link && yarn link flogo-parser && yarn --cwd src/client link flogo-parser && yarn --cwd src/server link flogo-parser",
     "services:status": "docker-compose -p flogo-dev -f tools/docker/services.docker-compose.yml ps",
     "services:pull": "docker-compose -p flogo-dev -f tools/docker/services.docker-compose.yml pull",

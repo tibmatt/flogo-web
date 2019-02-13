@@ -3,7 +3,6 @@ import { readFile } from 'fs-extra';
 import { logger } from '../../common/logging';
 import { config } from './../../config/app-config';
 import { getInitializedEngine } from './../../modules/engine';
-import { determinePathToVendor } from '../engine/determine-path-to-vendor';
 
 import { writeJSONFile } from '../../common/utils';
 
@@ -38,19 +37,19 @@ export async function orchestrateBuild(exportApp, execBuildCommand) {
     forceCreate: true,
     // noLib: true,
     skipContribLoad: true,
+    skipPaletteInstall: true,
     defaultFlogoDescriptorPath: config.exportedAppBuild,
   };
 
   const timer = logger.startTimer();
 
-  const [exportedApp, pathToVendor] = await Promise.all([
-    exportAppAndWriteToFileSystem(exportApp, engineOptions.defaultFlogoDescriptorPath),
-    determinePathToVendor(config.defaultEngine.path),
-  ]);
+  const exportedApp = await exportAppAndWriteToFileSystem(
+    exportApp,
+    engineOptions.defaultFlogoDescriptorPath
+  );
 
   const createdEngine = await getInitializedEngine(config.appBuildEngine.path, {
     ...engineOptions,
-    vendor: pathToVendor,
   });
   const buildResult = await execBuildCommand(createdEngine);
   const binaryStream = await readFile(buildResult.path);

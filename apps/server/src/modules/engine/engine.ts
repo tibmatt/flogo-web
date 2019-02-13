@@ -19,11 +19,6 @@ const DIR_BUILD_BIN = 'bin-build';
 const TYPE_TEST = 'test';
 const TYPE_BUILD = 'build';
 
-const DEFAULT_LIBS = [
-  'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-  'github.com/TIBCOSoftware/flogo-lib/app/resource',
-];
-
 interface TaskCollections {
   activities: object[];
   triggers: object[];
@@ -57,7 +52,7 @@ class Engine {
     return commander
       .list(this.path)
       .then(installedContribs => {
-        return loader.loadMetadata(this.path, installedContribs);
+        return loader.loadMetadata(installedContribs);
       })
       .then((contribMetadata: TaskCollections) => {
         this.tasks = contribMetadata;
@@ -66,16 +61,13 @@ class Engine {
       });
   }
 
-  create(flogoDescriptorPath = null, vendor = null) {
+  create(flogoDescriptorPath = null) {
     // todo: add support for lib version
     const options: Record<string, any> = {
-      libVersion: this._buildLibsOption(),
+      libVersion: this.libVersion,
     };
     if (flogoDescriptorPath) {
       options.flogoDescriptor = flogoDescriptorPath;
-    }
-    if (vendor) {
-      options.vendor = vendor;
     }
     console.time('engine:create');
     return commander
@@ -208,7 +200,7 @@ class Engine {
    * @param options
    * @param options.version {string} version
    */
-  installPalette(palettePath: string, options: Options) {
+  installPalette(palettePath: string, options?: Options) {
     options = Object.assign(
       {
         /* version: this.libVersion */
@@ -275,11 +267,6 @@ class Engine {
       item => item.name === nameOrPath || item.path === nameOrPath
     );
     return !!foundItem;
-  }
-
-  _buildLibsOption() {
-    const libConstraint = this.libVersion ? `@${this.libVersion}` : '';
-    return DEFAULT_LIBS.map(lib => `${lib}${libConstraint}`).join(',');
   }
 }
 

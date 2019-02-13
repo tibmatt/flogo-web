@@ -6,7 +6,7 @@
   "triggers": [],
   "actions": [
     {
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow"
+      "ref": "github.com/project-flogo/flow"
     }
   ]
 }

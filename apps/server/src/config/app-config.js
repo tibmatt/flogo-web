@@ -60,7 +60,6 @@ const config = {
   },
   defaultEngine: {
     path: defaultEngine,
-    vendorPath: `${defaultEngineName}/vendor`,
     defaultPalette: process.env.FLOGO_WEB_DEFAULT_PALETTE || 'default-palette.json',
   },
   /* apps module config */

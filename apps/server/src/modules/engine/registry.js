@@ -53,14 +53,14 @@ export function getContribInstallationController(enginePath, installContribution
   });
 }
 
-function createEngine(engine, defaultFlogoDescriptorPath, useVendor) {
+function createEngine(engine, defaultFlogoDescriptorPath, skipPaletteInstall) {
   logger.warn('Engine does not exist. Creating...');
   return engine
-    .create(defaultFlogoDescriptorPath, useVendor)
+    .create(defaultFlogoDescriptorPath)
     .then(() => {
       logger.info('New engine created');
       // when vendor provided it's not needed to install a palette
-      if (useVendor) {
+      if (skipPaletteInstall) {
         return Promise.resolve(true);
       }
       // TODO: add palette version
@@ -88,14 +88,18 @@ function createEngine(engine, defaultFlogoDescriptorPath, useVendor) {
  *
  * @param engine {Engine}
  * @param options
+ * @param options.skipPaletteInstall {boolean} whether to install a palette or now
+ * @param options.forceCreate {boolean} whether to create an engine irrespective of it's existence
+ * @param options.defaultFlogoDescriptorPath {string} path to the default flogo application JSON
+ * @param options.skipContribLoad {boolean} whether to refresh the list of contributions installed in the engine
  * @returns {*}
  */
 export function initEngine(engine, options) {
   const forceInit = options && options.forceCreate;
-  const useVendor = options && options.vendor;
   const defaultFlogoDescriptorPath =
     (options && options.defaultFlogoDescriptorPath) || config.defaultFlogoDescriptorPath;
   const skipContribLoad = options && options.skipContribLoad;
+  const skipPaletteInstall = options && options.skipPaletteInstall;
 
   return engine
     .exists()
@@ -107,7 +111,7 @@ export function initEngine(engine, options) {
     })
     .then(shouldCreateNewEngine => {
       if (shouldCreateNewEngine) {
-        return createEngine(engine, defaultFlogoDescriptorPath, useVendor);
+        return createEngine(engine, defaultFlogoDescriptorPath, skipPaletteInstall);
       }
       return true;
     })

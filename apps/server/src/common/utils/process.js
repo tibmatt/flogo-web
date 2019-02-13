@@ -23,6 +23,10 @@ export function runShellCMD(cmd, args, opts) {
     });
 
     _cmd.on('close', code => {
+      // TODO:FIX_0.9.0: A temporary fix https://github.com/TIBCOSoftware/flogo-web/issues/993
+      if (args.includes('list')) {
+        _data = errData;
+      }
       if (code !== 0) {
         logger.warn(`command exited with code ${code}: ${cmd} ${args.join(' ')}`);
         reject(errData);

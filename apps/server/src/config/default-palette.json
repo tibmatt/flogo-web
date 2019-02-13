@@ -1,84 +1,66 @@
-{
-    "name": "default",
-    "version": "0.0.1",
-    "title": "Default Palette",
-    "description": "Default flogo palette",
-    "extensions": [
-        {
-            "type": "trigger",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/cli"
-        },
-        {
-            "type": "trigger",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/coap"
-        },
-        {
-            "type": "trigger",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt"
-        },
-        {
-            "type": "trigger",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest"
-        },
-        {
-            "type": "trigger",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer"
-        },
-        {
-            "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreply"
-        },
-        {
-            "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn"
-        },
-        {
-            "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/app"
-        },
-        {
-            "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/awsiot"
-        },
-        {
-            "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/coap"
-        },
-        {
-            "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/counter"
-        },
-        {
-            "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/error"
-        },
-        {
-            "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log"
-        },
-        {
-            "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/mapper"
-        },
-        {
-            "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/rest"
-        },
-        {
-            "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/subflow"
-        },
-        {
-            "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/twilio"
-        },
-        {
-            "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/wsmessage"
-        },
-        {
-            "type": "action",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow"
-        }
-    ]
-}
+[
+  {
+    "name": "cli",
+    "ref": "github.com/project-flogo/contrib/trigger/cli"
+  },
+  {
+    "name": "channel",
+    "ref": "github.com/project-flogo/contrib/trigger/channel"
+  },
+  {
+    "name": "loadtester",
+    "ref": "github.com/project-flogo/contrib/trigger/loadtester"
+  },
+  {
+    "name": "rest",
+    "ref": "github.com/project-flogo/contrib/trigger/rest"
+  },
+  {
+    "name": "timer",
+    "ref": "github.com/project-flogo/contrib/trigger/timer"
+  },
+  {
+    "name": "actreply",
+    "ref": "github.com/project-flogo/contrib/activity/actreply"
+  },
+  {
+    "name": "actreturn",
+    "ref": "github.com/project-flogo/contrib/activity/actreturn"
+  },
+  {
+    "name": "channel",
+    "ref": "github.com/project-flogo/contrib/activity/channel"
+  },
+  {
+    "name": "counter",
+    "ref": "github.com/project-flogo/contrib/activity/counter"
+  },
+  {
+    "name": "error",
+    "ref": "github.com/project-flogo/contrib/activity/error"
+  },
+  {
+    "name": "log",
+    "ref": "github.com/project-flogo/contrib/activity/log"
+  },
+  {
+    "name": "mapper",
+    "ref": "github.com/project-flogo/contrib/activity/mapper"
+  },
+  {
+    "name": "noop",
+    "ref": "github.com/project-flogo/contrib/activity/noop"
+  },
+  {
+    "name": "rest",
+    "ref": "github.com/project-flogo/contrib/activity/rest"
+  },
+  {
+    "name": "flow",
+    "ref": "github.com/project-flogo/flow"
+  },
+  {
+    "name": "subflow",
+    "ref": "github.com/project-flogo/flow/activity/subflow"
+  }
+]
