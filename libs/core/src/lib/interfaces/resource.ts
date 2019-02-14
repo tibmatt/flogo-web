@@ -9,7 +9,7 @@ export interface Resource<TResourceData = unknown> {
   data: TResourceData;
 }
 
-interface Metadata {
+export interface Metadata {
   input: MetadataAttribute[];
   output: MetadataAttribute[];
 }

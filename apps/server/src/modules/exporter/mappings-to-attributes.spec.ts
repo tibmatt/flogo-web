@@ -1,4 +1,4 @@
-import { REF_SUBFLOW } from '../../common/constants';
+import { REF_SUBFLOW } from '@flogo-web/server/core';
 import { mappingsToAttributes } from './mappings-to-attributes';
 
 describe('exporter.mappings-to-attributes', () => {

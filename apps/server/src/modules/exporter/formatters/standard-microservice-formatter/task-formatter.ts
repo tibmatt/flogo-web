@@ -1,10 +1,9 @@
 import { isEmpty } from 'lodash';
 
-import { TASK_TYPE } from '../../../transfer/common/type-mapper';
-import { isIterableTask } from '../../../../common/utils';
-import { isSubflowTask } from '../../../../common/utils/subflow';
-import { Task } from '../../../../interfaces';
+import { isSubflowTask, TASK_TYPE } from '@flogo-web/server/core';
 
+import { isIterableTask } from '../../../../common/utils';
+import { Task } from '../../../../interfaces';
 import { createFlowUri } from './create-flow-uri';
 
 export class TaskFormatter {

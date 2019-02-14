@@ -11,7 +11,7 @@ import { HandlersService } from '../apps/handlers-service';
 import { ERROR_TYPES } from '../../common/errors';
 import { generateShortId } from '../../common/utils';
 import { findGreatestNameIndex } from '../../common/utils/collection';
-import { TOKENS } from '../../core';
+import { TOKENS, PluginResolverFn } from '../../core';
 import { App } from '../../interfaces';
 import { ResourceRepository } from './resource.repository';
 import { genericFieldsValidator, ValidatorFn } from './validation';
@@ -23,7 +23,7 @@ export class ResourceService {
 
   constructor(
     @inject(TOKENS.ResourcePluginFactory)
-    private resolvePlugin: (resourceType: string) => ResourceHooks,
+    private resolvePlugin: PluginResolverFn,
     private resourceRepository: ResourceRepository,
     private handlersService: HandlersService
   ) {

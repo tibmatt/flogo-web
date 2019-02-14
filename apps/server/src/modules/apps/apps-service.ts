@@ -1,20 +1,23 @@
 import { inject, injectable } from 'inversify';
-import { defaults, escapeRegExp, fromPairs, isEqual, pick } from 'lodash';
+import { escapeRegExp, fromPairs, isEqual, pick } from 'lodash';
 import shortid from 'shortid';
-
 import { EXPORT_MODE, REF_TRIGGER_LAMBDA } from '../../common/constants';
-import { normalizeName } from '../exporter/utils/normalize-name';
 
+import { normalizeName } from '../exporter/utils/normalize-name';
 import { Database } from '../../common/database.service';
 import { ErrorManager, ERROR_TYPES as GENERAL_ERROR_TYPES } from '../../common/errors';
 import { Logger } from '../../common/logging';
-import { findGreatestNameIndex } from '../../common/utils/collection';
 import { CONSTRAINTS } from '../../common/validation';
 import { TOKENS } from '../../core';
 import { exportApplication } from '../exporter';
+import { ResourceService } from '../resources';
 import { buildBinary, buildPlugin } from './build';
 import { Validator } from './validator';
+
 import { AppTriggersService } from './triggers';
+import { constructApp } from '../../core/models/app';
+import { saveNew } from './common';
+import { AppImporter } from './app-importer';
 
 const EDITABLE_FIELDS = ['name', 'version', 'description'];
 const PUBLISH_FIELDS = [
@@ -36,11 +39,12 @@ export class AppsService {
   constructor(
     @inject(TOKENS.AppsDb) private appsDb: Database,
     @inject(TOKENS.Logger) private logger: Logger,
-    @inject(TOKENS.ActionsManager) private actionsManager,
-    private triggersService: AppTriggersService
+    private resourceService: ResourceService,
+    private triggersService: AppTriggersService,
+    private appImporter: AppImporter
   ) {}
 
-  create(app) {
+  async create(app) {
     let inputData = app;
     const errors = Validator.validateSimpleApp(inputData);
     if (errors) {
@@ -48,25 +52,15 @@ export class AppsService {
         ErrorManager.createValidationError('Validation error', errors)
       );
     }
-    inputData._id = shortid.generate();
-    inputData.name = inputData.name.trim();
-    inputData = appDefaults(inputData);
-    return this.appsDb
-      .insert(inputData)
-      .catch(error => {
-        if (error.errorType === 'uniqueViolated') {
-          this.logger.debug(
-            `Name ${inputData.name} already exists, will create new name`
-          );
-          return ensureUniqueName(inputData.name, this.appsDb).then(name => {
-            this.logger.debug(`Will use ${name}`);
-            inputData.name = name;
-            return this.appsDb.insert(inputData);
-          });
-        }
-        return Promise.reject(error);
-      })
-      .then(newApp => cleanForOutput(newApp));
+    inputData = constructApp(inputData, shortid.generate);
+    let newApp = await saveNew(inputData, this.appsDb);
+    newApp = cleanForOutput(newApp);
+    return newApp;
+  }
+
+  async importApp(app) {
+    const newApp = await this.appImporter.import(app);
+    return this.findOne(newApp._id);
   }
 
   /**
@@ -98,9 +92,7 @@ export class AppsService {
 
           const errors = Validator.validateSimpleApp(mergedData);
           if (errors) {
-            throw ErrorManager.createValidationError('Validation error', {
-              details: errors,
-            });
+            throw ErrorManager.createValidationError('Validation error', errors);
           }
           if (inputData.name) {
             inputData.name = inputData.name.trim();
@@ -154,7 +146,7 @@ export class AppsService {
     const numRemoved = await this.appsDb.remove({ _id: appId });
     const wasRemoved = numRemoved > 0;
     if (wasRemoved) {
-      await this.actionsManager.removeFromRecentByAppId(appId);
+      await this.resourceService.removeFromRecentByAppId(appId);
     }
     return wasRemoved;
   }
@@ -302,16 +294,6 @@ function cleanInput(app) {
   return cleanedApp;
 }
 
-function appDefaults(app) {
-  const now = new Date().toISOString();
-  return defaults(app, {
-    createdAt: now,
-    updatedAt: null,
-    triggers: [],
-    actions: [],
-  });
-}
-
 function cleanForOutput(app) {
   const cleanedApp = Object.assign({ id: app._id }, app);
   return pick(cleanedApp, PUBLISH_FIELDS);
@@ -319,12 +301,4 @@ function cleanForOutput(app) {
 
 function nowISO() {
   return new Date().toISOString();
-}
-
-function ensureUniqueName(forName, appsDb: Database) {
-  const normalizedName = escapeRegExp(forName.trim().toLowerCase());
-  return appsDb.find({ name: new RegExp(`^${normalizedName}`, 'i') }).then(apps => {
-    const greatestIndex = findGreatestNameIndex(forName, apps);
-    return greatestIndex < 0 ? forName : `${forName} (${greatestIndex + 1})`;
-  });
 }

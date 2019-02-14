@@ -15,8 +15,8 @@ export class Validator {
   validate(value) {
     const isValid = this.ajvInstance.validate(this.schema, value);
     if (!isValid) {
-      const details = this.ajvInstance.errors;
-      throw ErrorManager.createValidationError('Validation error', { details });
+      const errors = this.ajvInstance.errors;
+      throw ErrorManager.createValidationError('Validation error', errors);
     }
   }
 }

@@ -8,7 +8,6 @@ import { ResourceRepository } from '../modules/resources/resource.repository';
 import { TransitionalResourceRepository } from '../modules/resources/transitional-resource.repository';
 
 import { bindAndCreatePluginRegistrar } from './plugin-injection';
-import { InOutModule } from './inout/module';
 import { PersistenceModule } from './persistence/module';
 import { ModelsModule } from './models/module';
 
@@ -19,7 +18,7 @@ export function createRootContainer(): {
   const rootContainer = new Container();
   rootContainer.bind(TOKENS.Logger).toConstantValue(logger);
   rootContainer.bind(ResourceRepository).to(TransitionalResourceRepository);
-  rootContainer.load(PersistenceModule, ModelsModule, InOutModule);
+  rootContainer.load(PersistenceModule, ModelsModule);
   const registerResourcePlugin = bindAndCreatePluginRegistrar(rootContainer);
   return {
     rootContainer,

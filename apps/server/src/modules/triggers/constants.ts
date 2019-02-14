@@ -1,6 +1,7 @@
 export const PUBLISH_FIELDS_SHORT = [
   'id',
   'name',
+  'type',
   'version',
   'title',
   'description',
@@ -20,4 +21,5 @@ export const PUBLISH_FIELDS_LONG = [
   'outputs',
   'handler',
   'reply',
+  'type',
 ];

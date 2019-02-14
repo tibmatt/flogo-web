@@ -3,24 +3,22 @@ import {
   BeforeUpdateHookParams,
   Resource,
   ValidationError,
+  ResourceImportContext,
 } from '@flogo-web/server/core';
-import { validateFlowData } from './validation';
 
-interface FlowData extends Resource {
-  tasks: any[];
-  // for test purposes
-  // todo: remove
-  internalInfo: string;
-}
+import { createActionImporter } from './import';
+import { validateFlowData } from './validation';
+import { FlowData } from './flow';
 
 export class FlowResourceHooks implements ResourceHooks<FlowData> {
   async beforeCreate(flowResource: Partial<Resource<FlowData>>) {
     runValidation(flowResource.data);
-    return Promise.resolve(flowResource);
+    return flowResource;
   }
 
-  async onImport(data: object) {
-    return data as Resource<FlowData>;
+  async onImport(data: Resource, context: ResourceImportContext) {
+    const importer = createActionImporter();
+    return importer.importAction(data, context);
   }
 
   async beforeUpdate(params: BeforeUpdateHookParams<FlowData>) {

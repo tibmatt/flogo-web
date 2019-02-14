@@ -1,11 +1,13 @@
-import Ajv from 'ajv';
+const Ajv = require('ajv');
+import AjvNS from 'ajv';
+export type ValidateFn = AjvNS.SchemaValidateFunction | AjvNS.ValidateFunction;
 
 export interface CustomValidation {
   keyword: string;
-  validate: Ajv.SchemaValidateFunction | Ajv.ValidateFunction;
+  validate: ValidateFn;
 }
 
-export type RuleViolationError = Ajv.ErrorObject;
+export type RuleViolationError = AjvNS.ErrorObject;
 export type ValidatorFn = (data) => null | RuleViolationError[];
 
 export function validate(
@@ -35,9 +37,31 @@ export function createValidator(
   return validatorRunner(ajv.compile(schema));
 }
 
-function validatorRunner(validateFn: Ajv.ValidateFunction) {
+function validatorRunner(validateFn: AjvNS.ValidateFunction) {
   return data => {
     const isValid = validateFn(data);
     return isValid ? null : validateFn.errors;
+  };
+}
+
+export const ValidationRuleFactory = {
+  contributionInstalled: contributionRuleFactory,
+};
+
+function contributionRuleFactory(keyword, type, refs): ValidateFn {
+  return function validator(schema, contribRef) {
+    const isInstalled = refs.includes(contribRef);
+    if (!isInstalled) {
+      (validator as any).errors = [
+        {
+          keyword,
+          message: `${type} "${contribRef}" is not installed`,
+          params: {
+            ref: contribRef,
+          },
+        },
+      ];
+    }
+    return isInstalled;
   };
 }

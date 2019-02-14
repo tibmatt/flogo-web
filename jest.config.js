@@ -6,15 +6,19 @@ module.exports = {
     'ts-jest': {
       tsConfigFile: './tsconfig.spec.json',
     },
+    __TS_CONFIG__: {
+      inlineSourceMap: true,
+    },
     __TRANSFORM_HTML__: true,
   },
   testMatch: [`**/{${jestProjectRoots}}/**/+(*.)+(spec|test).+(ts|js)?(x)`],
   transform: {
-    '^.+\\.(ts|js|html)$': 'jest-preset-angular/preprocessor.js',
+    '^.+\\.(ts|js|html)$': 'ts-jest',
   },
+  preset: 'ts-jest',
   resolver: '@nrwl/builders/plugins/jest/resolver',
   moduleFileExtensions: ['ts', 'js', 'html'],
-  collectCoverage: true,
+  collectCoverage: false,
   coverageReporters: ['html'],
   setupTestFrameworkScriptFile: '<rootDir>/jest.setup.ts',
 };

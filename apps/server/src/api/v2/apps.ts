@@ -6,8 +6,8 @@ import { buildApp } from './apps/build';
 
 import { Container } from 'inversify';
 import { Context } from 'koa';
+import 'koa-body';
 import { appsServiceMiddleware } from './shared/apps-service-middleware';
-import { AppImporterFactory, importApp } from '../../modules/importer';
 
 export function apps(router: Router, container: Container) {
   const appsRouter = new Router();
@@ -15,10 +15,7 @@ export function apps(router: Router, container: Container) {
     .use(appsServiceMiddleware(container))
     .get('/', listApps)
     .post('/', createApp)
-    .post('\\:import', async ctx => {
-      const appImporterFactory = container.resolve(AppImporterFactory);
-      await handleAppImport(appImporterFactory, ctx);
-    })
+    .post('\\:import', importApp)
     // ex. /apps/zA45E:export
     // needs to be registered before .get('/:appId')
     .get('/:appId\\:export', exportApp)
@@ -56,7 +53,7 @@ async function createApp(ctx: Context) {
         status: 400,
         title: 'Validation error',
         detail: 'There were one or more validation problems',
-        meta: error.details.errors,
+        meta: { details: error.details.errors },
       });
     }
     throw error;
@@ -97,7 +94,7 @@ async function updateApp(ctx: Context) {
           status: 400,
           title: 'Validation error',
           detail: 'There were one or more validation problems',
-          meta: error.details.errors,
+          meta: { details: error.details.errors },
         });
       } else if (error.type === ERROR_TYPES.COMMON.NOT_FOUND) {
         throw ErrorManager.createRestNotFoundError('Application not found', {
@@ -124,16 +121,16 @@ async function deleteApp(ctx: Context) {
   ctx.status = 204;
 }
 
-async function handleAppImport(appImporterFactory: AppImporterFactory, ctx: Context) {
+async function importApp(ctx: Context) {
   try {
-    ctx.body = await importApp(ctx.request.body, appImporterFactory);
+    ctx.body = await ctx.appsService.importApp(ctx.request.body);
   } catch (error) {
     if (error.isOperational && error.type === ERROR_TYPES.COMMON.VALIDATION) {
-      throw ErrorManager.createRestError('Validation error in /apps getApp', {
+      throw ErrorManager.createRestError('Validation error in /apps importApp', {
         status: 400,
         title: 'Validation error',
         detail: 'There were one or more validation problems',
-        meta: error.details.errors,
+        meta: { details: error.details.errors },
       });
     }
     throw error;

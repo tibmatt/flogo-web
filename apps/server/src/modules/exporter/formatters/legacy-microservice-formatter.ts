@@ -1,9 +1,11 @@
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
+
+import { appHasSubflowTasks, FLOGO_TASK_TYPE } from '@flogo-web/server/core';
+
 import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
 import { isIterableTask } from '../../../common/utils';
-import { appHasSubflowTasks } from '../../../common/utils/subflow';
-import { FLOGO_TASK_TYPE, LEGACY_FLOW_TYPE } from '../../../common/constants';
+import { LEGACY_FLOW_TYPE } from '../../../common/constants';
 import { mappingsToAttributes } from '../mappings-to-attributes';
 
 const MICROSERVICE_ACTION_REF = 'github.com/TIBCOSoftware/flogo-contrib/action/flow';
