@@ -6,6 +6,7 @@ import { buildApp } from './apps/build';
 
 import { Container } from 'inversify';
 import { Context } from 'koa';
+import 'koa-body';
 import { appsServiceMiddleware } from './shared/apps-service-middleware';
 
 export function apps(router: Router, container: Container) {
@@ -52,7 +53,7 @@ async function createApp(ctx: Context) {
         status: 400,
         title: 'Validation error',
         detail: 'There were one or more validation problems',
-        meta: error.details.errors,
+        meta: { details: error.details.errors },
       });
     }
     throw error;
@@ -93,7 +94,7 @@ async function updateApp(ctx: Context) {
           status: 400,
           title: 'Validation error',
           detail: 'There were one or more validation problems',
-          meta: error.details.errors,
+          meta: { details: error.details.errors },
         });
       } else if (error.type === ERROR_TYPES.COMMON.NOT_FOUND) {
         throw ErrorManager.createRestNotFoundError('Application not found', {
@@ -125,11 +126,11 @@ async function importApp(ctx: Context) {
     ctx.body = await ctx.appsService.importApp(ctx.request.body);
   } catch (error) {
     if (error.isOperational && error.type === ERROR_TYPES.COMMON.VALIDATION) {
-      throw ErrorManager.createRestError('Validation error in /apps getApp', {
+      throw ErrorManager.createRestError('Validation error in /apps importApp', {
         status: 400,
         title: 'Validation error',
         detail: 'There were one or more validation problems',
-        meta: error.details.errors,
+        meta: { details: error.details.errors },
       });
     }
     throw error;

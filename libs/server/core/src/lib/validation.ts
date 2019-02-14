@@ -1,12 +1,13 @@
-import Ajv from 'ajv';
-export type ValidateFn = Ajv.SchemaValidateFunction | Ajv.ValidateFunction;
+const Ajv = require('ajv');
+import AjvNS from 'ajv';
+export type ValidateFn = AjvNS.SchemaValidateFunction | AjvNS.ValidateFunction;
 
 export interface CustomValidation {
   keyword: string;
   validate: ValidateFn;
 }
 
-export type RuleViolationError = Ajv.ErrorObject;
+export type RuleViolationError = AjvNS.ErrorObject;
 export type ValidatorFn = (data) => null | RuleViolationError[];
 
 export function validate(
@@ -36,7 +37,7 @@ export function createValidator(
   return validatorRunner(ajv.compile(schema));
 }
 
-function validatorRunner(validateFn: Ajv.ValidateFunction) {
+function validatorRunner(validateFn: AjvNS.ValidateFunction) {
   return data => {
     const isValid = validateFn(data);
     return isValid ? null : validateFn.errors;

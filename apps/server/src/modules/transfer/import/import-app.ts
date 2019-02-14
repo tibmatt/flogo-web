@@ -1,5 +1,12 @@
 import { ContributionSchema } from '@flogo-web/core';
-import { Resource, ResourceImportContext, Schemas } from '@flogo-web/server/core';
+import {
+  Resource,
+  ResourceImportContext,
+  Schemas,
+  ValidationError,
+  isValidationError,
+  ValidationErrorDetail,
+} from '@flogo-web/server/core';
 
 import { constructApp } from '../../../core/models/app';
 import { actionValueTypesNormalizer } from '../common/action-value-type-normalizer';
@@ -43,12 +50,49 @@ export async function importApp(
     normalizedResourceIds: normalizedResourceIds,
     normalizedTriggerIds: normalizedTriggerIds,
   };
-  const applyImportHook = createImportResolver(resolveImporterFn, context);
-  newApp.actions = await Promise.all(resources.map(applyImportHook));
+  const resolveImportHook = createImportResolver(resolveImporterFn, context);
+  newApp.actions = await applyImportHooks(resources, resolveImportHook);
   normalizedResourceIds.clear();
   normalizedTriggerIds.clear();
 
   return newApp;
+}
+
+const resourcifyErrorPath = (resourceDataPath: string) => (d: ValidationErrorDetail) => ({
+  ...d,
+  dataPath: `${resourceDataPath}${d.dataPath}`,
+});
+async function applyImportHooks(
+  resources: Resource[],
+  applyImportHook: (resource: Resource) => Promise<Resource>
+): Promise<Resource[]> {
+  const validationErrors = [];
+  const importedResources: Resource[] = [];
+
+  const handleError = (e, resourceIndex: number) => {
+    if (isValidationError(e)) {
+      const resourcePath = `.resources[${resourceIndex}]`;
+      const errorDetails = e.details.errors.map(resourcifyErrorPath(resourcePath));
+      validationErrors.push(...errorDetails);
+    } else {
+      throw e;
+    }
+  };
+
+  for (const [index, resource] of resources.entries()) {
+    try {
+      importedResources.push(await applyImportHook(resource));
+    } catch (e) {
+      handleError(e, index);
+    }
+  }
+  if (validationErrors.length > 0) {
+    throw new ValidationError(
+      'There were one or more errors while trying to import resources',
+      validationErrors
+    );
+  }
+  return importedResources;
 }
 
 function cleanAndValidateApp(
@@ -111,15 +155,25 @@ function createImportResolver(
   resolveResourceImporter: (resourceType: string) => ResourceImporterFn,
   context: ResourceImportContext
 ) {
-  return (resource: Resource): Promise<Resource> => {
+  return async (resource: Resource): Promise<Resource> => {
     const forType = resource.type;
     const resourceImporter = resolveResourceImporter(forType);
-    if (!resourceImporter) {
-      // todo: error type
-      throw new Error(
-        `Cannot process resource of type "${forType}", no plugin registered for such type.`
-      );
+    if (resourceImporter) {
+      return resourceImporter(resource, context);
     }
-    return Promise.resolve(resourceImporter(resource, context));
+    // todo: error type
+    throw new ValidationError(
+      `Cannot process resource of type "${forType}", no plugin registered for such type.`,
+      [
+        {
+          data: forType,
+          dataPath: '.type',
+          keyword: 'supported-resource-type',
+          params: {
+            type: forType,
+          },
+        },
+      ]
+    );
   };
 }

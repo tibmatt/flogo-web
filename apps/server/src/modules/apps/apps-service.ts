@@ -92,9 +92,7 @@ export class AppsService {
 
           const errors = Validator.validateSimpleApp(mergedData);
           if (errors) {
-            throw ErrorManager.createValidationError('Validation error', {
-              details: errors,
-            });
+            throw ErrorManager.createValidationError('Validation error', errors);
           }
           if (inputData.name) {
             inputData.name = inputData.name.trim();

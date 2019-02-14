@@ -1,5 +1,5 @@
-import { createActionImporter } from './create-action-importer';
 import { Resource } from '@flogo-web/core';
+import { createActionImporter } from './create-action-importer';
 
 test('It imports an action', () => {
   const actionImporter = createActionImporter();
@@ -30,15 +30,15 @@ test('It errors if an activity is not installed', () => {
         errors: [
           {
             keyword: 'activity-installed',
-            dataPath: '.tasks[0].activity.ref',
+            dataPath: '.data.tasks[0].activity.ref',
           },
           {
             keyword: 'activity-installed',
-            dataPath: '.tasks[1].activity.ref',
+            dataPath: '.data.tasks[1].activity.ref',
           },
           {
             keyword: 'activity-installed',
-            dataPath: '.errorHandler.tasks[0].activity.ref',
+            dataPath: '.data.errorHandler.tasks[0].activity.ref',
           },
         ],
       },

@@ -32,6 +32,9 @@ export class ImportErrorFormatterService {
       case 'trigger-installed':
         messageHeader = this._translate.instant('IMPORT-ERROR:TRIGGER_MISSING');
         break;
+      case 'supported-resource-type':
+        messageHeader = this._translate.instant('IMPORT-ERROR:UNSUPPORTED_RESOURCE_TYPE');
+        break;
       default:
         messageHeader = this._translate.instant('APP-LIST:BROKEN_RULE_UNKNOWN');
         break;
@@ -61,6 +64,13 @@ export class ImportErrorFormatterService {
           this.getErrorContext(detail.dataPath, detail.keyword) +
           this._translate.instant('IMPORT-ERROR:CONSTANT_CONTENT', {
             val: detail.params.allowedValue,
+          });
+        break;
+      case 'supported-resource-type':
+        errorMessage =
+          this.getErrorContext(detail.dataPath, detail.keyword) +
+          this._translate.instant('IMPORT-ERROR:UNSUPPORTED_RESOURCE_TYPE_DETAIL', {
+            type: detail.params.type,
           });
         break;
       case 'app-empty':

@@ -21,7 +21,7 @@ export class ErrorManager {
    * @param details
    * @param [ctr]
    */
-  static createValidationError(message, errors, ctr) {
+  static createValidationError(message, errors: any[], ctr?) {
     return new ValidationError(
       message,
       errors,
@@ -37,7 +37,11 @@ export class ErrorManager {
    * @param {string} keyword
    * @param {object} [details] - optional details
    */
-  static createCustomValidationError(message, keyword, { dataPath, params } = {}) {
+  static createCustomValidationError(
+    message,
+    keyword,
+    { dataPath, params }: { dataPath?; params? } = {}
+  ) {
     if (!keyword) {
       throw new Error('Missing required keyword parameter');
     }
@@ -49,9 +53,7 @@ export class ErrorManager {
       params: params || {},
     };
 
-    return ErrorManager.createValidationError('Validation error', {
-      details: [error],
-    });
+    return ErrorManager.createValidationError('Validation error', [error]);
   }
 
   /**
@@ -65,7 +67,7 @@ export class ErrorManager {
    * @param details.meta {object} (optional) A meta object containing non-standard meta-information about the error. Ex. for validation the property details
    * @param [ctr]
    */
-  static createRestError(message = 'REST Api Error', details, ctr) {
+  static createRestError(message = 'REST Api Error', details, ctr?: Function) {
     return new RestError(
       message,
       details.status,
@@ -82,7 +84,10 @@ export class ErrorManager {
    * @param details.detail {string} (optional) A human-readable explanation specific to this occurrence of the problem.
    * @param details.meta {object} (optional) A meta object containing non-standard meta-information about the error. Ex. for validation the property details
    */
-  static createRestNotFoundError(message = 'Resource not found', details = {}) {
+  static createRestNotFoundError(
+    message = 'Resource not found',
+    details: { status?: number; title?: string; detail?: any; [key: string]: any } = {}
+  ) {
     return new RestError(
       message,
       details.status || 404,

@@ -69,9 +69,7 @@ export class ActionsManager {
 
     const errors = Validator.validate(actionData);
     if (errors) {
-      throw ErrorManager.createValidationError('Validation error', {
-        details: errors,
-      });
+      throw ErrorManager.createValidationError('Validation error', errors);
     }
 
     actionData.name = ensureUniqueName(app.actions, actionData.name);

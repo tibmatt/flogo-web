@@ -24,7 +24,7 @@ export class ActionImporter {
 
   importAction(inResource: Resource, context: ResourceImportContext): Resource<FlowData> {
     const validate = makeValidator(Array.from(context.contributions.keys()));
-    const errors = validate(inResource.data);
+    const errors = validate(inResource);
     if (errors) {
       throw new ValidationError('Flow data validation errors', errors);
     }
@@ -90,10 +90,6 @@ export class ActionImporter {
     return metadata;
   }
 
-  actionIdFromResourceId(resourceId) {
-    return resourceId.replace(/^flow:`/gi, '');
-  }
-
   mapTasks(tasks = []) {
     return tasks.map(task => this.convertTask(task));
   }
@@ -106,10 +102,20 @@ export class ActionImporter {
 
 function makeValidator(installedRefs: string[]) {
   return createValidator(
-    Schemas.v1.flow,
+    {
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      $id: 'http://github.com/TIBCOSoftware/flogo/schemas/1.0.0/flowResource.json',
+      additionalProperties: true,
+      required: ['data'],
+      properties: {
+        data: {
+          $ref: 'flow.json',
+        },
+      },
+    },
     {
       removeAdditional: true,
-      schemas: [Schemas.v1.common],
+      schemas: [Schemas.v1.flow, Schemas.v1.common],
     },
     [
       {

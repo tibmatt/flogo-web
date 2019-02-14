@@ -17,7 +17,7 @@ describe('importer.validator-factory', () => {
     }
     expect(!!thrownError).toBe(true);
 
-    const { details: validationDetails } = thrownError.details.errors;
+    const validationDetails = thrownError.details.errors;
     expect(Object.keys(validationDetails)).not.toHaveLength(0);
 
     expect(validationDetails[0]).toMatchObject({
