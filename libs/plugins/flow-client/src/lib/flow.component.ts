@@ -487,7 +487,9 @@ export class FlowComponent implements OnInit, OnDestroy {
     function reduceToUpdatableHandlers(result, handler) {
       const actionInputMappings = get(handler, 'actionMappings.input', {});
       const applicableMappings = pick(actionInputMappings, inputNames);
-      if (Object.keys(applicableMappings).length !== Object.keys(actionInputMappings).length) {
+      if (
+        Object.keys(applicableMappings).length !== Object.keys(actionInputMappings).length
+      ) {
         handler.actionMappings.input = applicableMappings;
         result.push(handler);
       }
