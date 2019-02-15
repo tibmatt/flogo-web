@@ -7,6 +7,9 @@ import { isIterableTask } from '../is-iterable-task';
 
 export class TaskFormatter {
   private sourceTask: Task;
+
+  constructor(private resourceIdReconciler: Map<string, string>) {}
+
   setSourceTask(sourceTask) {
     this.sourceTask = sourceTask;
     return this;
@@ -51,7 +54,8 @@ export class TaskFormatter {
 
   convertSubflowPath() {
     const settings = this.sourceTask.settings;
-    return createFlowUri(settings.flowPath);
+    const resourceId = this.resourceIdReconciler.get(settings.flowPath);
+    return createFlowUri(resourceId);
   }
 
   isIteratorTask() {

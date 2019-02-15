@@ -1,13 +1,21 @@
 import { isEmpty } from 'lodash';
-import { Resource, FlogoAppModel, FlowData, ResourceActionModel } from '@flogo-web/core';
+import {
+  Resource,
+  FlogoAppModel,
+  FlowData,
+  ResourceActionModel,
+  Metadata,
+  MetadataAttribute,
+} from '@flogo-web/core';
+import { ResourceExportContext } from '@flogo-web/server/core';
 import { formatTaskLinkGroups } from './format-task-link-group';
 
 export function exportFlow(
   fromResource: Resource<FlowData>,
-  activitySchemas
+  context: ResourceExportContext
 ): FlogoAppModel.Resource<ResourceActionModel.FlowResourceData> {
   const formattedMetadata = formatMetadata(fromResource.metadata);
-  const taskLinkGroup = formatTaskLinkGroups(activitySchemas, fromResource.data || {});
+  const taskLinkGroup = formatTaskLinkGroups(fromResource.data || {}, context);
   const { root: rootHandler, error: errorHandler } = taskLinkGroup;
   return {
     id: `flow:${fromResource.id}`,
@@ -23,10 +31,19 @@ export function exportFlow(
   };
 }
 
-function formatMetadata(actionMetadata = {}) {
+const exportMetadataAttribute = ({
+  name,
+  type,
+}: MetadataAttribute): ResourceActionModel.MetadataDefinition => ({
+  name,
+  type,
+});
+function formatMetadata(
+  actionMetadata: Partial<Metadata> = {}
+): ResourceActionModel.FlowResourceData['metadata'] {
   return ['input', 'output'].reduce((formattedMetadata, type) => {
     if (!isEmpty(actionMetadata[type])) {
-      formattedMetadata[type] = [...actionMetadata[type]];
+      formattedMetadata[type] = actionMetadata[type].map(exportMetadataAttribute);
     }
     return formattedMetadata;
   }, {});

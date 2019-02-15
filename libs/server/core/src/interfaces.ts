@@ -25,6 +25,7 @@ export interface ResourceImportContext {
 
 export interface ResourceExportContext {
   contributions: Map<string, ContributionSchema>;
+  resourceIdReconciler: Map<string, string>;
 }
 
 export interface ResourceHooks<TResourceData = unknown> {

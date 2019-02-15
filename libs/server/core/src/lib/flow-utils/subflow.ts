@@ -6,10 +6,6 @@ import {
   FLOGO_TASK_TYPE,
 } from './constants';
 
-export function appHasSubflowTasks(app) {
-  return !!app.actions.find(actionHasSubflowTasks);
-}
-
 export function actionHasSubflowTasks(action) {
   return (
     !!safeGetTasksInHandler(action, TASK_HANDLER_NAME_ROOT).find(isSubflowTask) ||

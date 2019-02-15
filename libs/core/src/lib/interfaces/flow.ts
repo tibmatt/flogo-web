@@ -1,10 +1,10 @@
 // todo: move into flow plugin once modularization is finalized
 export interface FlowData {
   tasks: Task[];
-  links: Link[];
+  links?: Link[];
   errorHandler?: {
     tasks: Task[];
-    links: Link[];
+    links?: Link[];
   };
 }
 
@@ -25,7 +25,7 @@ export interface Task {
   inputMappings?: { [property: string]: any };
   settings?: {
     flowPath?: string;
-    iterate: string;
+    iterate?: string;
   };
   // todo: are these used?
   outputMappings?: Mapping[];

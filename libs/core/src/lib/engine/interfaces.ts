@@ -107,6 +107,7 @@ export module ResourceActionModel {
   export interface Task {
     id: string;
     name: string;
+    description?: string;
     type?: 'standard' | 'iterator';
     settings?: Settings;
     activity: Activity;

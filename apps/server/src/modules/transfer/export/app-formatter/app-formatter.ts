@@ -22,8 +22,11 @@ export class AppFormatter {
     private exportResource: ResourceExporterFn
   ) {}
 
-  format(app: App): FlogoAppModel.App {
-    const exportContext: ResourceExportContext = { contributions: this.activitySchemas };
+  format(app: App, resourceIdReconciler: Map<string, string>): FlogoAppModel.App {
+    const exportContext: ResourceExportContext = {
+      contributions: this.activitySchemas,
+      resourceIdReconciler,
+    };
     const resources = app.actions.map(resource =>
       this.exportResource(resource, exportContext)
     );
