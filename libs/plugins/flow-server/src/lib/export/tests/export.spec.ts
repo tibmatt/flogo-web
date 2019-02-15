@@ -11,7 +11,9 @@ import { exportFlow } from '..';
 test('it exports a flow', () => {
   const exported = exportFlow(getFlowToExport(), {
     contributions: new Map<string, ContributionSchema>(getContributions()),
-    resourceIdReconciler: new Map<string, string>([['4ut01d', 'humanized_subflow_ref']]),
+    resourceIdReconciler: new Map<string, string>([
+      ['4ut01d', 'flow:humanized_subflow_ref'],
+    ]),
   });
   expect(exported).toEqual(getExpectedFlow());
 });
@@ -79,7 +81,7 @@ function getExpectedFlow(): FlogoAppModel.Resource<ResourceActionModel.FlowResou
 
 function getFlowToExport(): Resource<FlowData> {
   return {
-    id: 'flow_to_export',
+    id: 'flow:flow_to_export',
     name: 'flow to export',
     description: 'some description',
     createdAt: '2018-10-05T14:48:00.000Z',

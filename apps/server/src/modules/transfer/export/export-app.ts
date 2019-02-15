@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { ContributionSchema, Resource } from '@flogo-web/core';
+import { ContributionSchema, Resource, FlogoAppModel } from '@flogo-web/core';
 import { ResourceExportContext } from '@flogo-web/server/core';
 
 import { isValidApplicationType } from '../../../common/utils';
@@ -14,7 +14,7 @@ export interface ExportAppOptions {
   selectResources?: string[];
 }
 
-export function exportApplication(
+export function exportApp(
   app: App,
   resolveExporterFn: (resourceType: string) => ResourceExporterFn,
   activitySchemas: Map<string, ContributionSchema>,
@@ -35,7 +35,7 @@ export function exportApplication(
 function createExportResolver(
   resolveResourceExporter: (resourceType: string) => ResourceExporterFn
 ) {
-  return (resource: Resource, context: ResourceExportContext): Resource => {
+  return (resource: Resource, context: ResourceExportContext): FlogoAppModel.Resource => {
     const forType = resource.type;
     const resourceExporter = resolveResourceExporter(forType);
     if (!resourceExporter) {

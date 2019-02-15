@@ -94,7 +94,8 @@ export class Exporter {
     const previousResourceIdsLinker = new Map();
     resources.forEach(resource => {
       const oldId = resource.id;
-      resource.id = this.uniqueIdAgent.generateUniqueId(resource.name);
+      resource.id =
+        resource.type + ':' + this.uniqueIdAgent.generateUniqueId(resource.name);
       previousResourceIdsLinker.set(oldId, resource);
     });
     return { resources, previousResourceIdsLinker };

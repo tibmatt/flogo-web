@@ -103,7 +103,7 @@ export class AppsService {
           }
           if (inputData.name) {
             inputData.name = inputData.name.trim();
-            return validateUniqueName(inputData.name);
+            return validateUniqueName(inputData.name, appId, this.appsDb);
           }
           return true;
         })
@@ -119,29 +119,6 @@ export class AppsService {
         })
         .then(() => this.findOne(appId, { withFlows: true }))
     );
-
-    function validateUniqueName(inputName) {
-      const name = getAppNameForSearch(inputName);
-      return this.appsDb
-        .findOne(
-          { _id: { $ne: appId }, name: new RegExp(`^${name}$`, 'i') },
-          { _id: 1, name: 1 }
-        )
-        .then(nameExists => {
-          if (nameExists) {
-            throw ErrorManager.createValidationError('Validation error', [
-              {
-                property: 'name',
-                title: 'Name already exists',
-                detail: "There's another app with that name",
-                value: inputName,
-                type: CONSTRAINTS.UNIQUE,
-              },
-            ]);
-          }
-          return true;
-        });
-    }
   }
 
   /**
@@ -310,4 +287,27 @@ function cleanForOutput(app) {
 
 function nowISO() {
   return new Date().toISOString();
+}
+
+function validateUniqueName(inputName, appId: string, appsDb: Database) {
+  const name = getAppNameForSearch(inputName);
+  return appsDb
+    .findOne(
+      { _id: { $ne: appId }, name: new RegExp(`^${name}$`, 'i') },
+      { _id: 1, name: 1 }
+    )
+    .then(nameExists => {
+      if (nameExists) {
+        throw ErrorManager.createValidationError('Validation error', [
+          {
+            property: 'name',
+            title: 'Name already exists',
+            detail: "There's another app with that name",
+            value: inputName,
+            type: CONSTRAINTS.UNIQUE,
+          },
+        ]);
+      }
+      return true;
+    });
 }

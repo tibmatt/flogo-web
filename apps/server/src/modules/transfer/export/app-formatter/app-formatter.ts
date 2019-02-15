@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, pick } from 'lodash';
 import { ResourceExportContext } from '@flogo-web/server/core';
 import { App, FlogoAppModel, ContributionSchema } from '@flogo-web/core';
 
@@ -7,7 +7,7 @@ import { ResourceExporterFn } from '../resource-exporter-fn';
 import { formatHandler } from './format-handler';
 
 const APP_MODEL_VERSION = '1.0.0';
-const TRIGGER_KEY_ORDER: Array<keyof FlogoAppModel.Trigger> = [
+const TRIGGER_KEYS: Array<keyof FlogoAppModel.Trigger> = [
   'id',
   'ref',
   'name',
@@ -48,11 +48,13 @@ export class AppFormatter {
     return triggers
       .filter(trigger => !isEmpty(trigger.handlers))
       .map(trigger => {
-        const formattedTrigger = {
-          ...trigger,
-          handlers: trigger.handlers.map(formatHandler),
-        };
-        return ensureKeyOrder(formattedTrigger, TRIGGER_KEY_ORDER);
+        return pick(
+          {
+            ...trigger,
+            handlers: trigger.handlers.map(formatHandler),
+          },
+          TRIGGER_KEYS
+        );
       });
   }
 }

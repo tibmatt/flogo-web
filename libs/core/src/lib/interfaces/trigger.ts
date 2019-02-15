@@ -12,6 +12,8 @@ export interface Trigger {
 
 export interface Handler {
   actionId: string;
+  createdAt?: string;
+  updatedAt?: string;
   settings: { [settingName: string]: any };
   outputs: { [outputName: string]: any };
   actionMappings?: {

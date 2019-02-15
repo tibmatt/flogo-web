@@ -1,3 +1,3 @@
-export function createFlowUri(flowId) {
-  return `res://flow:${flowId}`;
+export function createFlowUri(resourceId) {
+  return `res://${resourceId}`;
 }

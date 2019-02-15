@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 
 import { ResourceHooks } from '@flogo-web/server/core';
 
-import { exportApplication, ExportAppOptions } from '../transfer';
+import { exportApp, ExportAppOptions } from '../transfer';
 import { TOKENS } from '../../core';
 import { ContributionsService } from '../contribs';
 import { ContributionSchema } from '@flogo-web/core';
@@ -31,7 +31,7 @@ export class AppExporter {
     const contributionMap = new Map<string, ContributionSchema>(
       contributions.map(c => [c.ref, c] as [string, ContributionSchema])
     );
-    return exportApplication(
+    return exportApp(
       app,
       resourceExportResolver(this.resolvePlugin),
       contributionMap,

@@ -18,7 +18,7 @@ export function exportFlow(
   const taskLinkGroup = formatTaskLinkGroups(fromResource.data || {}, context);
   const { root: rootHandler, error: errorHandler } = taskLinkGroup;
   return {
-    id: `flow:${fromResource.id}`,
+    id: fromResource.id,
     data: {
       name: fromResource.name,
       description: !isEmpty(fromResource.description)
