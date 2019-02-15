@@ -81,14 +81,14 @@ describe('MapperTranslator', function() {
   });
 
   describe('#makeValidator', function() {
-    const isValidExpression = MapperTranslator.makeValidator();
+    const isValidMapping = MapperTranslator.makeValidator();
     it('creates a validator function', function() {
-      expect(isValidExpression).toEqual(jasmine.any(Function));
+      expect(isValidMapping).toEqual(jasmine.any(Function));
     });
 
     it('Treats empty expressions as a valid', function() {
       expect(
-        isValidExpression({
+        isValidMapping({
           something: {
             expression: '',
             mappings: {},
@@ -100,7 +100,7 @@ describe('MapperTranslator', function() {
     it('Treats well formed objects as valid', function() {
       expect(true).toBe(true);
       expect(
-        isValidExpression({
+        isValidMapping({
           something: {
             expression: '{ "a": 1, "b": [1, 2]}',
             mappingType: MAPPING_TYPE.OBJECT_TEMPLATE,
@@ -112,7 +112,7 @@ describe('MapperTranslator', function() {
 
     it('Treats incorrectly formed objects as invalid', function() {
       expect(
-        isValidExpression({
+        isValidMapping({
           something: {
             expression: '{ "a": 1, "b": [1, 2}',
             mappingType: MAPPING_TYPE.OBJECT_TEMPLATE,
@@ -133,7 +133,7 @@ describe('MapperTranslator', function() {
       ].forEach(expr => {
         it(`Treats ${expr} as valid`, () =>
           expect(
-            isValidExpression({
+            isValidMapping({
               testMapping: {
                 expression: expr,
                 mappings: {},
@@ -148,7 +148,7 @@ describe('MapperTranslator', function() {
         expr => {
           it(`Treats ${expr} as invalid`, () =>
             expect(
-              isValidExpression({
+              isValidMapping({
                 testMapping: {
                   expression: expr,
                   mappings: {},
