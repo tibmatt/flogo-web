@@ -14,15 +14,15 @@
         ></use>
       </ng-container>
     </svg>
-    <div class="flogo-trigger__count" *ngIf="triggerCountDisplay">
-      <span>{{ triggerCountDisplay }}</span>
+    <div class="flogo-trigger__count" *ngIf="triggers?.length > 1">
+      <span>+ {{ triggers.length - 1 }}</span>
     </div>
   </div>
   <i class="flogo-icon-trigger" [class.flogo-icon-trigger--empty]="!triggers"></i>
 </div>
-<flogo-apps-flows
-  class="flogo-group__flows"
-  [flows]="flows"
-  (flowSelected)="onSelect($event)"
-  (deleteFlow)="onDeleteFlow($event)"
-></flogo-apps-flows>
+<flogo-apps-resource
+  class="flogo-group__resources"
+  [resource]="resource"
+  (resourceSelected)="onSelect($event)"
+  (deleteResource)="onDeleteFlow($event)"
+></flogo-apps-resource>

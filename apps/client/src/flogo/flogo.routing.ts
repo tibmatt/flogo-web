@@ -2,7 +2,7 @@ import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { ExternalWindowComponent } from '@flogo-web/client-logs';
 
-import { resourceRoutes } from '../plugins';
+import { resourcePlugins } from '../plugins';
 import { ResourceGuard } from './core/resource.guard';
 
 export const appRoutes: Routes = [
@@ -24,7 +24,7 @@ export const appRoutes: Routes = [
       id: 'resourceParent',
     },
     canActivate: [ResourceGuard],
-    children: resourceRoutes,
+    children: resourcePlugins,
   },
   {
     path: '_config',

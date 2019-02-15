@@ -24,7 +24,7 @@ export class RESTAPIContributionsService {
   }
 
   getShimContributionDetails<T extends ContribSchema = ContribSchema>() {
-    return this.restApi.get<T[]>(this.getApiPath() + '?filter[shim]=' + true).toPromise();
+    return this.restApi.get<T[]>(this.getApiPath() + '?filter[shim]=' + true);
   }
 
   listContribs<T extends ContribSchema = ContribSchema>(type: FLOGO_CONTRIB_TYPE) {

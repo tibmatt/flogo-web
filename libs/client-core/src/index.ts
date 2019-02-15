@@ -4,6 +4,7 @@ export * from './constants';
 export * from './confirmation';
 export * from './models';
 export * from './services';
+export { ResourcePluginManifest } from './resource-plugin-manifest';
 export { FLOGO_VERSION } from './flogo-version.token';
 export { initializer } from './initializer';
 export { LanguageService } from './language';

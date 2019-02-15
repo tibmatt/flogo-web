@@ -1,22 +1,33 @@
+import { of } from 'rxjs';
 import { ComponentFixture, TestBed, tick, fakeAsync, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
 import { BsModalModule } from 'ng2-bs3-modal';
-import { NotificationsServiceMock } from '@flogo-web/client-core/notifications/testing';
-import { NotificationsService } from '@flogo-web/client-core/notifications/notifications.service';
+
+import {
+  CoreModule as FlogoCoreModule,
+  FlogoProfileService,
+  RESTAPIContributionsService,
+} from '@flogo-web/client-core';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
-import { CoreModule as FlogoCoreModule } from '@flogo-web/client-core/core.module';
-import { FlogoApplicationDetailComponent } from './app-detail.component';
-import { AppDetailService, ApplicationDetail } from '../core';
-import { FlogoProfileService } from '@flogo-web/client-core/services/profile.service';
-import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
-import { FlowTriggerGroupComponent } from '../trigger-group/trigger-group.component';
+import { NotificationsServiceMock } from '@flogo-web/client-core/notifications/testing';
 import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
-import { FlogoApplicationFlowsComponent } from '@flogo-web/client/app/shared/flows/flows.component';
-import { FlowGroupComponent } from '@flogo-web/client/app/flow-group/flow-group.component';
-import { FlogoNewFlowComponent } from '@flogo-web/client/app/new-flow/new-flow.component';
-import { TriggerShimBuildComponent } from '@flogo-web/client/app/shim-trigger/shim-trigger.component';
-import { RESTAPIContributionsService } from '@flogo-web/client-core/services/restapi/v2/contributions.service';
+import { NotificationsService } from '@flogo-web/client-core/notifications/notifications.service';
+
+import { RESOURCE_PLUGINS_CONFIG } from '../../core';
+import { AppDetailService, ApplicationDetail, AppResourcesStateService } from '../core';
+import { FlogoApplicationDetailComponent } from './app-detail.component';
+import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
+import {
+  ResourceComponent,
+  ResourceListComponent,
+  ResourcesGroupByTriggerComponent,
+  ResourcesGroupByResourceComponent,
+  ResourceBadgeComponent,
+  ResourceViewsSelectorComponent,
+} from '../resource-views';
+import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
+import { TriggerShimBuildComponent } from '../shim-trigger/shim-trigger.component';
 
 @Component({
   selector: 'flogo-container',
@@ -49,8 +60,8 @@ class MockAppDetailService extends AppDetailService {
 }
 
 class MockRESTAPIContributionsService {
-  getShimContributionDetails(profile) {
-    return Promise.resolve([]);
+  getShimContributionDetails() {
+    return of([]);
   }
 }
 
@@ -67,16 +78,21 @@ describe('FlogoApplicationDetailComponent component', () => {
         FlogoSharedModule,
       ],
       declarations: [
-        FlogoApplicationFlowsComponent,
+        ResourceComponent,
+        ResourceListComponent,
         FlogoApplicationDetailComponent,
-        FlowGroupComponent,
+        ResourcesGroupByTriggerComponent,
+        ResourcesGroupByResourceComponent,
+        ResourceBadgeComponent,
         ContainerComponent,
         FlogoExportFlowsComponent,
-        FlowTriggerGroupComponent,
         FlogoNewFlowComponent,
         TriggerShimBuildComponent,
+        ResourceViewsSelectorComponent,
       ], // declare the test component
       providers: [
+        FlogoProfileService,
+        AppResourcesStateService,
         { provide: AppDetailService, useClass: MockAppDetailService },
         {
           provide: RESTAPIContributionsService,
@@ -86,7 +102,18 @@ describe('FlogoApplicationDetailComponent component', () => {
           provide: NotificationsService,
           useValue: new NotificationsServiceMock(),
         },
-        FlogoProfileService,
+        {
+          provide: RESOURCE_PLUGINS_CONFIG,
+          useValue: [
+            {
+              label: 'Flow',
+              type: 'flow',
+              path: 'flow',
+              loadChildren: '@flogo-web/plugins/flow-client#FlowModule',
+              color: '#96a7f8',
+            },
+          ],
+        },
       ],
     })
       .compileComponents()
