@@ -1,4 +1,4 @@
-import { pick, uniq, fromPairs } from 'lodash';
+import { pick, uniq, fromPairs, isArray } from 'lodash';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { from } from 'rxjs';
@@ -31,7 +31,7 @@ function settingsToObject(
   settings: { name: string; value?: any }[],
   getValue: (s: { value?: any }) => any = s => s.value
 ) {
-  return fromPairs(settings.map(s => [s.name, getValue(s)]));
+  return isArray(settings) ? fromPairs(settings.map(s => [s.name, getValue(s)])) : {};
 }
 
 @Component({
