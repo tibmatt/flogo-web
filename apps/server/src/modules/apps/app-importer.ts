@@ -2,7 +2,6 @@ import shortid from 'shortid';
 import { injectable, inject } from 'inversify';
 
 import { ContributionSchema } from '@flogo-web/core';
-import { ResourceHooks } from '@flogo-web/server/core';
 
 import { TOKENS, PluginResolverFn } from '../../core';
 import { ContributionsService } from '../contribs';
@@ -20,7 +19,7 @@ function resourceImportResolver(resolvePlugin: PluginResolverFn) {
 export class AppImporter {
   constructor(
     @inject(TOKENS.ResourcePluginFactory)
-    private resolvePlugin: (resourceType: string) => ResourceHooks,
+    private resolvePlugin: PluginResolverFn,
     @inject(TOKENS.ContribActivitiesManager)
     private contribActivitiesService: ContributionsService,
     @inject(TOKENS.ContribTriggersManager)

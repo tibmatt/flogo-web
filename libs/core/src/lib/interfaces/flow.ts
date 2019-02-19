@@ -27,8 +27,6 @@ export interface Task {
     flowPath?: string;
     iterate?: string;
   };
-  // todo: are these used?
-  outputMappings?: Mapping[];
 }
 
 export interface Mapping {
