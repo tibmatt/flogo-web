@@ -6,8 +6,8 @@ import {
   uniqueId,
   cloneDeep,
   each,
-  isEmpty,
   trimStart,
+  isNil,
 } from 'lodash';
 import { ValueType, FLOGO_TASK_TYPE } from '../constants';
 import { Task, Item } from '../interfaces';
@@ -213,7 +213,11 @@ export function isSubflowTask(taskType: FLOGO_TASK_TYPE): boolean {
 }
 
 export function isIterableTask(task: Task | Item): boolean {
-  return !isEmpty(get(task, 'settings.iterate'));
+  return isAcceptableIterateValue(get(task, 'settings.iterate'));
+}
+
+export function isAcceptableIterateValue(val: any) {
+  return !isNil(val) && val !== '';
 }
 
 export function isBranchConfigured(branchCondition): boolean {
