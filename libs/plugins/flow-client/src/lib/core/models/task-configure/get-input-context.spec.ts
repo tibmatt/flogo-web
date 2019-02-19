@@ -17,8 +17,8 @@ describe('taskConfigure.getInputContext', function() {
           ref: 'logRef',
           id: 'log_2',
           type: 1,
-          inputMappings: [],
-          activitySettings: [],
+          inputMappings: {},
+          activitySettings: {},
         },
       },
       mainGraph: {
@@ -42,8 +42,8 @@ describe('taskConfigure.getInputContext', function() {
           ref: 'logRef',
           id: 'log_3',
           type: 1,
-          inputMappings: [],
-          activitySettings: [],
+          inputMappings: {},
+          activitySettings: {},
         },
       },
       errorGraph: {
@@ -72,7 +72,6 @@ describe('taskConfigure.getInputContext', function() {
           version: '0.0.1',
           inputs: [],
           outputs: [],
-          settings: [],
         },
       },
     };
@@ -89,10 +88,9 @@ describe('taskConfigure.getInputContext', function() {
         attributes: {
           inputs: [],
           outputs: [],
-          settings: [],
         },
-        inputMappings: [],
-        activitySettings: [],
+        inputMappings: {},
+        activitySettings: {},
         settings: {},
         __props: {},
         __status: {},

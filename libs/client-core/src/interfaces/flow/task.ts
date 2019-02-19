@@ -1,7 +1,7 @@
 import { FLOGO_TASK_TYPE } from '../../constants';
-import { TaskAttribute, TaskAttributes } from './attribute';
+import { TaskAttributes } from './attribute';
 import { Link } from './link';
-import { Dictionary, SchemaAttribute } from '../common';
+import { Dictionary } from '../common';
 
 export interface Task {
   id: string;

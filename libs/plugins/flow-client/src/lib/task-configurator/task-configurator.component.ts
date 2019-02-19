@@ -327,11 +327,10 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       subflowSchema,
       flowMetadata,
     });
-    const { settingPropsToMap, activitySettings } = this.getActivitySettingsInfo(
-      activitySchema
-    );
     this.resetInputMappingsController(propsToMap, this.inputScope, mappings);
     this.initIterator(selectedItem);
+
+    const {settingPropsToMap, activitySettings} = this.getActivitySettingsInfo(activitySchema);
     this.initActivitySettings(settingPropsToMap, activitySettings);
 
     this.resetState();
@@ -434,7 +433,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   ): { settingPropsToMap: any[]; activitySettings: Dictionary<any> } {
     let settingPropsToMap = [];
     const activitySettings = this.currentTile.activitySettings;
-    settingPropsToMap = this.currentTile.attributes.settings;
+    settingPropsToMap = activitySchema.settings;
     return { activitySettings, settingPropsToMap };
   }
 
@@ -486,6 +485,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     } else {
       this.tabs = Tabs.create(tabsInfo);
       this.tabs.get(TASK_TABS.INPUT_MAPPINGS).isSelected = true;
+      this.tabs.get(TASK_TABS.SETTINGS).enabled = false;
     }
   }
 
