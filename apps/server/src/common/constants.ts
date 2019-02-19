@@ -7,15 +7,6 @@ export const EXPORT_MODE = {
   FORMAT_FLOWS: 'flows',
 };
 
-export const FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE = {
-  0: 'DEFAULT',
-  1: 'BRANCH',
-  2: 'LABELED',
-  DEFAULT: 0,
-  BRANCH: 1,
-  LABELED: 2,
-};
-
 export const FLOGO_TASK_ATTRIBUTE_TYPE = {
   STRING: 'string',
   INTEGER: 'integer',

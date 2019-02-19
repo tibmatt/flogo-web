@@ -1,4 +1,4 @@
-import { Resource, ContributionSchema } from '@flogo-web/core';
+import { Resource, ContributionSchema, FlogoAppModel } from '@flogo-web/core';
 export { Resource };
 
 export interface Newable<T> {
@@ -18,10 +18,14 @@ export interface BeforeUpdateHookParams<T> {
 }
 
 export interface ResourceImportContext {
-  // todo: add contribution type
   contributions: Map<string, ContributionSchema>;
   normalizedTriggerIds: Map<string, string>;
   normalizedResourceIds: Map<string, string>;
+}
+
+export interface ResourceExportContext {
+  contributions: Map<string, ContributionSchema>;
+  resourceIdReconciler: Map<string, string>;
 }
 
 export interface ResourceHooks<TResourceData = unknown> {
@@ -35,7 +39,10 @@ export interface ResourceHooks<TResourceData = unknown> {
   beforeUpdate(
     params: BeforeUpdateHookParams<TResourceData>
   ): Promise<Resource<TResourceData>>;
-  beforeExport(resource: Resource<TResourceData>): Promise<object>;
+  beforeExport(
+    resource: Resource<TResourceData>,
+    context: ResourceExportContext
+  ): FlogoAppModel.Resource;
   beforeList(resource: Resource<TResourceData>): Promise<Resource<TResourceData>>;
 }
 

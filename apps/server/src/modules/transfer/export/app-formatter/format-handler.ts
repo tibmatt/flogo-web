@@ -1,6 +1,7 @@
-import isEmpty from 'lodash/isEmpty';
-import { createFlowUri } from './create-flow-uri';
+import { isEmpty } from 'lodash';
+import { createFlowUri } from '@flogo-web/core';
 
+// todo: move into resource plugin
 const DEFAULT_FLOW_REF = 'github.com/TIBCOSoftware/flogo-contrib/action/flow';
 
 export function formatHandler(handler) {

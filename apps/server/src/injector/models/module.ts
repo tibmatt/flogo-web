@@ -5,6 +5,7 @@ import { ResourceService } from '../../modules/resources';
 import {
   AppsService,
   AppImporter,
+  AppExporter,
   AppTriggersService,
   HandlersService,
 } from '../../modules/apps';
@@ -15,6 +16,7 @@ import { ActivitiesManager } from '../../modules/activities';
 export const ModelsModule = new ContainerModule((bind: interfaces.Bind) => {
   bind(ResourceService).toSelf();
   bind(AppImporter).toSelf();
+  bind(AppExporter).toSelf();
   bind(AppsService).toSelf();
   bind(AppTriggersService).toSelf();
   bind(HandlersService).toSelf();

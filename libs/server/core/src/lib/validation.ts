@@ -1,5 +1,6 @@
 const Ajv = require('ajv');
 import AjvNS from 'ajv';
+
 export type ValidateFn = AjvNS.SchemaValidateFunction | AjvNS.ValidateFunction;
 
 export interface CustomValidation {
@@ -8,6 +9,7 @@ export interface CustomValidation {
 }
 
 export type RuleViolationError = AjvNS.ErrorObject;
+
 export type ValidatorFn = (data) => null | RuleViolationError[];
 
 export function validate(

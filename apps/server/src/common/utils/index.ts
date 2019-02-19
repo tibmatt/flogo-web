@@ -1,4 +1,3 @@
-import { isEmpty, get } from 'lodash';
 import { inspect } from 'util';
 
 import { DEFAULT_APP_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../constants';
@@ -127,10 +126,6 @@ export function getDefaultValueByType(type) {
   }
 
   return defaultValues[type];
-}
-
-export function isIterableTask(task) {
-  return !isEmpty(get(task, 'settings.iterate'));
 }
 
 export function isValidApplicationType(appType) {

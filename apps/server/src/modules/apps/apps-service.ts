@@ -1,23 +1,26 @@
 import { inject, injectable } from 'inversify';
 import { escapeRegExp, fromPairs, isEqual, pick } from 'lodash';
 import shortid from 'shortid';
+
 import { EXPORT_MODE, REF_TRIGGER_LAMBDA } from '../../common/constants';
 
-import { normalizeName } from '../exporter/utils/normalize-name';
+import { normalizeName } from '../transfer/export/utils/normalize-name';
+import { AppImporter } from './app-importer';
+import { AppExporter, ExportAppOptions } from './app-exporter';
+
 import { Database } from '../../common/database.service';
 import { ErrorManager, ERROR_TYPES as GENERAL_ERROR_TYPES } from '../../common/errors';
 import { Logger } from '../../common/logging';
 import { CONSTRAINTS } from '../../common/validation';
 import { TOKENS } from '../../core';
-import { exportApplication } from '../exporter';
 import { ResourceService } from '../resources';
 import { buildBinary, buildPlugin } from './build';
-import { Validator } from './validator';
 
+import { Validator } from './validator';
 import { AppTriggersService } from './triggers';
 import { constructApp } from '../../core/models/app';
 import { saveNew } from './common';
-import { AppImporter } from './app-importer';
+import { flowifyApp, unflowifyApp } from '../resources/transitional-resource.repository';
 
 const EDITABLE_FIELDS = ['name', 'version', 'description'];
 const PUBLISH_FIELDS = [
@@ -41,7 +44,8 @@ export class AppsService {
     @inject(TOKENS.Logger) private logger: Logger,
     private resourceService: ResourceService,
     private triggersService: AppTriggersService,
-    private appImporter: AppImporter
+    private appImporter: AppImporter,
+    private appExporter: AppExporter
   ) {}
 
   async create(app) {
@@ -59,8 +63,11 @@ export class AppsService {
   }
 
   async importApp(app) {
-    const newApp = await this.appImporter.import(app);
-    return this.findOne(newApp._id);
+    let appToSave = await this.appImporter.import(app);
+    // todo: fcastill - adding as transition to resources, remove before v0.9.0
+    appToSave = flowifyApp(appToSave as any);
+    const savedApp = await saveNew(appToSave, this.appsDb);
+    return this.findOne(savedApp._id);
   }
 
   /**
@@ -96,7 +103,7 @@ export class AppsService {
           }
           if (inputData.name) {
             inputData.name = inputData.name.trim();
-            return validateUniqueName(inputData.name);
+            return validateUniqueName(inputData.name, appId, this.appsDb);
           }
           return true;
         })
@@ -112,29 +119,6 @@ export class AppsService {
         })
         .then(() => this.findOne(appId, { withFlows: true }))
     );
-
-    function validateUniqueName(inputName) {
-      const name = getAppNameForSearch(inputName);
-      return this.appsDb
-        .findOne(
-          { _id: { $ne: appId }, name: new RegExp(`^${name}$`, 'i') },
-          { _id: 1, name: 1 }
-        )
-        .then(nameExists => {
-          if (nameExists) {
-            throw ErrorManager.createValidationError('Validation error', [
-              {
-                property: 'name',
-                title: 'Name already exists',
-                detail: "There's another app with that name",
-                value: inputName,
-                type: CONSTRAINTS.UNIQUE,
-              },
-            ]);
-          }
-          return true;
-        });
-    }
   }
 
   /**
@@ -247,22 +231,24 @@ export class AppsService {
    * @return {object} exported object
    * @throws Not found error if app not found
    */
-  export(
+  async export(
     appId,
     { format, flowIds }: { appModel?: string; format?: string; flowIds?: string[] } = {}
   ) {
-    return this.findOne(appId).then(app => {
-      if (!app) {
-        throw ErrorManager.makeError('Application not found', {
-          type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND,
-        });
-      }
+    let app = await this.findOne(appId);
+    if (!app) {
+      throw ErrorManager.makeError('Application not found', {
+        type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND,
+      });
+    }
 
-      const isFullExportMode = format !== EXPORT_MODE.FORMAT_FLOWS;
-      const exportOptions = { isFullExportMode, onlyThisActions: flowIds };
-
-      return exportApplication(app, exportOptions);
-    });
+    const isFullExportMode = format !== EXPORT_MODE.FORMAT_FLOWS;
+    const exportOptions: ExportAppOptions = {
+      isFullExportMode,
+      selectResources: flowIds,
+    };
+    app = unflowifyApp(app as any);
+    return this.appExporter.export(app, exportOptions);
   }
 
   validate(app, { clean } = { clean: false }) {
@@ -301,4 +287,27 @@ function cleanForOutput(app) {
 
 function nowISO() {
   return new Date().toISOString();
+}
+
+function validateUniqueName(inputName, appId: string, appsDb: Database) {
+  const name = getAppNameForSearch(inputName);
+  return appsDb
+    .findOne(
+      { _id: { $ne: appId }, name: new RegExp(`^${name}$`, 'i') },
+      { _id: 1, name: 1 }
+    )
+    .then(nameExists => {
+      if (nameExists) {
+        throw ErrorManager.createValidationError('Validation error', [
+          {
+            property: 'name',
+            title: 'Name already exists',
+            detail: "There's another app with that name",
+            value: inputName,
+            type: CONSTRAINTS.UNIQUE,
+          },
+        ]);
+      }
+      return true;
+    });
 }

@@ -1,13 +1,15 @@
 import { isEmpty } from 'lodash';
 
+import { Task, createFlowUri } from '@flogo-web/core';
 import { isSubflowTask, TASK_TYPE } from '@flogo-web/server/core';
 
-import { isIterableTask } from '../../../../common/utils';
-import { Task } from '../../../../interfaces';
-import { createFlowUri } from './create-flow-uri';
+import { isIterableTask } from '../is-iterable-task';
 
 export class TaskFormatter {
   private sourceTask: Task;
+
+  constructor(private resourceIdReconciler: Map<string, string>) {}
+
   setSourceTask(sourceTask) {
     this.sourceTask = sourceTask;
     return this;
@@ -52,7 +54,8 @@ export class TaskFormatter {
 
   convertSubflowPath() {
     const settings = this.sourceTask.settings;
-    return createFlowUri(settings.flowPath);
+    const resourceId = this.resourceIdReconciler.get(settings.flowPath);
+    return createFlowUri(resourceId);
   }
 
   isIteratorTask() {

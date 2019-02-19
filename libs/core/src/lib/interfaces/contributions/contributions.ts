@@ -12,4 +12,14 @@ export interface ActivitySchema extends BaseContributionSchema {
   output?: SchemaOutput[];
 }
 
-export type ContributionSchema = ActivitySchema | FunctionsSchema;
+export interface TriggerSchema extends BaseContributionSchema {
+  type: 'flogo:trigger';
+  reply?: SchemaAttributeDescriptor[];
+  output?: SchemaAttributeDescriptor[];
+  settings?: SchemaAttributeDescriptor[];
+  handler?: {
+    settings: SchemaAttributeDescriptor[];
+  };
+}
+
+export type ContributionSchema = TriggerSchema | ActivitySchema | FunctionsSchema;

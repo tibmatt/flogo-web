@@ -2,7 +2,7 @@ import { Context } from 'koa';
 import { ActionsManager } from '../../../../modules/actions';
 import { ActivitiesManager } from '../../../../modules/activities';
 import { ErrorManager } from '../../../../common/errors';
-import { LegacyMicroServiceFormatter } from '../../../../modules/exporter/formatters/legacy-microservice-formatter';
+// import { LegacyMicroServiceFormatter } from '../../../../modules/transfer/exporter/formatters/legacy-microservice-formatter';
 
 export const findAndExportFlow = async (context: Context, next) => {
   // const action = await ActionsManager.findOne(context.request.body.actionId);
@@ -15,14 +15,16 @@ export const findAndExportFlow = async (context: Context, next) => {
   return next();
 };
 
+// todo: fcastill - used for test-running flows, not supported in v0.9.0, re-enabling after
 async function transformToProcess(action) {
   const activities = await ActivitiesManager.find();
-  const exporter = new LegacyMicroServiceFormatter(activities);
+  // const exporter = new LegacyMicroServiceFormatter(activities);
   const {
     description,
     metadata,
     data: { flow },
-  } = exporter.formatAction(action);
+  } = {} as any;
+  // } = exporter.formatAction(action);
   return {
     name: flow.name,
     description: description || '',

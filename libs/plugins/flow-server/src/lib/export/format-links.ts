@@ -1,5 +1,5 @@
 import { typeMapper } from '@flogo-web/server/core';
-import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE as LEGACY_LINK_TYPE } from '../../../../common/constants';
+import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE as LEGACY_LINK_TYPE } from '../constants';
 
 export function formatLinks(links = []) {
   const stdTypeMapper = typeMapper.toStandard();

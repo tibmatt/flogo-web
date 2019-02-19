@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 import { isSubflowTask, isMapperActivity } from '@flogo-web/server/core';
-import { TYPE_LITERAL_ASSIGNMENT } from '../../common/constants';
+import { TYPE_LITERAL_ASSIGNMENT } from '../../../common/constants';
 
 export function mappingsToAttributes(task, schema) {
   if (schema && !isSubflowTask(task) && !isMapperActivity(schema)) {

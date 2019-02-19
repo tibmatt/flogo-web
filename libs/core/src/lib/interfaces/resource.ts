@@ -14,7 +14,7 @@ export interface Metadata {
   output: MetadataAttribute[];
 }
 
-interface MetadataAttribute {
+export interface MetadataAttribute {
   name: string;
   type: string;
   value?: any;
