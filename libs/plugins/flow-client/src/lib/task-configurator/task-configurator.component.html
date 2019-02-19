@@ -80,7 +80,8 @@
             (click)="selectTab(tabData[0])"
             [ngClass]="{
               'tabs__tab--selected': tabData[1].isSelected,
-              'tabs__tab--has-errors': !tabData[1].isValid
+              'tabs__tab--has-errors': !tabData[1].isValid,
+              'tabs__tab--is-disabled': !tabData[1].enabled
             }"
           >
             {{ tabData[1].labelKey | translate }}

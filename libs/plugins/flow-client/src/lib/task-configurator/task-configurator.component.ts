@@ -1,11 +1,11 @@
-import { isEmpty, cloneDeep } from 'lodash';
-import { skip, takeUntil } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { trigger, transition, style, animate } from '@angular/animations';
+import {isEmpty, cloneDeep} from 'lodash';
+import {skip, takeUntil} from 'rxjs/operators';
+import {Subscription} from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {select, Store} from '@ngrx/store';
+import {trigger, transition, style, animate} from '@angular/animations';
 
-import { Resource } from '@flogo-web/core';
+import {Resource} from '@flogo-web/core';
 import {
   FLOGO_TASK_TYPE,
   Item,
@@ -21,31 +21,31 @@ import {
   SingleEmissionSubject,
   Dictionary,
 } from '@flogo-web/client-core';
-import { NotificationsService } from '@flogo-web/client-core/notifications';
+import {NotificationsService} from '@flogo-web/client-core/notifications';
 
 import {
   MapperTranslator,
   MapperControllerFactory,
   MapperController,
 } from '../shared/mapper';
-import { Tabs } from '../shared/tabs/models/tabs.model';
-import { FlogoFlowService as FlowsService, InstalledFunctionSchema } from '../core';
-import { FlowState, FlowActions, FlowSelectors } from '../core/state';
+import {Tabs} from '../shared/tabs/models/tabs.model';
+import {FlogoFlowService as FlowsService, InstalledFunctionSchema} from '../core';
+import {FlowState, FlowActions, FlowSelectors} from '../core/state';
 import {
   createIteratorMappingContext,
   getIteratorOutputSchema,
   ITERABLE_VALUE_KEY,
   ITERATOR_OUTPUT_KEY,
 } from './models';
-import { SubFlowConfig } from './subflow-config';
+import {SubFlowConfig} from './subflow-config';
 import {
   getFlowMetadata,
   getInputContext,
 } from '../core/models/task-configure/get-input-context';
-import { getStateWhenConfigureChanges } from '../shared/configurator/configurator.selector';
-import { createSaveAction } from './models/save-action-creator';
-import { hasTaskWithSameName } from '../core/models/unique-task-name';
-import { AppState } from '../core/state/app.state';
+import {getStateWhenConfigureChanges} from '../shared/configurator/configurator.selector';
+import {createSaveAction} from './models/save-action-creator';
+import {hasTaskWithSameName} from '../core/models/unique-task-name';
+import {AppState} from '../core/state/app.state';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',
@@ -69,6 +69,7 @@ const SETTINGS_TAB_INFO = {
   name: TASK_TABS.SETTINGS,
   labelKey: 'TASK-CONFIGURATOR:TABS:SETTINGS',
 };
+
 @Component({
   selector: 'flogo-flow-task-configurator',
   styleUrls: ['task-configurator.component.less'],
@@ -76,11 +77,11 @@ const SETTINGS_TAB_INFO = {
   animations: [
     trigger('dialog', [
       transition('void => *', [
-        style({ transform: 'translateY(-100%)', opacity: 0 }),
+        style({transform: 'translateY(-100%)', opacity: 0}),
         animate('250ms ease-in'),
       ]),
       transition('* => void', [
-        animate('250ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 })),
+        animate('250ms ease-in', style({transform: 'translateY(-100%)', opacity: 0})),
       ]),
     ]),
   ],
@@ -220,8 +221,11 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   selectTab(name: string) {
-    this.tabs.markSelected(name);
-    this.showSubflowList = false;
+    const selectedTab = this.tabs.get(name);
+    if (selectedTab.enabled) {
+      this.tabs.markSelected(name);
+      this.showSubflowList = false;
+    }
   }
 
   flowSelectionCancel(event) {
@@ -322,7 +326,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     }
 
     const flowMetadata = getFlowMetadata(state);
-    const { propsToMap, mappings } = this.getInputMappingsInfo({
+    const {propsToMap, mappings} = this.getInputMappingsInfo({
       activitySchema,
       subflowSchema,
       flowMetadata,
@@ -331,12 +335,22 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     this.initIterator(selectedItem);
 
     const {settingPropsToMap, activitySettings} = this.getActivitySettingsInfo(activitySchema);
-    this.initActivitySettings(settingPropsToMap, activitySettings);
 
-    this.resetState();
     if (isMapperActivity(activitySchema)) {
       this.configureOutputMapperLabels();
       this.ismapperActivity = true;
+    }
+
+    this.resetState();
+
+    if (settingPropsToMap) {
+      this.initActivitySettings(settingPropsToMap, activitySettings);
+      this.tabs.get(TASK_TABS.SETTINGS).enabled = true;
+      this.selectTab(TASK_TABS.SETTINGS);
+    }
+
+    if (this.ismapperActivity) {
+      this.configureOutputMapperLabels();
     }
 
     if (this.iteratorController) {
@@ -410,10 +424,10 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   private getInputMappingsInfo({
-    flowMetadata,
-    activitySchema,
-    subflowSchema,
-  }): { propsToMap: any[]; mappings: Dictionary<any> } {
+                                 flowMetadata,
+                                 activitySchema,
+                                 subflowSchema,
+                               }): { propsToMap: any[]; mappings: Dictionary<any> } {
     let propsToMap = [];
     const mappings = this.currentTile.inputMappings;
     const isOutputMapper = isMapperActivity(activitySchema);
@@ -425,16 +439,15 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       propsToMap = this.currentTile.attributes.inputs;
     }
 
-    return { mappings, propsToMap };
+    return {mappings, propsToMap};
   }
 
   private getActivitySettingsInfo(
     activitySchema
   ): { settingPropsToMap: any[]; activitySettings: Dictionary<any> } {
-    let settingPropsToMap = [];
     const activitySettings = this.currentTile.activitySettings;
-    settingPropsToMap = activitySchema.settings;
-    return { activitySettings, settingPropsToMap };
+    const settingPropsToMap = activitySchema.settings;
+    return {activitySettings, settingPropsToMap};
   }
 
   private resetInputMappingsController(propsToMap, inputScope, mappings) {
@@ -452,7 +465,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
         skip(1),
         takeUntil(this.contextChange$)
       )
-      .subscribe(({ isValid, isDirty }) => {
+      .subscribe(({isValid, isDirty}) => {
         const inputMappingsTab = this.tabs.get(TASK_TABS.INPUT_MAPPINGS);
         inputMappingsTab.isValid = isValid;
         inputMappingsTab.isDirty = isDirty;
@@ -472,20 +485,21 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     if (this.tabs) {
       this.tabs.clear();
     }
-    let tabsInfo = [SETTINGS_TAB_INFO, MAPPINGS_TAB_INFO];
+    let tabsInfo = [MAPPINGS_TAB_INFO];
     this.showSubflowList = false;
     if (this.isSubflowType) {
       tabsInfo = [SUBFLOW_TAB_INFO, ...tabsInfo, ITERATOR_TAB_INFO];
       this.tabs = Tabs.create(tabsInfo);
       this.tabs.get(TASK_TABS.SUBFLOW).isSelected = true;
-    } else if (this.canIterate) {
-      tabsInfo = [...tabsInfo, ITERATOR_TAB_INFO];
-      this.tabs = Tabs.create(tabsInfo);
-      this.tabs.get(TASK_TABS.INPUT_MAPPINGS).isSelected = true;
     } else {
+      if (this.canIterate) {
+        tabsInfo = [SETTINGS_TAB_INFO, ...tabsInfo, ITERATOR_TAB_INFO];
+      } else if (!this.ismapperActivity) {
+        tabsInfo = [SETTINGS_TAB_INFO, ...tabsInfo];
+      }
       this.tabs = Tabs.create(tabsInfo);
-      this.tabs.get(TASK_TABS.INPUT_MAPPINGS).isSelected = true;
       this.tabs.get(TASK_TABS.SETTINGS).enabled = false;
+      this.selectTab(TASK_TABS.INPUT_MAPPINGS);
     }
   }
 
