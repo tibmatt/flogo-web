@@ -5,14 +5,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-import { Resource } from '@flogo-web/core';
+import { Resource, isIterableTask, isAcceptableIterateValue } from '@flogo-web/core';
 import {
   FLOGO_TASK_TYPE,
   Item,
   ItemActivityTask,
   ItemSubflow,
   ItemTask,
-  isIterableTask,
   isMapperActivity,
   isSubflowTask,
   ActivitySchema,
@@ -20,7 +19,6 @@ import {
   mergeItemWithSchema,
   SingleEmissionSubject,
   Dictionary,
-  isAcceptableIterateValue as isAccepted,
 } from '@flogo-web/client-core';
 import { NotificationsService } from '@flogo-web/client-core/notifications';
 
@@ -202,7 +200,8 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    const isIterable = this.iteratorModeOn && isAccepted(this.iterableValue);
+    const isIterable =
+      this.iteratorModeOn && isAcceptableIterateValue(this.iterableValue);
     createSaveAction(this.store, {
       tileId: this.currentTile.id,
       name: this.title,

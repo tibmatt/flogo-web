@@ -212,14 +212,6 @@ export function isSubflowTask(taskType: FLOGO_TASK_TYPE): boolean {
   return taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC;
 }
 
-export function isIterableTask(task: Task | Item): boolean {
-  return isAcceptableIterateValue(get(task, 'settings.iterate'));
-}
-
-export function isAcceptableIterateValue(val: any) {
-  return !isNil(val) && val !== '';
-}
-
 export function isBranchConfigured(branchCondition): boolean {
   return branchCondition && branchCondition !== 'true';
 }
