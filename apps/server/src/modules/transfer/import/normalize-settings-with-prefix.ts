@@ -1,7 +1,9 @@
 import { isString, isPlainObject, mapValues } from 'lodash';
 import { EXPR_PREFIX, FlogoAppModel } from '@flogo-web/core';
 
-export function normalizeSettingsWithPrefix(settings: FlogoAppModel.Settings): FlogoAppModel.Settings {
+export function normalizeSettingsWithPrefix(
+  settings: FlogoAppModel.Settings
+): FlogoAppModel.Settings {
   return mapValues(settings, normalizeSetting);
 }
 
