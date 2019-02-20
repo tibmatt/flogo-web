@@ -5,7 +5,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-import { Resource, isIterableTask, isAcceptableIterateValue } from '@flogo-web/core';
+import { Resource } from '@flogo-web/core';
 import {
   FLOGO_TASK_TYPE,
   Item,
@@ -45,6 +45,7 @@ import { getStateWhenConfigureChanges } from '../shared/configurator/configurato
 import { createSaveAction } from './models/save-action-creator';
 import { hasTaskWithSameName } from '../core/models/unique-task-name';
 import { AppState } from '../core/state/app.state';
+import { isAcceptableIterateValue, isIterableTask } from '@flogo-web/plugins/flow-core';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',

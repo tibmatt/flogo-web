@@ -10,57 +10,24 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "target": "es5",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2017",
-      "dom"
-    ],
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2017", "dom"],
     "baseUrl": ".",
     "paths": {
-      "@flogo-web/parser": [
-        "libs/parser/src/index.ts"
-      ],
-      "@flogo-web/client/*": [
-        "apps/client/src/flogo/*"
-      ],
-      "@flogo-web/server/core": [
-        "libs/server/core/src/index.ts"
-      ],
-      "@flogo-web/plugins/flow-server": [
-        "libs/plugins/flow-server/src/index.ts"
-      ],
-      "@flogo-web/client-core": [
-        "libs/client-core/src/index.ts"
-      ],
-      "@flogo-web/client-core/*": [
-        "libs/client-core/src/*"
-      ],
-      "@flogo-web/client-shared": [
-        "libs/client-shared/src/index.ts"
-      ],
-      "@flogo-web/plugins/flow-client": [
-        "libs/plugins/flow-client/src/index.ts"
-      ],
-      "@flogo-web/diagram": [
-        "libs/diagram/src/index.ts"
-      ],
-      "@flogo-web/client-logs": [
-        "libs/client-logs/src/index.ts"
-      ],
-      "@flogo-web/client-assets": [
-        "libs/client-assets/src/index.ts"
-      ],
-      "@flogo-web/core": [
-        "libs/core/src/index.ts"
-      ]
+      "@flogo-web/parser": ["libs/parser/src/index.ts"],
+      "@flogo-web/client/*": ["apps/client/src/flogo/*"],
+      "@flogo-web/server/core": ["libs/server/core/src/index.ts"],
+      "@flogo-web/plugins/flow-server": ["libs/plugins/flow-server/src/index.ts"],
+      "@flogo-web/client-core": ["libs/client-core/src/index.ts"],
+      "@flogo-web/client-core/*": ["libs/client-core/src/*"],
+      "@flogo-web/client-shared": ["libs/client-shared/src/index.ts"],
+      "@flogo-web/plugins/flow-client": ["libs/plugins/flow-client/src/index.ts"],
+      "@flogo-web/plugins/flow-core": ["libs/plugins/flow-core/src/index.ts"],
+      "@flogo-web/diagram": ["libs/diagram/src/index.ts"],
+      "@flogo-web/client-logs": ["libs/client-logs/src/index.ts"],
+      "@flogo-web/client-assets": ["libs/client-assets/src/index.ts"],
+      "@flogo-web/core": ["libs/core/src/index.ts"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "tmp",
-    "dist",
-    "coverage"
-  ]
+  "exclude": ["node_modules", "tmp", "dist", "coverage"]
 }

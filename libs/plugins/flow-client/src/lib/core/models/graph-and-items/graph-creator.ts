@@ -10,7 +10,7 @@ import {
   isBranchConfigured,
   isSubflowTask,
 } from '@flogo-web/client-core';
-import { isIterableTask } from '@flogo-web/core';
+import { isIterableTask } from '@flogo-web/plugins/flow-core';
 
 const defaultFeatures: NodeFeatures = {
   selectable: true,

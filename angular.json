@@ -23,9 +23,7 @@
               "libs/parser/tsconfig.lib.json",
               "libs/parser/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -71,9 +69,7 @@
               "apps/server/tsconfig.app.json",
               "apps/server/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "test": {
@@ -244,9 +240,7 @@
               "apps/client/tsconfig.app.json",
               "apps/client/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -272,9 +266,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "apps/client-e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -292,9 +284,7 @@
               "libs/server/core/tsconfig.lib.json",
               "libs/server/core/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "test": {
@@ -302,34 +292,6 @@
           "options": {
             "jestConfig": "libs/server/core/jest.config.js",
             "tsConfig": "libs/server/core/tsconfig.spec.json",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "plugins-flow-server": {
-      "root": "libs/plugins/flow-server",
-      "sourceRoot": "libs/plugins/flow-server/src",
-      "projectType": "library",
-      "prefix": "flogo-web",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "libs/plugins/flow-server/tsconfig.lib.json",
-              "libs/plugins/flow-server/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/builders:jest",
-          "options": {
-            "jestConfig": "libs/plugins/flow-server/jest.config.js",
-            "tsConfig": "libs/plugins/flow-server/tsconfig.spec.json",
             "passWithNoTests": true
           }
         }
@@ -368,9 +330,7 @@
               "libs/client-core/tsconfig.lib.json",
               "libs/client-core/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -403,9 +363,33 @@
               "libs/client-shared/tsconfig.lib.json",
               "libs/client-shared/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "plugins-flow-server": {
+      "root": "libs/plugins/flow-server",
+      "sourceRoot": "libs/plugins/flow-server/src",
+      "projectType": "library",
+      "prefix": "flogo-web",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/flow-server/tsconfig.lib.json",
+              "libs/plugins/flow-server/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "libs/plugins/flow-server/jest.config.js",
+            "tsConfig": "libs/plugins/flow-server/tsconfig.spec.json",
+            "passWithNoTests": true
           }
         }
       }
@@ -460,9 +444,33 @@
               "libs/plugins/flow-client/tsconfig.lib.json",
               "libs/plugins/flow-client/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "plugins-flow-core": {
+      "root": "libs/plugins/flow-core",
+      "sourceRoot": "libs/plugins/flow-core/src",
+      "projectType": "library",
+      "prefix": "flogo-web",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/flow-core/tsconfig.lib.json",
+              "libs/plugins/flow-core/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "passWithNoTests": true,
+            "jestConfig": "libs/plugins/flow-core/jest.config.js",
+            "tsConfig": "libs/plugins/flow-core/tsconfig.spec.json"
           }
         }
       }
@@ -495,9 +503,7 @@
               "libs/diagram/tsconfig.lib.json",
               "libs/diagram/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -530,9 +536,7 @@
               "libs/client-logs/tsconfig.lib.json",
               "libs/client-logs/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -561,13 +565,8 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "libs/core/tsconfig.lib.json",
-              "libs/core/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["libs/core/tsconfig.lib.json", "libs/core/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
           }
         },
         "test": {
