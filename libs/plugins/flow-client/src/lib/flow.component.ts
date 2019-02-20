@@ -1,4 +1,4 @@
-import { cloneDeep, filter as _filter, get, isEmpty, pick } from 'lodash';
+import { cloneDeep, filter as _filter, get, isEmpty, pick, isEqual } from 'lodash';
 import { takeUntil, switchMap, take, filter } from 'rxjs/operators';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -439,15 +439,12 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.flowState.metadata.input = this.mergeFlowInputMetadata(newMetadata.input);
     this.flowState.metadata.output = newMetadata.output;
 
-    const propCollectionToRegistry = from =>
-      new Map(<Array<[string, boolean]>>from.map((o: any) => [o.name, true]));
-    //TODO: Make the following cleaning much simpler as the mappings are now key value pairs
     const getAllProps = from => from.map(o => o.name);
     const outputNames = getAllProps(newMetadata.output);
-    const inputRegistry = propCollectionToRegistry(newMetadata.input);
+    const inputNames = getAllProps(newMetadata.input);
     this.cleanDanglingTaskOutputMappings(outputNames);
 
-    this.cleanDanglingTriggerMappingsToFlow(inputRegistry);
+    this.cleanDanglingTriggerMappingsToFlow(inputNames);
     this._updateFlow();
   }
 
@@ -466,8 +463,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   // when flow schema's input change we need to remove the trigger mappings that were referencing them
-  private cleanDanglingTriggerMappingsToFlow(inputRegistry: Map<string, boolean>) {
-    const isApplicableMapping = mapping => inputRegistry.has(mapping.mapTo);
+  private cleanDanglingTriggerMappingsToFlow(inputNames: string[]) {
     const handlersToUpdate = this.triggersList.reduce((result, trigger) => {
       const handlersToUpdateInTrigger = trigger.handlers
         .filter(handler => handler.actionId === this.flowId)
@@ -489,9 +485,9 @@ export class FlowComponent implements OnInit, OnDestroy {
     return Promise.resolve();
 
     function reduceToUpdatableHandlers(result, handler) {
-      const actionInputMappings = get(handler, 'actionMappings.input', []);
-      const applicableMappings = actionInputMappings.filter(isApplicableMapping);
-      if (applicableMappings.length !== actionInputMappings.length) {
+      const actionInputMappings = get(handler, 'actionMappings.input', {});
+      const applicableMappings = pick(actionInputMappings, inputNames);
+      if (isEqual(applicableMappings, actionInputMappings)) {
         handler.actionMappings.input = applicableMappings;
         result.push(handler);
       }
