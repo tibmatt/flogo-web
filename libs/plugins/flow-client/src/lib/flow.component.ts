@@ -1,4 +1,4 @@
-import { cloneDeep, filter as _filter, get, isEmpty, pick } from 'lodash';
+import { cloneDeep, filter as _filter, get, isEmpty, pick, isEqual } from 'lodash';
 import { takeUntil, switchMap, take, filter } from 'rxjs/operators';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -487,9 +487,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     function reduceToUpdatableHandlers(result, handler) {
       const actionInputMappings = get(handler, 'actionMappings.input', {});
       const applicableMappings = pick(actionInputMappings, inputNames);
-      if (
-        Object.keys(applicableMappings).length !== Object.keys(actionInputMappings).length
-      ) {
+      if (isEqual(applicableMappings, actionInputMappings)) {
         handler.actionMappings.input = applicableMappings;
         result.push(handler);
       }
