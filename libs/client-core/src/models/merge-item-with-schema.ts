@@ -29,6 +29,7 @@ export function mergeItemWithSchema(item: ItemTask, schema: PartialActivitySchem
       inputs,
       outputs: <TaskAttribute[]>schema.outputs,
     },
+    activitySettings: item.activitySettings,
     inputMappings: item.inputMappings,
     settings: item.settings,
     __props: {},

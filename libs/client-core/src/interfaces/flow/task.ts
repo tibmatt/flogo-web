@@ -22,6 +22,8 @@ export interface Task {
     iterate?: string;
     flowPath?: string;
   };
+
+  activitySettings?: Dictionary<any>;
   condition?: string;
   __props?: {
     [key: string]: any;

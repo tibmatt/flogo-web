@@ -51,6 +51,7 @@ const TASK_TABS = {
   SUBFLOW: 'subFlow',
   ITERATOR: 'iterator',
   INPUT_MAPPINGS: 'inputMappings',
+  SETTINGS: 'settings',
 };
 const ITERATOR_TAB_INFO = {
   name: TASK_TABS.ITERATOR,
@@ -63,6 +64,10 @@ const SUBFLOW_TAB_INFO = {
 const MAPPINGS_TAB_INFO = {
   name: TASK_TABS.INPUT_MAPPINGS,
   labelKey: 'TASK-CONFIGURATOR:TABS:MAP-INPUTS',
+};
+const SETTINGS_TAB_INFO = {
+  name: TASK_TABS.SETTINGS,
+  labelKey: 'TASK-CONFIGURATOR:TABS:SETTINGS',
 };
 
 @Component({
@@ -108,6 +113,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   flowState: FlowState;
   inputMapperController: MapperController;
   iteratorController: MapperController;
+  settingsController: MapperController;
   isValidTaskName: boolean;
   isTaskDetailEdited: boolean;
   ismapperActivity: boolean;
@@ -215,8 +221,11 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   selectTab(name: string) {
-    this.tabs.markSelected(name);
-    this.showSubflowList = false;
+    const selectedTab = this.tabs.get(name);
+    if (selectedTab.enabled) {
+      this.tabs.markSelected(name);
+      this.showSubflowList = false;
+    }
   }
 
   flowSelectionCancel(event) {
@@ -325,10 +334,25 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     this.resetInputMappingsController(propsToMap, this.inputScope, mappings);
     this.initIterator(selectedItem);
 
-    this.resetState();
+    const { settingPropsToMap, activitySettings } = this.getActivitySettingsInfo(
+      activitySchema
+    );
+
     if (isMapperActivity(activitySchema)) {
       this.configureOutputMapperLabels();
       this.ismapperActivity = true;
+    }
+
+    this.resetState();
+
+    if (settingPropsToMap) {
+      this.initActivitySettings(settingPropsToMap, activitySettings);
+      this.tabs.get(TASK_TABS.SETTINGS).enabled = true;
+      this.selectTab(TASK_TABS.SETTINGS);
+    }
+
+    if (this.ismapperActivity) {
+      this.configureOutputMapperLabels();
     }
 
     if (this.iteratorController) {
@@ -390,6 +414,17 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     this.adjustIteratorInInputMapper();
   }
 
+  private initActivitySettings(settingPropsToMap, activitySettings) {
+    //TODO: Available data for activity settings in empty as of now
+    const inputScope = [];
+    this.settingsController = this.mapperControllerFactory.createController(
+      settingPropsToMap,
+      inputScope,
+      activitySettings,
+      this.installedFunctions
+    );
+  }
+
   private getInputMappingsInfo({
     flowMetadata,
     activitySchema,
@@ -407,6 +442,14 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     }
 
     return { mappings, propsToMap };
+  }
+
+  private getActivitySettingsInfo(
+    activitySchema
+  ): { settingPropsToMap: any[]; activitySettings: Dictionary<any> } {
+    const activitySettings = this.currentTile.activitySettings;
+    const settingPropsToMap = activitySchema.settings;
+    return { activitySettings, settingPropsToMap };
   }
 
   private resetInputMappingsController(propsToMap, inputScope, mappings) {
@@ -450,13 +493,15 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       tabsInfo = [SUBFLOW_TAB_INFO, ...tabsInfo, ITERATOR_TAB_INFO];
       this.tabs = Tabs.create(tabsInfo);
       this.tabs.get(TASK_TABS.SUBFLOW).isSelected = true;
-    } else if (this.canIterate) {
-      tabsInfo = [...tabsInfo, ITERATOR_TAB_INFO];
-      this.tabs = Tabs.create(tabsInfo);
-      this.tabs.get(TASK_TABS.INPUT_MAPPINGS).isSelected = true;
     } else {
+      if (this.canIterate) {
+        tabsInfo = [SETTINGS_TAB_INFO, ...tabsInfo, ITERATOR_TAB_INFO];
+      } else if (!this.ismapperActivity) {
+        tabsInfo = [SETTINGS_TAB_INFO, ...tabsInfo];
+      }
       this.tabs = Tabs.create(tabsInfo);
-      this.tabs.get(TASK_TABS.INPUT_MAPPINGS).isSelected = true;
+      this.tabs.get(TASK_TABS.SETTINGS).enabled = false;
+      this.selectTab(TASK_TABS.INPUT_MAPPINGS);
     }
   }
 
