@@ -1,7 +1,7 @@
 import { normalizeSettingsWithPrefix } from './normalize-settings-with-prefix';
 
 describe('transfer.common.normalizeSettingsWithPrefix', () => {
-  it('Should normalize the setting value with the latest syntax', () => {
+  test('Should normalize the setting value with the latest syntax', () => {
     const sampleJSON = { test: 'json' };
     expect(
       normalizeSettingsWithPrefix({
