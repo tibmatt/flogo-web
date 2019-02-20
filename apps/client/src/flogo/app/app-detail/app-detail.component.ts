@@ -219,10 +219,12 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     }
     return this.modalService
       .openModal<NewFlowData>(FlogoNewFlowComponent, newFlowData)
-      .result.subscribe(flowAdded => {
-        if (flowAdded) {
-          this.flowAdded.emit(flowAdded);
-        }
+      .result.pipe(filter(Boolean))
+      .subscribe(({ name, description }) => {
+        this.appDetailService.createResource(
+          { name, description, type: 'flow' },
+          triggerId
+        );
       });
   }
 

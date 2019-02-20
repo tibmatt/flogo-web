@@ -1,3 +1,4 @@
+import { sortBy } from 'lodash';
 import { Trigger, Resource } from '@flogo-web/core';
 import { ResourcePluginManifest, Dictionary } from '@flogo-web/client-core';
 
@@ -17,7 +18,10 @@ export const resourceAndPluginMerger = (plugins: ResourcePluginManifest[]) => {
     return { ...resource, pluginInfo: pluginsInfo[resource.type] };
   };
 };
-export const sortableName = r => (r && r.name ? r.name.toLocaleLowerCase() : '');
+
+export function sortableName<T extends { name: string }>(o: T) {
+  return o && o.name ? o.name.toLocaleLowerCase() : '';
+}
 
 export function groupByTrigger(
   triggers: Trigger[],
@@ -36,11 +40,16 @@ export function groupByTrigger(
     return action;
   };
 
+  const sortResources = resourceCollection => sortBy(resourceCollection, sortableName);
+
   const triggerGroups = triggers
     .map(trigger => {
+      const groupResources = trigger.handlers
+        .map(h => pullAction(h.actionId))
+        .filter(flow => !!flow);
       return {
         trigger: trigger,
-        flows: trigger.handlers.map(h => pullAction(h.actionId)).filter(flow => !!flow),
+        flows: sortResources(groupResources),
       };
     })
     .filter(triggerGroup => triggerGroup.flows.length > 0);
@@ -49,7 +58,7 @@ export function groupByTrigger(
   if (orphanActionMap.size) {
     triggerGroups.unshift({
       trigger: null,
-      flows: Array.from(orphanActionMap.values()),
+      flows: sortResources(Array.from(orphanActionMap.values())),
     });
   }
 

@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { of as observableOfValue, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { UiFlow, ResourceService, FlowsService } from '@flogo-web/client-core';
+import { UiFlow, ResourceService, AppResourceService } from '@flogo-web/client-core';
 
 import { savableFlow } from './models/backend-flow/flow.model';
 import { MicroServiceModelConverter } from './models/profiles/microservice-converter.model';
@@ -22,7 +22,7 @@ export class FlogoFlowService {
 
   constructor(
     private converterService: MicroServiceModelConverter,
-    private _commonFlowsService: FlowsService,
+    private appResourceService: AppResourceService,
     private resourceService: ResourceService,
     private store: Store<AppState>
   ) {}
@@ -69,7 +69,7 @@ export class FlogoFlowService {
   }
 
   deleteFlow(flowId, triggerId) {
-    return this._commonFlowsService.deleteFlowWithTrigger(flowId, triggerId);
+    return this.appResourceService.deleteFlowWithTrigger(flowId, triggerId);
   }
 
   listFlowsByName(appId, name) {

@@ -16,7 +16,7 @@ import { AppsApiService } from './services/restapi/v2/apps-api.service';
 import { ConfigurationService } from './services/configuration.service';
 import { ErrorService, WindowRef, SanitizeService, RunApiService } from './services';
 import { ChildWindowService } from './services/child-window.service';
-import { FlowsService } from './services/flows.service';
+import { AppResourceService } from './services/app-resource.service';
 import { FlogoProfileService } from './services/profile.service';
 import { RESTAPIContributionsService } from './services/restapi/v2/contributions.service';
 import { SvgRefFixerService } from './services/svg-ref-fixer.service';
@@ -60,7 +60,7 @@ import { ModalService } from './modal';
     ConfigurationService,
     SanitizeService,
     WindowRef,
-    FlowsService,
+    AppResourceService,
     FlogoProfileService,
     LogService,
     SvgRefFixerService,

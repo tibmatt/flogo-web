@@ -1,7 +1,7 @@
 import { isEqual, assign } from 'lodash';
 import { of } from 'rxjs';
 
-import { FlowsService } from './flows.service';
+import { AppResourceService } from './app-resource.service';
 import { RESTAPIHandlersService } from './restapi/v2/handlers-api.service';
 import { ResourceService } from './restapi/v2/resource.service';
 import { TriggersApiService } from './restapi';
@@ -9,7 +9,7 @@ import { RESTAPIContributionsService } from './restapi/v2/contributions.service'
 import Spy = jasmine.Spy;
 
 describe('Service: FlowsService', function(this: {
-  testService: FlowsService;
+  testService: AppResourceService;
   mockHandlersAPIService: RESTAPIHandlersService;
   mockTriggersService: TriggersApiService;
   mockContribTriggerAPIService: RESTAPIContributionsService;
@@ -66,7 +66,7 @@ describe('Service: FlowsService', function(this: {
       'handlersAPIService',
       ['updateHandler']
     );
-    this.testService = new FlowsService(
+    this.testService = new AppResourceService(
       this.mockHandlersAPIService,
       this.mockResourceAPIService,
       this.mockTriggersService,

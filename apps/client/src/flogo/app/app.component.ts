@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApplicationDetail, AppDetailService } from './core';
 
-import { FlowsService } from '@flogo-web/client-core/services';
+import { AppResourceService } from '@flogo-web/client-core/services';
 import { NotificationsService } from '@flogo-web/client-core/notifications';
 import { DeleteEvent } from '@flogo-web/client/app/resource-views';
 
@@ -22,7 +22,7 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private appService: AppDetailService,
-    private flowsService: FlowsService,
+    private flowsService: AppResourceService,
     private notificationsService: NotificationsService
   ) {}
 
@@ -80,7 +80,7 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
   }) {
     const appId = this.appDetail.app.id;
     this.flowsService
-      .createFlow(appId, { name, description: description }, triggerId)
+      .createResource(appId, { name, description: description, type: 'flow' }, triggerId)
       .then(() =>
         this.notificationsService.success({
           key: 'FLOWS:SUCCESS-MESSAGE-FLOW-CREATED',

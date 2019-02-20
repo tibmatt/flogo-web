@@ -7,12 +7,13 @@ import {
   RESTAPIContributionsService,
 } from './restapi';
 import { TriggerSchema } from '../interfaces';
+import { Resource } from '@flogo-web/core';
 
 const mapSettingsArrayToObject = (settings: { name: string; value?: any }[]) =>
   (settings || []).reduce((all, c) => ({ ...all, [c.name]: c.value }), {});
 
 @Injectable()
-export class FlowsService {
+export class AppResourceService {
   constructor(
     private handlersService: HandlersService,
     private resourceService: ResourceService,
@@ -20,33 +21,36 @@ export class FlowsService {
     private contribTriggerService: RESTAPIContributionsService
   ) {}
 
-  createFlow(
+  createResource(
     appId: string,
-    newFlow: { name: string; description: string },
+    newResource: { name: string; type: string; description?: string },
     triggerId
-  ): Promise<any> {
-    const createFlow = () =>
-      this.resourceService
-        .createResource(appId, { ...newFlow, type: 'flow' })
-        .toPromise();
+  ): Promise<{ resource: Resource; handler?: any }> {
+    const createResource = () =>
+      this.resourceService.createResource(appId, newResource).toPromise();
     if (!triggerId) {
-      return createFlow();
+      return createResource().then(resource => ({ resource }));
     }
-    return createFlow()
-      .then(flow => {
+    return createResource()
+      .then(resource => {
         return this.getContribInfo(triggerId).then(contribTrigger => ({
-          flow,
+          resource,
           contribTrigger,
         }));
       })
-      .then(({ flow, contribTrigger }) => {
+      .then(({ resource, contribTrigger }) => {
         const handlerSchema = contribTrigger.handler || ({} as TriggerSchema);
         const settings = mapSettingsArrayToObject(handlerSchema.settings);
         const outputs = mapSettingsArrayToObject(contribTrigger.outputs);
-        return this.handlersService.updateHandler(triggerId, flow.id, {
-          settings,
-          outputs,
-        });
+        return this.handlersService
+          .updateHandler(triggerId, resource.id, {
+            settings,
+            outputs,
+          })
+          .then(handler => ({
+            resource,
+            handler,
+          }));
       });
   }
 
