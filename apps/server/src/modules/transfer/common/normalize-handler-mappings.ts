@@ -6,10 +6,10 @@ import { MAPPING_EXPRESSION_TYPE } from '@flogo-web/server/core';
 const CURRENT_SCOPE_RESOLVER = '$';
 const mappingsReducer = (reducedMappings, mapping) => {
   let value = mapping.value;
-  if (isPlainObject(mapping.value)) {
-    value = EXPR_PREFIX + JSON.stringify(mapping.value);
+  if (isPlainObject(value)) {
+    value = EXPR_PREFIX + JSON.stringify(value, null, 2);
   } else if (mapping.type !== MAPPING_EXPRESSION_TYPE.LITERAL) {
-    value = EXPR_PREFIX + mapping.value;
+    value = EXPR_PREFIX + value;
   }
   reducedMappings[mapping.mapTo] = value;
   return reducedMappings;
