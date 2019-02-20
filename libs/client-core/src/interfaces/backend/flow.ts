@@ -15,6 +15,7 @@ export namespace flow {
     inputMappings?: any;
     settings?: any;
     outputMappings?: Mapping[];
+    activitySettings?: any;
   }
 
   export interface Mapping {

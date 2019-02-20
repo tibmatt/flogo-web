@@ -36,13 +36,19 @@ export class TaskFormatter {
     const taskSettings: {
       iterate?: string;
     } = {};
-    const activitySettings: {
+    const subflowActivitySettings: {
       flowURI?: string;
     } = {};
+    let standardActivitySettings: {};
+    let activitySettings = {};
     // for type 'standard' we will omit the 'type' property as a task is 'standard' by default
     let type;
     if (isSubflowTask(this.sourceTask)) {
-      activitySettings.flowURI = this.convertSubflowPath();
+      subflowActivitySettings.flowURI = this.convertSubflowPath();
+      activitySettings = subflowActivitySettings;
+    } else {
+      standardActivitySettings = this.sourceTask.activitySettings;
+      activitySettings = standardActivitySettings;
     }
     if (this.isIteratorTask()) {
       type = TASK_TYPE.ITERATOR;

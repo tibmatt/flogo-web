@@ -286,6 +286,7 @@ describe('flow.core.models.graph-and-items', function() {
         ref: 'some_path_to_repo/activity/log',
         id: 'log_1',
         inputMappings: {},
+        activitySettings: {},
         type: FLOGO_TASK_TYPE.TASK,
         return: false,
         input: {
@@ -301,6 +302,7 @@ describe('flow.core.models.graph-and-items', function() {
         ref: 'some_path_to_repo/activity/awsiot',
         id: 'awsiot_1',
         inputMappings: {},
+        activitySettings: {},
         type: FLOGO_TASK_TYPE.TASK,
         return: false,
         input: {
@@ -321,6 +323,7 @@ describe('flow.core.models.graph-and-items', function() {
         ref: 'some_path_to_repo/activity/reply',
         id: 'reply_1',
         inputMappings: {},
+        activitySettings: {},
         type: FLOGO_TASK_TYPE.TASK,
         return: false,
         input: {
@@ -335,6 +338,7 @@ describe('flow.core.models.graph-and-items', function() {
         ref: 'some_path_to_repo/activity/log',
         id: 'log_6',
         inputMappings: {},
+        activitySettings: {},
         type: FLOGO_TASK_TYPE.TASK,
         return: false,
         input: {
@@ -350,6 +354,7 @@ describe('flow.core.models.graph-and-items', function() {
         ref: 'some_path_to_repo/activity/log',
         id: 'log_7',
         inputMappings: {},
+        activitySettings: {},
         type: FLOGO_TASK_TYPE.TASK,
         return: false,
         input: {
@@ -365,6 +370,7 @@ describe('flow.core.models.graph-and-items', function() {
         ref: 'some_path_to_repo/activity/log',
         id: 'log_4',
         inputMappings: {},
+        activitySettings: {},
         type: 1,
         return: false,
         input: {
@@ -380,6 +386,7 @@ describe('flow.core.models.graph-and-items', function() {
         ref: 'some_path_to_repo/activity/log',
         id: 'log_5',
         inputMappings: {},
+        activitySettings: {},
         type: FLOGO_TASK_TYPE.TASK,
         return: false,
         input: {

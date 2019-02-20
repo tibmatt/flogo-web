@@ -69,7 +69,6 @@ const SETTINGS_TAB_INFO = {
   name: TASK_TABS.SETTINGS,
   labelKey: 'TASK-CONFIGURATOR:TABS:SETTINGS',
 };
-
 @Component({
   selector: 'flogo-flow-task-configurator',
   styleUrls: ['task-configurator.component.less'],
@@ -119,6 +118,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   ismapperActivity: boolean;
   installedFunctions: InstalledFunctionSchema[];
   private inputMapperStateSubscription: Subscription;
+  private activitySettingsStateSubscription: Subscription;
   private contextChange$ = SingleEmissionSubject.create();
   private destroy$ = SingleEmissionSubject.create();
 
@@ -215,6 +215,9 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       },
       inputMappings: MapperTranslator.translateMappingsOut(
         this.inputMapperController.getCurrentState().mappings
+      ),
+      activitySettings: MapperTranslator.translateMappingsOut(
+        this.settingsController.getCurrentState().mappings
       ),
     }).subscribe(action => {
       this.store.dispatch(action);
@@ -417,6 +420,12 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   private initActivitySettings(settingPropsToMap, activitySettings) {
+    if (
+      this.activitySettingsStateSubscription &&
+      !this.activitySettingsStateSubscription.closed
+    ) {
+      this.activitySettingsStateSubscription.unsubscribe();
+    }
     //TODO: Available data for activity settings in empty as of now
     const inputScope = [];
     this.settingsController = this.mapperControllerFactory.createController(
@@ -425,6 +434,16 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       activitySettings,
       this.installedFunctions
     );
+    this.activitySettingsStateSubscription = this.settingsController.status$
+      .pipe(
+        skip(1),
+        takeUntil(this.contextChange$)
+      )
+      .subscribe(({ isValid, isDirty }) => {
+        const settingsTab = this.tabs.get(TASK_TABS.SETTINGS);
+        settingsTab.isValid = isValid;
+        settingsTab.isDirty = isDirty;
+      });
   }
 
   private getInputMappingsInfo({

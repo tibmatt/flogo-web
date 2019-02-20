@@ -97,6 +97,7 @@ export class ItemFactory {
         : FLOGO_TASK_TYPE.TASK,
       settings: taskInstance.settings || {},
       return: !!activitySchema.return,
+      activitySettings: taskInstance.activitySettings,
       input: fromPairs(attributes.map(attr => [attr.name, attr.value])),
     };
     return item;
