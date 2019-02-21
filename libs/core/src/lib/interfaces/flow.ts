@@ -23,6 +23,7 @@ export interface Task {
   description?: string;
   attributes?: Attribute[];
   inputMappings?: { [property: string]: any };
+  activitySettings? : { [property: string]: any };
   settings?: {
     flowPath?: string;
     iterate?: string;
