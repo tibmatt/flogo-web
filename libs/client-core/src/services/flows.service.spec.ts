@@ -1,5 +1,6 @@
-import { isEqual, assign } from 'lodash';
-import { of } from 'rxjs';
+import { assign } from 'lodash';
+import { of, pipe } from 'rxjs';
+import { scan } from 'rxjs/operators';
 
 import { AppResourceService } from './app-resource.service';
 import { RESTAPIHandlersService } from './restapi/v2/handlers-api.service';
@@ -73,37 +74,39 @@ describe('Service: FlowsService', function(this: {
       this.mockContribTriggerAPIService
     );
     spyDelete = <Spy>this.mockResourceAPIService.deleteResource;
-    spyDelete.and.returnValue(of({}));
+    spyDelete.and.returnValue(of({ resourceDeleted: true }));
     spyDeleteTrigger = <Spy>this.mockTriggersService.deleteTrigger;
     spyDeleteTrigger.and.returnValue(Promise.resolve({}));
   });
 
   describe('When a flow is linked to a trigger', () => {
-    it('and the trigger is linked to other flows it should delete the flow but not the trigger', done => {
+    const accumulateResults = () => pipe(scan<any>((acc, r) => [...acc, r], []));
+    it('and the trigger is linked to other flows it should delete the flow but not the trigger', () => {
       const specTriggerData = assign({}, mockAppTriggerData);
       specTriggerData.handlers.pop();
       const spyGetTrigger = <Spy>this.mockTriggersService.getTrigger;
       spyGetTrigger.and.returnValue(Promise.resolve(specTriggerData));
-      this.testService
+      return this.testService
         .deleteResourceWithTrigger('some_flow_id_1', 'some_trigger_id_1')
-        .then(data => {
-          expect(isEqual(data, {})).toEqual(true);
-          done();
+        .pipe(accumulateResults())
+        .toPromise()
+        .then(results => {
+          expect(results).toEqual([{ resourceDeleted: true }]);
         });
     });
 
-    it('and the trigger is linked only to this flow it should delete both the flow and trigger', done => {
+    it('and the trigger is linked only to this flow it should delete both the flow and trigger', () => {
       const specTriggerData = assign({}, mockAppTriggerData);
       specTriggerData.handlers.pop();
       specTriggerData.handlers.pop();
       const spyGetTrigger = <Spy>this.mockTriggersService.getTrigger;
       spyGetTrigger.and.returnValue(Promise.resolve(specTriggerData));
-      this.testService
+      return this.testService
         .deleteResourceWithTrigger('some_flow_id_2', 'some_trigger_id_2')
-        .then(data => {
-          expect(isEqual(data, {})).toEqual(true);
-          expect(spyDeleteTrigger).toHaveBeenCalledTimes(1);
-          done();
+        .pipe(accumulateResults())
+        .toPromise()
+        .then(results => {
+          expect(results).toEqual([{ resourceDeleted: true }, { triggerDeleted: true }]);
         });
     });
   });

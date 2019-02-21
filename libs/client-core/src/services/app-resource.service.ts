@@ -82,8 +82,7 @@ export class AppResourceService {
       : EMPTY;
     return this.deleteResource(flowId).pipe(
       map(() => ({ resourceDeleted: true })),
-      concat(removeTriggerIfUnreferenced$),
-      tap(v => console.log(v))
+      concat(removeTriggerIfUnreferenced$)
     );
   }
 
