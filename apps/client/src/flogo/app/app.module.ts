@@ -1,5 +1,4 @@
 import { FormsModule } from '@angular/forms';
-import { BsModalModule } from 'ng2-bs3-modal';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -31,7 +30,6 @@ import {
   imports: [
     CommonModule,
     FormsModule,
-    BsModalModule,
     FlogoSharedModule,
     RouterModule,
     AppRoutingModule,

@@ -2,7 +2,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component, DebugElement } from '@angular/core';
-import { BsModalModule } from 'ng2-bs3-modal';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client/shared';
 import { CoreModule as FlogoCoreModule } from '@flogo-web/client/core';
 import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';

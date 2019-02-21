@@ -2,7 +2,6 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { BsModalModule } from 'ng2-bs3-modal';
 
 import { CoreModule as FlogoCoreModule, ResourceService } from '@flogo-web/client-core';
 import { MODAL_TOKEN, ModalControl } from '@flogo-web/client-core/modal';
@@ -48,12 +47,7 @@ describe('Component: FlogoNewFlow', () => {
 
   beforeEach(done => {
     TestBed.configureTestingModule({
-      imports: [
-        FakeRootLanguageModule,
-        BsModalModule,
-        FlogoCoreModule,
-        FlogoSharedModule,
-      ],
+      imports: [FakeRootLanguageModule, FlogoCoreModule, FlogoSharedModule],
       declarations: [FlogoNewFlowComponent], // declare the test component
       providers: [
         { provide: ResourceService, useValue: resourceServiceStub },

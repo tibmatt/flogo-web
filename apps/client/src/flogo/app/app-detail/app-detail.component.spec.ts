@@ -2,7 +2,6 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed, tick, fakeAsync, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
-import { BsModalModule } from 'ng2-bs3-modal';
 
 import {
   CoreModule as FlogoCoreModule,
@@ -71,12 +70,7 @@ describe('FlogoApplicationDetailComponent component', () => {
 
   beforeEach(done => {
     TestBed.configureTestingModule({
-      imports: [
-        BsModalModule,
-        FakeRootLanguageModule,
-        FlogoCoreModule,
-        FlogoSharedModule,
-      ],
+      imports: [FakeRootLanguageModule, FlogoCoreModule, FlogoSharedModule],
       declarations: [
         ResourceComponent,
         ResourceListComponent,
