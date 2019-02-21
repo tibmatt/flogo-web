@@ -53,7 +53,7 @@ export class TaskConverter {
     if (this.isSubflowTask()) {
       type = FLOGO_TASK_TYPE.TASK_SUB_PROC;
       settings.flowPath = this.extractSubflowPath();
-    }else{
+    } else {
       activitySettings = this.resourceTask.activity.settings;
     }
     if (this.isIteratorTask()) {
