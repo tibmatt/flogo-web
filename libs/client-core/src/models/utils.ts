@@ -69,7 +69,7 @@ function portAttribute(
  * @return {boolean}
  */
 export function isMapperActivity(activitySchema: any) {
-  const hasOutputMapperDefinition = get(activitySchema, 'inputs', []).find(
+  const hasOutputMapperDefinition = get(activitySchema, 'settings', []).find(
     isOutputMapper
   );
   return Boolean(hasOutputMapperDefinition);

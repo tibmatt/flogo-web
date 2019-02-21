@@ -101,9 +101,9 @@ export const TRIGGER_MENU_OPERATION = {
 };
 
 export const CONTRIB_REF_PLACEHOLDER = {
-  REF_SUBFLOW: 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow',
-  REF_LAMBDA: 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda',
-  REF_CLI: 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli',
+  REF_SUBFLOW: 'github.com/project-flogo/flow/activity/subflow',
+  REF_LAMBDA: 'github.com/project-flogo/contrib/trigger/lambda',
+  REF_CLI: 'github.com/project-flogo/contrib/trigger/cli',
 };
 
 export const TYPE_ATTR_ASSIGNMENT = 1;
