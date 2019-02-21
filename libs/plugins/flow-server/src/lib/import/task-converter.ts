@@ -75,7 +75,13 @@ export class TaskConverter {
   prepareInputMappings() {
     const inputMappings = this.convertAttributes();
     return this.safeGetMappings().reduce((inputs, mapping) => {
-      inputs[mapping.mapTo] = EXPR_PREFIX + JSON.stringify(mapping.value);
+      let value = mapping.value;
+      if (isPlainObject(value)) {
+        value = EXPR_PREFIX + JSON.stringify(value, null, 2);
+      } else if (mapping.type !== EXPRESSION_TYPE.LITERAL) {
+        value = EXPR_PREFIX + value;
+      }
+      inputs[mapping.mapTo] = value;
       return inputs;
     }, inputMappings);
   }
