@@ -1,4 +1,4 @@
-import { fromPairs } from 'lodash';
+import { fromPairs, isEqual } from 'lodash';
 import { FormGroup } from '@angular/forms';
 import { Dictionary, TriggerHandler } from '@flogo-web/client-core';
 import { MapperController, MapperTranslator } from '../../../../shared/mapper';
@@ -46,7 +46,7 @@ function checkForMappingChanges(
   if (replyMapper) {
     newMappings = { ...newMappings, output: extractMappings(replyMapper) };
   }
-  return newMappings !== originalMappings ? newMappings : null;
+  return !isEqual(newMappings, originalMappings) ? newMappings : null;
 }
 
 function extractMappings(mapperController: MapperController): Dictionary<any> {

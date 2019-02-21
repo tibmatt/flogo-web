@@ -9,6 +9,7 @@ import {
   EXPRESSION_TYPE,
   parseResourceIdFromResourceUri,
 } from '@flogo-web/server/core';
+import { normalizeIteratorValue } from './normalize-iterator-value';
 
 export class TaskConverter {
   private resourceTask;
@@ -53,7 +54,7 @@ export class TaskConverter {
       settings.flowPath = this.extractSubflowPath();
     }
     if (this.isIteratorTask()) {
-      settings.iterate = this.resourceTask.settings.iterate;
+      settings.iterate = normalizeIteratorValue(this.resourceTask.settings.iterate);
     }
     return { type, settings };
   }

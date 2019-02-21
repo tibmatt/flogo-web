@@ -6,11 +6,9 @@ import {
   uniqueId,
   cloneDeep,
   each,
-  isEmpty,
   trimStart,
 } from 'lodash';
 import { ValueType, FLOGO_TASK_TYPE } from '../constants';
-import { Task, Item } from '../interfaces';
 
 export function flogoGenTriggerID(): string {
   return `Flogo::Trigger::${Date.now()}`;
@@ -210,10 +208,6 @@ export function createSubFlowTask(schema: any) {
 
 export function isSubflowTask(taskType: FLOGO_TASK_TYPE): boolean {
   return taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC;
-}
-
-export function isIterableTask(task: Task | Item): boolean {
-  return !isEmpty(get(task, 'settings.iterate'));
 }
 
 export function isBranchConfigured(branchCondition): boolean {

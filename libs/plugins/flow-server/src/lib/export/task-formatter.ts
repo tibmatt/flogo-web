@@ -2,8 +2,7 @@ import { isEmpty } from 'lodash';
 
 import { Task, createFlowUri } from '@flogo-web/core';
 import { isSubflowTask, TASK_TYPE } from '@flogo-web/server/core';
-
-import { isIterableTask } from '../is-iterable-task';
+import { isIterableTask } from '@flogo-web/plugins/flow-core';
 
 export class TaskFormatter {
   private sourceTask: Task;

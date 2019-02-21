@@ -5,6 +5,7 @@ import {
 } from '@flogo-web/server/core';
 
 import { normalizeHandlerMappings } from '../common/normalize-handler-mappings';
+import { normalizeSettingsWithPrefix } from './normalize-settings-with-prefix';
 
 export function importTriggers(
   // todo: triggers interface
@@ -27,6 +28,7 @@ export function importTriggers(
       name: rawTrigger.name || rawTrigger.id,
       createdAt,
       updatedAt: null,
+      settings: normalizeSettingsWithPrefix(rawTrigger.settings),
     };
     const handlers = normalizeHandlers(extractHandlers(rawTrigger));
     triggers.push({ ...newTrigger, handlers });
@@ -55,6 +57,7 @@ function handlerNormalizer(
     ),
     map(({ actionId, handler }) => ({
       ...normalizeHandlerMappings(handler),
+      settings: normalizeSettingsWithPrefix(handler.settings),
       actionId,
       createdAt,
       outputs: {},

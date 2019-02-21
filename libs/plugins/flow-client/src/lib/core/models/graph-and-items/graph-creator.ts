@@ -8,9 +8,9 @@ import {
   flow as backendFlow,
   ItemActivityTask,
   isBranchConfigured,
-  isIterableTask,
   isSubflowTask,
 } from '@flogo-web/client-core';
+import { isIterableTask } from '@flogo-web/plugins/flow-core';
 
 const defaultFeatures: NodeFeatures = {
   selectable: true,

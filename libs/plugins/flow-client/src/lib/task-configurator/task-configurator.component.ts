@@ -1,4 +1,4 @@
-import { isEmpty, cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { skip, takeUntil } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -12,7 +12,6 @@ import {
   ItemActivityTask,
   ItemSubflow,
   ItemTask,
-  isIterableTask,
   isMapperActivity,
   isSubflowTask,
   ActivitySchema,
@@ -46,6 +45,7 @@ import { getStateWhenConfigureChanges } from '../shared/configurator/configurato
 import { createSaveAction } from './models/save-action-creator';
 import { hasTaskWithSameName } from '../core/models/unique-task-name';
 import { AppState } from '../core/state/app.state';
+import { isAcceptableIterateValue, isIterableTask } from '@flogo-web/plugins/flow-core';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',
@@ -201,7 +201,8 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    const isIterable = this.iteratorModeOn && !isEmpty(this.iterableValue);
+    const isIterable =
+      this.iteratorModeOn && isAcceptableIterateValue(this.iterableValue);
     createSaveAction(this.store, {
       tileId: this.currentTile.id,
       name: this.title,
@@ -257,7 +258,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private onIteratorValueChange(newValue: string, isValid: boolean) {
+  private onIteratorValueChange(newValue: any) {
     this.tabs.get(TASK_TABS.ITERATOR).isValid = MapperTranslator.isValidExpression(
       newValue
     );
@@ -359,9 +360,11 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       this.iteratorController.state$
         .pipe(takeUntil(this.contextChange$))
         .subscribe(mapperState => {
-          const iterableMapping = mapperState.mappings[ITERABLE_VALUE_KEY];
-          if (iterableMapping) {
-            this.onIteratorValueChange(iterableMapping.expression, mapperState.isValid);
+          const iterableMapping = MapperTranslator.translateMappingsOut(
+            mapperState.mappings
+          );
+          if (iterableMapping.hasOwnProperty(ITERABLE_VALUE_KEY)) {
+            this.onIteratorValueChange(iterableMapping[ITERABLE_VALUE_KEY]);
           }
         });
     }
@@ -395,16 +398,12 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       return;
     }
     this.iteratorModeOn = isIterableTask(selectedItem);
-    this.iterableValue =
-      taskSettings && taskSettings.iterate ? taskSettings.iterate : null;
+    this.iterableValue = taskSettings && taskSettings.iterate ? taskSettings.iterate : '';
     this.initialIteratorData = {
       iteratorModeOn: this.iteratorModeOn,
       iterableValue: this.iterableValue,
     };
-    const iterableValue = MapperTranslator.rawExpressionToString(
-      this.iterableValue || ''
-    );
-    const iteratorContext = createIteratorMappingContext(iterableValue);
+    const iteratorContext = createIteratorMappingContext(this.iterableValue);
     this.iteratorController = this.mapperControllerFactory.createController(
       iteratorContext.inputContext,
       this.inputScope,

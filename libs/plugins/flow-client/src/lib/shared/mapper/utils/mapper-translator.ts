@@ -123,7 +123,13 @@ export class MapperTranslator {
     }, {});
   }
 
-  static rawExpressionToString(rawExpression: any, inputType?: number) {
+  static rawExpressionToString(
+    rawExpression: any,
+    inputType: number = MAPPING_TYPE.LITERAL_ASSIGNMENT
+  ) {
+    if (isString(rawExpression) && rawExpression.startsWith('=')) {
+      return rawExpression.substr(1);
+    }
     return !isString(rawExpression) || inputType === MAPPING_TYPE.LITERAL_ASSIGNMENT
       ? JSON.stringify(rawExpression)
       : rawExpression;
@@ -182,20 +188,12 @@ export class MapperTranslator {
     };
   }
 
-  static isValidExpression(expression: string) {
-    return isValidExpression(expression);
+  static isValidExpression(expression: any) {
+    return isValidExpression(MapperTranslator.rawExpressionToString(expression));
   }
 
   private static processInputValue(inputValue: any) {
-    let value = inputValue;
-    if (/^=/g.test(value)) {
-      value = value.substr(1);
-    } else {
-      value = MapperTranslator.rawExpressionToString(
-        value,
-        MAPPING_TYPE.LITERAL_ASSIGNMENT
-      );
-    }
+    let value = MapperTranslator.rawExpressionToString(inputValue);
     value = MapperTranslator.upgradeLegacyMappingIfNeeded(value);
     return { value, mappingType: mappingTypeFromExpression(value) };
   }

@@ -9,66 +9,43 @@
   },
   "projects": {
     "parser": {
-      "tags": [
-        "shared"
-      ]
+      "tags": ["shared"]
     },
     "server": {
-      "tags": [
-        "server"
-      ]
+      "tags": ["server"]
     },
     "client": {
-      "tags": [
-        "client"
-      ]
+      "tags": ["client"]
     },
     "client-e2e": {
       "tags": []
     },
     "server-core": {
-      "tags": [
-        "server"
-      ]
+      "tags": ["server"]
     },
     "plugins-flow-server": {
-      "tags": [
-        "server",
-        "plugin"
-      ]
+      "tags": ["server", "plugin"]
     },
     "client-core": {
-      "tags": [
-        "client"
-      ]
+      "tags": ["client"]
     },
     "client-shared": {
-      "tags": [
-        "client"
-      ]
+      "tags": ["client"]
     },
     "plugins-flow-client": {
-      "tags": [
-        "client",
-        "plugin"
-      ]
+      "tags": ["client", "plugin"]
+    },
+    "plugins-flow-core": {
+      "tags": ["shared", "plugin"]
     },
     "diagram": {
-      "tags": [
-        "client",
-        "component"
-      ]
+      "tags": ["client", "component"]
     },
     "client-logs": {
-      "tags": [
-        "client",
-        "component"
-      ]
+      "tags": ["client", "component"]
     },
     "client-assets": {
-      "tags": [
-        "client"
-      ]
+      "tags": ["client"]
     },
     "core": {
       "tags": []
