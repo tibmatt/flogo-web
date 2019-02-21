@@ -69,12 +69,6 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   @Input() appDetail: ApplicationDetail;
 
   @Output() flowSelected: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
-  @Output() flowAdded: EventEmitter<{
-    name: string;
-    description?: string;
-    triggerId?: string;
-  }> = new EventEmitter<FlowSummary>();
-  @Output() flowDeleted = new EventEmitter<DeleteEvent>();
 
   application: App;
   state: ApplicationDetailState;
@@ -280,12 +274,8 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     this.flowSelected.emit(flow);
   }
 
-  onFlowDelete(eventData) {
-    this.flowDeleted.emit(eventData);
-  }
-
-  onFlowAdd(newFlow) {
-    this.flowAdded.emit(newFlow);
+  onFlowDelete({ resource, triggerId }: DeleteEvent) {
+    this.appDetailService.removeResource(resource.id, triggerId);
   }
 
   onDeleteApp(application) {

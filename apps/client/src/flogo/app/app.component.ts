@@ -21,9 +21,7 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private appService: AppDetailService,
-    private flowsService: AppResourceService,
-    private notificationsService: NotificationsService
+    private appService: AppDetailService
   ) {}
 
   public ngOnInit() {
@@ -59,40 +57,5 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
   public onFlowSelected(flow) {
     // TODO: make resource type dynamic instead of hardcoding 'flow'
     this.router.navigate(['/resources', flow.id, 'flow']);
-  }
-
-  public onFlowDeleted(eventData: DeleteEvent) {
-    this.flowsService
-      .deleteFlowWithTrigger(eventData.resource.id, eventData.triggerId)
-      .then(() => {
-        this.appService.reload();
-      });
-  }
-
-  public onFlowAdded({
-    triggerId,
-    name,
-    description,
-  }: {
-    triggerId?: string;
-    name: string;
-    description?: string;
-  }) {
-    const appId = this.appDetail.app.id;
-    this.flowsService
-      .createResource(appId, { name, description: description, type: 'flow' }, triggerId)
-      .then(() =>
-        this.notificationsService.success({
-          key: 'FLOWS:SUCCESS-MESSAGE-FLOW-CREATED',
-        })
-      )
-      .then(() => this.appService.reload())
-      .catch(err => {
-        console.error(err);
-        this.notificationsService.error({
-          key: 'FLOWS:CREATE_FLOW_ERROR',
-          params: err,
-        });
-      });
   }
 }

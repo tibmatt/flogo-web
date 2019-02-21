@@ -8,6 +8,8 @@ import {
 } from './restapi';
 import { TriggerSchema } from '../interfaces';
 import { Resource } from '@flogo-web/core';
+import { from, EMPTY, Observable, defer } from 'rxjs';
+import { switchMap, map, concat, tap } from 'rxjs/operators';
 
 const mapSettingsArrayToObject = (settings: { name: string; value?: any }[]) =>
   (settings || []).reduce((all, c) => ({ ...all, [c.name]: c.value }), {});
@@ -54,27 +56,35 @@ export class AppResourceService {
       });
   }
 
-  deleteFlow(flowId) {
+  deleteResource(flowId) {
     return this.resourceService.deleteResource(flowId);
   }
 
-  deleteFlowWithTrigger(flowId: string, triggerId: string) {
-    return this.deleteFlow(flowId)
-      .toPromise()
-      .then(() => {
-        if (triggerId) {
-          return this.triggersService.getTrigger(triggerId).then(triggerDetails => {
-            if (triggerDetails.handlers.length === 0) {
-              return this.triggersService.deleteTrigger(triggerDetails.id);
-            } else {
-              return {};
-            }
-          });
-        } else {
-          return {};
-        }
-      })
-      .catch(err => Promise.reject(err));
+  /**
+   * Removes a resource and also removes the specified trigger if the trigger is the only trigger linked to that resource.
+   * Will emit an event when the resource is deleted AND a separate event if the trigger is emitted.
+   *
+   * @example
+   * `deleteResourceWithTrigger(resourceId, triggerId).subscribe((result) => console.log(result))`
+   * will print:
+   * { resourceDeleted: true }
+   * { triggerDeleted: true }
+   *
+   * @param flowId
+   * @param triggerId
+   */
+  deleteResourceWithTrigger(
+    flowId: string,
+    triggerId: string
+  ): Observable<{ resourceDeleted?: boolean } | { triggerDeleted?: boolean }> {
+    const removeTriggerIfUnreferenced$ = triggerId
+      ? removeTriggerIfUnreferenced(triggerId, this.triggersService)
+      : EMPTY;
+    return this.deleteResource(flowId).pipe(
+      map(() => ({ resourceDeleted: true })),
+      concat(removeTriggerIfUnreferenced$),
+      tap(v => console.log(v))
+    );
   }
 
   private getContribInfo(triggerInstanceId) {
@@ -86,4 +96,19 @@ export class AppResourceService {
         )
       );
   }
+}
+
+function removeTriggerIfUnreferenced(
+  triggerId,
+  triggersService: TriggersApiService
+): Observable<never | { triggerDeleted?: boolean }> {
+  // defer makes it a cold observable as triggerService.getTrigger is a promise
+  return defer(() => triggersService.getTrigger(triggerId)).pipe(
+    switchMap(triggerDetails =>
+      triggerDetails.handlers && triggerDetails.handlers.length === 0
+        ? triggersService.deleteTrigger(triggerDetails.id)
+        : EMPTY
+    ),
+    map(() => ({ triggerDeleted: true }))
+  );
 }

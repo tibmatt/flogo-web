@@ -85,7 +85,7 @@ describe('Service: FlowsService', function(this: {
       const spyGetTrigger = <Spy>this.mockTriggersService.getTrigger;
       spyGetTrigger.and.returnValue(Promise.resolve(specTriggerData));
       this.testService
-        .deleteFlowWithTrigger('some_flow_id_1', 'some_trigger_id_1')
+        .deleteResourceWithTrigger('some_flow_id_1', 'some_trigger_id_1')
         .then(data => {
           expect(isEqual(data, {})).toEqual(true);
           done();
@@ -99,7 +99,7 @@ describe('Service: FlowsService', function(this: {
       const spyGetTrigger = <Spy>this.mockTriggersService.getTrigger;
       spyGetTrigger.and.returnValue(Promise.resolve(specTriggerData));
       this.testService
-        .deleteFlowWithTrigger('some_flow_id_2', 'some_trigger_id_2')
+        .deleteResourceWithTrigger('some_flow_id_2', 'some_trigger_id_2')
         .then(data => {
           expect(isEqual(data, {})).toEqual(true);
           expect(spyDeleteTrigger).toHaveBeenCalledTimes(1);
