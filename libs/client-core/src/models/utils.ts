@@ -7,10 +7,8 @@ import {
   cloneDeep,
   each,
   trimStart,
-  isNil,
 } from 'lodash';
 import { ValueType, FLOGO_TASK_TYPE } from '../constants';
-import { Task, Item } from '../interfaces';
 
 export function flogoGenTriggerID(): string {
   return `Flogo::Trigger::${Date.now()}`;

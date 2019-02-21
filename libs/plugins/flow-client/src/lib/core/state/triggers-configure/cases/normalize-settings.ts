@@ -1,4 +1,4 @@
-import { mapValues } from 'lodash';
+import { mapValues, isString } from 'lodash';
 import { Dictionary } from '@flogo-web/client-core';
 
 export function normalizeSettings(settings: Dictionary<any>): Dictionary<any> {
@@ -6,4 +6,4 @@ export function normalizeSettings(settings: Dictionary<any>): Dictionary<any> {
 }
 
 const removeExpressionPrefix = (value: any) =>
-  /^=/g.test(value) ? value.substr(1) : value;
+  isString(value) && value.startsWith('=') ? value.substr(1) : value;

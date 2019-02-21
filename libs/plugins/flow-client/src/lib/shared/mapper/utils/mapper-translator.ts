@@ -127,7 +127,7 @@ export class MapperTranslator {
     rawExpression: any,
     inputType: number = MAPPING_TYPE.LITERAL_ASSIGNMENT
   ) {
-    if (/^=/g.test(rawExpression)) {
+    if (isString(rawExpression) && rawExpression.startsWith('=')) {
       return rawExpression.substr(1);
     }
     return !isString(rawExpression) || inputType === MAPPING_TYPE.LITERAL_ASSIGNMENT
