@@ -1,7 +1,7 @@
-import { Resource, Trigger } from '@flogo-web/core';
+import { Trigger } from '@flogo-web/core';
+import { ResourceWithPlugin } from './resource-with-plugin';
 
 export interface TriggerGroup {
   triggers: Trigger[] | null;
-  // todo: define interface
-  flow: Resource;
+  flow: ResourceWithPlugin;
 }

@@ -1,4 +1,4 @@
-import { sortBy, snakeCase } from 'lodash';
+import { snakeCase } from 'lodash';
 import { differenceInSeconds } from 'date-fns';
 
 import {
@@ -10,49 +10,53 @@ import {
   OnInit,
   EventEmitter,
 } from '@angular/core';
-import { Observable, of as observableOf } from 'rxjs';
-import { switchMap, map, take, tap, filter } from 'rxjs/operators';
+import { Observable, of as observableOf, combineLatest } from 'rxjs';
+import { switchMap, map, take, tap, filter, shareReplay } from 'rxjs/operators';
 
+import { Trigger } from '@flogo-web/core';
 import {
   LanguageService,
   FlowSummary,
   ERROR_CODE,
   CONTRIB_REF_PLACEHOLDER,
+  LocalStorageService,
+  SanitizeService,
+  ShimTriggerBuildApiService,
+  RESTAPIContributionsService,
+  ContribSchema,
+  App,
 } from '@flogo-web/client-core';
-import { LocalStorageService, SanitizeService } from '@flogo-web/client-core/services';
-import { ShimTriggerBuildApiService } from '@flogo-web/client-core/services/restapi/v2/shim-trigger-build-api.service';
 import { ModalService } from '@flogo-web/client-core/modal';
 import {
   ConfirmationResult,
   ConfirmationModalService,
 } from '@flogo-web/client-core/confirmation';
 import { NotificationsService } from '@flogo-web/client-core/notifications';
-import { RESTAPIContributionsService } from '@flogo-web/client-core/services/restapi/v2/contributions.service';
 import {
   AppDetailService,
   ApplicationDetail,
   ApplicationDetailState,
-  FlowGroup,
-  App,
-  TriggerGroup,
   SETTING_DONT_WARN_MISSING_TRIGGERS,
+  FlowGroup,
+  AppResourcesStateService,
 } from '../core';
 import { FlogoNewFlowComponent, NewFlowData } from '../new-flow/new-flow.component';
 import {
   ExportFlowsData,
   FlogoExportFlowsComponent,
 } from '../export-flows/export-flows.component';
+
 import {
   ShimTriggerData,
   TriggerShimBuildComponent,
 } from '../shim-trigger/shim-trigger.component';
-
 import {
   MissingTriggerConfirmationComponent,
   ConfirmationResult as MissingTriggerConfirmationResult,
   ConfirmationParams,
 } from '../missing-trigger-confirmation';
-import { Trigger } from '@flogo-web/core';
+import { ResourceViewType, DeleteEvent } from '../resource-views';
+import { BUILD_OPTIONS } from './build-options';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
@@ -70,7 +74,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     description?: string;
     triggerId?: string;
   }> = new EventEmitter<FlowSummary>();
-  @Output() flowDeleted: EventEmitter<App> = new EventEmitter<App>();
+  @Output() flowDeleted = new EventEmitter<DeleteEvent>();
 
   application: App;
   state: ApplicationDetailState;
@@ -82,33 +86,24 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   isDescriptionInEditMode: boolean;
   editableDescription: string;
 
-  flowGroups: Array<FlowGroup> = [];
-  triggerGroups: Array<TriggerGroup> = [];
+  resourceViewType: ResourceViewType = 'resources';
+
   flows: Array<FlowSummary> = [];
-  isFlowsViewActive: boolean;
-  selectedViewTranslateKey: string;
   isNewApp = false;
   isBuildBoxShown = false;
   isBuilding: boolean;
-  isViewsDropdownShown = false;
   isDetailsMenuOpen = false;
 
-  buildOptions = [
-    { label: 'Darwin/amd64', os: 'darwin', arch: 'amd64' },
-    { label: 'Linux/amd64', os: 'linux', arch: 'amd64' },
-    { label: 'Linux/386', os: 'linux', arch: '386' },
-    { label: 'Linux/arm', os: 'linux', arch: 'arm' },
-    { label: 'Linux/arm64', os: 'linux', arch: 'arm64' },
-    { label: 'Windows/amd64', os: 'windows', arch: 'amd64' },
-  ];
+  buildOptions = BUILD_OPTIONS;
 
+  shimmableTriggerSchema$: Observable<ContribSchema[]>;
   shimTriggerOptions = [];
-  shimTriggersList = [];
   isExportBoxShown = false;
   downloadLink: string;
 
   constructor(
-    public translate: LanguageService,
+    public resourcesState: AppResourcesStateService,
+    private translate: LanguageService,
     private appDetailService: AppDetailService,
     private confirmationModalService: ConfirmationModalService,
     private sanitizer: SanitizeService,
@@ -117,13 +112,15 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     private notificationsService: NotificationsService,
     private modalService: ModalService,
     private localStorage: LocalStorageService
-  ) {}
+  ) {
+    this.shimmableTriggerSchema$ = this.contributionService
+      .getShimContributionDetails()
+      .pipe(shareReplay(1));
+  }
 
   ngOnInit() {
     this.isDescriptionInEditMode = false;
     this.isNameInEditMode = false;
-    this.isFlowsViewActive = true;
-    this.selectedViewTranslateKey = 'DETAILS-VIEW-MENU:FLOWS';
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -132,11 +129,8 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
       this.application = this.appDetail.app;
       this.state = this.appDetail.state;
       this.downloadLink = this.appDetailService.getDownloadLink(this.application.id);
-      // this.flows = this.extractFlows();
-      this.createFlowGroups();
-      this.createTriggerGroups();
       this.shimTriggerOptions = [];
-      this.getShimTriggerBuildOptions();
+      this.loadShimTriggerBuildOptions();
       const prevValue = change.previousValue;
       const isDifferentApp =
         !prevValue || !prevValue.app || prevValue.app.id !== this.application.id;
@@ -146,22 +140,6 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
         this.appDetailChanged();
       }
     }
-  }
-
-  private createFlowGroups() {
-    const flowGroups = this.application ? this.application.flowGroups : null;
-    this.flowGroups = flowGroups ? [...this.application.flowGroups] : [];
-    this.flowGroups = sortBy(this.flowGroups, g =>
-      g.trigger ? g.trigger.name.toLocaleLowerCase() : ''
-    );
-  }
-
-  private createTriggerGroups() {
-    const triggerGroups = this.application ? this.application.triggerGroups : null;
-    this.triggerGroups = triggerGroups ? [...this.application.triggerGroups] : [];
-    this.triggerGroups = sortBy(this.triggerGroups, g =>
-      g.triggers ? g.flow.name.toLocaleLowerCase() : ''
-    );
   }
 
   appExporter() {
@@ -338,26 +316,34 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   showShimTriggerList(ref) {
-    this.shimTriggersList = this.flowGroups.filter(
-      flowGroup => flowGroup.trigger && flowGroup.trigger.ref === ref
-    );
-    if (
-      ref === CONTRIB_REF_PLACEHOLDER.REF_LAMBDA &&
-      this.shimTriggersList.length === 1
-    ) {
-      this.buildShimTrigger({ triggerId: this.shimTriggersList[0].trigger.id });
-    } else {
-      this.modalService
-        .openModal<ShimTriggerData>(TriggerShimBuildComponent, {
-          shimTriggersList: this.shimTriggersList,
-          buildOptions: this.buildOptions,
-        })
-        .result.subscribe(buildParams => {
-          if (buildParams) {
-            this.buildShimTrigger(buildParams);
+    const isLambdaTrigger = ref === CONTRIB_REF_PLACEHOLDER.REF_LAMBDA;
+    this.resourcesState.groupsByTrigger$
+      .pipe(
+        take(1),
+        map((flowGroups: FlowGroup[]) =>
+          flowGroups.filter(
+            flowGroup => flowGroup.trigger && flowGroup.trigger.ref === ref
+          )
+        ),
+        switchMap(shimTriggersList => {
+          if (isLambdaTrigger && shimTriggersList.length === 1) {
+            return observableOf({ triggerId: shimTriggersList[0].trigger.id });
+          } else {
+            return this.modalService.openModal<ShimTriggerData>(
+              TriggerShimBuildComponent,
+              {
+                shimTriggersList,
+                buildOptions: this.buildOptions,
+              }
+            ).result;
           }
-        });
-    }
+        })
+      )
+      .subscribe(buildParams => {
+        if (buildParams) {
+          this.buildShimTrigger(buildParams);
+        }
+      });
     this.closeBuildBox();
   }
 
@@ -369,19 +355,8 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     this.isExportBoxShown = false;
   }
 
-  toggleViewsDropdown() {
-    this.isViewsDropdownShown = !this.isViewsDropdownShown;
-  }
-
-  closeViewsDropdown() {
-    this.isViewsDropdownShown = false;
-  }
-  showDetailsView(viewType: string) {
-    this.isFlowsViewActive = viewType === 'flows';
-    this.selectedViewTranslateKey = this.isFlowsViewActive
-      ? 'DETAILS-VIEW-MENU:FLOWS'
-      : 'DETAILS-VIEW-MENU:TRIGGERS';
-    this.isViewsDropdownShown = false;
+  resourceViewChanged(viewType: ResourceViewType) {
+    this.resourceViewType = viewType;
   }
 
   toggleDetailsMenu() {
@@ -460,42 +435,55 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     }
   }
 
-  private getShimTriggerBuildOptions() {
-    const flowGroupsMap = this.flowGroups.map(flowGroup => {
-      return {
-        triggerRef: flowGroup.trigger ? flowGroup.trigger.ref : null,
-      };
-    });
-    this.contributionService
-      .getShimContributionDetails()
-      .then(shimmableTriggersDetails => {
-        shimmableTriggersDetails.forEach(shimmableTriggerDetail => {
-          const shimmableTrigger = flowGroupsMap.find(
-            flowGroupMap => flowGroupMap.triggerRef === shimmableTriggerDetail.ref
-          );
-          if (!!shimmableTrigger) {
-            switch (shimmableTriggerDetail.ref) {
-              case CONTRIB_REF_PLACEHOLDER.REF_LAMBDA:
-                this.shimTriggerOptions.push({
-                  label: this.translate.instant('TRIGGER-SHIM:SERVERLESS-APP'),
-                  ref: shimmableTriggerDetail.ref,
-                });
-                break;
-              case CONTRIB_REF_PLACEHOLDER.REF_CLI:
-                this.shimTriggerOptions.push({
-                  label: this.translate.instant('TRIGGER-SHIM:CLI-APP'),
-                  ref: shimmableTriggerDetail.ref,
-                });
-                break;
-              default:
-                this.shimTriggerOptions.push({
-                  label: shimmableTriggerDetail.name,
-                  ref: shimmableTriggerDetail.ref,
-                });
-                break;
-            }
-          }
-        });
+  private getUniqueTriggerRefs(): Observable<Set<string>> {
+    return this.resourcesState.groupsByTrigger$.pipe(
+      map(flowGroups => {
+        return new Set(
+          flowGroups.reduce((triggerRefs, group) => {
+            return group.trigger ? [...triggerRefs, group.trigger.ref] : triggerRefs;
+          }, [])
+        );
+      })
+    );
+  }
+
+  private loadShimTriggerBuildOptions() {
+    combineLatest(this.getUniqueTriggerRefs(), this.shimmableTriggerSchema$)
+      .pipe(
+        take(1),
+        map(([triggerRefs, shimmableTriggersDetails]) => {
+          return shimmableTriggersDetails
+            .filter(shimmableTriggerDetail => triggerRefs.has(shimmableTriggerDetail.ref))
+            .map(shimmableTriggerDetail =>
+              getShimmableTriggerBuildOption(shimmableTriggerDetail)
+            );
+        })
+      )
+      .subscribe(shimTriggerOptions => {
+        this.shimTriggerOptions = shimTriggerOptions;
       });
+  }
+}
+
+function getShimmableTriggerBuildOption(shimmableTriggerDetail: ContribSchema) {
+  switch (shimmableTriggerDetail.ref) {
+    case CONTRIB_REF_PLACEHOLDER.REF_LAMBDA:
+      return {
+        label: this.translate.instant('TRIGGER-SHIM:SERVERLESS-APP'),
+        ref: shimmableTriggerDetail.ref,
+      };
+      break;
+    case CONTRIB_REF_PLACEHOLDER.REF_CLI:
+      return {
+        label: this.translate.instant('TRIGGER-SHIM:CLI-APP'),
+        ref: shimmableTriggerDetail.ref,
+      };
+      break;
+    default:
+      return {
+        label: shimmableTriggerDetail.name,
+        ref: shimmableTriggerDetail.ref,
+      };
+      break;
   }
 }

@@ -20,10 +20,11 @@ import { initializer } from '@flogo-web/client-core/initializer';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
 import { LogsModule as FlogoLogsModule } from '@flogo-web/client-logs';
 
-import { CoreModule as LocalCoreModule } from './core';
+import { CoreModule as LocalCoreModule, RESOURCE_PLUGINS_CONFIG } from './core';
 import { appRoutingProviders, routing } from './flogo.routing';
 import { FlogoAppComponent } from './flogo.component';
 import { environment } from '../environments/environment';
+import { resourcePlugins } from '../plugins';
 
 @NgModule({
   imports: [
@@ -58,6 +59,10 @@ import { environment } from '../environments/environment';
   providers: [
     { provide: HOSTNAME, useValue: environment.hostname },
     { provide: FLOGO_VERSION, useValue: environment.version },
+    {
+      provide: RESOURCE_PLUGINS_CONFIG,
+      useValue: resourcePlugins,
+    },
     { provide: LanguageService, useExisting: TranslateService },
     {
       provide: APP_INITIALIZER,

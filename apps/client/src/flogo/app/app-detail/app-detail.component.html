@@ -13,15 +13,6 @@
         .cls-1 {
           fill: none;
         }
-        .cls-2 {
-          isolation: isolate;
-        }
-        .cls-3 {
-          clip-path: url(#clip-path);
-        }
-        .cls-4 {
-          clip-path: url(#clip-path-2);
-        }
       </style>
       <clipPath id="clip-path">
         <rect class="cls-1" x="5.90633" y="7.87608" width="583.6575" height="583.6575" />
@@ -48,7 +39,9 @@
     >
       <defs>
         <style>
-          .cls-1{fill:none;}}
+          .cls-1 {
+            fill: none;
+          }
         </style>
         <clipPath id="clip-path">
           <rect
@@ -261,47 +254,16 @@
 </div>
 
 <div class="flogo-app-detail-commands">
-  <div class="menu-dropdown views-dropdown" (fgClickOutside)="closeViewsDropdown()">
-    <button
-      class="flogo-button--secondary views-dropdown-button"
-      (click)="toggleViewsDropdown()"
-      id="viewsMenuButton"
-      aria-haspopup="true"
-      [attr.aria-expanded]="isViewsDropdownShown"
-    >
-      <span class="views-dropdown-button__label" [class.active]="isViewsDropdownShown">{{
-        selectedViewTranslateKey | translate
-      }}</span>
-      <span
-        class="flogo-icon-back flogo-button-dropdown-caret views-dropdown-button__caret"
-        [ngClass]="{ active: isViewsDropdownShown }"
-      ></span>
-    </button>
-    <div
-      class="menu-dropdown__content views-dropdown__content"
-      aria-labelledby="viewsMenuButton"
-      [ngClass]="{ active: isViewsDropdownShown }"
-    >
-      <ul class="dropdown-list">
-        <li class="dropdown-list__item" (click)="showDetailsView('flows')">
-          <a class="dropdown-list__item-link">{{
-            'DETAILS-VIEW-MENU:FLOWS' | translate
-          }}</a>
-        </li>
-        <li class="dropdown-list__item" (click)="showDetailsView('triggers')">
-          <a class="dropdown-list__item-link">{{
-            'DETAILS-VIEW-MENU:TRIGGERS' | translate
-          }}</a>
-        </li>
-      </ul>
-    </div>
-    <button class="flogo-button--flat btn-create-flow" (click)="openCreateFlow()">
-      <i class="flogo-icon-add"></i>{{ 'DETAILS:NEW-FLOW' | translate }}
-    </button>
-  </div>
+  <flogo-resource-views-selector
+    [viewType]="resourceViewType"
+    (changeView)="resourceViewChanged($event)"
+  ></flogo-resource-views-selector>
+  <button class="flogo-button--flat btn-create-flow" (click)="openCreateFlow()">
+    <i class="flogo-icon-add"></i>{{ 'DETAILS:NEW-FLOW' | translate }}
+  </button>
 </div>
 
-<div class="content-empty" *ngIf="!flowGroups?.length">
+<div class="content-empty" *ngIf="(resourcesState.isEmpty$ | async)">
   <img src="/assets/svg/flogo.flynn-placeholder.svg" />
   <p class="content-empty__message">No flows found</p>
   <button class="flogo-button--default" (click)="openCreateFlow()">
@@ -309,23 +271,22 @@
   </button>
 </div>
 
-<ng-container *ngIf="isFlowsViewActive; else flowsGroupedByFlow">
-  <flogo-apps-flows-trigger-group
-    *ngFor="let triggerGroup of triggerGroups"
+<ng-container *ngIf="resourceViewType === 'resources'; else resourcesGroupedByTrigger">
+  <flogo-apps-resource-views-by-resource
+    *ngFor="let triggerGroup of (resourcesState.groupsByResource$ | async)"
     [triggers]="triggerGroup.triggers"
-    [flow]="triggerGroup.flow"
-    (flowSelected)="onFlowSelected($event)"
-    (deleteFlow)="onFlowDelete($event)"
-    (addFlow)="openCreateFlowFromTrigger($event)"
-  ></flogo-apps-flows-trigger-group>
+    [resource]="triggerGroup.flow"
+    (resourceSelected)="onFlowSelected($event)"
+    (deleteResource)="onFlowDelete($event)"
+  ></flogo-apps-resource-views-by-resource>
 </ng-container>
-<ng-template #flowsGroupedByFlow>
-  <flogo-apps-flows-flow-group
-    *ngFor="let flowGroup of flowGroups"
-    [trigger]="flowGroup.trigger"
-    [flows]="flowGroup.flows"
-    (flowSelected)="onFlowSelected($event)"
-    (deleteFlow)="onFlowDelete($event)"
-    (addFlow)="openCreateFlowFromTrigger($event)"
-  ></flogo-apps-flows-flow-group>
+<ng-template #resourcesGroupedByTrigger>
+  <flogo-apps-resource-views-by-trigger
+    *ngFor="let resourceGroup of (resourcesState.groupsByTrigger$ | async)"
+    [trigger]="resourceGroup.trigger"
+    [resources]="resourceGroup.flows"
+    (resourceSelected)="onFlowSelected($event)"
+    (deleteResource)="onFlowDelete($event)"
+    (addResource)="openCreateFlowFromTrigger($event)"
+  ></flogo-apps-resource-views-by-trigger>
 </ng-template>

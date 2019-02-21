@@ -10,7 +10,8 @@ import {
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
-const POPOVER_WIDTH = 344;
+// leave out some margin
+const POPOVER_WIDTH = 344 + 10;
 
 @Component({
   selector: 'flogo-delete-popover',
@@ -23,12 +24,7 @@ const POPOVER_WIDTH = 344;
       [style.width]="width + 'px'"
     >
       <p class="popup-content">
-        <span *ngIf="deleteContentType == 'application'">{{
-          'APP-LIST-POPUP:CONFIRM-MESSAGE-DELETE' | translate
-        }}</span>
-        <span *ngIf="deleteContentType == 'flow'">{{
-          'APP-DETAIL-POPUP:CONFIRM-MESSAGE-DELETE' | translate
-        }}</span>
+        <span>{{ i18nMessage | translate }}</span>
       </p>
       <button class="flogo-button--secondary" (click)="cancelDelete($event)">
         {{ 'APP-LIST-POPUP:DELETE-CANCEL' | translate | uppercase }}
@@ -84,7 +80,7 @@ export class FlogoDeletePopupComponent {
   readonly width = POPOVER_WIDTH;
   @HostBinding('class.always-visible') isPopupOpen = false;
   @Input() deleteContent: any;
-  @Input() deleteContentType: string;
+  @Input() i18nMessage: string;
   @Output() confirmDel: EventEmitter<any> = new EventEmitter();
   showLeft: boolean;
   private nativeElement: any;

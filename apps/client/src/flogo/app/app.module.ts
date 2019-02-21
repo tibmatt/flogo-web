@@ -10,17 +10,22 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ModalService } from '@flogo-web/client-core/modal';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
 
+import { AppDetailService, AppResourcesStateService } from './core';
 import { FlogoApplicationComponent } from './app.component';
 import { FlogoApplicationDetailComponent } from './app-detail/app-detail.component';
-import { AppDetailService } from './core/apps.service';
-import { FlogoApplicationFlowsComponent } from './shared/flows/flows.component';
-import { FlowGroupComponent } from './flow-group/flow-group.component';
 import { FlogoExportFlowsComponent } from './export-flows/export-flows.component';
-import { FlowTriggerGroupComponent } from './trigger-group/trigger-group.component';
 import { FlogoNewFlowComponent } from './new-flow/new-flow.component';
 import { TriggerShimBuildComponent } from './shim-trigger/shim-trigger.component';
 import { AppRoutingModule } from './app-routing.module';
 import { MissingTriggerConfirmationComponent } from './missing-trigger-confirmation';
+import {
+  ResourceBadgeComponent,
+  ResourceComponent,
+  ResourceListComponent,
+  ResourceViewsSelectorComponent,
+  ResourcesGroupByTriggerComponent,
+  ResourcesGroupByResourceComponent,
+} from './resource-views';
 
 @NgModule({
   imports: [
@@ -37,16 +42,18 @@ import { MissingTriggerConfirmationComponent } from './missing-trigger-confirmat
   declarations: [
     FlogoApplicationDetailComponent,
     FlogoApplicationComponent,
-    FlogoApplicationFlowsComponent,
-    FlowGroupComponent,
+    ResourceComponent,
     FlogoExportFlowsComponent,
-    FlowTriggerGroupComponent,
+    ResourceViewsSelectorComponent,
+    ResourcesGroupByTriggerComponent,
+    ResourcesGroupByResourceComponent,
     FlogoNewFlowComponent,
     TriggerShimBuildComponent,
     MissingTriggerConfirmationComponent,
+    ResourceBadgeComponent,
+    ResourceListComponent,
   ],
-  bootstrap: [],
-  providers: [AppDetailService, ModalService],
+  providers: [AppDetailService, AppResourcesStateService, ModalService],
   entryComponents: [
     FlogoExportFlowsComponent,
     TriggerShimBuildComponent,

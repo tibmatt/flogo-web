@@ -1,6 +1,6 @@
 <!-- class .flogo-group set in host element -->
 <div class="flogo-group__trigger">
-  <div class="flogo-trigger__container flogo-flow-trigger__container">
+  <div class="flogo-trigger__container flogo-resource-trigger__container">
     <svg class="trigger" viewBox="0 0 50 52" xmlns="http://www.w3.org/2000/svg">
       <ng-container *ngIf="trigger">
         <use
@@ -18,14 +18,18 @@
   </div>
   <i class="flogo-icon-trigger" [class.flogo-icon-trigger--empty]="!trigger"></i>
 </div>
-<flogo-apps-flows
-  class="flogo-group__flows"
-  [flows]="flows"
-  (flowSelected)="onSelect($event)"
-  (deleteFlow)="onDeleteFlow($event)"
-></flogo-apps-flows>
-<div class="add-flow-container">
-  <button class="add-flow flogo-button--flat" *ngIf="trigger" (click)="onAddFlow()">
+<flogo-apps-resource-list
+  class="flogo-group__resources"
+  [resources]="resources"
+  (resourceSelected)="onSelect($event)"
+  (deleteResource)="onDeleteResource($event)"
+></flogo-apps-resource-list>
+<div class="add-resource-container">
+  <button
+    class="add-resource flogo-button--flat"
+    *ngIf="trigger"
+    (click)="onAddResource()"
+  >
     <i class="flogo-icon-add"></i>{{ 'DETAILS:NEW-FLOW' | translate }}
   </button>
 </div>

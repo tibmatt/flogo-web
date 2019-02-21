@@ -2,13 +2,10 @@ import { defaultsDeep, cloneDeep } from 'lodash';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { AppsApiService, ErrorService } from '@flogo-web/client-core/services';
+import { App, AppsApiService, ErrorService } from '@flogo-web/client-core';
 
-import { App } from './app.interface';
 import { ApplicationDetail } from './application-detail.interface';
-import { TriggerGroup } from './trigger-group.interface';
-import { FlowGroup } from './flow-group.interface';
-import { App as BackendApp } from '@flogo-web/client-core';
+import { AppResourcesStateService } from './app-resources-state.service';
 
 const DEFAULT_STATE = {
   name: {
@@ -29,6 +26,7 @@ export class AppDetailService {
   private fetching: boolean;
 
   constructor(
+    private resourcesState: AppResourcesStateService,
     private appsApiService: AppsApiService,
     private errorService: ErrorService
   ) {}
@@ -43,13 +41,7 @@ export class AppDetailService {
 
   public load(appId: string) {
     this.fetchApp(appId).then(app => {
-      this.currentApp$.next(<ApplicationDetail>defaultsDeep(
-        {},
-        {
-          app: this.transform(app),
-          state: DEFAULT_STATE,
-        }
-      ));
+      this.setApp(app, DEFAULT_STATE);
     });
   }
 
@@ -61,13 +53,7 @@ export class AppDetailService {
     }
     this.fetchApp(currentApp.app.id).then(app => {
       const prevApp = this.currentApp$.getValue();
-      this.currentApp$.next(<ApplicationDetail>defaultsDeep(
-        {},
-        {
-          app: this.transform(app),
-          state: prevApp.state,
-        }
-      ));
+      this.setApp(app, prevApp.state);
     });
   }
 
@@ -93,7 +79,7 @@ export class AppDetailService {
           return;
         }
         const nextApp = this.getCurrentAsEditable();
-        nextApp.app = this.transform(updatedApp);
+        nextApp.app = updatedApp;
         nextApp.state[prop] = {
           pendingSave: false,
           hasErrors: false,
@@ -162,73 +148,19 @@ export class AppDetailService {
     });
   }
 
+  private setApp(app: App, state: ApplicationDetail['state']) {
+    this.currentApp$.next(<ApplicationDetail>defaultsDeep(
+      {},
+      {
+        app,
+        state,
+      }
+    ));
+    this.resourcesState.triggers = app.triggers;
+    this.resourcesState.resources = app.actions;
+  }
+
   private getCurrentAsEditable() {
     return cloneDeep(this.currentApp$.getValue());
-  }
-
-  private transform(app: App | BackendApp): App {
-    const triggers = app.triggers || [];
-    const actions = app.actions || [];
-    return <App>Object.assign(
-      {},
-      app,
-      {
-        flowGroups: this.makeFlowGroups(triggers, actions),
-      },
-      {
-        triggerGroups: this.makeTriggerGroups(triggers, actions),
-      }
-    );
-  }
-
-  private makeFlowGroups(triggers, actions): FlowGroup[] {
-    let handlers = [];
-    triggers.forEach(t => {
-      handlers = handlers.concat(t.handlers);
-    });
-    const orphanActions = actions.filter(a => !handlers.find(h => h.actionId === a.id));
-    const orphanActionMap = new Map(<[string, any][]>orphanActions.map(a => [a.id, a]));
-    const actionMap = new Map(<[string, any][]>actions.map(a => [a.id, a]));
-
-    const pullAction = actionId => {
-      const action = actionMap.get(actionId);
-      return action;
-    };
-
-    const triggerGroups = triggers
-      .map(trigger => {
-        return {
-          trigger: trigger,
-          flows: trigger.handlers.map(h => pullAction(h.actionId)).filter(flow => !!flow),
-        };
-      })
-      .filter(triggerGroup => triggerGroup.flows.length > 0);
-
-    // orphan flows
-    if (orphanActionMap.size) {
-      triggerGroups.unshift({
-        trigger: null,
-        flows: Array.from(orphanActionMap.values()),
-      });
-    }
-
-    return triggerGroups;
-  }
-
-  private makeTriggerGroups(triggers, actions): TriggerGroup[] {
-    return actions
-      .map(action => {
-        return {
-          flow: action,
-          triggers: triggers.filter(
-            t => !!t.handlers.find(h => h.actionId === action.id)
-          ),
-        };
-      })
-      .map(actionGroup => {
-        actionGroup.triggers =
-          actionGroup.triggers.length > 0 ? actionGroup.triggers : null;
-        return actionGroup;
-      });
   }
 }

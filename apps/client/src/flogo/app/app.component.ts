@@ -7,6 +7,7 @@ import { ApplicationDetail, AppDetailService } from './core';
 
 import { FlowsService } from '@flogo-web/client-core/services';
 import { NotificationsService } from '@flogo-web/client-core/notifications';
+import { DeleteEvent } from '@flogo-web/client/app/resource-views';
 
 @Component({
   selector: 'flogo-app',
@@ -60,9 +61,9 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
     this.router.navigate(['/resources', flow.id, 'flow']);
   }
 
-  public onFlowDeleted(eventData) {
+  public onFlowDeleted(eventData: DeleteEvent) {
     this.flowsService
-      .deleteFlowWithTrigger(eventData.flow.id, eventData.triggerId)
+      .deleteFlowWithTrigger(eventData.resource.id, eventData.triggerId)
       .then(() => {
         this.appService.reload();
       });
