@@ -25,7 +25,7 @@ import {
   ResourceBadgeComponent,
   ResourceViewsSelectorComponent,
 } from '../resource-views';
-import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
+import { NewResourceComponent } from '../new-resource/new-resource.component';
 import { TriggerShimBuildComponent } from '../shim-trigger/shim-trigger.component';
 
 @Component({
@@ -80,7 +80,7 @@ describe('FlogoApplicationDetailComponent component', () => {
         ResourceBadgeComponent,
         ContainerComponent,
         FlogoExportFlowsComponent,
-        FlogoNewFlowComponent,
+        NewResourceComponent,
         TriggerShimBuildComponent,
         ResourceViewsSelectorComponent,
       ], // declare the test component

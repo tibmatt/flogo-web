@@ -1,44 +1,53 @@
-import { Component, HostBinding, Inject } from '@angular/core';
+import { Component, HostBinding, Inject, HostListener } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 
 import { MODAL_TOKEN, modalAnimate, ModalControl } from '@flogo-web/client-core/modal';
-import { ResourceService } from '@flogo-web/client-core';
+import { ResourceService, ResourcePluginManifest } from '@flogo-web/client-core';
+
+import { RESOURCE_PLUGINS_CONFIG } from '../../core';
 import { UniqueNameValidator } from './unique-name.validator';
 
-export interface NewFlowData {
+export interface NewResourceData {
   appId: string;
   triggerId?: string;
 }
 
 @Component({
-  selector: 'flogo-new-flow',
-  templateUrl: 'new-flow.component.html',
-  styleUrls: ['new-flow.component.less'],
+  selector: 'flogo-new-resource',
+  templateUrl: 'new-resource.component.html',
+  styleUrls: ['new-resource.component.less'],
   animations: modalAnimate,
 })
-export class FlogoNewFlowComponent {
+export class NewResourceComponent {
   @HostBinding('@modalAnimate')
-  public flow: FormGroup;
+  public resource: FormGroup;
   private triggerId: string;
 
   constructor(
+    @Inject(RESOURCE_PLUGINS_CONFIG) public resourceTypes: ResourcePluginManifest[],
+    @Inject(MODAL_TOKEN) private newFlowData: NewResourceData,
     private resourceService: ResourceService,
     private formBuilder: FormBuilder,
-    @Inject(MODAL_TOKEN) public newFlowData: NewFlowData,
     public control: ModalControl
   ) {
     this.resetForm();
   }
 
-  public createFlow({ value }: { value: { name: string; description?: string } }) {
+  public createFlow({
+    value,
+  }: {
+    value: { name: string; description?: string; type: string };
+  }) {
     this.control.close({
       triggerId: this.newFlowData.triggerId,
       name: value.name,
       description: value.description,
+      type: value.type,
     });
     this.resetForm();
   }
 
+  @HostListener('document:keydown.escape')
   public closeAddFlowModal() {
     this.resetForm();
     this.newFlowData.triggerId = null;
@@ -46,7 +55,8 @@ export class FlogoNewFlowComponent {
   }
 
   private resetForm() {
-    this.flow = this.formBuilder.group({
+    const [defaultTypeInfo] = this.resourceTypes;
+    this.resource = this.formBuilder.group({
       name: [
         '',
         [],
@@ -57,6 +67,7 @@ export class FlogoNewFlowComponent {
         ]),
       ],
       description: [''],
+      type: [defaultTypeInfo.type, Validators.required],
     });
   }
 }

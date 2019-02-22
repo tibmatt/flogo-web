@@ -40,7 +40,10 @@ import {
   FlowGroup,
   AppResourcesStateService,
 } from '../core';
-import { FlogoNewFlowComponent, NewFlowData } from '../new-flow/new-flow.component';
+import {
+  NewResourceComponent,
+  NewResourceData,
+} from '../new-resource/new-resource.component';
 import {
   ExportFlowsData,
   FlogoExportFlowsComponent,
@@ -181,10 +184,6 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
       });
   }
 
-  openCreateFlow() {
-    this.openNewFlowModal();
-  }
-
   buildApp({ os, arch }) {
     this.closeBuildBox();
     this.confirmActionWhenMissingTriggers('build')
@@ -203,26 +202,23 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   openCreateFlowFromTrigger(trigger: Trigger) {
-    this.openNewFlowModal(trigger.id);
+    this.openCreateResource(trigger.id);
   }
 
-  private openNewFlowModal(triggerId?) {
-    const newFlowData: NewFlowData = { appId: this.application.id };
+  openCreateResource(triggerId?: string) {
+    const newFlowData: NewResourceData = { appId: this.application.id };
     if (triggerId) {
       newFlowData.triggerId = triggerId;
     }
     return this.modalService
-      .openModal<NewFlowData>(FlogoNewFlowComponent, newFlowData)
+      .openModal<NewResourceData>(NewResourceComponent, newFlowData)
       .result.pipe(filter(Boolean))
-      .subscribe(({ name, description }) => {
-        this.appDetailService.createResource(
-          { name, description, type: 'flow' },
-          triggerId
-        );
+      .subscribe(({ name, description, type }) => {
+        this.appDetailService.createResource({ name, description, type }, triggerId);
       });
   }
 
-  onClickAddDescription(event) {
+  onClickAddDescription() {
     this.isDescriptionInEditMode = true;
   }
 
