@@ -101,7 +101,7 @@ function getSampleFlowResource(): Resource {
               input: [
                 {
                   type: 'literal',
-                  value: 12345,
+                  value: 'world',
                   mapTo: 'message',
                 },
               ],
