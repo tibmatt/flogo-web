@@ -1,7 +1,6 @@
 import {
   assign,
   get,
-  isObject,
   isUndefined,
   uniqueId,
   cloneDeep,
@@ -9,6 +8,9 @@ import {
   trimStart,
 } from 'lodash';
 import { ValueType, FLOGO_TASK_TYPE } from '../constants';
+import {
+  isMapperActivity
+} from '@flogo-web/plugins/flow-core';
 
 export function flogoGenTriggerID(): string {
   return `Flogo::Trigger::${Date.now()}`;
@@ -46,40 +48,6 @@ function portAttribute(
   }
 
   return outAttr;
-}
-
-/**
- * Finds out if an activity schema represents a mapper activity.
- * To be considered a mapper activity the schema should have at least one input property that declares
- * a display.mapper propert as true.
- * @example
- *  {
- *    input: [ {
- *      name: "prop",
- *      type: "array",
- *      "display": {
- *           "description": "Return Mapping",
- *           "name": "Mapper",
- *           "type": "mapper",
- *           "mapper_output_scope" : "action.ouput"
- *         }
- *      } ]
- *  }
- * @param activitySchema
- * @return {boolean}
- */
-export function isMapperActivity(activitySchema: any) {
-  const hasOutputMapperDefinition = get(activitySchema, 'settings', []).find(
-    isOutputMapper
-  );
-  return Boolean(hasOutputMapperDefinition);
-
-  function isOutputMapper(inputDefinition) {
-    if (isObject(inputDefinition.display)) {
-      return inputDefinition.display.type === 'mapper';
-    }
-    return false;
-  }
 }
 
 export function activitySchemaToTask(schema: any): any {

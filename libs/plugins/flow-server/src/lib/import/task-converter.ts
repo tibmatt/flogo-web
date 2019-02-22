@@ -4,11 +4,13 @@ import { EXPR_PREFIX } from '@flogo-web/core';
 import {
   REF_SUBFLOW,
   FLOGO_TASK_TYPE,
-  isOutputMapperField,
   TASK_TYPE,
   EXPRESSION_TYPE,
   parseResourceIdFromResourceUri,
 } from '@flogo-web/server/core';
+import {
+  isOutputMapperField
+} from '@flogo-web/plugins/flow-core';
 import { normalizeIteratorValue } from './normalize-iterator-value';
 
 export class TaskConverter {
