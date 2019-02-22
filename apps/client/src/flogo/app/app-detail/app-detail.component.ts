@@ -13,12 +13,11 @@ import {
 import { Observable, of as observableOf, combineLatest } from 'rxjs';
 import { switchMap, map, take, tap, filter, shareReplay } from 'rxjs/operators';
 
-import { App, Trigger } from '@flogo-web/core';
+import { App, Trigger, CONTRIB_REFS } from '@flogo-web/core';
 import {
   LanguageService,
   FlowSummary,
   ERROR_CODE,
-  CONTRIB_REF_PLACEHOLDER,
   LocalStorageService,
   SanitizeService,
   ShimTriggerBuildApiService,
@@ -303,7 +302,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   showShimTriggerList(ref) {
-    const isLambdaTrigger = ref === CONTRIB_REF_PLACEHOLDER.REF_LAMBDA;
+    const isLambdaTrigger = ref === CONTRIB_REFS.LAMBDA;
     this.resourcesState.groupsByTrigger$
       .pipe(
         take(1),
@@ -454,13 +453,13 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
 
 function getShimmableTriggerBuildOption(shimmableTriggerDetail: ContribSchema) {
   switch (shimmableTriggerDetail.ref) {
-    case CONTRIB_REF_PLACEHOLDER.REF_LAMBDA:
+    case CONTRIB_REFS.LAMBDA:
       return {
         label: this.translate.instant('TRIGGER-SHIM:SERVERLESS-APP'),
         ref: shimmableTriggerDetail.ref,
       };
       break;
-    case CONTRIB_REF_PLACEHOLDER.REF_CLI:
+    case CONTRIB_REFS.CLI:
       return {
         label: this.translate.instant('TRIGGER-SHIM:CLI-APP'),
         ref: shimmableTriggerDetail.ref,

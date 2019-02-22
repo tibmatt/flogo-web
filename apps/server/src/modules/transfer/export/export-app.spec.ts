@@ -30,7 +30,7 @@ function getAppToExport(): App {
       {
         id: 'UOIarucDh',
         name: 'Receive HTTP Message',
-        ref: 'github.com/project-flogo/contrib/trigger/rest',
+        ref: 'some_path_to_repo/trigger/rest',
         description: 'Simple REST Trigger',
         settings: {
           port: 3333,
@@ -84,7 +84,7 @@ function getExpectedApp(): FlogoAppModel.App {
     triggers: [
       {
         id: 'receive_http_message',
-        ref: 'github.com/project-flogo/contrib/trigger/rest',
+        ref: 'some_path_to_repo/trigger/rest',
         name: 'Receive HTTP Message',
         description: 'Simple REST Trigger',
         settings: {
@@ -93,7 +93,7 @@ function getExpectedApp(): FlogoAppModel.App {
         handlers: [
           {
             action: {
-              ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow',
+              ref: 'github.com/project-flogo/flow',
               data: {
                 flowURI: 'res://flow:some_flow',
               },
@@ -127,14 +127,14 @@ function getExpectedApp(): FlogoAppModel.App {
 function getContributionSchemas(): Array<[string, ContributionSchema]> {
   return [
     [
-      'github.com/project-flogo/contrib/trigger/rest',
+      'some_path_to_repo/trigger/rest',
       {
         name: 'flogo-rest',
         type: 'flogo:trigger',
         version: '0.0.2',
         title: 'Receive HTTP Message',
         description: 'Simple REST Trigger',
-        homepage: 'https://github.com/project-flogo/contrib/tree/master/trigger/rest',
+        homepage: 'some_path_to_repo/tree/master/trigger/rest',
         settings: [
           {
             name: 'port',

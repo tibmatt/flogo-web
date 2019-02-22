@@ -3,11 +3,11 @@
     "id": "github-com-tibco-software-flogo-contrib-trigger-rest",
     "name": "tibco-rest",
     "type": "flogo:trigger",
-    "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+    "ref": "some_path_to_repo/trigger/rest",
     "version": "0.0.1",
     "title": "Receive HTTP Message",
     "description": "Simple REST Trigger",
-    "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest",
+    "homepage": "some_path_to_repo/tree/master/trigger/rest",
     "endpoint": {
       "settings": [
         {
@@ -106,11 +106,11 @@
     "id": "github-com-tibco-software-flogo-contrib-trigger-timer",
     "name": "tibco-timer",
     "type": "flogo:trigger",
-    "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer",
+    "ref": "some_path_to_repo/trigger/timer",
     "version": "0.0.1",
     "title": "Timer",
     "description": "Simple Timer trigger",
-    "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer",
+    "homepage": "some_path_to_repo/tree/master/trigger/timer",
     "endpoint": {
       "settings": [
         {

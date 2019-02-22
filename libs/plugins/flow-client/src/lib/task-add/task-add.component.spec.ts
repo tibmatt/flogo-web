@@ -9,7 +9,7 @@ import { FlogoFlowService } from '../core';
 import { TASKADD_OPTIONS, TaskAddComponent } from './task-add.component';
 import { TaskAddModule } from './task-add.module';
 import { TaskAddOptions } from './core/task-add-options';
-import { CONTRIB_REF_PLACEHOLDER } from '@flogo-web/client-core';
+import { CONTRIB_REFS } from '@flogo-web/core';
 
 describe('Component: TaskAddComponent', () => {
   let component: TaskAddComponent;
@@ -17,15 +17,15 @@ describe('Component: TaskAddComponent', () => {
   const mockOptions: TaskAddOptions = {
     activities$: of([
       {
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        ref: 'some_path_to_repo/activity/log',
         title: 'Log message',
       },
       {
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
+        ref: 'some_path_to_repo/activity/counter',
         title: 'Counter',
       },
       {
-        ref: CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW,
+        ref: CONTRIB_REFS.SUBFLOW,
         title: 'Start a subflow',
       },
     ]),
@@ -106,7 +106,7 @@ describe('Component: TaskAddComponent', () => {
     fixture.detectChanges();
     const [ref] = spySelectActivity.calls.mostRecent().args;
     expect(spySelectActivity).toHaveBeenCalledTimes(1);
-    expect(ref).toEqual('github.com/TIBCOSoftware/flogo-contrib/activity/counter');
+    expect(ref).toEqual('some_path_to_repo/activity/counter');
   });
 
   it('should open installer and mark the popover to keep active', () => {

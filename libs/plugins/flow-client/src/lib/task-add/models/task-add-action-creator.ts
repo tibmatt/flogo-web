@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
 import {
-  CONTRIB_REF_PLACEHOLDER,
   ItemActivityTask,
   ItemSubflow,
   NodeType,
@@ -21,6 +20,7 @@ import { PayloadOf } from '../../core/state/utils';
 import { makeNode } from '../../core/models/graph-and-items/graph-creator';
 import { HandlerType, InsertTaskSelection } from '../../core/models';
 import { uniqueTaskName } from '../../core/models/unique-task-name';
+import { CONTRIB_REFS } from '@flogo-web/core';
 
 interface TaskAddData {
   ref: string;
@@ -81,7 +81,7 @@ function createNewTask(
 
 function createTask({ data, activitySchema, mainItems, errorItems }) {
   let task;
-  if (data.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
+  if (data.ref === CONTRIB_REFS.SUBFLOW) {
     const {
       flowData: { name, description, id: actionId },
     } = data;

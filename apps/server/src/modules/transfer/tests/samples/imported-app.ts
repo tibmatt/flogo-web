@@ -10,7 +10,7 @@ export const importedApp = {
   triggers: [
     expect.objectContaining({
       id: expect.any(String),
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+      ref: 'some_path_to_repo/trigger/rest',
       name: 'Receive HTTP Message',
       description: 'Simple REST Trigger',
       createdAt: expect.any(String),

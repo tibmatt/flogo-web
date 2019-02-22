@@ -41,7 +41,7 @@ const TRIGGERS_HANDLERS = {
     trigger1: {
       id: 'trigger1',
       name: 'Receive HTTP Message',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+      ref: 'some_path_to_repo/trigger/rest',
       description: 'Simple REST Trigger',
       settings: {
         port: null,
@@ -84,7 +84,7 @@ const TRIGGERS_HANDLERS = {
       name: 'Timer',
       createdAt: '',
       updatedAt: '',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/timer',
+      ref: 'some_path_to_repo/trigger/timer',
       description: 'Simple Timer Trigger',
       settings: {
         port: null,

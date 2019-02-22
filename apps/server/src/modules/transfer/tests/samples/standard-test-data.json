@@ -30,7 +30,7 @@
             "name": "log_2",
             "description": "",
             "type": 1,
-            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+            "activityRef": "some_path_to_repo/activity/log",
             "settings": {},
             "inputMappings": {
               "message": "=\"$flow.id\""
@@ -45,7 +45,7 @@
               "name": "log_6",
               "description": "",
               "type": 1,
-              "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+              "activityRef": "some_path_to_repo/activity/log",
               "settings": {},
               "inputMappings": {
                 "message": "log in error handler"
@@ -59,7 +59,7 @@
     "extractTriggers": [
       {
         "id": "receive_http_message",
-        "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+        "ref": "some_path_to_repo/trigger/rest",
         "name": "Receive HTTP Message",
         "description": "Simple REST Trigger",
         "settings": {
@@ -74,7 +74,7 @@
               "useReplyHandler": "true"
             },
             "action": {
-              "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+              "ref": "github.com/project-flogo/flow",
               "data": {
                 "flowURI": "res://flow:get_status"
               },
@@ -140,7 +140,7 @@
       {
         "trigger": {
           "id": "receive_http_message",
-          "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+          "ref": "some_path_to_repo/trigger/rest",
           "name": "Receive HTTP Message",
           "description": "Simple REST Trigger",
           "settings": {
@@ -155,7 +155,7 @@
                 "useReplyHandler": "true"
               },
               "action": {
-                "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+                "ref": "github.com/project-flogo/flow",
                 "data": {
                   "flowURI": "res://flow:get_status"
                 },

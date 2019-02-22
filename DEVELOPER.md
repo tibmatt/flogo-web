@@ -37,11 +37,10 @@ This document describes how to set up your development environment to build, run
 - [Docker and docker-compose](https://www.docker.com) for Mac or Windows or Linux (https://www.docker.com) 17.12.0 or later
 - [NodeJS 10.14 or greater](https://nodejs.org/en/download/releases/)
 - [yarn v1.9.4 or grater](https://yarnpkg.com)
-- [Latest Flogo CLI (flogo-cli)](https://github.com/TIBCOSoftware/flogo-cli)
+- [Latest Flogo CLI (flogo-cli)](https://github.com/project-flogo/cli)
   - The following will be necessary and they should be installed as part of installing the flogo-cli tool:
-    - GO Lang v1.10 - Follow the instructions here https://golang.org/doc/install
-    - [Go dep](https://golang.github.io/dep/)
-    - Make sure you add $GOPATH/bin to your$PATH variable. Instructions related to the \$GOPATH variable are found in the above link in the ["Test your installation" section](https://golang.org/doc/install#testing)
+    - GO Lang v1.11 or greater - Follow the instructions here https://golang.org/doc/install
+    - Make sure you add $GOPATH/bin to your $PATH variable. Instructions related to the \$GOPATH variable are found in the above link in the ["Test your installation" section](https://golang.org/doc/install#testing)
 
 ### Getting the Sources
 

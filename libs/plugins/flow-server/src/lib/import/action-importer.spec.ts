@@ -1,6 +1,5 @@
-import { Resource } from '@flogo-web/core';
+import { Resource, CONTRIB_REFS } from '@flogo-web/core';
 import { createActionImporter } from './create-action-importer';
-import { REF_SUBFLOW } from '@flogo-web/server/core';
 
 test('It imports an action', () => {
   const actionImporter = createActionImporter();
@@ -19,7 +18,7 @@ test('It errors if an activity is not installed', () => {
   expect.assertions(1);
   try {
     actionImporter.importAction(flowResource, {
-      contributions: new Map<string, any>([[REF_SUBFLOW, {}]]),
+      contributions: new Map<string, any>([[CONTRIB_REFS.SUBFLOW, {}]]),
       normalizedTriggerIds: new Map(),
       normalizedResourceIds: new Map(),
     });
@@ -76,7 +75,7 @@ function getSampleFlowResource(): Resource {
           name: 'Log Message',
           description: 'Simple Log Activity',
           activity: {
-            ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+            ref: 'some_path_to_repo/activity/log',
             input: {},
             mappings: {
               input: [
@@ -94,13 +93,13 @@ function getSampleFlowResource(): Resource {
           name: 'Log Message 2',
           description: 'Simple Log Activity 2',
           activity: {
-            ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+            ref: 'some_path_to_repo/activity/log',
             input: {},
             mappings: {
               input: [
                 {
                   type: 'literal',
-                  value: 'world',
+                  value: 12345,
                   mapTo: 'message',
                 },
               ],
@@ -111,7 +110,7 @@ function getSampleFlowResource(): Resource {
           id: 'subflow_1',
           name: 'Subflow',
           activity: {
-            ref: REF_SUBFLOW,
+            ref: CONTRIB_REFS.SUBFLOW,
             settings: {
               flowURI: 'res://flow:somesubflow',
             },
@@ -124,7 +123,7 @@ function getSampleFlowResource(): Resource {
           {
             id: 'log_6',
             activity: {
-              ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+              ref: 'some_path_to_repo/activity/log',
               input: {
                 message: 'log in error handler',
               },
@@ -169,7 +168,7 @@ function getExpectedImport() {
           name: 'Log Message',
           description: 'Simple Log Activity',
           type: 1,
-          activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+          activityRef: 'some_path_to_repo/activity/log',
           settings: {},
           inputMappings: {
             message: 'hello',
@@ -180,10 +179,10 @@ function getExpectedImport() {
           name: 'Log Message 2',
           description: 'Simple Log Activity 2',
           type: 1,
-          activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+          activityRef: 'some_path_to_repo/activity/log',
           settings: {},
           inputMappings: {
-            message: 'world',
+            message: 12345,
           },
         },
         {
@@ -191,8 +190,8 @@ function getExpectedImport() {
           type: 4,
           name: 'Subflow',
           description: '',
-          activityRef: REF_SUBFLOW,
-          inputMappings: {},
+          activityRef: CONTRIB_REFS.SUBFLOW,
+          inputMappings: expect.any(Object),
           settings: {
             flowPath: 'updatedSubflowId',
           },
@@ -213,7 +212,7 @@ function getExpectedImport() {
             name: 'log_6',
             description: '',
             type: 1,
-            activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+            activityRef: 'some_path_to_repo/activity/log',
             settings: {},
             inputMappings: {
               message: 'log in error handler',
@@ -229,16 +228,15 @@ function getExpectedImport() {
 function getContributions() {
   return new Map<string, any>([
     [
-      'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      'some_path_to_repo/activity/log',
       {
         name: 'tibco-log',
         type: 'flogo:activity',
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        ref: 'some_path_to_repo/activity/log',
         version: '0.0.1',
         title: 'Log Message',
         description: 'Simple Log Activity',
-        homepage:
-          'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
+        homepage: 'some_path_to_repo/tree/master/activity/log',
         input: [
           {
             name: 'message',
@@ -264,6 +262,6 @@ function getContributions() {
         ],
       },
     ],
-    [REF_SUBFLOW, { ref: REF_SUBFLOW }],
+    [CONTRIB_REFS.SUBFLOW, { ref: CONTRIB_REFS.SUBFLOW }],
   ]);
 }

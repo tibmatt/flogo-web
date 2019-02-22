@@ -1,10 +1,10 @@
-import { REF_SUBFLOW } from './constants';
 import { safeGetTasksInHandler } from './flow';
 import {
   TASK_HANDLER_NAME_ERROR,
   TASK_HANDLER_NAME_ROOT,
   FLOGO_TASK_TYPE,
 } from './constants';
+import { CONTRIB_REFS } from '@flogo-web/core';
 
 export function actionHasSubflowTasks(action) {
   return (
@@ -14,7 +14,10 @@ export function actionHasSubflowTasks(action) {
 }
 
 export function isSubflowTask(task) {
-  return task.type === FLOGO_TASK_TYPE.TASK_SUB_PROC || task.activityRef === REF_SUBFLOW;
+  return (
+    task.type === FLOGO_TASK_TYPE.TASK_SUB_PROC ||
+    task.activityRef === CONTRIB_REFS.SUBFLOW
+  );
 }
 
 /**

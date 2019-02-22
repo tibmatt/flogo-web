@@ -101,7 +101,7 @@ Response
       "description": "My trigger description",
       "updatedAt": "017-07-14T01:00:00+01:00Z",
       "createdAt": "017-07-14T01:00:00+01:00Z",
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+      "ref": "some_path_to_repo/trigger/rest",
       "settings": {
         "port": "9233"
       },
@@ -124,7 +124,7 @@ Response
       "id": "my_simple_flow",
       "name": "My simple flow",
       "description": "A simple flow description",
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/incubator/flow",
+      "ref": "github.com/project-flogo/flow",
       "updatedAt": "017-07-14T01:00:00+01:00Z",
       "createdAt": "017-07-14T01:00:00+01:00Z",
       "data": {
@@ -136,7 +136,7 @@ Response
               {
                 "id": 2,
                 "type": 1,
-                "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                "activityRef": "some_path_to_repo/activity/log",
                 "name": "log attr value",
                 "description": "",
                 "attributes": [
@@ -152,7 +152,7 @@ Response
               {
                 "id": 3,
                 "type": 1,
-                "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/reply",
+                "activityRef": "some_path_to_repo/activity/reply",
                 "name": "reply",
                 "description": "",
                 "attributes": [
@@ -194,7 +194,7 @@ Request: `GET /apps/{appId}/triggers`
       "description": "My trigger description",
       "updatedAt": "017-07-14T01:00:00+01:00Z",
       "createdAt": "017-07-14T01:00:00+01:00Z",
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+      "ref": "some_path_to_repo/trigger/rest",
       "settings": {
         "port": "9233"
       },
@@ -227,7 +227,7 @@ Empty flow, for example when just created:
      "id": "my_simple_flow",
      "name": "My simple flow",
      "description": "A simple description",
-     "ref": "github.com/TIBCOSoftware/flogo-contrib/incubator/flow",
+     "ref": "github.com/project-flogo/flow",
      "updatedAt": "017-07-14T01:00:00+01:00Z",
      "createdAt": "017-07-14T01:00:00+01:00Z",
      "trigger": null,
@@ -249,7 +249,7 @@ Action with flow, trigger and handler:
      "appId": "aXedsx" ,
      "name": "My simple flow",
      "description": "A simple description",
-     "ref": "github.com/TIBCOSoftware/flogo-contrib/incubator/flow",
+     "ref": "github.com/project-flogo/flow",
      "updatedAt": "017-07-14T01:00:00+01:00Z",
      "createdAt": "017-07-14T01:00:00+01:00Z",
      "trigger": {
@@ -258,7 +258,7 @@ Action with flow, trigger and handler:
        "description": "My trigger description",
        "updatedAt": "017-07-14T01:00:00+01:00Z",
        "createdAt": "017-07-14T01:00:00+01:00Z",
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+       "ref": "some_path_to_repo/trigger/rest",
        "settings": {
          "port": "9233"
        },
@@ -295,7 +295,7 @@ Action with flow, trigger and handler:
            "tasks": [{
                "id": 2,
                "type": 1,
-               "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+               "activityRef": "some_path_to_repo/activity/log",
                "name": "log attr value",
                "description": "",
                "attributes": [],
@@ -308,7 +308,7 @@ Action with flow, trigger and handler:
              {
                "id": 3,
                "type": 1,
-               "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/reply",
+               "activityRef": "some_path_to_repo/activity/reply",
                "name": "reply",
                "description": "",
                "attributes": [{

@@ -1,8 +1,7 @@
 import { isUndefined, isArray, isPlainObject } from 'lodash';
 
-import { EXPR_PREFIX } from '@flogo-web/core';
+import { EXPR_PREFIX, CONTRIB_REFS } from '@flogo-web/core';
 import {
-  REF_SUBFLOW,
   FLOGO_TASK_TYPE,
   TASK_TYPE,
   EXPRESSION_TYPE,
@@ -65,7 +64,7 @@ export class TaskConverter {
   }
 
   isSubflowTask() {
-    return this.resourceTask.activity.ref === REF_SUBFLOW;
+    return this.resourceTask.activity.ref === CONTRIB_REFS.SUBFLOW;
   }
 
   isIteratorTask() {

@@ -2,9 +2,9 @@ import { inject, injectable } from 'inversify';
 import { escapeRegExp, fromPairs, isEqual, pick } from 'lodash';
 import shortid from 'shortid';
 
-import { App } from '@flogo-web/core';
+import { App, CONTRIB_REFS } from '@flogo-web/core';
 
-import { EXPORT_MODE, REF_TRIGGER_LAMBDA } from '../../common/constants';
+import { EXPORT_MODE } from '../../common/constants';
 
 import { normalizeName } from '../transfer/export/utils/normalize-name';
 import { AppImporter } from './app-importer';
@@ -212,7 +212,7 @@ export class AppsService {
         type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND,
       });
     }
-    const build = trigger.ref === REF_TRIGGER_LAMBDA ? buildPlugin : buildBinary;
+    const build = trigger.ref === CONTRIB_REFS.LAMBDA ? buildPlugin : buildBinary;
     return build(() => this.export(trigger.appId), {
       ...options,
       shimTriggerId: normalizeName(trigger.name),

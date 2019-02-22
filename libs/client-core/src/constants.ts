@@ -100,12 +100,6 @@ export const TRIGGER_MENU_OPERATION = {
   DELETE: 'delete',
 };
 
-export const CONTRIB_REF_PLACEHOLDER = {
-  REF_SUBFLOW: 'github.com/project-flogo/flow/activity/subflow',
-  REF_LAMBDA: 'github.com/project-flogo/contrib/trigger/lambda',
-  REF_CLI: 'github.com/project-flogo/contrib/trigger/cli',
-};
-
 export const TYPE_ATTR_ASSIGNMENT = 1;
 export const TYPE_LITERAL_ASSIGNMENT = 2;
 export const TYPE_EXPRESSION_ASSIGNMENT = 3;

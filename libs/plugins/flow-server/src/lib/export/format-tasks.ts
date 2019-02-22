@@ -1,5 +1,5 @@
-import { ContributionSchema } from '@flogo-web/core';
-import { REF_SUBFLOW, isSubflowTask } from '@flogo-web/server/core';
+import { ContributionSchema, CONTRIB_REFS } from '@flogo-web/core';
+import { isSubflowTask } from '@flogo-web/server/core';
 import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 import { TaskFormatter } from './task-formatter';
 
@@ -11,7 +11,7 @@ export function formatTasks(
   const taskFormatter = new TaskFormatter(resourceIdReconciler);
   return tasks.map(task => {
     if (isSubflowTask(task)) {
-      task = { ...task, activityRef: REF_SUBFLOW };
+      task = { ...task, activityRef: CONTRIB_REFS.SUBFLOW };
     }
     const isMapperType = isMapperActivity(contributions.get(task.activityRef));
     return taskFormatter.setSourceTask(task).convert(isMapperType);

@@ -1,1 +1,1 @@
-export const SCHEMA_NAMESPACE = 'http://github.com/TIBCOSoftware/flogo/schemas/1.0.0';
+export const SCHEMA_NAMESPACE = 'http://github.com/project-flogo/webui/schemas/1.0.0';

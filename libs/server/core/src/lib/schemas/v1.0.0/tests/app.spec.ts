@@ -82,7 +82,7 @@ describe('JSONSchema: App', () => {
   function generateValidSchemas() {
     const trigger = {
       id: 'trigger1',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli',
+      ref: 'some_path_to_repo/trigger/cli',
     };
     const resource = { id: 'flow:test', data: {} };
 

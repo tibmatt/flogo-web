@@ -10,7 +10,7 @@ As per flogo engine the name property of actions are not mandatory and are to be
 "actions": [
     {
       "id": "test_flow",
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+      "ref": "github.com/project-flogo/flow",
       "data": {
         "flow": {
           "name": "Test Flow",  <--- Here
@@ -31,7 +31,7 @@ But flogo-web required the flow names at the action's root definition as follows
 "actions": [
     {
       "id": "test_flow",
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+      "ref": "github.com/project-flogo/flow",
       "name": "Test Flow",  <--- Here
       "data": {
         "flow": {

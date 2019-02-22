@@ -1,21 +1,21 @@
 import { normalizeContribUrl } from './url-parser';
 
 const assertParsedEquals = (url, expected) =>
-  expect(normalizeContribUrl(url)).toEqual(expected, `Incorrect parse for ${url}`);
+  expect(normalizeContribUrl(url)).toEqual(expected);
 
 describe('parse', () => {
   it('should parse url', function() {
     assertParsedEquals(
-      'github.com/TIBCOSoftware/flogo-contrib/activity/rest',
-      'github.com/TIBCOSoftware/flogo-contrib/activity/rest'
+      'github.com/project-flogo/contrib/activity/rest',
+      'github.com/project-flogo/contrib/activity/rest'
     );
     assertParsedEquals(
-      'github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/rest',
-      'github.com/TIBCOSoftware/flogo-contrib/activity/rest'
+      'github.com/project-flogo/contrib/tree/master/activity/rest',
+      'github.com/project-flogo/contrib/activity/rest'
     );
     assertParsedEquals(
-      'https://github.com/TIBCOSoftware/rootrepo',
-      'github.com/TIBCOSoftware/rootrepo'
+      'https://github.com/project-flogo/rootrepo',
+      'github.com/project-flogo/rootrepo'
     );
     assertParsedEquals('https://some.other.url/a/b', 'some.other.url/a/b');
     assertParsedEquals('some.other.url/a/b', 'some.other.url/a/b');

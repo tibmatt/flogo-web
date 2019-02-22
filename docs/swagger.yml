@@ -70,7 +70,7 @@ info:
         "description": "My trigger description",
         "updatedAt": "017-07-14T01:00:00+01:00Z",
         "createdAt": "017-07-14T01:00:00+01:00Z",
-        "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+        "ref": "github.com/project-flogo/contrib/trigger/rest",
         "settings": {
           "port": "9233"
         },
@@ -101,7 +101,7 @@ info:
               "tasks": [{
                   "id": 2,
                   "type": 1,
-                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                  "activityRef": "github.com/project-flogo/contrib/activity/log",
                   "name": "log attr value",
                   "description": "",
                   "attributes": [],
@@ -114,7 +114,7 @@ info:
                 {
                   "id": 3,
                   "type": 1,
-                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/reply",
+                  "activityRef": "github.com/project-flogo/contrib/activity/actreply",
                   "name": "reply",
                   "description": "",
                   "attributes": [{
@@ -359,7 +359,7 @@ paths:
                     "description": "My trigger description",
                     "updatedAt": "017-07-14T01:00:00+01:00Z",
                     "createdAt": "017-07-14T01:00:00+01:00Z",
-                    "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+                    "ref": "github.com/project-flogo/contrib/trigger/rest",
                     "settings": {
                       "port": "9233"
                     },
@@ -864,7 +864,7 @@ responses:
             "id": "my_simple_flow",
             "name": "My simple flow",
             "description": "A simple description",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/incubator/flow",
+            "ref": "github.com/project-flogo/flow",
             "updatedAt": "017-07-14T01:00:00+01:00Z",
             "createdAt": "017-07-14T01:00:00+01:00Z",
             "trigger": {
@@ -873,7 +873,7 @@ responses:
               "description": "My trigger description",
               "updatedAt": "017-07-14T01:00:00+01:00Z",
               "createdAt": "017-07-14T01:00:00+01:00Z",
-              "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+              "ref": "github.com/project-flogo/contrib/trigger/rest",
               "settings": {
                 "port": "9233"
               },
@@ -910,7 +910,7 @@ responses:
                   "tasks": [{
                       "id": 2,
                       "type": 1,
-                      "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                      "activityRef": "github.com/project-flogo/contrib/activity/log",
                       "name": "log attr value",
                       "description": "",
                       "attributes": [],
@@ -923,7 +923,7 @@ responses:
                     {
                       "id": 3,
                       "type": 1,
-                      "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/reply",
+                      "activityRef": "github.com/project-flogo/contrib/activity/actreply",
                       "name": "reply",
                       "description": "",
                       "attributes": [{

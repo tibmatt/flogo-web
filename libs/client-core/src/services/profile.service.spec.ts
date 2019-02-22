@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 import { FlogoProfileService } from './profile.service';
 import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
 import Spy = jasmine.Spy;
-import { CONTRIB_REF_PLACEHOLDER } from '@flogo-web/client-core';
+import { CONTRIB_REFS } from '@flogo-web/core';
 
 describe('Service: FlogoProfileService', function(this: {
   testService: FlogoProfileService;
@@ -59,7 +59,7 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Use Global Attribute',
       description: 'Simple Global App Activity',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/app',
+      homepage: 'some_path_to_repo/tree/master/activity/app',
       inputs: [
         {
           name: 'attribute',
@@ -173,8 +173,7 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Increment Counter',
       description: 'Simple Global Counter Activity',
-      homepage:
-        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+      homepage: 'some_path_to_repo/tree/master/activity/counter',
       inputs: [
         {
           name: 'counterName',
@@ -202,8 +201,7 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Throw Error',
       description: 'Simple Error Activity',
-      homepage:
-        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/error',
+      homepage: 'some_path_to_repo/tree/master/activity/error',
       inputs: [
         {
           name: 'message',
@@ -221,8 +219,7 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Control GPIO',
       description: 'Control raspberry gpio',
-      homepage:
-        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/gpio',
+      homepage: 'some_path_to_repo/tree/master/activity/gpio',
       inputs: [
         {
           name: 'method',
@@ -263,7 +260,7 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Log Message',
       description: 'Simple Log Activity',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
+      homepage: 'some_path_to_repo/tree/master/activity/log',
       inputs: [
         {
           name: 'message',
@@ -293,8 +290,7 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Reply To Trigger',
       description: 'Simple Reply Activity',
-      homepage:
-        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/reply',
+      homepage: 'some_path_to_repo/tree/master/activity/reply',
       inputs: [
         {
           name: 'code',
@@ -313,8 +309,7 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Invoke REST Service',
       description: 'Simple REST Activity',
-      homepage:
-        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/rest',
+      homepage: 'some_path_to_repo/tree/master/activity/rest',
       inputs: [
         {
           name: 'method',
@@ -352,8 +347,7 @@ describe('Service: FlogoProfileService', function(this: {
       version: '0.0.1',
       title: 'Send SMS Via Twilio',
       description: 'Simple Twilio Activity',
-      homepage:
-        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/twilio',
+      homepage: 'some_path_to_repo/tree/master/activity/twilio',
       inputs: [
         {
           name: 'accountSID',
@@ -383,11 +377,10 @@ describe('Service: FlogoProfileService', function(this: {
   function appendSubflowActivity() {
     mockData.push(<any>{
       name: 'flogo-subflow',
-      ref: CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW,
+      ref: CONTRIB_REFS.SUBFLOW,
       title: 'Start a SubFlow',
       description: 'Simple SubFlow Activity',
-      homepage:
-        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/subflow',
+      homepage: 'some_path_to_repo/tree/master/activity/subflow',
       dynamicIO: true,
       settings: [
         {
@@ -417,7 +410,7 @@ describe('Service: FlogoProfileService', function(this: {
     });
   });
 
-  it('Should transform the 12 activities including Subflow in case subflow activity is installed is installed in engine', done => {
+  it('Should transform the 12 activities including Subflow in case subflow activity is installed in engine', done => {
     const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     appendSubflowActivity();
     spyActivityService.and.returnValue(Promise.resolve(cloneDeep(mockData)));

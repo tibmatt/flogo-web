@@ -13,7 +13,7 @@ describe('JSONSchema: Trigger', () => {
   const validFlowData = { flowURI: 'res://flow:example' };
   const validMapping = { someProp: 5 };
   const actionWithoutMappings = {
-    ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow',
+    ref: 'github.com/project-flogo/flow',
     data: { ...validFlowData },
   };
   const validAction = {
@@ -23,7 +23,7 @@ describe('JSONSchema: Trigger', () => {
   };
   const validTrigger = {
     id: 'handlerId',
-    ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/timer',
+    ref: 'some_path_to_repo/trigger/timer',
     handlers: [{ action: { ...validAction } }],
   };
 
