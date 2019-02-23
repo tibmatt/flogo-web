@@ -228,37 +228,17 @@
   display: none;
 }
 
-.flogo-input-error {
-  color: @color-error;
-  position: relative;
+.flogo-input--has-error .app-name--edit {
+  border: 2px solid @scarlet;
+  outline: 2px auto @scarlet;
 }
 
 .flogo-input-error-msg {
-  color: @color-bg;
-  position: absolute;
-  font-size: 0.875em;
-  letter-spacing: 0.2px;
-  bottom: 55px;
-  background-color: @color-error;
-  padding: 1em;
-  z-index: 3;
-  transform: scale(0, 0);
-  animation: popup 500ms ease-out forwards;
-
-  &:before {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-top: 10px solid @color-error;
-    bottom: -10px;
-    left: 30%;
-    transform: translateY(-10px);
-    animation: downElement 150ms 510ms ease-in forwards;
-  }
+  color: @scarlet;
+  font-size: 0.75rem;
+  margin-top: -3px;
 }
+
 .flogo-app-header__name {
   color: @color-error;
 }
