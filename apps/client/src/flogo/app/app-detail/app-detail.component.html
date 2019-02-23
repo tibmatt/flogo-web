@@ -79,60 +79,57 @@
   <div class="header__details">
     <div
       class="flogo-app-header__name-container"
-      [class.flogo-input-error]="state?.name.hasErrors"
+      [class.flogo-input-error]="nameUiState.errors"
     >
-      <div
-        class="flogo-input-error-msg"
-        *ngIf="state?.name.hasErrors && (state?.name.errors)['notUnique']"
-      >
+      <div class="flogo-input-error-msg" *ngIf="nameUiState?.errors?.notUnique">
         {{ 'APP-DETAIL:ERROR-UNIQUE-NAME' | translate }}
       </div>
       <input
-        *ngIf="isNameInEditMode"
+        *ngIf="nameUiState.inEditMode"
         type="text"
-        #appInputName
         fgAutofocus
-        [(ngModel)]="editableName"
+        [(ngModel)]="nameUiState.value"
         fgEditableInput
         (editableInputSave)="onNameSave()"
         (editableInputCancel)="onNameCancel()"
         id="appName"
-        class="app-name--edit"
+        class="app-name--edit qa-name-input"
       />
 
       <label
-        class="app-name is-editable qa-app-name"
-        *ngIf="!isNameInEditMode"
+        class="app-name is-editable qa-name-label"
+        *ngIf="!nameUiState.inEditMode"
         (click)="onClickLabelName($event)"
-        >{{ editableName }}</label
+        >{{ application?.name }}</label
       >
       <div class="flogo-app-header__date-container">
         <label class="flogo-app-header__date--creation"
           >{{ 'FLOWS:CREATED' | translate: { value: '' }
-          }}<span>{{ application?.createdAt | timeFromNow }}.</span>
+          }}<span class="qa-creation-date"
+            >{{ application?.createdAt | timeFromNow }}.</span
+          >
         </label>
-        <label
-          *ngIf="application && application.updatedAt"
-          class="flogo-app-header__date--update"
+        <label *ngIf="application?.updatedAt" class="flogo-app-header__date--update"
           >{{ 'FLOWS:EDITED' | translate: { value: '' }
-          }}<span>{{ application.updatedAt | timeFromNow }}.</span>
+          }}<span>{{ application?.updatedAt | timeFromNow }}.</span>
         </label>
       </div>
 
       <div class="flogo-app-header__description-container">
         <a
-          *ngIf="application && !editableDescription && !isDescriptionInEditMode"
-          class="flogo-link"
+          *ngIf="
+            application && !application?.description && !descriptionUiState.inEditMode
+          "
+          class="flogo-link qa-add-description"
           (click)="onClickAddDescription()"
           >{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a
         >
         <textarea
-          *ngIf="isDescriptionInEditMode"
-          #appInputDescription
+          *ngIf="descriptionUiState.inEditMode"
           fgAutofocus
           placeholder="Description"
           rows="3"
-          [(ngModel)]="editableDescription"
+          [(ngModel)]="descriptionUiState.value"
           fgEditableInput
           (editableInputSave)="onDescriptionSave()"
           (editableInputCancel)="onDescriptionCancel()"
@@ -142,10 +139,10 @@
         </textarea>
 
         <label
-          class="flogo-app-header__description is-editable"
-          *ngIf="!isDescriptionInEditMode && !!editableDescription"
+          class="flogo-app-header__description is-editable qa-description-label"
+          *ngIf="!descriptionUiState.inEditMode && !!descriptionUiState.value"
           (click)="onClickLabelDescription($event)"
-          >{{ editableDescription }}</label
+          >{{ descriptionUiState.value }}</label
         >
       </div>
     </div>
@@ -276,7 +273,7 @@
     *ngFor="let triggerGroup of (resourcesState.groupsByResource$ | async)"
     [triggers]="triggerGroup.triggers"
     [resource]="triggerGroup.flow"
-    (resourceSelected)="onFlowSelected($event)"
+    (resourceSelected)="onResourceSelected($event)"
     (deleteResource)="onFlowDelete($event)"
   ></flogo-apps-resource-views-by-resource>
 </ng-container>
@@ -285,7 +282,7 @@
     *ngFor="let resourceGroup of (resourcesState.groupsByTrigger$ | async)"
     [trigger]="resourceGroup.trigger"
     [resources]="resourceGroup.flows"
-    (resourceSelected)="onFlowSelected($event)"
+    (resourceSelected)="onResourceSelected($event)"
     (deleteResource)="onFlowDelete($event)"
     (addResource)="openCreateFlowFromTrigger($event)"
   ></flogo-apps-resource-views-by-trigger>

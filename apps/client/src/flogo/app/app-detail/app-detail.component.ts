@@ -5,13 +5,23 @@ import {
   Component,
   Input,
   Output,
-  SimpleChanges,
-  OnChanges,
-  OnInit,
   EventEmitter,
+  OnDestroy,
+  OnChanges,
+  SimpleChanges,
+  OnInit,
 } from '@angular/core';
 import { Observable, of as observableOf, combineLatest } from 'rxjs';
-import { switchMap, map, take, tap, filter, shareReplay } from 'rxjs/operators';
+import {
+  switchMap,
+  map,
+  take,
+  tap,
+  filter,
+  shareReplay,
+  distinctUntilKeyChanged,
+  takeUntil,
+} from 'rxjs/operators';
 
 import { App, Trigger } from '@flogo-web/core';
 import {
@@ -24,6 +34,7 @@ import {
   ShimTriggerBuildApiService,
   RESTAPIContributionsService,
   ContribSchema,
+  SingleEmissionSubject,
 } from '@flogo-web/client-core';
 import { ModalService } from '@flogo-web/client-core/modal';
 import {
@@ -33,8 +44,6 @@ import {
 import { NotificationsService } from '@flogo-web/client-core/notifications';
 import {
   AppDetailService,
-  ApplicationDetail,
-  ApplicationDetailState,
   SETTING_DONT_WARN_MISSING_TRIGGERS,
   FlowGroup,
   AppResourcesStateService,
@@ -62,40 +71,46 @@ import { BUILD_OPTIONS } from './build-options';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
+interface FieldUiState {
+  inEditMode: boolean;
+  value?: string;
+  errors?: { [key: string]: string };
+}
+
 @Component({
   selector: 'flogo-apps-details-application',
   templateUrl: 'app-detail.component.html',
   styleUrls: ['app-detail.component.less'],
 })
-export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
-  @Input() appDetail: ApplicationDetail;
-
-  @Output() flowSelected: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
+export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, OnInit {
+  @Input() appId: string;
+  @Output() resourceSelected = new EventEmitter<FlowSummary>();
+  @Output() appDeleted = new EventEmitter<void>();
 
   application: App;
-  state: ApplicationDetailState;
 
-  isNameInEditMode: boolean;
-  autofocusName = true;
-  editableName: string;
+  nameUiState: FieldUiState = {
+    inEditMode: false,
+  };
+  autofocusName = false;
 
-  isDescriptionInEditMode: boolean;
-  editableDescription: string;
+  descriptionUiState: FieldUiState = {
+    inEditMode: false,
+  };
 
   resourceViewType: ResourceViewType = 'resources';
 
-  flows: Array<FlowSummary> = [];
-  isNewApp = false;
-  isBuildBoxShown = false;
-  isBuilding: boolean;
   isDetailsMenuOpen = false;
+  isExportBoxShown = false;
 
   buildOptions = BUILD_OPTIONS;
+  isBuildBoxShown = false;
+  isBuilding: boolean;
 
   shimmableTriggerSchema$: Observable<ContribSchema[]>;
   shimTriggerOptions = [];
-  isExportBoxShown = false;
-  downloadLink: string;
+
+  private destroyed$ = SingleEmissionSubject.create();
 
   constructor(
     public resourcesState: AppResourcesStateService,
@@ -108,34 +123,39 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     private notificationsService: NotificationsService,
     private modalService: ModalService,
     private localStorage: LocalStorageService
-  ) {
-    this.shimmableTriggerSchema$ = this.contributionService
-      .getShimContributionDetails()
-      .pipe(shareReplay(1));
+  ) {}
+
+  ngOnChanges({ appId: appIdChange }: SimpleChanges) {
+    if (appIdChange && this.appId) {
+      this.appDetailService.load(this.appId);
+    }
   }
 
   ngOnInit() {
-    this.isDescriptionInEditMode = false;
-    this.isNameInEditMode = false;
+    this.shimmableTriggerSchema$ = this.contributionService
+      .getShimContributionDetails()
+      .pipe(shareReplay(1));
+    this.appDetailService.app$.subscribe(app => {
+      this.application = app;
+    });
+    const takeUntilDestroyed = takeUntil(this.destroyed$);
+
+    this.resourcesState.triggers$.pipe(takeUntilDestroyed).subscribe(() => {
+      this.loadShimTriggerBuildOptions();
+    });
+
+    this.appDetailService.app$
+      .pipe(
+        distinctUntilKeyChanged('id'),
+        takeUntilDestroyed
+      )
+      .subscribe(() => {
+        this.focusNameFieldIfNewApp();
+      });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    const change = changes['appDetail'];
-    if (change.currentValue) {
-      this.application = this.appDetail.app;
-      this.state = this.appDetail.state;
-      this.downloadLink = this.appDetailService.getDownloadLink(this.application.id);
-      this.shimTriggerOptions = [];
-      this.loadShimTriggerBuildOptions();
-      const prevValue = change.previousValue;
-      const isDifferentApp =
-        !prevValue || !prevValue.app || prevValue.app.id !== this.application.id;
-      if (isDifferentApp) {
-        this.appUpdated();
-      } else {
-        this.appDetailChanged();
-      }
-    }
+  ngOnDestroy() {
+    this.destroyed$.emitAndComplete();
   }
 
   appExporter() {
@@ -218,7 +238,11 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   onClickAddDescription() {
-    this.isDescriptionInEditMode = true;
+    this.descriptionUiState = {
+      ...this.descriptionUiState,
+      inEditMode: true,
+      value: this.application.description,
+    };
   }
 
   openExportFlow() {
@@ -229,44 +253,50 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   onNameSave() {
-    let editableName = this.editableName || '';
+    let editableName = this.nameUiState.value || '';
     editableName = editableName.trim();
     if (!editableName) {
       return;
     }
     editableName = this.sanitizer.sanitizeHTMLInput(editableName);
-    this.isNameInEditMode = false;
-    this.appDetailService.update('name', editableName);
+    this.nameUiState.inEditMode = false;
+    this.appDetailService.updateProperty('name', editableName).subscribe(null, errors => {
+      this.nameUiState = {
+        inEditMode: true,
+        value: editableName,
+        errors,
+      };
+      this.autofocusName = false;
+      setTimeout(() => (this.autofocusName = true), 100);
+    });
   }
 
   onNameCancel() {
-    this.isNameInEditMode = false;
-    this.appDetailService.cancelUpdate('name');
-    this.editableName = this.application.name;
+    this.nameUiState = {
+      inEditMode: false,
+    };
   }
 
   onDescriptionSave() {
-    this.isDescriptionInEditMode = false;
-    this.editableDescription = this.sanitizer.sanitizeHTMLInput(this.editableDescription);
-    this.appDetailService.update('description', this.editableDescription);
+    this.descriptionUiState = { ...this.descriptionUiState, inEditMode: false };
+    const description = this.sanitizer.sanitizeHTMLInput(this.descriptionUiState.value);
+    this.appDetailService.updateProperty('description', description);
   }
 
   onDescriptionCancel() {
-    this.isDescriptionInEditMode = false;
-    this.appDetailService.cancelUpdate('description');
-    this.editableDescription = this.application.description;
+    this.descriptionUiState = { inEditMode: false };
   }
 
   onClickLabelDescription() {
-    this.isDescriptionInEditMode = true;
+    this.descriptionUiState = { inEditMode: true, value: this.application.description };
   }
 
   onClickLabelName() {
-    this.isNameInEditMode = true;
+    this.nameUiState = { inEditMode: true, value: this.application.name };
   }
 
-  onFlowSelected(flow) {
-    this.flowSelected.emit(flow);
+  onResourceSelected(flow) {
+    this.resourceSelected.emit(flow);
   }
 
   onFlowDelete({ resource, triggerId }: DeleteEvent) {
@@ -357,17 +387,22 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   private confirmActionWhenMissingTriggers(
     exportType: 'export' | 'build'
   ): Observable<boolean> {
-    const appHasTriggers = app =>
-      app &&
-      app.flowGroups &&
-      app.flowGroups.length > 0 &&
-      app.flowGroups.some(g => !!g.trigger);
-    if (
-      this.localStorage.getItem(SETTING_DONT_WARN_MISSING_TRIGGERS) ||
-      appHasTriggers(this.appDetail.app)
-    ) {
+    if (this.localStorage.getItem(SETTING_DONT_WARN_MISSING_TRIGGERS)) {
       return observableOf(true);
     }
+
+    return this.resourcesState.triggers$.pipe(
+      take(1),
+      switchMap(triggers => {
+        const appHasTriggers = triggers && triggers.length > 0;
+        return !appHasTriggers
+          ? this.showTriggerConfirmation(exportType)
+          : observableOf(true);
+      })
+    );
+  }
+
+  private showTriggerConfirmation(exportType) {
     return this.modalService
       .openModal<ConfirmationParams>(MissingTriggerConfirmationComponent, {
         type: exportType,
@@ -394,32 +429,19 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     download.subscribe(restoreBuildFlag, handleBuildError);
   }
 
-  private appUpdated() {
-    this.isDescriptionInEditMode = false;
-
-    this.editableName = this.application.name;
-    this.editableDescription = this.application.description;
-
-    this.isNameInEditMode = false;
-    this.isNewApp = !this.application.updatedAt;
-    if (this.isNewApp) {
-      const secondsSinceCreation = differenceInSeconds(
-        Date.now(),
-        this.application.createdAt
-      );
-      this.isNewApp = secondsSinceCreation <= MAX_SECONDS_TO_ASK_APP_NAME;
-      this.isNameInEditMode = this.isNewApp;
+  private focusNameFieldIfNewApp() {
+    if (this.application.updatedAt && this.nameUiState.inEditMode) {
+      this.nameUiState = {
+        inEditMode: false,
+      };
+      return;
     }
-  }
-
-  private appDetailChanged() {
-    if (this.state.name.hasErrors) {
-      this.isNameInEditMode = true;
-      this.autofocusName = false;
-      setTimeout(() => (this.autofocusName = true), 100);
-    } else if (!this.state.name.pendingSave) {
-      this.editableName = this.application.name;
-    }
+    const secondsSinceCreation = differenceInSeconds(
+      Date.now(),
+      this.application.createdAt
+    );
+    const isNewApp = secondsSinceCreation <= MAX_SECONDS_TO_ASK_APP_NAME;
+    this.nameUiState = { inEditMode: isNewApp, value: this.application.name };
   }
 
   private getUniqueTriggerRefs(): Observable<Set<string>> {
@@ -435,6 +457,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   private loadShimTriggerBuildOptions() {
+    this.shimTriggerOptions = [];
     combineLatest(this.getUniqueTriggerRefs(), this.shimmableTriggerSchema$)
       .pipe(
         take(1),

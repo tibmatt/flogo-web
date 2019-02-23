@@ -1,5 +1,6 @@
 import { remove } from 'lodash';
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 import { App } from '@flogo-web/core';
 import { HttpUtilsService } from '../http-utils.service';
@@ -92,11 +93,11 @@ export class AppsApiServiceMock extends AppsApiService {
     return Promise.resolve(true);
   }
 
-  getApp(id: string): Promise<App> {
+  getApp(id: string): Observable<App> {
     const application = this.mockApplications.find(item => {
       return item.id === id;
     });
-    return Promise.resolve(application);
+    return of(application);
   }
 
   determineUniqueName(name: string, count = 0) {
