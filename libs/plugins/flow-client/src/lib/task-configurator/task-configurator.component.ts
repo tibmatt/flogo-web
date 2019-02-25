@@ -19,9 +19,7 @@ import {
   SingleEmissionSubject,
   Dictionary,
 } from '@flogo-web/client-core';
-import {
-  isMapperActivity
-} from '@flogo-web/plugins/flow-core';
+import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 import { NotificationsService } from '@flogo-web/client-core/notifications';
 
 import {

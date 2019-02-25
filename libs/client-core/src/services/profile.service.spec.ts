@@ -2,6 +2,7 @@ import { cloneDeep } from 'lodash';
 import { FlogoProfileService } from './profile.service';
 import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
 import Spy = jasmine.Spy;
+import { CONTRIB_REF_PLACEHOLDER } from '@flogo-web/client-core';
 
 describe('Service: FlogoProfileService', function(this: {
   testService: FlogoProfileService;
@@ -382,7 +383,7 @@ describe('Service: FlogoProfileService', function(this: {
   function appendSubflowActivity() {
     mockData.push(<any>{
       name: 'flogo-subflow',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow',
+      ref: CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW,
       title: 'Start a SubFlow',
       description: 'Simple SubFlow Activity',
       homepage:

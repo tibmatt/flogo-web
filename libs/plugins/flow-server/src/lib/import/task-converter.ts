@@ -8,9 +8,7 @@ import {
   EXPRESSION_TYPE,
   parseResourceIdFromResourceUri,
 } from '@flogo-web/server/core';
-import {
-  isOutputMapperField
-} from '@flogo-web/plugins/flow-core';
+import { isOutputMapperField } from '@flogo-web/plugins/flow-core';
 import { normalizeIteratorValue } from './normalize-iterator-value';
 
 export class TaskConverter {

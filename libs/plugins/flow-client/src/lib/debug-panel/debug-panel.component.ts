@@ -23,9 +23,7 @@ import {
   SingleEmissionSubject,
 } from '@flogo-web/client-core';
 
-import {
-  isMapperActivity
-} from '@flogo-web/plugins/flow-core';
+import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 
 import { FlowActions, FlowSelectors, FlowState } from '../core/state';
 import { TestRunnerService } from '../core/test-runner/test-runner.service';

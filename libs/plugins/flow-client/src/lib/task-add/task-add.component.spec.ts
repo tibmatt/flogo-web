@@ -9,6 +9,7 @@ import { FlogoFlowService } from '../core';
 import { TASKADD_OPTIONS, TaskAddComponent } from './task-add.component';
 import { TaskAddModule } from './task-add.module';
 import { TaskAddOptions } from './core/task-add-options';
+import { CONTRIB_REF_PLACEHOLDER } from '@flogo-web/client-core';
 
 describe('Component: TaskAddComponent', () => {
   let component: TaskAddComponent;
@@ -24,7 +25,7 @@ describe('Component: TaskAddComponent', () => {
         title: 'Counter',
       },
       {
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow',
+        ref: CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW,
         title: 'Start a subflow',
       },
     ]),
