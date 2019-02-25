@@ -8,8 +8,8 @@ import {
 } from './restapi';
 import { TriggerSchema } from '../interfaces';
 import { Resource } from '@flogo-web/core';
-import { from, EMPTY, Observable, defer } from 'rxjs';
-import { switchMap, map, concat, tap } from 'rxjs/operators';
+import { concat, EMPTY, Observable, defer } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
 
 const mapSettingsArrayToObject = (settings: { name: string; value?: any }[]) =>
   (settings || []).reduce((all, c) => ({ ...all, [c.name]: c.value }), {});
@@ -80,9 +80,9 @@ export class AppResourceService {
     const removeTriggerIfUnreferenced$ = triggerId
       ? removeTriggerIfUnreferenced(triggerId, this.triggersService)
       : EMPTY;
-    return this.deleteResource(flowId).pipe(
-      map(() => ({ resourceDeleted: true })),
-      concat(removeTriggerIfUnreferenced$)
+    return concat(
+      this.deleteResource(flowId).pipe(map(() => ({ resourceDeleted: true }))),
+      removeTriggerIfUnreferenced$
     );
   }
 
