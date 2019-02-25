@@ -111,7 +111,7 @@ export class AppDetailService {
     const resources = [...this.resourcesState.resources];
     const resourceIndex = resources.findIndex(r => r.id === resourceId);
     const resource = resources[resourceIndex];
-    resources.splice(resourceIndex);
+    resources.splice(resourceIndex, 1);
     this.resourcesState.resources = resources;
 
     this.appResourceApiService.deleteResourceWithTrigger(resourceId, triggerId).subscribe(
@@ -126,18 +126,6 @@ export class AppDetailService {
         this.resourcesState.resources = [...this.resourcesState.resources, resource];
       }
     );
-  }
-
-  public reload() {
-    this.fetching = true;
-    const currentApp = this.currentApp$.getValue();
-    if (!currentApp) {
-      return;
-    }
-    this.fetchApp(currentApp.app.id).then(app => {
-      const prevApp = this.currentApp$.getValue();
-      this.setApp(app, prevApp.state);
-    });
   }
 
   public update(prop: string, value: any) {
