@@ -1,4 +1,10 @@
-<form novalidate [formGroup]="resource" (ngSubmit)="createFlow(resource)" cdkTrapFocus>
+<form
+  novalidate
+  [formGroup]="resource"
+  (ngSubmit)="createFlow(resource)"
+  cdkTrapFocus
+  cdkTrapFocusAutoCapture="true"
+>
   <h3 class="title">{{ 'ADD:CREATE-NEW-RESOURCE' | translate }}</h3>
   <fieldset class="form-group resource-types">
     <legend class="form__label">{{ 'ADD:SELECT-RESOURCE-TYPE' | translate }}</legend>
@@ -27,7 +33,7 @@
       >{{ 'ADD:FLOW-NAME' | translate }}
     </label>
     <input
-      autofocus
+      cdkFocusInitial
       type="text"
       class="form-control form__input"
       id="resourceName"
