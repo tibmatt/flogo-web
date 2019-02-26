@@ -13,13 +13,13 @@ import {
   Task,
   LanguageService,
   Item,
-  isMapperActivity,
   ConfirmationResult,
   ConfirmationModalService,
   FLOGO_TASK_TYPE,
   mergeItemWithSchema,
   SingleEmissionSubject,
 } from '@flogo-web/client-core';
+import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 import { NotificationsService } from '@flogo-web/client-core/notifications';
 import { AppsApiService, RESTAPIHandlersService } from '@flogo-web/client-core/services';
 

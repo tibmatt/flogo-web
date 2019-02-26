@@ -1,5 +1,6 @@
 import { ContributionSchema } from '@flogo-web/core';
-import { REF_SUBFLOW, isSubflowTask, isMapperActivity } from '@flogo-web/server/core';
+import { REF_SUBFLOW, isSubflowTask } from '@flogo-web/server/core';
+import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 import { TaskFormatter } from './task-formatter';
 
 export function formatTasks(

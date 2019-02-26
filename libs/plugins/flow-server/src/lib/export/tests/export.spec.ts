@@ -5,7 +5,7 @@ import {
   FlogoAppModel,
   ResourceActionModel,
 } from '@flogo-web/core';
-import { FLOGO_TASK_TYPE } from '@flogo-web/server/core';
+import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '@flogo-web/server/core';
 import { exportFlow } from '..';
 
 test('it exports a flow', () => {
@@ -46,7 +46,7 @@ function getExpectedFlow(): FlogoAppModel.Resource<ResourceActionModel.FlowResou
           name: 'Start a SubFlow',
           description: 'Activity to start a sub-flow in an existing flow',
           activity: {
-            ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow',
+            ref: REF_SUBFLOW,
             settings: {
               flowURI: 'res://flow:humanized_subflow_ref',
             },
@@ -109,7 +109,7 @@ function getFlowToExport(): Resource<FlowData> {
           name: 'Start a SubFlow',
           description: 'Activity to start a sub-flow in an existing flow',
           type: FLOGO_TASK_TYPE.TASK_SUB_PROC,
-          activityRef: 'github.com/TIBCOSoftware/flogo-web/activity/subflow',
+          activityRef: REF_SUBFLOW,
           settings: {
             flowPath: '4ut01d',
           },

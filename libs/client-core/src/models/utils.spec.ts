@@ -70,7 +70,7 @@ describe('Function: activitySchemaToTask', function() {
       ],
     },
     mapper: {
-      inputs: [
+      settings: [
         {
           name: 'mappings',
           type: 'array',

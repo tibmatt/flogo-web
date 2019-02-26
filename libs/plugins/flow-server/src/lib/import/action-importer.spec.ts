@@ -1,5 +1,6 @@
 import { Resource } from '@flogo-web/core';
 import { createActionImporter } from './create-action-importer';
+import { REF_SUBFLOW } from '@flogo-web/server/core';
 
 test('It imports an action', () => {
   const actionImporter = createActionImporter();
@@ -18,9 +19,7 @@ test('It errors if an activity is not installed', () => {
   expect.assertions(1);
   try {
     actionImporter.importAction(flowResource, {
-      contributions: new Map<string, any>([
-        ['github.com/TIBCOSoftware/flogo-contrib/activity/subflow', {}],
-      ]),
+      contributions: new Map<string, any>([[REF_SUBFLOW, {}]]),
       normalizedTriggerIds: new Map(),
       normalizedResourceIds: new Map(),
     });
@@ -102,8 +101,6 @@ function getSampleFlowResource(): Resource {
                 {
                   type: 'literal',
                   value: 'world',
-                  // todo: fcastill - re-enable once #987 is fixed: https://github.com/TIBCOSoftware/flogo-web/issues/987
-                  // value: 12345,
                   mapTo: 'message',
                 },
               ],
@@ -114,7 +111,7 @@ function getSampleFlowResource(): Resource {
           id: 'subflow_1',
           name: 'Subflow',
           activity: {
-            ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow',
+            ref: REF_SUBFLOW,
             settings: {
               flowURI: 'res://flow:somesubflow',
             },
@@ -174,12 +171,9 @@ function getExpectedImport() {
           type: 1,
           activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
           settings: {},
-          inputMappings: expect.any(Object),
-          // todo: fcastill - re-enable once #987 is fixed: https://github.com/TIBCOSoftware/flogo-web/issues/987
-          // inputMappings: {
-          //   // message: '=$flow.id',
-          //   message: '="hello"',
-          // },
+          inputMappings: {
+            message: 'hello',
+          },
         },
         {
           id: 'log_2',
@@ -188,20 +182,17 @@ function getExpectedImport() {
           type: 1,
           activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
           settings: {},
-          inputMappings: expect.any(Object),
-          // todo: fcastill - re-enable once #987 is fixed: https://github.com/TIBCOSoftware/flogo-web/issues/987
-          // inputMappings: {
-          //   message: '="world"',
-          //   // message: '=string.concat("hello", "world")',
-          // },
+          inputMappings: {
+            message: 'world',
+          },
         },
         {
           id: 'subflow_1',
           type: 4,
           name: 'Subflow',
           description: '',
-          activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow',
-          inputMappings: expect.any(Object),
+          activityRef: REF_SUBFLOW,
+          inputMappings: {},
           settings: {
             flowPath: 'updatedSubflowId',
           },
@@ -273,9 +264,6 @@ function getContributions() {
         ],
       },
     ],
-    [
-      'github.com/TIBCOSoftware/flogo-contrib/activity/subflow',
-      { ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow' },
-    ],
+    [REF_SUBFLOW, { ref: REF_SUBFLOW }],
   ]);
 }

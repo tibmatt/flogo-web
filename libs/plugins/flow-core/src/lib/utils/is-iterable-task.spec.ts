@@ -8,24 +8,24 @@ describe('utils.isIterableTask', () => {
           iterate: 20,
         },
       })
-    ).toEqual(true);
+    ).toBeTruthy();
     expect(
       isIterableTask({
         settings: {
           iterate: '',
         },
       })
-    ).toEqual(false);
+    ).toBeFalsy();
   });
 });
 
 describe('utils.isAcceptableIterateValue', () => {
   test('It should check if the iterate value is acceptable', () => {
-    expect(isAcceptableIterateValue(20)).toEqual(true);
-    expect(isAcceptableIterateValue('20')).toEqual(true);
-    expect(isAcceptableIterateValue('random.number(20)')).toEqual(true);
-    expect(isAcceptableIterateValue(undefined)).toEqual(false);
-    expect(isAcceptableIterateValue(null)).toEqual(false);
-    expect(isAcceptableIterateValue('')).toEqual(false);
+    expect(isAcceptableIterateValue(20)).toBeTruthy();
+    expect(isAcceptableIterateValue('20')).toBeTruthy();
+    expect(isAcceptableIterateValue('random.number(20)')).toBeTruthy();
+    expect(isAcceptableIterateValue(undefined)).toBeFalsy();
+    expect(isAcceptableIterateValue(null)).toBeFalsy();
+    expect(isAcceptableIterateValue('')).toBeFalsy();
   });
 });
