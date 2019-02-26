@@ -1,20 +1,23 @@
 import { Engine } from '../../engine/engine';
 import { normalizeContribUrl } from './url-parser';
+import { logger } from '../../../common/logging';
 
-export async function install(
+export function install(
   contribUrl: string,
   contribType: 'activity' | 'trigger',
   engine: Engine
 ) {
   const packageUri = normalizeContribUrl(contribUrl);
   const installer = makeInstaller(engine, contribType);
+  let installOrUpdatePromise: Promise<boolean>;
 
   if (installer.hasContrib(packageUri)) {
-    await installer.remove(packageUri);
+    logger.warn(`'${packageUri}' already exists. Updating it in the engine.`);
+    installOrUpdatePromise = installer.update(packageUri);
+  } else {
+    installOrUpdatePromise = installer.install(packageUri, { version: 'latest' });
   }
-  return installer
-    .install(packageUri, { version: 'latest' })
-    .then(details => ({ ref: packageUri, details }));
+  return installOrUpdatePromise.then(details => ({ ref: packageUri, details }));
 }
 
 function makeInstaller(engine: Engine, contribType: string) {
@@ -27,8 +30,6 @@ function makeInstaller(engine: Engine, contribType: string) {
       ref: string,
       p: { version: string }
     ) => Promise<boolean>,
-    remove: (isActivity ? engine.deleteActivity : engine.deleteTrigger).bind(engine) as (
-      ref: string
-    ) => Promise<string>,
+    update: engine.updateContribution.bind(engine) as (ref: string) => Promise<boolean>,
   };
 }
