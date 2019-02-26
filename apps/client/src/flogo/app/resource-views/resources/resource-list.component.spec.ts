@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component, Output, EventEmitter, DebugElement } from '@angular/core';
-import { BsModalComponent } from 'ng2-bs3-modal';
 
 import { NoDependenciesFakeLanguageModule } from '@flogo-web/client-core/language/testing';
 import { TimeFromNowPipe, FlogoDeletePopupComponent } from '@flogo-web/client-shared';
@@ -106,7 +105,6 @@ describe('Application resources (AppsResourceList)', () => {
         ResourceListComponent,
         ResourceComponent,
         ResourceBadgeComponent,
-        BsModalComponent,
         TimeFromNowPipe,
         FlogoDeletePopupComponent,
       ],

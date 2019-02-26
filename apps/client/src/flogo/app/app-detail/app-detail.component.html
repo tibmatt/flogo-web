@@ -123,7 +123,7 @@
         <a
           *ngIf="application && !editableDescription && !isDescriptionInEditMode"
           class="flogo-link"
-          (click)="onClickAddDescription($event)"
+          (click)="onClickAddDescription()"
           >{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a
         >
         <textarea
@@ -258,16 +258,16 @@
     [viewType]="resourceViewType"
     (changeView)="resourceViewChanged($event)"
   ></flogo-resource-views-selector>
-  <button class="flogo-button--flat btn-create-flow" (click)="openCreateFlow()">
-    <i class="flogo-icon-add"></i>{{ 'DETAILS:NEW-FLOW' | translate }}
+  <button class="flogo-button--flat btn-create-flow" (click)="openCreateResource()">
+    <i class="flogo-icon-add"></i>{{ 'DETAILS:NEW-RESOURCE' | translate }}
   </button>
 </div>
 
 <div class="content-empty" *ngIf="(resourcesState.isEmpty$ | async)">
   <img src="/assets/svg/flogo.flynn-placeholder.svg" />
-  <p class="content-empty__message">No flows found</p>
-  <button class="flogo-button--default" (click)="openCreateFlow()">
-    {{ 'DETAILS:CREATE-A-FLOW' | translate }}
+  <p class="content-empty__message">{{ 'APP-DETAILS:NO-RESOURCES-FOUND' | translate }}</p>
+  <button class="flogo-button--default" (click)="openCreateResource()">
+    {{ 'DETAILS:CREATE-A-RESOURCE' | translate }}
   </button>
 </div>
 

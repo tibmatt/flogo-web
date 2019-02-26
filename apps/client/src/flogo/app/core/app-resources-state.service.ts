@@ -28,6 +28,7 @@ export class AppResourcesStateService {
   );
 
   public readonly resources$: Observable<ResourceWithPlugin[]>;
+  public readonly triggers$: Observable<Trigger[]>;
   public readonly groupsByTrigger$: Observable<FlowGroup[]>;
   public readonly groupsByResource$: Observable<TriggerGroup[]>;
 
@@ -41,7 +42,12 @@ export class AppResourcesStateService {
       shareReplay(1)
     );
 
-    const triggersAndResources$ = combineLatest(this._triggers, this.resources$).pipe(
+    this.triggers$ = this._triggers.asObservable().pipe(
+      map(triggers => sortBy<Trigger>(triggers, sortableName)),
+      shareReplay(1)
+    );
+
+    const triggersAndResources$ = combineLatest(this.triggers$, this.resources$).pipe(
       shareReplay(1)
     );
 
@@ -56,6 +62,14 @@ export class AppResourcesStateService {
 
   public set triggers(triggers: Trigger[]) {
     this._triggers.next(triggers);
+  }
+
+  public get triggers() {
+    return this._triggers.getValue();
+  }
+
+  public get resources() {
+    return this._resources.getValue();
   }
 
   public set resources(resources: Resource[]) {

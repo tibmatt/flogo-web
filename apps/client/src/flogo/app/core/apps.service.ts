@@ -1,8 +1,17 @@
 import { defaultsDeep, cloneDeep } from 'lodash';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, from, of } from 'rxjs';
+import { tap, shareReplay, switchMap } from 'rxjs/operators';
 
-import { App, AppsApiService, ErrorService } from '@flogo-web/client-core';
+import {
+  App,
+  AppsApiService,
+  ResourceService,
+  ErrorService,
+  TriggersApiService,
+  AppResourceService,
+} from '@flogo-web/client-core';
+import { NotificationsService } from '@flogo-web/client-core/notifications';
 
 import { ApplicationDetail } from './application-detail.interface';
 import { AppResourcesStateService } from './app-resources-state.service';
@@ -20,6 +29,12 @@ const DEFAULT_STATE = {
   },
 };
 
+interface NewResource {
+  name: string;
+  type: string;
+  description?: string;
+}
+
 @Injectable()
 export class AppDetailService {
   private currentApp$ = new BehaviorSubject<ApplicationDetail>(undefined);
@@ -28,7 +43,11 @@ export class AppDetailService {
   constructor(
     private resourcesState: AppResourcesStateService,
     private appsApiService: AppsApiService,
-    private errorService: ErrorService
+    private resourceService: ResourceService,
+    private triggersService: TriggersApiService,
+    private notificationsService: NotificationsService,
+    private errorService: ErrorService,
+    private appResourceApiService: AppResourceService
   ) {}
 
   public currentApp(): Observable<ApplicationDetail> {
@@ -45,16 +64,68 @@ export class AppDetailService {
     });
   }
 
-  public reload() {
-    this.fetching = true;
-    const currentApp = this.currentApp$.getValue();
-    if (!currentApp) {
-      return;
-    }
-    this.fetchApp(currentApp.app.id).then(app => {
-      const prevApp = this.currentApp$.getValue();
-      this.setApp(app, prevApp.state);
-    });
+  public createResource(newResource: NewResource, triggerId?: string) {
+    const createResource$ = from(
+      this.appResourceApiService.createResource(
+        this.currentApp$.getValue().app.id,
+        newResource,
+        triggerId
+      )
+    ).pipe(
+      tap(() => {
+        this.notificationsService.success({
+          key: 'FLOWS:SUCCESS-MESSAGE-FLOW-CREATED',
+        });
+      }),
+      shareReplay(1)
+    );
+
+    createResource$.subscribe(
+      ({ resource }) => {
+        this.resourcesState.resources = [...this.resourcesState.resources, resource];
+      },
+      err => {
+        console.error(err);
+        this.notificationsService.error({
+          key: 'FLOWS:CREATE_FLOW_ERROR',
+          params: err,
+        });
+      }
+    );
+
+    createResource$
+      .pipe(
+        switchMap(({ handler }: { handler?: { triggerId: string } }) => {
+          return handler ? this.triggersService.getTrigger(handler.triggerId) : of(null);
+        })
+      )
+      .subscribe(trigger => {
+        if (trigger) {
+          const triggers = this.resourcesState.triggers.filter(t => t.id !== trigger.id);
+          this.resourcesState.triggers = [...triggers, trigger];
+        }
+      });
+  }
+
+  public removeResource(resourceId: string, triggerId: string) {
+    const resources = [...this.resourcesState.resources];
+    const resourceIndex = resources.findIndex(r => r.id === resourceId);
+    const resource = resources[resourceIndex];
+    resources.splice(resourceIndex, 1);
+    this.resourcesState.resources = resources;
+
+    this.appResourceApiService.deleteResourceWithTrigger(resourceId, triggerId).subscribe(
+      (status: { resourceDeleted?: boolean; triggerDeleted?: boolean }) => {
+        if (status && status.triggerDeleted) {
+          this.resourcesState.triggers = this.resourcesState.triggers.filter(
+            t => t.id !== triggerId
+          );
+        }
+      },
+      () => {
+        this.resourcesState.resources = [...this.resourcesState.resources, resource];
+      }
+    );
   }
 
   public update(prop: string, value: any) {

@@ -9,7 +9,7 @@ export * from './local-storage.service';
 export * from './configuration.service';
 export * from './service-url-config.model';
 
-export * from './flows.service';
+export * from './app-resource.service';
 export * from './profile.service';
 export * from './log.service';
 export * from './activated-resource-route';

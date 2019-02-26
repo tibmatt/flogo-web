@@ -1,8 +1,8 @@
 import { FormsModule } from '@angular/forms';
-import { BsModalModule } from 'ng2-bs3-modal';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { A11yModule } from '@angular/cdk/a11y';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -14,7 +14,7 @@ import { AppDetailService, AppResourcesStateService } from './core';
 import { FlogoApplicationComponent } from './app.component';
 import { FlogoApplicationDetailComponent } from './app-detail/app-detail.component';
 import { FlogoExportFlowsComponent } from './export-flows/export-flows.component';
-import { FlogoNewFlowComponent } from './new-flow/new-flow.component';
+import { NewResourceComponent } from './new-resource/new-resource.component';
 import { TriggerShimBuildComponent } from './shim-trigger/shim-trigger.component';
 import { AppRoutingModule } from './app-routing.module';
 import { MissingTriggerConfirmationComponent } from './missing-trigger-confirmation';
@@ -31,10 +31,10 @@ import {
   imports: [
     CommonModule,
     FormsModule,
-    BsModalModule,
     FlogoSharedModule,
     RouterModule,
     AppRoutingModule,
+    A11yModule,
     OverlayModule,
     PortalModule,
     ScrollingModule,
@@ -47,7 +47,7 @@ import {
     ResourceViewsSelectorComponent,
     ResourcesGroupByTriggerComponent,
     ResourcesGroupByResourceComponent,
-    FlogoNewFlowComponent,
+    NewResourceComponent,
     TriggerShimBuildComponent,
     MissingTriggerConfirmationComponent,
     ResourceBadgeComponent,
@@ -57,7 +57,7 @@ import {
   entryComponents: [
     FlogoExportFlowsComponent,
     TriggerShimBuildComponent,
-    FlogoNewFlowComponent,
+    NewResourceComponent,
     MissingTriggerConfirmationComponent,
   ],
 })
