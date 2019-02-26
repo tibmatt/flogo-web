@@ -90,7 +90,7 @@
       </div>
       <flogo-mapper
         class="content"
-        *ngIf="this.tabs.get('inputMappings').isSelected"
+        *ngIf="this.tabs.get('inputMappings')?.isSelected"
         [controller]="inputMapperController"
         inputsSearchPlaceHolder="{{ inputsSearchPlaceholderKey | translate }}"
         outputsSearchPlaceHolder="{{ 'TASK-CONFIGURATOR:AVAILABLE-DATA' | translate }}"
@@ -110,7 +110,7 @@
         class="content"
       ></flogo-flow-task-configurator-subflow>
       <flogo-flow-task-configurator-settings
-        *ngIf="this.tabs.get('settings').isSelected"
+        *ngIf="this.tabs.get('settings')?.isSelected"
         [mapperController]="settingsController"
         class="content"
       ></flogo-flow-task-configurator-settings>

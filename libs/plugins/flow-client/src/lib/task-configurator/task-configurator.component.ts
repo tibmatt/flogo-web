@@ -335,10 +335,6 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     this.resetInputMappingsController(propsToMap, this.inputScope, mappings);
     this.initIterator(selectedItem);
 
-    const { settingPropsToMap, activitySettings } = this.getActivitySettingsInfo(
-      activitySchema
-    );
-
     if (isMapperActivity(activitySchema)) {
       this.configureOutputMapperLabels();
       this.ismapperActivity = true;
@@ -346,10 +342,17 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
 
     this.resetState();
 
-    if (settingPropsToMap) {
-      this.initActivitySettings(settingPropsToMap, activitySettings);
-      this.tabs.get(TASK_TABS.SETTINGS).enabled = true;
-      this.selectTab(TASK_TABS.SETTINGS);
+    if (this.tabs.get(TASK_TABS.SETTINGS)) {
+      const { settingPropsToMap, activitySettings } = this.getActivitySettingsInfo(
+        activitySchema
+      );
+      if (settingPropsToMap) {
+        this.initActivitySettings(settingPropsToMap, activitySettings);
+        this.tabs.get(TASK_TABS.SETTINGS).enabled = true;
+        this.selectTab(TASK_TABS.SETTINGS);
+      } else {
+        this.tabs.get(TASK_TABS.SETTINGS).enabled = false;
+      }
     }
 
     if (this.ismapperActivity) {
@@ -487,21 +490,19 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       this.tabs.clear();
     }
     let tabsInfo = [MAPPINGS_TAB_INFO];
+    let tabToSelect = TASK_TABS.INPUT_MAPPINGS;
     this.showSubflowList = false;
     if (this.isSubflowType) {
-      tabsInfo = [SUBFLOW_TAB_INFO, ...tabsInfo, ITERATOR_TAB_INFO];
-      this.tabs = Tabs.create(tabsInfo);
-      this.tabs.get(TASK_TABS.SUBFLOW).isSelected = true;
-    } else {
-      if (this.canIterate) {
-        tabsInfo = [SETTINGS_TAB_INFO, ...tabsInfo, ITERATOR_TAB_INFO];
-      } else if (!this.ismapperActivity) {
-        tabsInfo = [SETTINGS_TAB_INFO, ...tabsInfo];
-      }
-      this.tabs = Tabs.create(tabsInfo);
-      this.tabs.get(TASK_TABS.SETTINGS).enabled = false;
-      this.selectTab(TASK_TABS.INPUT_MAPPINGS);
+      tabsInfo = [SUBFLOW_TAB_INFO, ...tabsInfo];
+      tabToSelect = TASK_TABS.SUBFLOW;
+    } else if (!this.ismapperActivity) {
+      tabsInfo = [SETTINGS_TAB_INFO, ...tabsInfo];
     }
+    if (this.canIterate) {
+      tabsInfo = [...tabsInfo, ITERATOR_TAB_INFO];
+    }
+    this.tabs = Tabs.create(tabsInfo);
+    this.selectTab(tabToSelect);
   }
 
   private open() {
