@@ -1,36 +1,35 @@
 import { injectable, inject } from 'inversify';
 import { Logger } from 'winston';
 
-import { ResourcePlugin, ResourceRegistrar } from '@flogo-web/server/core';
+import {
+  ResourceType,
+  ResourceHooks,
+  ResourceExtensionRegistrar,
+} from '@flogo-web/server/core';
 
 import { TOKENS } from '../core';
 import { HookApplicator } from './hooks';
-import { ResourcePorting } from './porting';
+import { ResourceTypes } from './porting';
 
 @injectable()
-export class PluginRegistry implements ResourceRegistrar {
-  readonly types = new Map<string, { ref: string }>();
-  readonly porting = new ResourcePorting();
+export class ResourcePluginRegistry implements ResourceExtensionRegistrar {
+  readonly resourceTypes: ResourceTypes;
   readonly resourceHooks: HookApplicator;
 
   constructor(@inject(TOKENS.Logger) private logger: Logger) {
     this.resourceHooks = new HookApplicator(logger);
+    this.resourceTypes = new ResourceTypes(logger);
   }
 
   isKnownType(type: string) {
-    return this.types.has(type);
+    return this.resourceTypes.isKnownType(type);
   }
 
-  use(pluginDefinition: ResourcePlugin) {
-    const { type, ref } = pluginDefinition;
-    this.types.set(type, { ref });
-    this.porting.load(type, {
-      import: pluginDefinition.import,
-      export: pluginDefinition.export,
-    });
-    if (pluginDefinition.hooks && pluginDefinition.hooks.resource) {
-      this.resourceHooks.load(pluginDefinition.hooks.resource);
-    }
-    this.logger.info(`Registered resource plugin '${type}' (${ref})`);
+  addType(resourceType: ResourceType) {
+    this.resourceTypes.load(resourceType);
+  }
+
+  useHooks(resourceHooks: ResourceHooks) {
+    this.resourceHooks.load(resourceHooks);
   }
 }

@@ -1,29 +1,30 @@
-import { ResourceImporter, ResourceExporter } from '@flogo-web/server/core';
+import { Logger } from 'winston';
+import { ResourceImporter, ResourceExporter, ResourceType } from '@flogo-web/server/core';
 
-interface PortingGroup {
-  import: ResourceImporter;
-  export: ResourceExporter;
-}
+export class ResourceTypes {
+  readonly types = new Map<string, ResourceType>();
 
-export class ResourcePorting {
-  readonly porters = new Map<string, PortingGroup>();
+  constructor(private logger: Logger) {}
 
-  load(type: string, porters: PortingGroup): void {
-    this.porters.set(type, porters);
+  load(resourceType: ResourceType): void {
+    this.types.set(resourceType.type, resourceType);
+    this.logger.info(
+      `Registered resource plugin '${resourceType.type}' (${resourceType.ref})`
+    );
   }
 
   isKnownType(type: string): boolean {
-    return this.porters.has(type);
+    return this.types.has(type);
   }
 
   importer(type: string): ResourceImporter {
     this.throwIfUnknown(type);
-    return this.porters.get(type).import;
+    return this.types.get(type).import;
   }
 
   exporter(type: string): ResourceExporter {
     this.throwIfUnknown(type);
-    return this.porters.get(type).export;
+    return this.types.get(type).export;
   }
 
   private throwIfUnknown(type: string) {

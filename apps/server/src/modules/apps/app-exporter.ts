@@ -3,13 +3,13 @@ import { injectable, inject } from 'inversify';
 import { ContributionSchema } from '@flogo-web/core';
 
 import { TOKENS } from '../../core';
-import { PluginRegistry, ResourcePorting } from '../../extension';
+import { ResourcePluginRegistry, ResourceTypes } from '../../extension';
 import { exportApp, ExportAppOptions } from '../transfer';
 import { ContributionsService } from '../contribs';
 
 export { ExportAppOptions };
 
-function resourceExportResolver(porting: ResourcePorting) {
+function resourceExportResolver(porting: ResourceTypes) {
   return (resourceType: string) => {
     return porting.isKnownType(resourceType)
       ? porting.exporter(resourceType).resource
@@ -20,7 +20,7 @@ function resourceExportResolver(porting: ResourcePorting) {
 @injectable()
 export class AppExporter {
   constructor(
-    private pluginRegistry: PluginRegistry,
+    private pluginRegistry: ResourcePluginRegistry,
     @inject(TOKENS.ContribActivitiesManager)
     private contribActivitiesService: ContributionsService
   ) {}
@@ -32,7 +32,7 @@ export class AppExporter {
     );
     return exportApp(
       app,
-      resourceExportResolver(this.pluginRegistry.porting),
+      resourceExportResolver(this.pluginRegistry.resourceTypes),
       contributionMap,
       options
     );

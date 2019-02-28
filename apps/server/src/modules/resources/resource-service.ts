@@ -10,7 +10,7 @@ import {
 } from '@flogo-web/server/core';
 // todo: can't import directly from 'apps' barrel, it will create a circular dependency and inversify will also complain
 import { HandlersService } from '../apps/handlers-service';
-import { PluginRegistry } from '../../extension';
+import { ResourcePluginRegistry } from '../../extension';
 import { ERROR_TYPES } from '../../common/errors';
 import { generateShortId } from '../../common/utils';
 import { findGreatestNameIndex } from '../../common/utils/collection';
@@ -31,7 +31,7 @@ export class ResourceService {
   constructor(
     private resourceRepository: ResourceRepository,
     private handlersService: HandlersService,
-    private plugins: PluginRegistry
+    private plugins: ResourcePluginRegistry
   ) {
     this.resourceFieldsValidator = genericFieldsValidator(type =>
       this.isTypeSupported(type)

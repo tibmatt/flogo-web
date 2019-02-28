@@ -4,12 +4,12 @@ import { injectable, inject } from 'inversify';
 import { ContributionSchema } from '@flogo-web/core';
 
 import { TOKENS } from '../../core';
-import { ResourcePorting, PluginRegistry } from '../../extension';
+import { ResourceTypes, ResourcePluginRegistry } from '../../extension';
 import { ContributionsService } from '../contribs';
 import { importApp } from '../transfer';
 import { contribsToPairs } from './contribs-to-pairs';
 
-function resourceImportResolver(porting: ResourcePorting) {
+function resourceImportResolver(porting: ResourceTypes) {
   return (resourceType: string) => {
     return porting.isKnownType(resourceType)
       ? porting.importer(resourceType).resource
@@ -20,7 +20,7 @@ function resourceImportResolver(porting: ResourcePorting) {
 @injectable()
 export class AppImporter {
   constructor(
-    private pluginRegistry: PluginRegistry,
+    private pluginRegistry: ResourcePluginRegistry,
     @inject(TOKENS.ContribActivitiesManager)
     private contribActivitiesService: ContributionsService,
     @inject(TOKENS.ContribTriggersManager)
@@ -31,7 +31,7 @@ export class AppImporter {
     const contributions = await this.loadContribs();
     const { id, ...newApp } = await importApp(
       app,
-      resourceImportResolver(this.pluginRegistry.porting),
+      resourceImportResolver(this.pluginRegistry.resourceTypes),
       shortid.generate,
       contributions
     );

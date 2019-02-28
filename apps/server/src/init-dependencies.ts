@@ -1,9 +1,9 @@
 import 'reflect-metadata';
-import { PluginRegistry } from './extension';
+import { ResourcePluginRegistry, ServerPluginRegistrar } from './extension';
 import { createRootContainer } from './injector';
 import { loadPlugins } from './plugins';
 
 const rootContainer = createRootContainer();
-loadPlugins({ resources: rootContainer.get(PluginRegistry) });
+loadPlugins(new ServerPluginRegistrar(rootContainer.get(ResourcePluginRegistry)));
 
 export { rootContainer };

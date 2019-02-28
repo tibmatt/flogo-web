@@ -19,7 +19,7 @@ export interface UpdateResourceContext extends HookContext {
   existingResource: Resource;
 }
 
-export interface ResourceHooks<R = unknown> {
+export interface ResourceHooks {
   before?: {
     create?: ResourceHook;
     update?: ResourceHook<UpdateResourceContext>;
