@@ -1,4 +1,4 @@
-export module FlogoAppModel {
+export namespace FlogoAppModel {
   export interface App {
     name: string;
     type?: string;
@@ -79,7 +79,7 @@ export module FlogoAppModel {
 }
 
 // todo: move into flow plugin once modularization is finalized
-export module ResourceActionModel {
+export namespace ResourceActionModel {
   import Settings = FlogoAppModel.Settings;
 
   export interface FlowResourceData {

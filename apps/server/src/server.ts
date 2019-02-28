@@ -1,4 +1,4 @@
-import { rootContainer } from './init-injector';
+import { rootContainer } from './init-dependencies';
 
 import { logger } from './common/logging';
 import { config } from './config/app-config';

@@ -1,4 +1,4 @@
-import { rootContainer } from './init-injector';
+import { rootContainer } from './init-dependencies';
 import { config } from './config/app-config';
 import { TOKENS } from './core';
 import { Database } from './common/database.service';

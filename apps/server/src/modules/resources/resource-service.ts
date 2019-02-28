@@ -4,7 +4,7 @@ import { App } from '@flogo-web/core';
 import {
   Resource,
   ResourceHooks,
-  BeforeUpdateHookParams,
+  BeforeUpdateResourceContext,
   FlogoError,
   ValidationError,
 } from '@flogo-web/server/core';
@@ -154,7 +154,7 @@ export class ResourceService {
     return resource;
   }
 
-  private async applyUpdateHook(params: BeforeUpdateHookParams<unknown>) {
+  private async applyUpdateHook(params: BeforeUpdateResourceContext<unknown>) {
     const resourceHooks = this.resolvePlugin(params.existingResource.type);
     const resourceBeforeHook = { ...params.updatedResource };
     const processedResource = await resourceHooks.beforeUpdate(params);
