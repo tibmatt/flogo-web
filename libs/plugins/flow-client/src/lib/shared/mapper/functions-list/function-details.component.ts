@@ -8,11 +8,6 @@ import {
 } from '@angular/core';
 import { PerfectScrollbarDirective as ScrollbarDirective } from 'ngx-perfect-scrollbar';
 
-interface FunctionHelp {
-  description?: string;
-  example?: string;
-}
-
 @Component({
   selector: 'flogo-mapper-function-details',
   templateUrl: 'function-details.component.html',
@@ -21,13 +16,8 @@ interface FunctionHelp {
 export class FunctionDetailsComponent implements OnChanges {
   @Input() name: string;
   // todo: fix wrong interface coming from wi
-  @Input() help: FunctionHelp;
+  @Input() description: string;
   @ViewChildren(ScrollbarDirective) scrollbars: QueryList<ScrollbarDirective>;
-
-  removeEndLine(str) {
-    str = str || '';
-    return str.replace(/\/n/g, '<br/>');
-  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['help']) {

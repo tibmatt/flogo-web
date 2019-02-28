@@ -120,11 +120,11 @@ export function initEngine(engine, options) {
         return true;
       }
       return engine.load().then(installedContribs => {
-        const mapContribs = collection =>
-          collection.map(c => ({ path: c.path, version: c.version }));
+        const mapContribs = collection => collection.map(c => ({ ref: c.ref }));
         logger.info('installedContributions', {
           triggers: mapContribs(installedContribs.triggers),
           activities: mapContribs(installedContribs.activities),
+          functions: mapContribs(installedContribs.functions),
         });
       });
     });

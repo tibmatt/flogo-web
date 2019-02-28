@@ -20,7 +20,7 @@ import {
   styleUrls: ['functions.component.css'],
 })
 export class FunctionsComponent implements OnInit, OnDestroy {
-  help: MapperTreeNode;
+  description: MapperTreeNode;
   name: string;
   functions$: Observable<MapperTreeNode[]>;
   filterTerm$: Observable<string>;
@@ -44,7 +44,7 @@ export class FunctionsComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.name = '';
-        this.help = null;
+        this.description = null;
       });
   }
 
@@ -60,9 +60,9 @@ export class FunctionsComponent implements OnInit, OnDestroy {
   }
 
   onHover(node: MapperTreeNode) {
-    if (node.data && node.data.help) {
+    if (node.data && node.data.description) {
       this.name = node.label;
-      this.help = node.data.help;
+      this.description = node.data.description;
     }
   }
 

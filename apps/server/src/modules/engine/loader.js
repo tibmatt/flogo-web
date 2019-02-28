@@ -30,6 +30,7 @@ export const loader = {
     const groupedByType = groupBy(contributions, 'type');
     const triggersToRead = groupedByType['flogo:trigger'] || [];
     const activitiesToRead = groupedByType['flogo:activity'] || [];
+    const functionsToRead = groupedByType['flogo:function'] || [];
 
     const refToPath = el => ({ path: el.path, ref: el.ref });
     return Promise.all([
@@ -47,7 +48,14 @@ export const loader = {
           return activity;
         })
       ),
-    ]).then(([triggers, activities]) => ({ triggers, activities }));
+      _readTasksNew(functionsToRead.map(refToPath)).then(functions =>
+        functions.map(eachFunction => {
+          // rt === schema of the activity
+          eachFunction.rt = normalizeContribSchema(eachFunction.rt);
+          return eachFunction;
+        })
+      ),
+    ]).then(([triggers, activities, functions]) => ({ triggers, activities, functions }));
   },
 };
 
