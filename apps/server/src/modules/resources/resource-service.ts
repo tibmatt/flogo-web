@@ -8,7 +8,8 @@ import {
   ValidationError,
   HookContext,
 } from '@flogo-web/server/core';
-import { HandlersService } from '../apps';
+// todo: can't import directly from 'apps' barrel, it will create a circular dependency and inversify will also complain
+import { HandlersService } from '../apps/handlers-service';
 import { PluginRegistry } from '../../extension';
 import { ERROR_TYPES } from '../../common/errors';
 import { generateShortId } from '../../common/utils';
@@ -28,9 +29,9 @@ export class ResourceService {
   private resourceFieldsValidator: ValidatorFn;
 
   constructor(
-    private plugins: PluginRegistry,
     private resourceRepository: ResourceRepository,
-    private handlersService: HandlersService
+    private handlersService: HandlersService,
+    private plugins: PluginRegistry
   ) {
     this.resourceFieldsValidator = genericFieldsValidator(type =>
       this.isTypeSupported(type)
