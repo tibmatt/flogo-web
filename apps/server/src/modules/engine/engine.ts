@@ -231,25 +231,16 @@ class Engine {
   }
 
   /**
-   * Delete an installed trigger
-   * @param {string} nameOrPath Trigger name or path (remote url or local://path)
-   * @param options
+   * Update a contribution
+   * @param {string} nameOrPath Contribution name or path (remote url or local://path)
    */
-  deleteTrigger(nameOrPath: string, options: Options) {
-    return this._deleteItem('trigger', nameOrPath, options);
-  }
-
-  /**
-   * Delete an installed activity
-   * @param {string} nameOrPath Trigger name or path (remote url or local://path)
-   * @param options
-   */
-  deleteActivity(nameOrPath: string, options: Options) {
-    return this._deleteItem('activity', nameOrPath, options);
-  }
-
-  _deleteItem(itemType: string, nameOrPath: string, options: Options) {
-    return commander.delete[itemType](this.path, nameOrPath);
+  updateContribution(nameOrPath: string) {
+    const label = `engine:update`;
+    console.time(label);
+    return commander.update(this.path, nameOrPath).then((result: any) => {
+      console.timeEnd(label);
+      return result;
+    });
   }
 
   _installItem(itemType: string, ref: string, options: Options) {
@@ -262,10 +253,8 @@ class Engine {
     });
   }
 
-  _hasItem(where: { name?: string; path?: string }[], nameOrPath: string) {
-    const foundItem = (where || []).find(
-      item => item.name === nameOrPath || item.path === nameOrPath
-    );
+  _hasItem(where: { ref?: string }[], nameOrPath: string) {
+    const foundItem = (where || []).find(item => item.ref === nameOrPath);
     return !!foundItem;
   }
 }

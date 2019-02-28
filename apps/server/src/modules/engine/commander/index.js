@@ -43,10 +43,7 @@ export const commander = {
     activity: install,
   },
   install,
-  delete: {
-    trigger: uninstall,
-    activity: uninstall,
-  },
+  update,
   list(enginePath) {
     return _exec(enginePath, ['list', '-l']).then(parseJSON);
   },
@@ -69,8 +66,8 @@ function install(enginePath, contribPath, options) {
   return _exec(enginePath, commandParams);
 }
 
-function uninstall(enginePath, contribNameOrPath) {
-  return _exec(enginePath, ['uninstall', contribNameOrPath]);
+function update(enginePath, contribNameOrPath) {
+  return _exec(enginePath, ['update', contribNameOrPath]);
 }
 
 function _exec(enginePath, params) {
