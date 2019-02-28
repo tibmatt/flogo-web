@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TRIGGER_MENU_OPERATION } from '@flogo-web/client-core';
 import { Trigger } from '../../core';
 import { TriggerMenuSelectionEvent } from './models';
+import { CONTRIB_REFS } from '@flogo-web/core';
 
 export interface TriggerMenuSelectionEvent {
   operation: string;
@@ -27,10 +28,7 @@ export class TriggerBlockComponent {
   MENU_OPTIONS: typeof TRIGGER_MENU_OPERATION = TRIGGER_MENU_OPERATION;
 
   get isLambda(): boolean {
-    return (
-      this.trigger &&
-      this.trigger.ref === 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda'
-    );
+    return this.trigger && this.trigger.ref === CONTRIB_REFS.LAMBDA;
   }
 
   handleTriggerSelection() {

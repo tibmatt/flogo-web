@@ -8,7 +8,7 @@
     {
       "id": "receive_http_message",
       "name": "Receive HTTP Message",
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+      "ref": "some_path_to_repo/trigger/rest",
       "description": "Simple REST Trigger",
       "settings": {
         "port": "9099"
@@ -22,7 +22,7 @@
             "useReplyHandler": "false"
           },
           "action": {
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+            "ref": "github.com/project-flogo/flow",
             "data": {
               "flowURI": "res://flow:get_book_details"
             },
@@ -49,7 +49,7 @@
     {
       "id": "timer",
       "name": "Timer",
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer",
+      "ref": "some_path_to_repo/trigger/timer",
       "description": "Simple Timer trigger",
       "handlers": [
         {
@@ -62,7 +62,7 @@
             "seconds": null
           },
           "action": {
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+            "ref": "github.com/project-flogo/flow",
             "data": {
               "flowURI": "res://flow:all_task_types"
             }
@@ -78,7 +78,7 @@
             "seconds": null
           },
           "action": {
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+            "ref": "github.com/project-flogo/flow",
             "data": {
               "flowURI": "res://flow:get_book_details"
             },
@@ -96,7 +96,7 @@
       "data": {
         "name": "GetBookDetails",
         "description": "some book sample",
-        "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+        "ref": "github.com/project-flogo/flow",
         "metadata": {
           "input": [
             {
@@ -118,7 +118,7 @@
             "description": "Simple Log Activity",
             "type": "standard",
             "activity": {
-              "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+              "ref": "some_path_to_repo/activity/log",
               "input": {
                 "message": null,
                 "flowInfo": "false",
@@ -140,7 +140,7 @@
             "name": "Get Books",
             "description": "Simple REST Activity",
             "activity": {
-              "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/rest",
+              "ref": "some_path_to_repo/activity/rest",
               "input": {
                 "method": "GET",
                 "uri": "https://www.googleapis.com/books/v1/volumes",
@@ -168,7 +168,7 @@
             "name": "Log Message (2)",
             "description": "Simple Log Activity",
             "activity": {
-              "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+              "ref": "some_path_to_repo/activity/log",
               "input": {
                 "message": "Error from rest service",
                 "flowInfo": "false",
@@ -182,7 +182,7 @@
             "description": "Simple Return Activity",
             "activity": {
               "ref":
-                "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+                "some_path_to_repo/activity/actreturn",
               "input": {
                 "mappings": [
                   {
@@ -200,7 +200,7 @@
             "description": "Simple Return Activity",
             "activity": {
               "ref":
-                "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+                "some_path_to_repo/activity/actreturn",
               "input": {
                 "mappings": [
                   {
@@ -272,7 +272,7 @@
             "name": "Log Message",
             "description": "Simple Log Activity",
             "activity": {
-              "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+              "ref": "some_path_to_repo/activity/log",
               "input": {
                 "message": "",
                 "flowInfo": "false",
@@ -286,7 +286,7 @@
             "description": "Simple Return Activity",
             "activity": {
               "ref":
-                "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+                "some_path_to_repo/activity/actreturn",
               "input": {
                 "mappings": []
               }
@@ -313,7 +313,7 @@
             "name": "Increment Counter",
             "description": "Simple Global Counter Activity",
             "activity": {
-              "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/counter",
+              "ref": "some_path_to_repo/activity/counter",
               "input": {
                 "counterName": "abc",
                 "increment": "true",
@@ -330,7 +330,7 @@
               "iterate": "$activity[counter_2].value"
             },
             "activity": {
-              "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+              "ref": "some_path_to_repo/activity/log",
               "input": {
                 "message": "hardcoded message",
                 "flowInfo": "false",
@@ -343,7 +343,7 @@
             "name": "subflow 1",
             "description": "Subflow 1",
             "activity": {
-              "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/subflow",
+              "ref": "github.com/project-flogo/flow/activity/subflow",
               "settings": {
                 "flowURI": "res://flow:subflow"
               },
@@ -363,7 +363,7 @@
               "iterate": "$activity[counter_2].value"
             },
             "activity": {
-              "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/subflow",
+              "ref": "github.com/project-flogo/flow/activity/subflow",
               "settings": {
                 "flowURI": "res://flow:subflow"
               },
@@ -399,7 +399,7 @@
               "name": "Log Message (2)",
               "description": "Simple Log Activity",
               "activity": {
-                "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                "ref": "some_path_to_repo/activity/log",
                 "input": {
                   "message": "123",
                   "flowInfo": "false",

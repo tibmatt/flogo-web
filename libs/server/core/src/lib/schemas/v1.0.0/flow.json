@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://github.com/TIBCOSoftware/flogo/schemas/1.0.0/flow.json",
+  "$id": "http://github.com/project-flogo/webui/schemas/1.0.0/flow.json",
   "additionalProperties": false,
   "properties": {
     "name": {
@@ -164,7 +164,10 @@
         "required": ["ref"],
         "properties": {
           "ref": {
-            "const": "github.com/TIBCOSoftware/flogo-contrib/activity/subflow"
+            "enum": [
+              "github.com/TIBCOSoftware/flogo-contrib/activity/subflow",
+              "github.com/project-flogo/flow/activity/subflow"
+            ]
           }
         }
       },

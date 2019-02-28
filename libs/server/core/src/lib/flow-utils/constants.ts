@@ -1,4 +1,3 @@
-export const REF_SUBFLOW = 'github.com/project-flogo/flow/activity/subflow';
 export const FLOGO_TASK_TYPE = {
   0: 'TASK_ROOT',
   1: 'TASK',

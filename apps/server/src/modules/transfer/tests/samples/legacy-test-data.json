@@ -19,7 +19,7 @@
             }
           ]
         },
-        "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+        "ref": "github.com/project-flogo/flow",
         "tasks": [
           {
             "id": "log_2",
@@ -27,7 +27,7 @@
             "description": "Simple Log Activity",
             "type": 1,
             "activityType": "tibco-log",
-            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+            "activityRef": "some_path_to_repo/activity/log",
             "attributes": [
               {
                 "name": "message",
@@ -73,7 +73,7 @@
     "extractTriggers": [
       {
         "name": "Receive HTTP Message",
-        "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+        "ref": "some_path_to_repo/trigger/rest",
         "description": "Simple REST Trigger",
         "settings": {
           "port": null
@@ -100,7 +100,7 @@
       {
         "trigger": {
           "name": "Receive HTTP Message",
-          "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+          "ref": "some_path_to_repo/trigger/rest",
           "description": "Simple REST Trigger",
           "settings": {
             "port": null

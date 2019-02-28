@@ -19,7 +19,7 @@ export const ConfigureTriggersMock = [
   {
     trigger: {
       name: 'Receive HTTP Message',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+      ref: 'some_path_to_repo/trigger/rest',
       description: 'Simple REST Trigger',
       settings: {
         port: '8081',
@@ -159,7 +159,7 @@ export const ConfigureTriggersMock = [
   {
     trigger: {
       name: 'Receive HTTP Message (1) (1)',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+      ref: 'some_path_to_repo/trigger/rest',
       description: 'Simple REST Trigger',
       settings: {
         port: '8080',
@@ -258,8 +258,8 @@ export const ConfigureTriggerSchema: TriggerSchema = {
   version: '0.0.1',
   title: 'Receive HTTP Message',
   description: 'Simple REST Trigger',
-  homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
-  ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+  homepage: 'some_path_to_repo/tree/master/trigger/rest',
+  ref: 'some_path_to_repo/trigger/rest',
   settings: [
     {
       name: 'port',
@@ -320,7 +320,7 @@ export const ConfigureTriggerSchema: TriggerSchema = {
   {
     'trigger': {
       'name': 'Receive HTTP Message',
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+      'ref': 'some_path_to_repo/trigger/rest',
       'description': 'Simple REST Trigger',
       'settings': {
         'port': '8081'
@@ -413,7 +413,7 @@ export const ConfigureTriggerSchema: TriggerSchema = {
     'triggerSchema': {
       'name': 'Receive HTTP Message',
       'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
+      'homepage': 'some_path_to_repo/tree/master/trigger/rest',
       'description': 'Simple REST Trigger',
       'installed': true,
       'settings': [
@@ -446,7 +446,7 @@ export const ConfigureTriggerSchema: TriggerSchema = {
           'type': 'any'
         }
       ],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+      'ref': 'some_path_to_repo/trigger/rest',
       'handler': {
         'settings': [
           {

@@ -20,7 +20,7 @@ export let mockFlow: ApiFlowResource = {
         id: 'log_1',
         name: 'First Log',
         description: 'description log 1',
-        activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        activityRef: 'some_path_to_repo/activity/log',
         type: 1,
         attributes: [
           {
@@ -44,7 +44,7 @@ export let mockFlow: ApiFlowResource = {
         id: 'counter_1',
         name: 'Counter1',
         description: 'description counter 1',
-        activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
+        activityRef: 'some_path_to_repo/activity/counter',
         type: 1,
         attributes: [
           {
@@ -68,7 +68,7 @@ export let mockFlow: ApiFlowResource = {
         id: 'log_2',
         name: 'Second Log',
         description: 'description second log',
-        activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        activityRef: 'some_path_to_repo/activity/log',
         type: 1,
         attributes: [
           {
@@ -92,7 +92,7 @@ export let mockFlow: ApiFlowResource = {
         id: 'log_3',
         name: 'Third Log',
         description: 'description third Log',
-        activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        activityRef: 'some_path_to_repo/activity/log',
         type: 1,
         attributes: [
           {
@@ -156,7 +156,7 @@ export let mockErrorFlow = {
     updatedAt: '2017-03-21T09:43:53.073Z',
   },
   data: {
-    ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow',
+    ref: 'some_path_to_repo/action/flow',
     tasks: [
       {
         id: 2,
@@ -215,7 +215,7 @@ export let mockErrorHandler = {
       id: 'error_log',
       name: 'Error Log',
       description: 'error log description',
-      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      activityRef: 'some_path_to_repo/activity/log',
       type: 1,
       attributes: [
         {
@@ -245,8 +245,8 @@ export let mockActivitiesDetails = [
     name: 'tibco-log',
     version: '0.0.1',
     description: 'Simple Log Activity',
-    ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-    homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
+    ref: 'some_path_to_repo/activity/log',
+    homepage: 'some_path_to_repo/tree/master/activity/log',
     inputs: [
       {
         name: 'message',
@@ -276,9 +276,8 @@ export let mockActivitiesDetails = [
     name: 'tibco-counter',
     version: '0.0.1',
     description: 'Simple Global Counter Activity',
-    ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-    homepage:
-      'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+    ref: 'some_path_to_repo/activity/counter',
+    homepage: 'some_path_to_repo/tree/master/activity/counter',
     inputs: [
       {
         name: 'counterName',
@@ -322,7 +321,7 @@ export const mockResultantUIFlow = {
       name: 'First Log',
       description: 'description log 1',
       settings: {},
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      ref: 'some_path_to_repo/activity/log',
       id: 'log_1',
       inputMappings: {},
       type: 1,
@@ -337,7 +336,7 @@ export const mockResultantUIFlow = {
       name: 'Counter1',
       description: 'description counter 1',
       settings: {},
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
+      ref: 'some_path_to_repo/activity/counter',
       id: 'counter_1',
       inputMappings: {},
       type: 1,
@@ -352,7 +351,7 @@ export const mockResultantUIFlow = {
       name: 'Second Log',
       description: 'description second log',
       settings: {},
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      ref: 'some_path_to_repo/activity/log',
       id: 'log_2',
       inputMappings: {},
       type: 1,
@@ -367,7 +366,7 @@ export const mockResultantUIFlow = {
       name: 'Third Log',
       description: 'description third Log',
       settings: {},
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      ref: 'some_path_to_repo/activity/log',
       id: 'log_3',
       inputMappings: {},
       type: 1,
@@ -530,13 +529,13 @@ export const mockResultantUIFlow = {
     nodes: {},
   },
   schemas: {
-    'github.com/TIBCOSoftware/flogo-contrib/activity/log': {
+    'some_path_to_repo/activity/log': {
       id: 'tibco-log',
       name: 'tibco-log',
       version: '0.0.1',
       description: 'Simple Log Activity',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
+      ref: 'some_path_to_repo/activity/log',
+      homepage: 'some_path_to_repo/tree/master/activity/log',
       inputs: [
         {
           name: 'message',
@@ -561,14 +560,13 @@ export const mockResultantUIFlow = {
         },
       ],
     },
-    'github.com/TIBCOSoftware/flogo-contrib/activity/counter': {
+    'some_path_to_repo/activity/counter': {
       id: 'tibco-counter',
       name: 'tibco-counter',
       version: '0.0.1',
       description: 'Simple Global Counter Activity',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-      homepage:
-        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+      ref: 'some_path_to_repo/activity/counter',
+      homepage: 'some_path_to_repo/tree/master/activity/counter',
       inputs: [
         {
           name: 'counterName',
@@ -617,7 +615,7 @@ export const mockResultantUIFlowWithError = {
       name: 'First Log',
       description: 'description log 1',
       settings: {},
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      ref: 'some_path_to_repo/activity/log',
       id: 'log_1',
       inputMappings: {},
       type: 1,
@@ -632,7 +630,7 @@ export const mockResultantUIFlowWithError = {
       name: 'Counter1',
       description: 'description counter 1',
       settings: {},
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
+      ref: 'some_path_to_repo/activity/counter',
       id: 'counter_1',
       inputMappings: {},
       type: 1,
@@ -647,7 +645,7 @@ export const mockResultantUIFlowWithError = {
       name: 'Second Log',
       description: 'description second log',
       settings: {},
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      ref: 'some_path_to_repo/activity/log',
       id: 'log_2',
       inputMappings: {},
       type: 1,
@@ -662,7 +660,7 @@ export const mockResultantUIFlowWithError = {
       name: 'Third Log',
       description: 'description third Log',
       settings: {},
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      ref: 'some_path_to_repo/activity/log',
       id: 'log_3',
       inputMappings: {},
       type: 1,
@@ -689,7 +687,7 @@ export const mockResultantUIFlowWithError = {
       name: 'Error Log',
       description: 'error log description',
       settings: {},
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      ref: 'some_path_to_repo/activity/log',
       id: 'error_log',
       inputMappings: {},
       type: 1,
@@ -864,13 +862,13 @@ export const mockResultantUIFlowWithError = {
     },
   },
   schemas: {
-    'github.com/TIBCOSoftware/flogo-contrib/activity/log': {
+    'some_path_to_repo/activity/log': {
       id: 'tibco-log',
       name: 'tibco-log',
       version: '0.0.1',
       description: 'Simple Log Activity',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
+      ref: 'some_path_to_repo/activity/log',
+      homepage: 'some_path_to_repo/tree/master/activity/log',
       inputs: [
         {
           name: 'message',
@@ -895,14 +893,13 @@ export const mockResultantUIFlowWithError = {
         },
       ],
     },
-    'github.com/TIBCOSoftware/flogo-contrib/activity/counter': {
+    'some_path_to_repo/activity/counter': {
       id: 'tibco-counter',
       name: 'tibco-counter',
       version: '0.0.1',
       description: 'Simple Global Counter Activity',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-      homepage:
-        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+      ref: 'some_path_to_repo/activity/counter',
+      homepage: 'some_path_to_repo/tree/master/activity/counter',
       inputs: [
         {
           name: 'counterName',
@@ -951,7 +948,7 @@ export let mockResultantUIFlowWithTransformations = {
       name: 'First Log',
       description: 'description log 1',
       settings: {},
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      ref: 'some_path_to_repo/activity/log',
       id: 'log_1',
       inputMappings: {
         message: '{T.content}',
@@ -968,7 +965,7 @@ export let mockResultantUIFlowWithTransformations = {
       name: 'Counter1',
       description: 'description counter 1',
       settings: {},
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
+      ref: 'some_path_to_repo/activity/counter',
       id: 'counter_1',
       inputMappings: {},
       type: 1,
@@ -983,7 +980,7 @@ export let mockResultantUIFlowWithTransformations = {
       name: 'Second Log',
       description: 'description second log',
       settings: {},
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      ref: 'some_path_to_repo/activity/log',
       id: 'log_2',
       inputMappings: {},
       type: 1,
@@ -998,7 +995,7 @@ export let mockResultantUIFlowWithTransformations = {
       name: 'Third Log',
       description: 'description third Log',
       settings: {},
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      ref: 'some_path_to_repo/activity/log',
       id: 'log_3',
       inputMappings: {},
       type: 1,
@@ -1161,13 +1158,13 @@ export let mockResultantUIFlowWithTransformations = {
     nodes: {},
   },
   schemas: {
-    'github.com/TIBCOSoftware/flogo-contrib/activity/log': {
+    'some_path_to_repo/activity/log': {
       id: 'tibco-log',
       name: 'tibco-log',
       version: '0.0.1',
       description: 'Simple Log Activity',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
+      ref: 'some_path_to_repo/activity/log',
+      homepage: 'some_path_to_repo/tree/master/activity/log',
       inputs: [
         {
           name: 'message',
@@ -1192,14 +1189,13 @@ export let mockResultantUIFlowWithTransformations = {
         },
       ],
     },
-    'github.com/TIBCOSoftware/flogo-contrib/activity/counter': {
+    'some_path_to_repo/activity/counter': {
       id: 'tibco-counter',
       name: 'tibco-counter',
       version: '0.0.1',
       description: 'Simple Global Counter Activity',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-      homepage:
-        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+      ref: 'some_path_to_repo/activity/counter',
+      homepage: 'some_path_to_repo/tree/master/activity/counter',
       inputs: [
         {
           name: 'counterName',

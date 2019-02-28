@@ -1,6 +1,3 @@
-export const REF_TRIGGER_LAMBDA = 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda';
-export const LEGACY_FLOW_TYPE = 1;
-
 export const EXPORT_MODE = {
   STANDARD_MODEL: 'standard',
   LEGACY_MODEL: 'legacy',

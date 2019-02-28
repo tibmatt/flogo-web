@@ -4,8 +4,9 @@ import {
   ContributionSchema,
   FlogoAppModel,
   ResourceActionModel,
+  CONTRIB_REFS,
 } from '@flogo-web/core';
-import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '@flogo-web/server/core';
+import { FLOGO_TASK_TYPE } from '@flogo-web/server/core';
 import { exportFlow } from '..';
 
 test('it exports a flow', () => {
@@ -34,7 +35,7 @@ function getExpectedFlow(): FlogoAppModel.Resource<ResourceActionModel.FlowResou
           name: 'Log',
           description: 'Logs a message',
           activity: {
-            ref: 'github.com/project-flogo/contrib/activity/log',
+            ref: 'some_path_to_repo/activity/log',
             input: {
               message: 'hello world',
               addDetails: false,
@@ -46,7 +47,7 @@ function getExpectedFlow(): FlogoAppModel.Resource<ResourceActionModel.FlowResou
           name: 'Start a SubFlow',
           description: 'Activity to start a sub-flow in an existing flow',
           activity: {
-            ref: REF_SUBFLOW,
+            ref: CONTRIB_REFS.SUBFLOW,
             settings: {
               flowURI: 'res://flow:humanized_subflow_ref',
             },
@@ -66,7 +67,7 @@ function getExpectedFlow(): FlogoAppModel.Resource<ResourceActionModel.FlowResou
             name: 'Log',
             description: 'Logs a message',
             activity: {
-              ref: 'github.com/project-flogo/contrib/activity/log',
+              ref: 'some_path_to_repo/activity/log',
               input: {
                 message: 'hello world from the error handler',
                 addDetails: true,
@@ -98,7 +99,7 @@ function getFlowToExport(): Resource<FlowData> {
           name: 'Log',
           description: 'Logs a message',
           type: 1,
-          activityRef: 'github.com/project-flogo/contrib/activity/log',
+          activityRef: 'some_path_to_repo/activity/log',
           inputMappings: {
             message: 'hello world',
             addDetails: false,
@@ -109,7 +110,7 @@ function getFlowToExport(): Resource<FlowData> {
           name: 'Start a SubFlow',
           description: 'Activity to start a sub-flow in an existing flow',
           type: FLOGO_TASK_TYPE.TASK_SUB_PROC,
-          activityRef: REF_SUBFLOW,
+          activityRef: CONTRIB_REFS.SUBFLOW,
           settings: {
             flowPath: '4ut01d',
           },
@@ -123,7 +124,7 @@ function getFlowToExport(): Resource<FlowData> {
             name: 'Log',
             description: 'Logs a message',
             type: 1,
-            activityRef: 'github.com/project-flogo/contrib/activity/log',
+            activityRef: 'some_path_to_repo/activity/log',
             inputMappings: {
               message: 'hello world from the error handler',
               addDetails: true,
@@ -142,12 +143,11 @@ function getContributions(): Array<[string, ContributionSchema]> {
       {
         name: 'tibco-log',
         type: 'flogo:activity',
-        ref: 'github.com/project-flogo/contrib/activity/log',
+        ref: 'some_path_to_repo/activity/log',
         version: '0.0.1',
         title: 'Log Message',
         description: 'Simple Log Activity',
-        homepage:
-          'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
+        homepage: 'some_path_to_repo/tree/master/activity/log',
         input: [
           {
             name: 'message',

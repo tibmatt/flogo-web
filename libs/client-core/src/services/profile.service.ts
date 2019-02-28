@@ -7,8 +7,9 @@ import {
   createSubFlowTask,
 } from '../models';
 
-import { CONTRIB_REF_PLACEHOLDER, FLOGO_CONTRIB_TYPE } from '../constants';
+import { FLOGO_CONTRIB_TYPE } from '../constants';
 import { RESTAPIContributionsService } from './restapi';
+import { CONTRIB_REFS } from '@flogo-web/core';
 
 @Injectable()
 export class FlogoProfileService {
@@ -39,7 +40,7 @@ export class FlogoProfileService {
         // Exclude subflow activity from processing it as a normal activity
         subflowAcivitySchema = remove(
           data,
-          (activity: any) => activity.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW
+          (activity: any) => activity.ref === CONTRIB_REFS.SUBFLOW
         ).pop();
         return map(data, (activity: any) => {
           return assign(activitySchemaToTask(activity), {

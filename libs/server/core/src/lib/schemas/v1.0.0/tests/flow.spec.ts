@@ -2,7 +2,6 @@ import { cloneDeep } from 'lodash';
 
 import { makeAjvContext } from './test-utils';
 
-const triggerSchema = require('../trigger.json');
 const commonSchema = require('../common.json');
 const flowSchema = require('../flow.json');
 
@@ -132,7 +131,7 @@ describe('JSONSchema: Flow', () => {
 
       test('should have valid flowURI in case of subflow', () => {
         const activityUnderTest = { ...validSchemas.activity };
-        activityUnderTest.ref = 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow';
+        activityUnderTest.ref = 'github.com/project-flogo/flow/activity/subflow';
         activityUnderTest.settings = { flowURI: 'flowUri' };
         activityValidator
           .validateAndCreateAsserter(activityUnderTest)
@@ -217,13 +216,15 @@ describe('JSONSchema: Flow', () => {
   });
 
   function generateValidSchemas() {
-    const link = { from: 'task_a', to: 'task_b' };
+    const link: { [linkProp: string]: any } = { from: 'task_a', to: 'task_b' };
     const metadataItem = { name: 'sampleMetadata', type: 'string' };
     const metadata = {
       input: [{ ...metadataItem }],
       output: [{ ...metadataItem }],
     };
-    const activity = { ref: 'github.com/flogo-contrib/activity/log' };
+    const activity: { [schemaProp: string]: any } = {
+      ref: 'github.com/flogo-contrib/activity/log',
+    };
     const task = {
       id: 'task_a',
       activity: { ...activity },

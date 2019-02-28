@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://github.com/TIBCOSoftware/flogo/schemas/1.0.0/trigger.json",
+  "$id": "http://github.com/project-flogo/webui/schemas/1.0.0/trigger.json",
   "type": "object",
   "additionalProperties": false,
   "required": ["id", "ref"],
@@ -55,7 +55,7 @@
         "ref": {
           "type": "string",
           "minLength": 1,
-          "default": "github.com/TIBCOSoftware/flogo-contrib/action/flow"
+          "default": "github.com/project-flogo/flow"
         },
         "data": {
           "$ref": "#/definitions/flowData"

@@ -4,7 +4,6 @@ import {
   ContribSchema,
   Dictionary,
   FLOGO_CONTRIB_TYPE_VALUES,
-  CONTRIB_REF_PLACEHOLDER,
   Item,
   ItemActivityTask,
   FLOGO_TASK_TYPE,
@@ -26,6 +25,7 @@ import {
 } from '../../models';
 import { Activity } from '../../../task-add';
 import { InstalledFunctionSchema } from '../../interfaces';
+import { CONTRIB_REFS } from '@flogo-web/core';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(
@@ -311,7 +311,7 @@ export const getInstalledActivities = createSelector(
       }));
     const subflowActivity = remove(
       activities,
-      activity => activity.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW
+      activity => activity.ref === CONTRIB_REFS.SUBFLOW
     ).pop();
     if (subflowActivity) {
       activities.unshift(subflowActivity);

@@ -1,7 +1,7 @@
 export let mockTrigger = {
   id: 'trigger_request',
   name: 'Trigger Request',
-  ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/timer',
+  ref: 'some_path_to_repo/trigger/timer',
   settings: {},
   handlers: [
     {
@@ -41,8 +41,8 @@ export let mockTriggerDetails = {
   version: '0.0.1',
   title: 'Timer',
   description: 'Simple Timer trigger',
-  homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer',
-  ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/timer',
+  homepage: 'some_path_to_repo/tree/master/trigger/timer',
+  ref: 'some_path_to_repo/trigger/timer',
   settings: [],
   outputs: [
     {

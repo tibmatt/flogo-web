@@ -34,7 +34,7 @@ const nameExists = (triggerId, name, triggers) => {
   "description": "My rest trigger description",
   "updatedAt": "2017-07-14T01:00:00+01:00Z",
   "createdAt": "2017-07-14T01:00:00+01:00Z",
-  "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+  "ref": "github.com/project-flogo/contrib/trigger/rest",
   "settings": {
     "port": "9233"
   },

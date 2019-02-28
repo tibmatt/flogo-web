@@ -3,7 +3,7 @@
  * @param resourceUri
  */
 export function parseResourceNameFromResourceUri(resourceUri) {
-  // flow refs have the structure res://flow:some-flow-id (https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/subflow)
+  // flow refs have the structure res://flow:some-flow-id (https://github.com/project-flogo/flow/tree/master/activity/subflow#examples)
   return parseResourceIdFromResourceUri(resourceUri).split(':')[0];
 }
 
@@ -12,6 +12,6 @@ export function parseResourceNameFromResourceUri(resourceUri) {
  * @param resourceUri
  */
 export function parseResourceIdFromResourceUri(resourceUri) {
-  // flow refs have the structure res://flow:some-flow-id (https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/subflow)
+  // flow refs have the structure res://flow:some-flow-id (https://github.com/project-flogo/flow/tree/master/activity/subflow#examples)
   return resourceUri.replace(/^\s*res:\/\//, '');
 }

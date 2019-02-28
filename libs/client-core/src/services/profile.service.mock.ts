@@ -13,7 +13,7 @@ export class FlogoProfileServiceMock {
         title: 'Receive CoAP Message',
         description: 'Simple CoAP Trigger',
         homepage: '',
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/coap',
+        ref: 'some_path_to_repo/trigger/coap',
         settings: [
           {
             name: 'port',
@@ -57,9 +57,8 @@ export class FlogoProfileServiceMock {
         version: '0.0.1',
         title: 'Receive MQTT Message',
         description: 'Simple MQTT Trigger',
-        homepage:
-          'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/mqtt',
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt',
+        homepage: 'some_path_to_repo/tree/master/trigger/mqtt',
+        ref: 'some_path_to_repo/trigger/mqtt',
         settings: [
           {
             name: 'broker',
@@ -115,9 +114,8 @@ export class FlogoProfileServiceMock {
         version: '0.0.1',
         title: 'Receive HTTP Message',
         description: 'Simple REST Trigger',
-        homepage:
-          'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+        homepage: 'some_path_to_repo/tree/master/trigger/rest',
+        ref: 'some_path_to_repo/trigger/rest',
         settings: [
           {
             name: 'port',
@@ -173,9 +171,8 @@ export class FlogoProfileServiceMock {
         version: '0.0.1',
         title: 'Timer',
         description: 'Simple Timer trigger',
-        homepage:
-          'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer',
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/timer',
+        homepage: 'some_path_to_repo/tree/master/trigger/timer',
+        ref: 'some_path_to_repo/trigger/timer',
         settings: [],
         outputs: [
           {

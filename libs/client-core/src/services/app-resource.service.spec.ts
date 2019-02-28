@@ -18,7 +18,7 @@ describe('Service: FlowsService', function(this: {
 }) {
   const mockAppTriggerData = {
     name: 'Receive HTTP Message',
-    ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+    ref: 'some_path_to_repo/trigger/rest',
     description: 'Simple REST Trigger',
     settings: {
       port: null,

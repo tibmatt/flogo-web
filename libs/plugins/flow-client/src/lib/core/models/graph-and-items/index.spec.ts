@@ -18,7 +18,7 @@ describe('flow.core.models.graph-and-items', function() {
       description: 'Simple Log Activity',
       type: 1,
       activityType: 'github-com-tibco-software-flogo-contrib-activity-log',
-      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      activityRef: 'some_path_to_repo/activity/log',
       attributes: [
         {
           name: 'message',
@@ -46,7 +46,7 @@ describe('flow.core.models.graph-and-items', function() {
       description: 'Simple AWS IoT',
       type: 1,
       activityType: 'github-com-tibco-software-flogo-contrib-activity-awsiot',
-      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/awsiot',
+      activityRef: 'some_path_to_repo/activity/awsiot',
       attributes: [
         {
           name: 'thingName',
@@ -84,7 +84,7 @@ describe('flow.core.models.graph-and-items', function() {
       description: 'Simple Reply Activity',
       type: 1,
       activityType: 'github-com-tibco-software-flogo-contrib-activity-reply',
-      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/reply',
+      activityRef: 'some_path_to_repo/activity/reply',
       attributes: [
         {
           name: 'code',
@@ -106,7 +106,7 @@ describe('flow.core.models.graph-and-items', function() {
       description: 'Simple Log Activity',
       type: 1,
       activityType: 'tibco-log',
-      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      activityRef: 'some_path_to_repo/activity/log',
       attributes: [
         {
           name: 'message',
@@ -134,7 +134,7 @@ describe('flow.core.models.graph-and-items', function() {
       description: 'Simple Log Activity',
       type: 1,
       activityType: 'tibco-log',
-      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      activityRef: 'some_path_to_repo/activity/log',
       attributes: [
         {
           name: 'message',
@@ -162,7 +162,7 @@ describe('flow.core.models.graph-and-items', function() {
       description: 'Simple Log Activity',
       type: 1,
       activityType: 'tibco-log',
-      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      activityRef: 'some_path_to_repo/activity/log',
       attributes: [
         {
           name: 'message',
@@ -190,7 +190,7 @@ describe('flow.core.models.graph-and-items', function() {
       description: 'Simple Log Activity',
       type: 1,
       activityType: 'tibco-log',
-      activityRef: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      activityRef: 'some_path_to_repo/activity/log',
       attributes: [
         {
           name: 'message',
@@ -257,9 +257,9 @@ describe('flow.core.models.graph-and-items', function() {
   ];
 
   const mockSchemas = [
-    { ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log' },
-    { ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/reply' },
-    { ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/awsiot' },
+    { ref: 'some_path_to_repo/activity/log' },
+    { ref: 'some_path_to_repo/activity/reply' },
+    { ref: 'some_path_to_repo/activity/awsiot' },
   ];
 
   let graph: FlowGraph;
@@ -283,7 +283,7 @@ describe('flow.core.models.graph-and-items', function() {
         name: 'Start processing',
         description: 'Simple Log Activity',
         settings: {},
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        ref: 'some_path_to_repo/activity/log',
         id: 'log_1',
         inputMappings: {},
         type: FLOGO_TASK_TYPE.TASK,
@@ -298,7 +298,7 @@ describe('flow.core.models.graph-and-items', function() {
         name: 'Update',
         description: 'Simple AWS IoT',
         settings: {},
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/awsiot',
+        ref: 'some_path_to_repo/activity/awsiot',
         id: 'awsiot_1',
         inputMappings: {},
         type: FLOGO_TASK_TYPE.TASK,
@@ -318,7 +318,7 @@ describe('flow.core.models.graph-and-items', function() {
         name: 'Done',
         description: 'Simple Reply Activity',
         settings: {},
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/reply',
+        ref: 'some_path_to_repo/activity/reply',
         id: 'reply_1',
         inputMappings: {},
         type: FLOGO_TASK_TYPE.TASK,
@@ -332,7 +332,7 @@ describe('flow.core.models.graph-and-items', function() {
         name: 'Log Message (3)',
         description: 'Simple Log Activity',
         settings: {},
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        ref: 'some_path_to_repo/activity/log',
         id: 'log_6',
         inputMappings: {},
         type: FLOGO_TASK_TYPE.TASK,
@@ -347,7 +347,7 @@ describe('flow.core.models.graph-and-items', function() {
         name: 'Log Message (4)',
         description: 'Simple Log Activity',
         settings: {},
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        ref: 'some_path_to_repo/activity/log',
         id: 'log_7',
         inputMappings: {},
         type: FLOGO_TASK_TYPE.TASK,
@@ -362,7 +362,7 @@ describe('flow.core.models.graph-and-items', function() {
         name: 'Log Message',
         description: 'Simple Log Activity',
         settings: {},
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        ref: 'some_path_to_repo/activity/log',
         id: 'log_4',
         inputMappings: {},
         type: 1,
@@ -377,7 +377,7 @@ describe('flow.core.models.graph-and-items', function() {
         name: 'Log Message (2)',
         description: 'Simple Log Activity',
         settings: {},
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        ref: 'some_path_to_repo/activity/log',
         id: 'log_5',
         inputMappings: {},
         type: FLOGO_TASK_TYPE.TASK,

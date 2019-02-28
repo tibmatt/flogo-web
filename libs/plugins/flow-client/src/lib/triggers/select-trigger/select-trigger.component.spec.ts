@@ -21,13 +21,13 @@ describe('FlogoSelectTrigger component', () => {
 
   const existingMock = [
     {
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/coap',
+      ref: 'some_path_to_repo/trigger/coap',
       name: 'Simple COAP Trigger',
       description: 'Description of Simple COAP Trigger',
       id: 1,
     },
     {
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt',
+      ref: 'some_path_to_repo/trigger/mqtt',
       name: 'Receive MQTT Message',
       description: 'MQTT Message description',
       id: 2,

@@ -2,7 +2,6 @@ import { fromPairs } from 'lodash';
 
 import {
   ActivitySchema,
-  CONTRIB_REF_PLACEHOLDER,
   FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
   ContribSchema,
   Dictionary,
@@ -15,6 +14,7 @@ import {
 
 import { makeTaskNodes, makeBranchNode } from './graph-creator';
 import { makeBranchItem, makeTaskItems } from './items-creator';
+import { CONTRIB_REFS } from '@flogo-web/core';
 
 type Task = backendFlow.Task;
 type Link = backendFlow.Link;
@@ -78,7 +78,7 @@ function activitySchemaFinder(contribSchemas: ContribSchema[]) {
   const schemaDictionary = fromPairs(contribSchemas.map(schema => [schema.ref, schema]));
   return (task: Task): Partial<ActivitySchema> => {
     if (isSubflowTask(task.type)) {
-      return { ref: CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW };
+      return { ref: CONTRIB_REFS.SUBFLOW };
     }
     return schemaDictionary[task.activityRef] as ActivitySchema;
   };

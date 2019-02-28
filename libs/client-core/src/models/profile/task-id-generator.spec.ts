@@ -5,7 +5,7 @@ const mockTasksAvailable = {
     name: 'Timer',
     title: 'Timer',
     version: '0.0.1',
-    homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer',
+    homepage: 'some_path_to_repo/tree/master/trigger/timer',
     description: 'Simple Timer trigger',
     installed: true,
     settings: [],
@@ -21,7 +21,7 @@ const mockTasksAvailable = {
         value: null,
       },
     ],
-    ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/timer',
+    ref: 'some_path_to_repo/trigger/timer',
     handler: {
       settings: [
         {
@@ -88,7 +88,7 @@ const mockSelectedTask = {
   version: '0.0.1',
   title: 'Increment Counter',
   description: 'Simple Global Counter Activity',
-  ref: 'github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+  ref: 'some_path_to_repo/tree/master/activity/counter',
   inputs: [
     {
       name: 'counterName',

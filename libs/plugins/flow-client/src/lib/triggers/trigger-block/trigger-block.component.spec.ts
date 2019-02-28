@@ -22,7 +22,7 @@ class FlogoContainerComponent {
   constructor() {
     this.triggerEntity = {
       name: 'Timer',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/timer',
+      ref: 'some_path_to_repo/trigger/timer',
       description: 'Simple Timer trigger',
       settings: {},
       id: '432423',

@@ -305,20 +305,6 @@ function buildHandler(graph: FlowGraph, flowItems: Dictionary<Item>, inFlow: UiF
   return null;
 }
 
-function _hasExplicitReply(tasks?: any): boolean {
-  if (!tasks) {
-    return false;
-  }
-
-  // hardcoding the activity type, for now
-  // TODO: maybe the activity should expose a property so we know it can reply?
-  return !!find(
-    tasks,
-    task =>
-      (<any>task).activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply'
-  );
-}
-
 function _parseMetadata(metadata: FlowMetadata): FlowMetadata {
   const flowMetadata: FlowMetadata = {
     input: [],

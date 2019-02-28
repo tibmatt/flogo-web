@@ -19,7 +19,7 @@ const TEST_STATE: FlowState = {
     trigger1: {
       id: 'trigger1',
       name: 'Receive HTTP Message',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+      ref: 'some_path_to_repo/trigger/rest',
       description: 'Simple REST Trigger',
       settings: {
         port: null,
@@ -62,7 +62,7 @@ const TEST_STATE: FlowState = {
       name: 'Timer',
       createdAt: '',
       updatedAt: '',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/timer',
+      ref: 'some_path_to_repo/trigger/timer',
       description: 'Simple Timer Trigger',
       settings: {
         port: null,
@@ -205,14 +205,14 @@ xdescribe('ConfiguratorComponent component', () => {
   });
 
   triggerSchemas = {
-    'github.com/TIBCOSoftware/flogo-contrib/trigger/rest': {
+    'some_path_to_repo/trigger/rest': {
       name: 'flogo-rest',
       type: 'flogo:trigger',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+      ref: 'some_path_to_repo/trigger/rest',
       version: '0.0.1',
       title: 'Receive HTTP Message',
       description: 'Simple REST Trigger',
-      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
+      homepage: 'some_path_to_repo/tree/master/trigger/rest',
       settings: [
         {
           name: 'port',
@@ -268,15 +268,14 @@ xdescribe('ConfiguratorComponent component', () => {
         ],
       },
     },
-    'github.com/TIBCOSoftware/flogo-contrib/trigger/timer': {
+    'some_path_to_repo/trigger/timer': {
       name: 'flogo-timer',
       type: 'flogo:trigger',
-      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/timer',
+      ref: 'some_path_to_repo/trigger/timer',
       version: '0.0.1',
       title: 'Timer',
       description: 'Simple Timer trigger',
-      homepage:
-        'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer',
+      homepage: 'some_path_to_repo/tree/master/trigger/timer',
       settings: [],
       output: [
         {
