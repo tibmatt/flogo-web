@@ -41,7 +41,7 @@ function normalizeFunctionSchema(functionSchema) {
   };
 
   function normalizeArgs(args) {
-    let normalizedArgs = {};
+    const normalizedArgs = {};
     Object.keys(args).forEach(arg => {
       normalizedArgs[arg.trim()] = args[arg];
     });
@@ -56,7 +56,7 @@ export function flowReducer(
   state = runnerReducer(state, action);
   switch (action.type) {
     case ActionType.Init: {
-      let allFunctionSchemas = {};
+      const allFunctionSchemas = {};
       Object.keys(action.payload.schemas)
         .filter(contribSchema => {
           return action.payload.schemas[contribSchema].type === 'flogo:function';
