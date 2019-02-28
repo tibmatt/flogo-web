@@ -187,7 +187,7 @@ function getExpectedImport() {
           settings: {},
           activitySettings: {},
           inputMappings: {
-            message: 12345,
+            message: 'world',
           },
         },
         {
@@ -196,7 +196,7 @@ function getExpectedImport() {
           name: 'Subflow',
           description: '',
           activityRef: CONTRIB_REFS.SUBFLOW,
-          inputMappings: expect.any(Object),
+          inputMappings: {},
           activitySettings: {},
           settings: {
             flowPath: 'updatedSubflowId',
