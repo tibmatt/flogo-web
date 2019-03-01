@@ -485,7 +485,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
 
   private resetInputMappingsController(propsToMap, inputScope, mappings) {
     const { subscription, controller } = this.configureMappingsController(
-      TASK_TABS.SETTINGS,
+      TASK_TABS.INPUT_MAPPINGS,
       this.inputMapperStateSubscription,
       { propsToMap, inputScope, mappings }
     );
