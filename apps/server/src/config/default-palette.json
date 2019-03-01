@@ -62,5 +62,17 @@
   {
     "name": "subflow",
     "ref": "github.com/project-flogo/flow/activity/subflow"
+  },
+  {
+    "name": "string",
+    "ref": "github.com/project-flogo/contrib/function/string"
+  },
+  {
+    "name": "number",
+    "ref": "github.com/project-flogo/contrib/function/number"
+  },
+  {
+    "name": "json",
+    "ref": "github.com/project-flogo/contrib/function/json"
   }
 ]

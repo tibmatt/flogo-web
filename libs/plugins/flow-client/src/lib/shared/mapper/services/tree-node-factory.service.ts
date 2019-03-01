@@ -151,7 +151,7 @@ export class TreeNodeFactoryService {
 
   private createFromFunctionsNode(currentFunction, namespace?) {
     const functionName = currentFunction.name;
-    const help = currentFunction.help;
+    const description = currentFunction.description;
     const args = currentFunction.args.reduce((allArgs, current) => {
       // is var args?
       if (/\.\.\.(.+)/g.test(current.type)) {
@@ -167,13 +167,12 @@ export class TreeNodeFactoryService {
     } else {
       snippet = `${functionName}(${args.join(', ')})`;
     }
-    const node = {
+    return {
       label: functionName,
       isSelectable: true,
       styleClass: 'node--selectable node--has-no-children',
-      data: { help, snippet },
+      data: { description, snippet },
     };
-    return node;
   }
 
   fromJsonSchemaToSymbolTable(from: any, level = 0) {

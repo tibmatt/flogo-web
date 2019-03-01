@@ -11,7 +11,6 @@ import { buildPlugin } from './build/plugin';
 import { loader } from './loader';
 import { commander } from './commander';
 import { execController as exec } from './exec-controller';
-import { getFunctions } from '../../common/utils/functions';
 
 const DIR_TEST_BIN = 'bin-test';
 const DIR_BUILD_BIN = 'bin-build';
@@ -56,7 +55,6 @@ class Engine {
       })
       .then((contribMetadata: TaskCollections) => {
         this.tasks = contribMetadata;
-        this.tasks.functions = getFunctions();
         return contribMetadata;
       });
   }
