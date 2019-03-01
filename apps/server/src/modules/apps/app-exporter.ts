@@ -9,10 +9,10 @@ import { ContributionsService } from '../contribs';
 
 export { ExportAppOptions };
 
-function resourceExportResolver(porting: ResourceTypes) {
+function resourceExportResolver(resourceTypes: ResourceTypes) {
   return (resourceType: string) => {
-    return porting.isKnownType(resourceType)
-      ? porting.exporter(resourceType).resource
+    return resourceTypes.isKnownType(resourceType)
+      ? resourceTypes.exporter(resourceType)
       : null;
   };
 }
@@ -30,10 +30,15 @@ export class AppExporter {
     const contributionMap = new Map<string, ContributionSchema>(
       contributions.map(c => [c.ref, c] as [string, ContributionSchema])
     );
+    const resourceTypes = this.pluginRegistry.resourceTypes;
+    const resourceRefs = new Map<string, string>(
+      resourceTypes.allTypes().map(t => [t.type, t.ref] as [string, string])
+    );
     return exportApp(
       app,
-      resourceExportResolver(this.pluginRegistry.resourceTypes),
+      resourceExportResolver(resourceTypes),
       contributionMap,
+      resourceRefs,
       options
     );
   }

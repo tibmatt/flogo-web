@@ -1,3 +1,4 @@
+import { FlogoAppModel } from '@flogo-web/core';
 import {
   ResourceImportContext,
   ResourceExportContext,
@@ -7,15 +8,16 @@ import {
 } from '@flogo-web/server/core';
 
 import { createActionImporter } from './import';
-import { exportFlow } from './export';
+import { exportFlow, exportHandler } from './export';
 import { resourceHooks } from './hooks';
 import { FlowData } from './flow';
+import { FLOW_REF } from './constants';
 
 export const flowPlugin: FlogoPlugin = {
   register(server: PluginServer) {
     server.resources.addType({
       type: 'flow',
-      ref: 'github.com/project-flogo/flow',
+      ref: FLOW_REF,
       import: {
         resource(data, context: ResourceImportContext) {
           const importer = createActionImporter();
@@ -30,9 +32,8 @@ export const flowPlugin: FlogoPlugin = {
         resource(resource: Resource<FlowData>, context: ResourceExportContext) {
           return exportFlow(resource, context);
         },
-        handler(handler) {
-          // todo
-          return handler as any;
+        handler(handler: FlogoAppModel.NewHandler, context) {
+          return exportHandler(handler, context.internalHandler);
         },
       },
     });

@@ -1,8 +1,7 @@
-export const FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE = {
-  0: 'DEFAULT',
-  1: 'BRANCH',
-  2: 'LABELED',
-  DEFAULT: 0,
-  BRANCH: 1,
-  LABELED: 2,
-};
+export enum FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE {
+  DEFAULT,
+  BRANCH,
+  LABELED,
+}
+
+export const FLOW_REF = 'github.com/project-flogo/flow';

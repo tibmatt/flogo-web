@@ -2,7 +2,13 @@ import { Resource, FlogoAppModel, Handler, ContributionSchema } from '@flogo-web
 
 export interface ResourceExportContext {
   contributions: Map<string, ContributionSchema>;
-  resourceIdReconciler: Map<string, string>;
+  resourceIdReconciler: Map<string, Resource>;
+}
+
+export interface HandlerExportContext {
+  triggerSchema: ContributionSchema;
+  resource: FlogoAppModel.Resource;
+  internalHandler: Handler;
 }
 
 export interface ResourceExporter<TResourceData = unknown> {
@@ -10,5 +16,8 @@ export interface ResourceExporter<TResourceData = unknown> {
     resource: Resource<TResourceData>,
     context: ResourceExportContext
   ): FlogoAppModel.Resource;
-  handler(handler: Handler, context: ResourceExportContext): FlogoAppModel.Handler;
+  handler(
+    handler: FlogoAppModel.NewHandler,
+    context: HandlerExportContext
+  ): FlogoAppModel.NewHandler;
 }

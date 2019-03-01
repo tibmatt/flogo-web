@@ -1,12 +1,15 @@
 import { cloneDeep } from 'lodash';
 import { App, ContributionSchema, Resource, FlogoAppModel } from '@flogo-web/core';
-import { ResourceExportContext } from '@flogo-web/server/core';
+import {
+  ResourceExportContext,
+  ResourceType,
+  ResourceExporter,
+} from '@flogo-web/server/core';
 
 import { isValidApplicationType } from '../../../common/utils';
 import { AppFormatter } from './app-formatter';
 import { Exporter } from './exporter';
 import { UniqueIdAgent } from './utils/unique-id-agent';
-import { ResourceExporterFn } from './resource-exporter-fn';
 
 export interface ExportAppOptions {
   isFullExportMode?: boolean;
@@ -15,8 +18,9 @@ export interface ExportAppOptions {
 
 export function exportApp(
   app: App,
-  resolveExporterFn: (resourceType: string) => ResourceExporterFn,
+  resolveExporterFn: (resourceType: string) => ResourceExporter,
   activitySchemas: Map<string, ContributionSchema>,
+  resourceTypeToRef: Map<string, string>,
   options: ExportAppOptions = {}
 ) {
   if (!isValidApplicationType(app.type)) {
@@ -24,6 +28,7 @@ export function exportApp(
   }
   const formatter = new AppFormatter(
     activitySchemas,
+    resourceTypeToRef,
     createExportResolver(resolveExporterFn)
   );
   const { isFullExportMode = true, selectResources = [] } = options;
@@ -31,18 +36,31 @@ export function exportApp(
   return exporter.export(cloneDeep(app), selectResources);
 }
 
-function createExportResolver(
-  resolveResourceExporter: (resourceType: string) => ResourceExporterFn
+function getExporterForType(
+  resolveResourceExporter: (resourceType: string) => ResourceExporter
 ) {
-  return (resource: Resource, context: ResourceExportContext): FlogoAppModel.Resource => {
-    const forType = resource.type;
-    const resourceExporter = resolveResourceExporter(forType);
+  return (resourceType: string): ResourceExporter => {
+    const resourceExporter = resolveResourceExporter(resourceType);
     if (!resourceExporter) {
       // todo: error type
       throw new Error(
-        `Cannot process resource of type "${forType}", no plugin registered for such type.`
+        `Cannot process resource of type "${resourceType}", no plugin registered for such type.`
       );
     }
-    return resourceExporter(resource, context);
+    return resourceExporter;
+  };
+}
+
+function createExportResolver(
+  resolveResourceExporter: (resourceType: string) => ResourceExporter
+) {
+  const resolvePluginForType = getExporterForType(resolveResourceExporter);
+  return {
+    resource(resource, context) {
+      return resolvePluginForType(resource.type).resource(resource, context);
+    },
+    handler(resourceType, handler, context) {
+      return resolvePluginForType(resourceType).handler(handler, context);
+    },
   };
 }
