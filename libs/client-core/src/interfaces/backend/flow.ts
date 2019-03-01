@@ -1,3 +1,5 @@
+import { Dictionary } from '@flogo-web/client-core';
+
 export namespace flow {
   export interface Attribute {
     name: string;
@@ -15,7 +17,7 @@ export namespace flow {
     inputMappings?: any;
     settings?: any;
     outputMappings?: Mapping[];
-    activitySettings?: any;
+    activitySettings?: Dictionary<any>;
   }
 
   export interface Mapping {

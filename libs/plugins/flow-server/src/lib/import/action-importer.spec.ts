@@ -101,7 +101,7 @@ function getSampleFlowResource(): Resource {
               input: [
                 {
                   type: 'literal',
-                  value: 'world',
+                  value: 12345,
                   mapTo: 'message',
                 },
               ],
@@ -187,7 +187,7 @@ function getExpectedImport() {
           settings: {},
           activitySettings: {},
           inputMappings: {
-            message: 'world',
+            message: 12345,
           },
         },
         {
@@ -196,7 +196,7 @@ function getExpectedImport() {
           name: 'Subflow',
           description: '',
           activityRef: CONTRIB_REFS.SUBFLOW,
-          inputMappings: {},
+          inputMappings: expect.any(Object),
           activitySettings: {},
           settings: {
             flowPath: 'updatedSubflowId',
