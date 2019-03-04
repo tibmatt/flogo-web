@@ -11,10 +11,10 @@ const noOp = () => {};
 export class HookApplicator {
   private readonly beforeHooks: HookRegistry = new Map();
   private readonly afterHooks: HookRegistry = new Map();
-  private readonly log?: (msg) => void;
+  private readonly log: (msg) => void;
 
-  constructor(logger: Logger) {
-    this.log = msg => logger.debug(`${HookApplicator.name}: ${msg}`);
+  constructor(logger?: Logger) {
+    this.log = logger ? msg => logger.debug(`${HookApplicator.name}: ${msg}`) : noOp;
   }
 
   load(resourceHooks: ResourceHooks) {
@@ -50,13 +50,16 @@ export class HookApplicator {
     return context;
   }
 
-  async runBefore(forStage: ResourceLifecycleStage, context: HookContext) {
+  runBefore(
+    forStage: ResourceLifecycleStage,
+    context: HookContext
+  ): Promise<HookContext> {
     this.throwIfUnknownStage(forStage);
     // this.log('Running hooks before ' + forStage);
     return this.runHooks(this.beforeHooks.get(forStage), context);
   }
 
-  async runAfter(forStage: ResourceLifecycleStage, context: HookContext) {
+  runAfter(forStage: ResourceLifecycleStage, context: HookContext): Promise<HookContext> {
     this.throwIfUnknownStage(forStage);
     // this.log('Running hooks after ' + forStage);
     return this.runHooks(this.afterHooks.get(forStage), context);

@@ -141,11 +141,11 @@ export class ResourceService {
     }
 
     const context = this.createHookContext(resource);
-    this.resourceHooks.runBefore('remove', context);
+    await this.resourceHooks.runBefore('remove', context);
     const wasRemoved = await this.resourceRepository.remove(resourceId);
     if (wasRemoved) {
       await this.handlersService.removeByResourceId(resourceId);
-      this.resourceHooks.runAfter('remove', context);
+      await this.resourceHooks.runAfter('remove', context);
     }
     return wasRemoved;
   }
