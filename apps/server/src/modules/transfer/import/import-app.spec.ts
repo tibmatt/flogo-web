@@ -1,5 +1,9 @@
 import { cloneDeep } from 'lodash';
-import { ValidationError, ResourceImporter } from '@flogo-web/server/core';
+import {
+  ValidationError,
+  ResourceImporter,
+  parseResourceIdFromResourceUri,
+} from '@flogo-web/server/core';
 import { importApp, ImportersResolver } from './import-app';
 
 import { assertCorrectImportedApp } from '../tests/samples/imported-app';
@@ -43,7 +47,8 @@ test('import app', () => {
       importerResolver(
         i => i,
         (h, c) => {
-          h.resourceId = c.rawHandler.action.data.flowURI;
+          const { flowURI } = c.rawHandler.action.data;
+          h.resourceId = parseResourceIdFromResourceUri(flowURI);
           return h;
         }
       )
