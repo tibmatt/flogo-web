@@ -27,7 +27,7 @@ export interface SaveTaskConfigEventData {
   inputMappings: Dictionary<any>;
   subflowPath?: string;
   changedSubflowSchema?: Resource;
-  activitySettings: Dictionary<any>;
+  activitySettings: { [settingName: string]: any };
 }
 export interface SaveBranchConfigEventData {
   id: string;

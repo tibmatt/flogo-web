@@ -477,7 +477,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
 
   private getActivitySettingsInfo(
     activitySchema
-  ): { settingPropsToMap: any[]; activitySettings: Dictionary<any> } {
+  ): { settingPropsToMap: any[]; activitySettings: { [settingName: string]: any } } {
     const activitySettings = this.currentTile.activitySettings;
     const settingPropsToMap = activitySchema.settings;
     return { activitySettings, settingPropsToMap };

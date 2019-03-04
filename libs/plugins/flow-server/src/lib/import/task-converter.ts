@@ -48,7 +48,7 @@ export class TaskConverter {
 
   resolveTypeAndSettings() {
     const settings: { [key: string]: any } = {};
-    let activitySettings: { [key: string]: any } = {};
+    let activitySettings: { [settingName: string]: any } = {};
     let type = FLOGO_TASK_TYPE.TASK;
     if (this.isSubflowTask()) {
       type = FLOGO_TASK_TYPE.TASK_SUB_PROC;
