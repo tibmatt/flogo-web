@@ -220,7 +220,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     objectItem(ctx): JsonNodes.PropertyNode {
-      const key = JSON.parse(ctx.StringLiteral[0].image);
+      const key = JSON.parse(ctx.DblQuoteStringLiteral[0].image);
       const value = <JsonNodes.ValueNode>this.visit(ctx.jsonValue);
       return {
         type: 'jsonProperty',

@@ -1,5 +1,6 @@
 import { LiteralNode, PropertyNode, StringTemplateNode } from './ast';
 import { parse, parseResolver } from './parse';
+import './tests/jest-matchers';
 
 describe('parse', function() {
   it('parses simple resolvers', function() {
@@ -101,28 +102,39 @@ describe('parse', function() {
 
   it('parses ternary expressions', function() {
     const parseResult = parse('a > b ? true : false');
-    expect(parseResult.ast).toBeTruthy();
-    expect(parseResult.lexErrors.length).toBeFalsy();
-    expect(parseResult.parseErrors.length).toBeFalsy();
-    expect(parseResult.ast.type).toEqual('ExprStmt');
-    expect(parseResult.ast['x'].type).toEqual('TernaryExpr');
+    expect(parseResult).toHaveBeenSuccessfullyParsed();
+    expect(parseResult).toBeExpressionOfType('TernaryExpr');
   });
 
   it('parses expressions with parenthesis', function() {
     const parseResult = parse('(true)');
-    expect(parseResult.ast).toBeTruthy();
-    expect(parseResult.lexErrors.length).toBeFalsy();
-    expect(parseResult.parseErrors.length).toBeFalsy();
-    expect(parseResult.ast.type).toEqual('ExprStmt');
-    expect(parseResult.ast['x'].type).toEqual('ParenExpr');
+    expect(parseResult).toHaveBeenSuccessfullyParsed();
+    expect(parseResult).toBeExpressionOfType('ParenExpr');
   });
 
   it('parses expressions with parenthesis', function() {
     const parseResult = parse('(a + 2) * 55');
-    expect(parseResult.ast).toBeTruthy();
-    expect(parseResult.lexErrors.length).toBeFalsy();
-    expect(parseResult.parseErrors.length).toBeFalsy();
-    expect(parseResult.ast.type).toEqual('ExprStmt');
-    expect(parseResult.ast['x'].type).toEqual('BinaryExpr');
+    expect(parseResult).toHaveBeenSuccessfullyParsed();
+    expect(parseResult).toBeExpressionOfType('BinaryExpr');
+  });
+
+  describe('it handles json values', () => {
+    it('for well formed json', () => {
+      const parseResult = parse(`{
+         "aString": "abcd",
+         "anInteger": 2345,
+         "aDouble": 78.91,
+         "aBoolean": false,
+         "anObject": { "foo": { "bar": true } },
+         "anArray": [ 1, { "foo": "bar" }, true ]
+      }`);
+      expect(parseResult).toHaveBeenSuccessfullyParsed();
+      expect(parseResult.ast.type).toEqual('json');
+    });
+
+    it('does not take single quoted strings', () => {
+      expect(parse(`{ 'a': "b" }`)).not.toHaveBeenSuccessfullyParsed();
+      expect(parse(`{ "a": 'b' }`)).not.toHaveBeenSuccessfullyParsed();
+    });
   });
 });
