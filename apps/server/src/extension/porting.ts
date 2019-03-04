@@ -27,6 +27,10 @@ export class ResourceTypes {
     return this.types.get(type).export;
   }
 
+  findbyRef(ref: string) {
+    return this.allTypes().find(t => t.ref === ref);
+  }
+
   allTypes(): ResourceType[] {
     return Array.from(this.types.values());
   }

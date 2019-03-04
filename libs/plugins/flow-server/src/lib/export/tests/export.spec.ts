@@ -12,8 +12,8 @@ import { exportFlow } from '..';
 test('it exports a flow', () => {
   const exported = exportFlow(getFlowToExport(), {
     contributions: new Map<string, ContributionSchema>(getContributions()),
-    resourceIdReconciler: new Map<string, string>([
-      ['4ut01d', 'flow:humanized_subflow_ref'],
+    resourceIdReconciler: new Map<string, Resource>([
+      ['4ut01d', { id: 'flow:humanized_subflow_ref' } as Resource],
     ]),
   });
   expect(exported).toEqual(getExpectedFlow());

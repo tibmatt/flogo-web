@@ -1,10 +1,11 @@
 import { isString, isPlainObject } from 'lodash';
 import { parse } from '@flogo-web/parser';
-import { EXPR_PREFIX } from '@flogo-web/core';
-import { MAPPING_EXPRESSION_TYPE } from '@flogo-web/server/core';
+import { EXPR_PREFIX, FlogoAppModel, Handler } from '@flogo-web/core';
+import { MAPPING_EXPRESSION_TYPE, EXPRESSION_TYPE } from '@flogo-web/server/core';
 
 const CURRENT_SCOPE_RESOLVER = '$';
-const mappingsReducer = (reducedMappings, mapping) => {
+const normalizeAndAccumulateMapping = (reducedMappings, mapping) => {
+  mapping = prefixWithScopeResolver(mapping);
   let value = mapping.value;
   if (isPlainObject(value)) {
     value = EXPR_PREFIX + JSON.stringify(value, null, 2);
@@ -15,15 +16,40 @@ const mappingsReducer = (reducedMappings, mapping) => {
   return reducedMappings;
 };
 
-export function normalizeHandlerMappings(handler) {
-  if (!handler.actionMappings) {
-    return handler;
+function hasLegacyMappings(
+  handler: FlogoAppModel.Handler
+): handler is FlogoAppModel.LegacyHandler {
+  const action = handler.action && (<FlogoAppModel.LegacyHandler>handler).action;
+  return action && action.mappings && !!(action.mappings.input || action.mappings.output);
+}
+
+function hasNewMappings(
+  handler: FlogoAppModel.Handler
+): handler is FlogoAppModel.NewHandler {
+  const action = handler.action && (<FlogoAppModel.NewHandler>handler).action;
+  return action && !!(action.input || action.output);
+}
+
+type HandlerWithActionMappings = FlogoAppModel.Handler & {
+  actionMappings?: Handler['actionMappings'];
+};
+export function normalizeHandlerMappings(
+  rawHandler: FlogoAppModel.Handler
+): HandlerWithActionMappings {
+  let handler: HandlerWithActionMappings = rawHandler;
+  if (hasNewMappings(rawHandler)) {
+    const { input, output } = rawHandler.action;
+    handler = { ...rawHandler, actionMappings: { input, output } };
+    delete handler.action.input;
+    delete handler.action.output;
+  } else if (hasLegacyMappings(rawHandler)) {
+    let { input, output } = rawHandler.action.mappings;
+    input = input && input.reduce(normalizeAndAccumulateMapping, {});
+    output = output && output.reduce(normalizeAndAccumulateMapping, {});
+    handler = { ...rawHandler, actionMappings: { input, output } };
+    delete handler.action.mappings;
   }
-  let { input, output } = handler.actionMappings;
-  input = input && input.map(normalizeSingleHandlerMapping).reduce(mappingsReducer, {});
-  output =
-    output && output.map(normalizeSingleHandlerMapping).reduce(mappingsReducer, {});
-  return { ...handler, actionMappings: { input, output } };
+  return handler;
 }
 
 /**
@@ -33,9 +59,11 @@ export function normalizeHandlerMappings(handler) {
  * @param {string} mapping.mapTo
  * @return {object} mapping
  * */
-export function normalizeSingleHandlerMapping(mapping) {
+export function prefixWithScopeResolver(mapping) {
   const isProcessable =
-    isString(mapping.value) && mapping.type === MAPPING_EXPRESSION_TYPE.ASSIGN;
+    isString(mapping.value) &&
+    (mapping.type === MAPPING_EXPRESSION_TYPE.ASSIGN ||
+      mapping.type === EXPRESSION_TYPE.ASSIGN);
   if (isProcessable && shouldPrefixWithScopeResolver(mapping.value)) {
     const value = `${CURRENT_SCOPE_RESOLVER}.${mapping.value.trim()}`;
     return { ...mapping, value };

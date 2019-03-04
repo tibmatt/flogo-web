@@ -1,4 +1,4 @@
-import { Resource, Handler, ContributionSchema } from '@flogo-web/core';
+import { Resource, Handler, ContributionSchema, FlogoAppModel } from '@flogo-web/core';
 
 export interface ResourceImportContext {
   contributions: Map<string, ContributionSchema>;
@@ -6,7 +6,13 @@ export interface ResourceImportContext {
   normalizedResourceIds: Map<string, string>;
 }
 
+export interface HandlerImportContext {
+  contributions: Map<string, ContributionSchema>;
+  triggerSchema: ContributionSchema;
+  rawHandler: FlogoAppModel.Handler;
+}
+
 export interface ResourceImporter<TResourceData = unknown> {
   resource(data: any, context: ResourceImportContext): Resource<TResourceData>;
-  handler(data: any, context: ResourceImportContext): Handler;
+  handler(data: any, context: HandlerImportContext): Handler;
 }

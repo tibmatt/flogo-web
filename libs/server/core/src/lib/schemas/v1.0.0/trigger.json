@@ -50,7 +50,6 @@
     "action": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["data"],
       "properties": {
         "ref": {
           "type": "string",
@@ -58,7 +57,10 @@
           "default": "github.com/project-flogo/flow"
         },
         "data": {
-          "$ref": "#/definitions/flowData"
+          "type": "object"
+        },
+        "settings": {
+          "type": "object"
         },
         "mappings": {
           "type": "object",
@@ -78,7 +80,11 @@
         "output": {
           "type": "object"
         }
-      }
+      },
+      "anyOf": [
+        { "required": ["data"] },
+        { "required": ["settings"] }
+      ]
     },
     "flowData": {
       "type": "object",

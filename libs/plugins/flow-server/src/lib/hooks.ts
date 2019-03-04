@@ -3,7 +3,7 @@ import { FlowData } from '@flogo-web/core';
 import { validateFlowData } from './validation';
 import { isFlowResource } from './is-flow-resource';
 
-export const resourceHooks: ResourceHooks<FlowData> = {
+export const resourceHooks: ResourceHooks = {
   before: {
     async create(context) {
       if (isFlowResource(context.resource)) {

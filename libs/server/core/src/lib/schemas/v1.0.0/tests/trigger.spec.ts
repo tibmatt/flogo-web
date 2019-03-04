@@ -86,11 +86,44 @@ describe('JSONSchema: Trigger', () => {
         validator = testContext.ajvContext.createValidatorForSubschema('action');
       });
 
-      test('should require data', () => {
+      test('should accept data property', () => {
+        expect(
+          validator.validate({
+            ref: 'github.com/project-flogo/flow',
+            data: {},
+          })
+        ).toBeTruthy();
+      });
+
+      test('should accept settings property', () => {
+        expect(
+          validator.validate({
+            ref: 'github.com/project-flogo/flow',
+            settings: {},
+          })
+        ).toBeTruthy();
+      });
+
+      test('should error if data nor settings are present', () => {
+        expect.assertions(3);
+        expect(
+          validator.validate({
+            ref: 'github.com/project-flogo/flow',
+          })
+        ).toBeFalsy();
         validator
-          .validateAndCreateAsserter({ ref: 'xyz' })
-          .assertIsInvalid()
-          .assertHasErrorForRequiredProp('data');
+          .createAsserter()
+          .assertHasErrorForRequiredProp('.data')
+          .assertHasErrorForRequiredProp('.settings');
+      });
+
+      test('should accept data property', () => {
+        expect(
+          validator.validate({
+            ...actionWithoutMappings,
+            data: {},
+          })
+        ).toBeTruthy();
       });
 
       test('should accept input mappings', () => {

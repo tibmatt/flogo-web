@@ -24,7 +24,7 @@
           "action": {
             "ref": "github.com/project-flogo/flow",
             "data": {
-              "flowURI": "res://flow:get_status"
+              "flowURI": "flow:get_status"
             },
             "mappings": {
               "input": [

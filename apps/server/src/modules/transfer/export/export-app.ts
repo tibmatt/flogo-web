@@ -1,10 +1,6 @@
 import { cloneDeep } from 'lodash';
-import { App, ContributionSchema, Resource, FlogoAppModel } from '@flogo-web/core';
-import {
-  ResourceExportContext,
-  ResourceType,
-  ResourceExporter,
-} from '@flogo-web/server/core';
+import { App, ContributionSchema } from '@flogo-web/core';
+import { ResourceExporter } from '@flogo-web/server/core';
 
 import { isValidApplicationType } from '../../../common/utils';
 import { AppFormatter } from './app-formatter';

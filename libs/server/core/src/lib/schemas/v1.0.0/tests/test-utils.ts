@@ -1,5 +1,6 @@
 import Ajv = require('ajv');
 import { SCHEMA_NAMESPACE as V1_SCHEMA_NAMESPACE } from '../schema-namespace';
+import arrayContaining = jasmine.arrayContaining;
 
 class Asserter {
   constructor(public isValid, public errors) {}
@@ -24,26 +25,24 @@ class Asserter {
    * @return {Asserter}
    */
   assertHasErrorForRequiredProp(propertyName) {
-    expect(this.errors[0]).toMatchObject({
+    return this.assertErrorContaining({
       keyword: 'required',
       params: { missingProperty: propertyName },
     });
-    return this;
   }
 
   /**
    * @return {Asserter}
    */
   assertHasErrorForEmptyProp(propertyName) {
-    expect(this.errors[0]).toMatchObject({
+    return this.assertErrorContaining({
       keyword: 'minLength',
       dataPath: `.${propertyName}`,
     });
-    return this;
   }
 
   assertHasErrorForMismatchingPropertyType(propertyName, expectedType) {
-    expect(this.errors[0]).toMatchObject({
+    return this.assertErrorContaining({
       dataPath: `.${propertyName}`,
       keyword: 'type',
       params: { type: expectedType },
@@ -51,18 +50,23 @@ class Asserter {
   }
 
   assertHasErrorForMismatchingPattern(propertyName) {
-    expect(this.errors[0]).toMatchObject({
+    return this.assertErrorContaining({
       keyword: 'pattern',
       dataPath: `.${propertyName}`,
     });
   }
 
   assertHasErrorForMismatchingPropertyEnum(propertyName, expectedType) {
-    expect(this.errors[0]).toMatchObject({
+    return this.assertErrorContaining({
       dataPath: `.${propertyName}`,
       keyword: 'enum',
       params: { allowedValues: expectedType },
     });
+  }
+
+  assertErrorContaining(what) {
+    expect(this.errors).toEqual(expect.arrayContaining([expect.objectContaining(what)]));
+    return this;
   }
 }
 

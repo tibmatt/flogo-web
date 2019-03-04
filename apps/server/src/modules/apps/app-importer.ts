@@ -6,14 +6,17 @@ import { ContributionSchema } from '@flogo-web/core';
 import { TOKENS } from '../../core';
 import { ResourceTypes, ResourcePluginRegistry } from '../../extension';
 import { ContributionsService } from '../contribs';
-import { importApp } from '../transfer';
+import { importApp, ImportersResolver } from '../transfer';
 import { contribsToPairs } from './contribs-to-pairs';
 
-function resourceImportResolver(porting: ResourceTypes) {
-  return (resourceType: string) => {
-    return porting.isKnownType(resourceType)
-      ? porting.importer(resourceType).resource
-      : null;
+function resourceImportResolver(porting: ResourceTypes): ImportersResolver {
+  return {
+    byType: (resourceType: string) =>
+      porting.isKnownType(resourceType) ? porting.importer(resourceType) : null,
+    byRef: (ref: string) => {
+      const type = porting.findbyRef(ref);
+      return type ? type.import : null;
+    },
   };
 }
 

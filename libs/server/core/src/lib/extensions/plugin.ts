@@ -2,6 +2,10 @@ import { ResourceHooks } from './resource-hooks';
 import { ResourceImporter } from './resource-importer';
 import { ResourceExporter } from './resource-exporter';
 
+export interface FlogoPlugin {
+  register(server: PluginServer);
+}
+
 export interface ResourceType<TResourceData = unknown> {
   type: string;
   ref: string;
@@ -16,8 +20,4 @@ export interface ResourceExtensionRegistrar {
 
 export interface PluginServer {
   resources: ResourceExtensionRegistrar;
-}
-
-export interface FlogoPlugin {
-  register(server: PluginServer);
 }

@@ -11,7 +11,7 @@ const noOp = () => {};
 export class HookApplicator {
   private readonly beforeHooks: HookRegistry = new Map();
   private readonly afterHooks: HookRegistry = new Map();
-  private log?: (msg) => void;
+  private readonly log?: (msg) => void;
 
   constructor(logger: Logger) {
     this.log = msg => logger.debug(`${HookApplicator.name}: ${msg}`);
@@ -38,13 +38,13 @@ export class HookApplicator {
   ) {
     this.throwIfUnknownStage(forStage);
 
-    this.log('Running hooks before ' + forStage);
+    // this.log('Running hooks before ' + forStage);
     await this.runHooks(this.beforeHooks.get(forStage), context);
 
-    this.log('Running action ' + forStage);
+    // this.log('Running action ' + forStage);
     await action(context);
 
-    this.log('Running hooks after ' + forStage);
+    // this.log('Running hooks after ' + forStage);
     await this.runHooks(this.afterHooks.get(forStage), context);
 
     return context;
@@ -52,13 +52,13 @@ export class HookApplicator {
 
   async runBefore(forStage: ResourceLifecycleStage, context: HookContext) {
     this.throwIfUnknownStage(forStage);
-    this.log('Running hooks before ' + forStage);
+    // this.log('Running hooks before ' + forStage);
     return this.runHooks(this.beforeHooks.get(forStage), context);
   }
 
   async runAfter(forStage: ResourceLifecycleStage, context: HookContext) {
     this.throwIfUnknownStage(forStage);
-    this.log('Running hooks after ' + forStage);
+    // this.log('Running hooks after ' + forStage);
     return this.runHooks(this.afterHooks.get(forStage), context);
   }
 
@@ -99,7 +99,7 @@ function mergeHooks(
       hooksForStage = [];
       into.set(stageName, hooksForStage);
     }
-    log('Registered hook for' + stageName);
+    // log('Registered hook for ' + stageName);
     hooksForStage.push(hooks[stageName]);
   });
 }
