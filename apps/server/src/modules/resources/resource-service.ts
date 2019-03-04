@@ -100,7 +100,7 @@ export class ResourceService {
 
     resources = await mapAsync<Resource>(resources, async (resource: Resource) => {
       const context = this.createHookContext(resource);
-      await this.resourceHooks.wrapAndRun('get', context, identity);
+      await this.resourceHooks.wrapAndRun('list', context, identity);
       return context.resource as Resource;
     });
 
@@ -117,7 +117,7 @@ export class ResourceService {
       return null;
     }
     const context = this.createHookContext(foundResource);
-    await this.resourceHooks.wrapAndRun('get', context, hookContext => {
+    await this.resourceHooks.wrapAndRun('list', context, hookContext => {
       const resource = hookContext.resource as any;
       resource.appId = app._id;
       app.id = app._id;
