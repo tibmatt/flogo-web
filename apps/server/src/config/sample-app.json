@@ -16,7 +16,7 @@
       "handlers": [
         {
           "action": {
-            "ref": "github.com/project-flogo/contrib/action/flow",
+            "ref": "github.com/project-flogo/flow",
             "data": {
               "flowURI": "res://flow:aws_iot_sample"
             },
@@ -53,7 +53,7 @@
       "handlers": [
         {
           "action": {
-            "ref": "github.com/project-flogo/contrib/action/flow",
+            "ref": "github.com/project-flogo/flow",
             "data": {
               "flowURI": "res://flow:hello_world"
             }
