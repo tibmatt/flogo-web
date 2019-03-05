@@ -1,11 +1,10 @@
 import { parse } from './parse';
 import { ExprStmt } from './ast';
+import { isSuccessfulParse } from './parse-result-utils';
 
-const isEmptyArray = arr => !arr || arr.length <= 0;
 export function resolveExpressionType(text: string): string | null {
   const result = parse(text);
-  const hasErrors = !isEmptyArray(result.lexErrors) || !isEmptyArray(result.parseErrors);
-  if (hasErrors || !result.ast) {
+  if (!isSuccessfulParse(result)) {
     return null;
   }
 
