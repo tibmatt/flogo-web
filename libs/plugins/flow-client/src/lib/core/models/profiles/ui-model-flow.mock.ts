@@ -324,6 +324,7 @@ export const mockResultantUIFlow = {
       ref: 'some_path_to_repo/activity/log',
       id: 'log_1',
       inputMappings: {},
+      activitySettings: {},
       type: 1,
       return: false,
       input: {
@@ -339,6 +340,7 @@ export const mockResultantUIFlow = {
       ref: 'some_path_to_repo/activity/counter',
       id: 'counter_1',
       inputMappings: {},
+      activitySettings: {},
       type: 1,
       return: false,
       input: {
@@ -354,6 +356,7 @@ export const mockResultantUIFlow = {
       ref: 'some_path_to_repo/activity/log',
       id: 'log_2',
       inputMappings: {},
+      activitySettings: {},
       type: 1,
       return: false,
       input: {
@@ -369,6 +372,7 @@ export const mockResultantUIFlow = {
       ref: 'some_path_to_repo/activity/log',
       id: 'log_3',
       inputMappings: {},
+      activitySettings: {},
       type: 1,
       return: false,
       input: {
@@ -618,6 +622,7 @@ export const mockResultantUIFlowWithError = {
       ref: 'some_path_to_repo/activity/log',
       id: 'log_1',
       inputMappings: {},
+      activitySettings: {},
       type: 1,
       return: false,
       input: {
@@ -633,6 +638,7 @@ export const mockResultantUIFlowWithError = {
       ref: 'some_path_to_repo/activity/counter',
       id: 'counter_1',
       inputMappings: {},
+      activitySettings: {},
       type: 1,
       return: false,
       input: {
@@ -648,6 +654,7 @@ export const mockResultantUIFlowWithError = {
       ref: 'some_path_to_repo/activity/log',
       id: 'log_2',
       inputMappings: {},
+      activitySettings: {},
       type: 1,
       return: false,
       input: {
@@ -663,6 +670,7 @@ export const mockResultantUIFlowWithError = {
       ref: 'some_path_to_repo/activity/log',
       id: 'log_3',
       inputMappings: {},
+      activitySettings: {},
       type: 1,
       return: false,
       input: {
@@ -690,6 +698,7 @@ export const mockResultantUIFlowWithError = {
       ref: 'some_path_to_repo/activity/log',
       id: 'error_log',
       inputMappings: {},
+      activitySettings: {},
       type: 1,
       return: false,
       input: {
@@ -953,6 +962,7 @@ export let mockResultantUIFlowWithTransformations = {
       inputMappings: {
         message: '{T.content}',
       },
+      activitySettings: {},
       type: 1,
       return: false,
       input: {
@@ -968,6 +978,7 @@ export let mockResultantUIFlowWithTransformations = {
       ref: 'some_path_to_repo/activity/counter',
       id: 'counter_1',
       inputMappings: {},
+      activitySettings: {},
       type: 1,
       return: false,
       input: {
@@ -983,6 +994,7 @@ export let mockResultantUIFlowWithTransformations = {
       ref: 'some_path_to_repo/activity/log',
       id: 'log_2',
       inputMappings: {},
+      activitySettings: {},
       type: 1,
       return: false,
       input: {
@@ -998,6 +1010,7 @@ export let mockResultantUIFlowWithTransformations = {
       ref: 'some_path_to_repo/activity/log',
       id: 'log_3',
       inputMappings: {},
+      activitySettings: {},
       type: 1,
       return: false,
       input: {

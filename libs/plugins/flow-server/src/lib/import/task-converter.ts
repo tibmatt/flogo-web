@@ -32,7 +32,7 @@ export class TaskConverter {
       description,
       activity: { ref: activityRef },
     } = this.resourceTask;
-    const { type, settings } = this.resolveTypeAndSettings();
+    const { type, settings, activitySettings } = this.resolveTypeAndSettings();
     const inputMappings = this.prepareInputMappings();
     return {
       id,
@@ -42,20 +42,24 @@ export class TaskConverter {
       activityRef,
       settings,
       inputMappings,
+      activitySettings,
     };
   }
 
   resolveTypeAndSettings() {
     const settings: { [key: string]: any } = {};
+    let activitySettings: { [settingName: string]: any } = {};
     let type = FLOGO_TASK_TYPE.TASK;
     if (this.isSubflowTask()) {
       type = FLOGO_TASK_TYPE.TASK_SUB_PROC;
       settings.flowPath = this.extractSubflowPath();
+    } else {
+      activitySettings = this.resourceTask.activity.settings;
     }
     if (this.isIteratorTask()) {
       settings.iterate = normalizeIteratorValue(this.resourceTask.settings.iterate);
     }
-    return { type, settings };
+    return { type, settings, activitySettings };
   }
 
   extractSubflowPath() {

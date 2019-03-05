@@ -30,6 +30,7 @@ export interface flowToJSON_Task {
   settings?: flowToJSON_Settings;
   inputMappings: Dictionary<any>;
   ouputMappings: flowToJSON_Mapping[];
+  activitySettings: { [settingName: string]: any };
 }
 
 // Disabling tslint rule for legacy purposes

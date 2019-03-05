@@ -77,6 +77,7 @@ function getSampleFlowResource(): Resource {
           activity: {
             ref: 'some_path_to_repo/activity/log',
             input: {},
+            settings: {},
             mappings: {
               input: [
                 {
@@ -95,6 +96,7 @@ function getSampleFlowResource(): Resource {
           activity: {
             ref: 'some_path_to_repo/activity/log',
             input: {},
+            settings: {},
             mappings: {
               input: [
                 {
@@ -127,6 +129,7 @@ function getSampleFlowResource(): Resource {
               input: {
                 message: 'log in error handler',
               },
+              settings: {},
               output: {},
               mappings: {},
             },
@@ -170,6 +173,7 @@ function getExpectedImport() {
           type: 1,
           activityRef: 'some_path_to_repo/activity/log',
           settings: {},
+          activitySettings: {},
           inputMappings: {
             message: 'hello',
           },
@@ -181,6 +185,7 @@ function getExpectedImport() {
           type: 1,
           activityRef: 'some_path_to_repo/activity/log',
           settings: {},
+          activitySettings: {},
           inputMappings: {
             message: 12345,
           },
@@ -192,6 +197,7 @@ function getExpectedImport() {
           description: '',
           activityRef: CONTRIB_REFS.SUBFLOW,
           inputMappings: expect.any(Object),
+          activitySettings: {},
           settings: {
             flowPath: 'updatedSubflowId',
           },
@@ -217,6 +223,7 @@ function getExpectedImport() {
             inputMappings: {
               message: 'log in error handler',
             },
+            activitySettings: {},
           },
         ],
         links: [],

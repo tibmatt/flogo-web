@@ -27,6 +27,7 @@ export interface SaveTaskConfigEventData {
   inputMappings: Dictionary<any>;
   subflowPath?: string;
   changedSubflowSchema?: Resource;
+  activitySettings: { [settingName: string]: any };
 }
 export interface SaveBranchConfigEventData {
   id: string;
@@ -92,6 +93,7 @@ function getChanges(
     };
   }
   itemChanges.inputMappings = cloneDeep(saveData.inputMappings);
+  itemChanges.activitySettings = cloneDeep(saveData.activitySettings);
 
   const iteratorInfo = saveData.iterator;
   itemChanges.settings = {

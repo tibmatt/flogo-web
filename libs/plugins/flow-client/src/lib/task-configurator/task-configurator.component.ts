@@ -69,7 +69,6 @@ const SETTINGS_TAB_INFO = {
   name: TASK_TABS.SETTINGS,
   labelKey: 'TASK-CONFIGURATOR:TABS:SETTINGS',
 };
-
 @Component({
   selector: 'flogo-flow-task-configurator',
   styleUrls: ['task-configurator.component.less'],
@@ -119,6 +118,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   ismapperActivity: boolean;
   installedFunctions: InstalledFunctionSchema[];
   private inputMapperStateSubscription: Subscription;
+  private activitySettingsStateSubscription: Subscription;
   private contextChange$ = SingleEmissionSubject.create();
   private destroy$ = SingleEmissionSubject.create();
 
@@ -216,6 +216,11 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       inputMappings: MapperTranslator.translateMappingsOut(
         this.inputMapperController.getCurrentState().mappings
       ),
+      activitySettings: this.settingsController
+        ? MapperTranslator.translateMappingsOut(
+            this.settingsController.getCurrentState().mappings
+          )
+        : undefined,
     }).subscribe(action => {
       this.store.dispatch(action);
     });
@@ -351,6 +356,9 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
         this.tabs.get(TASK_TABS.SETTINGS).enabled = true;
         this.selectTab(TASK_TABS.SETTINGS);
       } else {
+        if (this.settingsController) {
+          this.settingsController = null;
+        }
         this.tabs.get(TASK_TABS.SETTINGS).enabled = false;
       }
     }
@@ -417,14 +425,40 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   private initActivitySettings(settingPropsToMap, activitySettings) {
-    //TODO: Available data for activity settings in empty as of now
-    const inputScope = [];
-    this.settingsController = this.mapperControllerFactory.createController(
-      settingPropsToMap,
+    const { subscription, controller } = this.configureMappingsController(
+      TASK_TABS.SETTINGS,
+      this.activitySettingsStateSubscription,
+      { propsToMap: settingPropsToMap, inputScope: [], mappings: activitySettings }
+    );
+    this.activitySettingsStateSubscription = subscription;
+    this.settingsController = controller;
+  }
+
+  private configureMappingsController(
+    tabType: string,
+    prevSubscription: Subscription,
+    { propsToMap, inputScope, mappings }
+  ) {
+    if (prevSubscription && !prevSubscription.closed) {
+      prevSubscription.unsubscribe();
+    }
+    const controller = this.mapperControllerFactory.createController(
+      propsToMap,
       inputScope,
-      activitySettings,
+      mappings,
       this.installedFunctions
     );
+    const subscription = controller.status$
+      .pipe(
+        skip(1),
+        takeUntil(this.contextChange$)
+      )
+      .subscribe(({ isValid, isDirty }) => {
+        const selectedTab = this.tabs.get(tabType);
+        selectedTab.isValid = isValid;
+        selectedTab.isDirty = isDirty;
+      });
+    return { controller, subscription };
   }
 
   private getInputMappingsInfo({
@@ -448,32 +482,20 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
 
   private getActivitySettingsInfo(
     activitySchema
-  ): { settingPropsToMap: any[]; activitySettings: Dictionary<any> } {
+  ): { settingPropsToMap: any[]; activitySettings: { [settingName: string]: any } } {
     const activitySettings = this.currentTile.activitySettings;
     const settingPropsToMap = activitySchema.settings;
     return { activitySettings, settingPropsToMap };
   }
 
   private resetInputMappingsController(propsToMap, inputScope, mappings) {
-    if (this.inputMapperStateSubscription && !this.inputMapperStateSubscription.closed) {
-      this.inputMapperStateSubscription.unsubscribe();
-    }
-    this.inputMapperController = this.mapperControllerFactory.createController(
-      propsToMap,
-      inputScope,
-      mappings,
-      this.installedFunctions
+    const { subscription, controller } = this.configureMappingsController(
+      TASK_TABS.INPUT_MAPPINGS,
+      this.inputMapperStateSubscription,
+      { propsToMap, inputScope, mappings }
     );
-    this.inputMapperStateSubscription = this.inputMapperController.status$
-      .pipe(
-        skip(1),
-        takeUntil(this.contextChange$)
-      )
-      .subscribe(({ isValid, isDirty }) => {
-        const inputMappingsTab = this.tabs.get(TASK_TABS.INPUT_MAPPINGS);
-        inputMappingsTab.isValid = isValid;
-        inputMappingsTab.isDirty = isDirty;
-      });
+    this.inputMapperStateSubscription = subscription;
+    this.inputMapperController = controller;
   }
 
   private createSubflowConfig(subflowSchema: Resource) {

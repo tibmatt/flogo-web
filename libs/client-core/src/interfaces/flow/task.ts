@@ -23,7 +23,7 @@ export interface Task {
     flowPath?: string;
   };
 
-  activitySettings?: Dictionary<any>;
+  activitySettings?: { [settingName: string]: any };
   condition?: string;
   __props?: {
     [key: string]: any;
