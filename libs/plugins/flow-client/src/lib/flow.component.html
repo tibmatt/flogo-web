@@ -38,12 +38,13 @@
       </header>
 
       <div class="flogo-flow-detail-menu-container">
-        <flogo-run-flow
+        <!-- Temporarily removing run flow for v0.9.0 -->
+        <!--     <flogo-run-flow
           [disableRun]="runnableInfo?.disabled"
           disableReason="{{ runnableInfo?.disableReason | translate }}"
           [flowInputs]="flowState?.metadata?.input"
           (submit)="onRunFlow($event)"
-        ></flogo-run-flow>
+        ></flogo-run-flow>-->
         <div class="flogo-flow-detail-log-button-container">
           <flogo-logs></flogo-logs>
         </div>
@@ -92,9 +93,9 @@
         class="diagram"
         (deleteTask)="onDeleteTask($event)"
       ></flogo-flow-diagram>
-      <flogo-debug-panel-toggle-button
+      <!--      <flogo-debug-panel-toggle-button
         class="debug-panel-toggler"
-      ></flogo-debug-panel-toggle-button>
+      ></flogo-debug-panel-toggle-button>-->
     </div>
   </ng-template>
 
