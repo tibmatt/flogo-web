@@ -216,9 +216,11 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
       inputMappings: MapperTranslator.translateMappingsOut(
         this.inputMapperController.getCurrentState().mappings
       ),
-      activitySettings: MapperTranslator.translateMappingsOut(
-        this.settingsController.getCurrentState().mappings
-      ),
+      activitySettings: this.settingsController
+        ? MapperTranslator.translateMappingsOut(
+            this.settingsController.getCurrentState().mappings
+          )
+        : undefined,
     }).subscribe(action => {
       this.store.dispatch(action);
     });
@@ -354,6 +356,9 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
         this.tabs.get(TASK_TABS.SETTINGS).enabled = true;
         this.selectTab(TASK_TABS.SETTINGS);
       } else {
+        if (this.settingsController) {
+          this.settingsController = null;
+        }
         this.tabs.get(TASK_TABS.SETTINGS).enabled = false;
       }
     }
