@@ -1,4 +1,4 @@
-export const ITERATOR_OUTPUT_KEY = '$current';
+export const ITERATOR_OUTPUT_KEY = 'iteration';
 
 export function getIteratorOutputSchema() {
   return {
@@ -6,17 +6,13 @@ export function getIteratorOutputSchema() {
     properties: {
       [ITERATOR_OUTPUT_KEY]: {
         type: 'object',
+        rootType: 'iterator',
         properties: {
-          iteration: {
-            type: 'object',
-            properties: {
-              key: {
-                type: 'string',
-              },
-              value: {
-                type: 'any',
-              },
-            },
+          key: {
+            type: 'string',
+          },
+          value: {
+            type: 'any',
           },
         },
       },
