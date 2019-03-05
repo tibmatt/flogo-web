@@ -3,23 +3,27 @@ import { injectable, inject } from 'inversify';
 
 import { ContributionSchema } from '@flogo-web/core';
 
-import { TOKENS, PluginResolverFn } from '../../core';
+import { TOKENS } from '../../core';
+import { ResourceTypes, ResourcePluginRegistry } from '../../extension';
 import { ContributionsService } from '../contribs';
-import { importApp } from '../transfer';
+import { importApp, ImportersResolver } from '../transfer';
 import { contribsToPairs } from './contribs-to-pairs';
 
-function resourceImportResolver(resolvePlugin: PluginResolverFn) {
-  return (resourceType: string) => {
-    const hooks = resolvePlugin(resourceType);
-    return hooks ? hooks.onImport.bind(hooks) : null;
+function resourceImportResolver(porting: ResourceTypes): ImportersResolver {
+  return {
+    byType: (resourceType: string) =>
+      porting.isKnownType(resourceType) ? porting.importer(resourceType) : null,
+    byRef: (ref: string) => {
+      const type = porting.findbyRef(ref);
+      return type ? type.import : null;
+    },
   };
 }
 
 @injectable()
 export class AppImporter {
   constructor(
-    @inject(TOKENS.ResourcePluginFactory)
-    private resolvePlugin: PluginResolverFn,
+    private pluginRegistry: ResourcePluginRegistry,
     @inject(TOKENS.ContribActivitiesManager)
     private contribActivitiesService: ContributionsService,
     @inject(TOKENS.ContribTriggersManager)
@@ -30,7 +34,7 @@ export class AppImporter {
     const contributions = await this.loadContribs();
     const { id, ...newApp } = await importApp(
       app,
-      resourceImportResolver(this.resolvePlugin),
+      resourceImportResolver(this.pluginRegistry.resourceTypes),
       shortid.generate,
       contributions
     );

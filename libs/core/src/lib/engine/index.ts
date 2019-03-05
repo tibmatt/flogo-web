@@ -1,2 +1,2 @@
 export * from './interfaces';
-export * from './create-flow-uri';
+export * from './create-resource-uri';

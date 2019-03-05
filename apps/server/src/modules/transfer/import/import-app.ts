@@ -1,15 +1,16 @@
-import { App, FlogoAppModel, ContributionSchema } from '@flogo-web/core';
+import { App, FlogoAppModel, ContributionSchema, Handler } from '@flogo-web/core';
 import {
   Resource,
   ResourceImportContext,
   Schemas,
   ValidationError,
-  isValidationError,
+  ResourceImporter,
   ValidationErrorDetail,
 } from '@flogo-web/server/core';
 
 import { constructApp } from '../../../core/models/app';
 import { actionValueTypesNormalizer } from '../common/action-value-type-normalizer';
+import { tryAndAccumulateValidationErrors } from '../common/try-validation-errors';
 import { validatorFactory } from './validator';
 import { importTriggers } from './import-triggers';
 
@@ -21,17 +22,17 @@ interface DefaultAppModelResource extends FlogoAppModel.Resource {
   };
 }
 
-export type ResourceImporterFn = (
-  resource: Resource,
-  context: ResourceImportContext
-) => Resource | Promise<Resource>;
+export interface ImportersResolver {
+  byType(resourceType: string): ResourceImporter;
+  byRef(ref: string): ResourceImporter;
+}
 
-export async function importApp(
+export function importApp(
   rawApp: FlogoAppModel.App,
-  resolveImporterFn: (resourceType: string) => ResourceImporterFn,
+  resolveImporter: ImportersResolver,
   generateId: () => string,
   contributions: Map<string, ContributionSchema>
-): Promise<App> {
+): App {
   const now = new Date().toISOString();
   const newApp = cleanAndValidateApp(
     rawApp as FlogoAppModel.App,
@@ -44,9 +45,10 @@ export async function importApp(
     generateId,
     now
   );
-  const { triggers, normalizedTriggerIds } = importTriggers(
+  const { triggers, normalizedTriggerIds, errors: handlerErrors } = importTriggers(
     rawApp.triggers || [],
     normalizedResourceIds,
+    createHandlerImportResolver(resolveImporter, contributions),
     generateId,
     now
   );
@@ -57,49 +59,36 @@ export async function importApp(
     normalizedResourceIds: normalizedResourceIds,
     normalizedTriggerIds: normalizedTriggerIds,
   };
-  const resolveImportHook = createImportResolver(resolveImporterFn, context);
-  newApp.resources = await applyImportHooks(resources, resolveImportHook);
+  const resolveImportHook = createResourceImportResolver(resolveImporter, context);
+  const { resources: importedResources, errors: resourceErrors } = applyImportHooks(
+    resources,
+    resolveImportHook
+  );
+  newApp.resources = importedResources;
   normalizedResourceIds.clear();
   normalizedTriggerIds.clear();
+
+  const allErrors = (handlerErrors || []).concat(resourceErrors || []);
+  if (allErrors.length > 0) {
+    throw new ValidationError(
+      'There were one or more validation errors while importing the app',
+      allErrors
+    );
+  }
 
   return newApp;
 }
 
-const resourcifyErrorPath = (resourceDataPath: string) => (d: ValidationErrorDetail) => ({
-  ...d,
-  dataPath: `${resourceDataPath}${d.dataPath}`,
-});
-async function applyImportHooks(
+function applyImportHooks(
   resources: Resource[],
-  applyImportHook: (resource: Resource) => Promise<Resource>
-): Promise<Resource[]> {
-  const validationErrors = [];
-  const importedResources: Resource[] = [];
-
-  const handleError = (e, resourceIndex: number) => {
-    if (isValidationError(e)) {
-      const resourcePath = `.resources[${resourceIndex}]`;
-      const errorDetails = e.details.errors.map(resourcifyErrorPath(resourcePath));
-      validationErrors.push(...errorDetails);
-    } else {
-      throw e;
-    }
-  };
-
-  for (const [index, resource] of resources.entries()) {
-    try {
-      importedResources.push(await applyImportHook(resource));
-    } catch (e) {
-      handleError(e, index);
-    }
-  }
-  if (validationErrors.length > 0) {
-    throw new ValidationError(
-      'There were one or more errors while trying to import resources',
-      validationErrors
-    );
-  }
-  return importedResources;
+  applyImportHook: (resource: Resource) => Resource
+): { errors: null | ValidationErrorDetail[]; resources: Resource[] } {
+  const { result: importedResources, errors } = tryAndAccumulateValidationErrors(
+    resources,
+    resource => applyImportHook(resource),
+    resourceIndex => `.resources[${resourceIndex}]`
+  );
+  return { resources: importedResources, errors };
 }
 
 function cleanAndValidateApp(
@@ -158,17 +147,16 @@ function createValidator(contributions: ContributionSchema[]) {
   });
 }
 
-function createImportResolver(
-  resolveResourceImporter: (resourceType: string) => ResourceImporterFn,
+function createResourceImportResolver(
+  resolveResourceImporter: ImportersResolver,
   context: ResourceImportContext
 ) {
-  return async (resource: Resource): Promise<Resource> => {
+  return (resource: Resource): Resource => {
     const forType = resource.type;
-    const resourceImporter = resolveResourceImporter(forType);
+    const resourceImporter = resolveResourceImporter.byType(forType);
     if (resourceImporter) {
-      return resourceImporter(resource, context);
+      return resourceImporter.resource(resource, context);
     }
-    // todo: error type
     throw new ValidationError(
       `Cannot process resource of type "${forType}", no plugin registered for such type.`,
       [
@@ -178,6 +166,40 @@ function createImportResolver(
           keyword: 'supported-resource-type',
           params: {
             type: forType,
+          },
+        },
+      ]
+    );
+  };
+}
+
+function createHandlerImportResolver(
+  resolveResourceImporter: ImportersResolver,
+  contributions: Map<string, ContributionSchema>
+) {
+  return (
+    triggerRef: string,
+    handler: FlogoAppModel.Handler,
+    rawHandler: FlogoAppModel.Handler
+  ): Handler => {
+    const ref = handler.action && handler.action.ref;
+    const resourceImporter = resolveResourceImporter.byRef(ref);
+    if (resourceImporter) {
+      return resourceImporter.handler(handler, {
+        rawHandler,
+        triggerSchema: contributions.get(triggerRef),
+        contributions,
+      });
+    }
+    throw new ValidationError(
+      `Cannot process handler with ref "${ref}", no plugin registered for such type.`,
+      [
+        {
+          data: ref,
+          dataPath: '.action.ref',
+          keyword: 'supported-handler-ref',
+          params: {
+            ref,
           },
         },
       ]

@@ -1,20 +1,30 @@
 import { MAPPING_EXPRESSION_TYPE } from '@flogo-web/server/core';
+import { FlogoAppModel } from '@flogo-web/core';
 import { normalizeHandlerMappings } from './normalize-handler-mappings';
 
 describe('importer.common.normalize-handler-mappings', () => {
   test('handles handlers without actionMappings', () => {
-    [
+    const testCases: Partial<FlogoAppModel.Handler['action']>[] = [
       {},
-      { actionMappings: null },
-      { actionMappings: {} },
-      { actionMappings: { input: [] } },
-      { actionMappings: { output: [] } },
-    ].forEach(testCase => expect(normalizeHandlerMappings(testCase)).toBeTruthy());
+      { mappings: null },
+      { mappings: {} },
+      { mappings: { input: [] } },
+      { mappings: { output: [] } },
+      { input: null },
+      { output: null },
+      { input: [] },
+      { output: [] },
+    ];
+    testCases.forEach(testAction =>
+      expect(
+        normalizeHandlerMappings({ action: testAction } as FlogoAppModel.Handler)
+      ).toBeTruthy()
+    );
   });
 
-  test('prefixes assign mappings', () => {
-    const result = normalizeHandlerMappings({
-      actionMappings: {
+  test('prefixes legacy mappings with assign symbol', () => {
+    const legacyAction: Partial<FlogoAppModel.LegacyHandler['action']> = {
+      mappings: {
         input: [
           {
             value: 'fromTrigger',
@@ -41,7 +51,7 @@ describe('importer.common.normalize-handler-mappings', () => {
             type: MAPPING_EXPRESSION_TYPE.ASSIGN,
             mapTo: 'field5',
           },
-        ],
+        ] as any[],
         output: [
           {
             value: 'fromFlow',
@@ -63,9 +73,13 @@ describe('importer.common.normalize-handler-mappings', () => {
             type: MAPPING_EXPRESSION_TYPE.LITERAL,
             mapTo: 'field4',
           },
-        ],
+        ] as any[],
       },
-    });
+    };
+
+    const result = normalizeHandlerMappings({
+      action: legacyAction,
+    } as FlogoAppModel.LegacyHandler);
 
     expect(result.actionMappings).toEqual({
       input: {

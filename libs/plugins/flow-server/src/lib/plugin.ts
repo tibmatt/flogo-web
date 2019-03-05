@@ -1,46 +1,44 @@
+import { FlogoAppModel } from '@flogo-web/core';
 import {
-  ResourceHooks,
-  BeforeUpdateHookParams,
-  Resource,
-  ValidationError,
   ResourceImportContext,
   ResourceExportContext,
+  PluginServer,
+  Resource,
+  FlogoPlugin,
+  HandlerImportContext,
 } from '@flogo-web/server/core';
 
-import { createActionImporter } from './import';
-import { validateFlowData } from './validation';
+import { createActionImporter, importHandler } from './import';
+import { exportFlow, exportHandler } from './export';
+import { resourceHooks } from './hooks';
 import { FlowData } from './flow';
-import { exportFlow } from './export';
+import { FLOW_REF } from './constants';
 
-export class FlowResourceHooks implements ResourceHooks<FlowData> {
-  async beforeCreate(flowResource: Partial<Resource<FlowData>>) {
-    runValidation(flowResource.data);
-    return flowResource;
-  }
+const resourceType = {
+  type: 'flow',
+  ref: FLOW_REF,
+  import: {
+    resource(data, context: ResourceImportContext) {
+      const importer = createActionImporter();
+      return importer.importAction(data, context);
+    },
+    handler(handler, context: HandlerImportContext) {
+      return importHandler(handler, context);
+    },
+  },
+  export: {
+    resource(resource: Resource<FlowData>, context: ResourceExportContext) {
+      return exportFlow(resource, context);
+    },
+    handler(handler: FlogoAppModel.NewHandler, context) {
+      return exportHandler(handler, context.internalHandler);
+    },
+  },
+};
 
-  async onImport(data: Resource, context: ResourceImportContext) {
-    const importer = createActionImporter();
-    return importer.importAction(data, context);
-  }
-
-  async beforeUpdate(params: BeforeUpdateHookParams<FlowData>) {
-    const { updatedResource } = params;
-    runValidation(updatedResource.data);
-    return updatedResource;
-  }
-
-  beforeExport(resource: Resource<FlowData>, context: ResourceExportContext) {
-    return exportFlow(resource, context);
-  }
-
-  async beforeList(resource: Resource<FlowData>) {
-    return resource;
-  }
-}
-
-function runValidation(data: FlowData) {
-  const errors = validateFlowData(data);
-  if (errors) {
-    throw new ValidationError('Flow data validation errors', errors);
-  }
-}
+export const flowPlugin: FlogoPlugin = {
+  register(server: PluginServer) {
+    server.resources.addType(resourceType);
+    server.resources.useHooks(resourceHooks);
+  },
+};

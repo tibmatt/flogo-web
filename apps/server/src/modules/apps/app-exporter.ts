@@ -1,24 +1,26 @@
 import { injectable, inject } from 'inversify';
 
-import { exportApp, ExportAppOptions } from '../transfer';
-import { TOKENS, PluginResolverFn } from '../../core';
-import { ContributionsService } from '../contribs';
 import { ContributionSchema } from '@flogo-web/core';
+
+import { TOKENS } from '../../core';
+import { ResourcePluginRegistry, ResourceTypes } from '../../extension';
+import { exportApp, ExportAppOptions } from '../transfer';
+import { ContributionsService } from '../contribs';
 
 export { ExportAppOptions };
 
-function resourceExportResolver(resolvePlugin: PluginResolverFn) {
+function resourceExportResolver(resourceTypes: ResourceTypes) {
   return (resourceType: string) => {
-    const hooks = resolvePlugin(resourceType);
-    return hooks ? hooks.beforeExport.bind(hooks) : null;
+    return resourceTypes.isKnownType(resourceType)
+      ? resourceTypes.exporter(resourceType)
+      : null;
   };
 }
 
 @injectable()
 export class AppExporter {
   constructor(
-    @inject(TOKENS.ResourcePluginFactory)
-    private resolvePlugin: PluginResolverFn,
+    private pluginRegistry: ResourcePluginRegistry,
     @inject(TOKENS.ContribActivitiesManager)
     private contribActivitiesService: ContributionsService
   ) {}
@@ -28,10 +30,15 @@ export class AppExporter {
     const contributionMap = new Map<string, ContributionSchema>(
       contributions.map(c => [c.ref, c] as [string, ContributionSchema])
     );
+    const resourceTypes = this.pluginRegistry.resourceTypes;
+    const resourceRefs = new Map<string, string>(
+      resourceTypes.allTypes().map(t => [t.type, t.ref] as [string, string])
+    );
     return exportApp(
       app,
-      resourceExportResolver(this.resolvePlugin),
+      resourceExportResolver(resourceTypes),
       contributionMap,
+      resourceRefs,
       options
     );
   }

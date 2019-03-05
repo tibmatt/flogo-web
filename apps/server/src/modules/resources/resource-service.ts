@@ -1,31 +1,37 @@
 import { omit, pick } from 'lodash';
-import { inject, injectable } from 'inversify';
+import { injectable } from 'inversify';
 import { App } from '@flogo-web/core';
 import {
   Resource,
-  ResourceHooks,
-  BeforeUpdateHookParams,
+  UpdateResourceContext,
   FlogoError,
   ValidationError,
+  HookContext,
 } from '@flogo-web/server/core';
+// todo: can't import directly from 'apps' barrel, it will create a circular dependency and inversify will also complain
 import { HandlersService } from '../apps/handlers-service';
+import { ResourcePluginRegistry } from '../../extension';
 import { ERROR_TYPES } from '../../common/errors';
 import { generateShortId } from '../../common/utils';
 import { findGreatestNameIndex } from '../../common/utils/collection';
-import { TOKENS, PluginResolverFn } from '../../core';
 import { ResourceRepository } from './resource.repository';
 import { genericFieldsValidator, ValidatorFn } from './validation';
 import { cleanInputOnCreate, cleanInputOnUpdate } from './input-cleaner';
+
+const identity = i => i;
+
+interface ExtendedResource extends Resource {
+  appId: string;
+}
 
 @injectable()
 export class ResourceService {
   private resourceFieldsValidator: ValidatorFn;
 
   constructor(
-    @inject(TOKENS.ResourcePluginFactory)
-    private resolvePlugin: PluginResolverFn,
     private resourceRepository: ResourceRepository,
-    private handlersService: HandlersService
+    private handlersService: HandlersService,
+    private plugins: ResourcePluginRegistry
   ) {
     this.resourceFieldsValidator = genericFieldsValidator(type =>
       this.isTypeSupported(type)
@@ -33,7 +39,7 @@ export class ResourceService {
   }
 
   isTypeSupported(type: string) {
-    return !!type && this.resolvePlugin(type) !== null;
+    return !!type && this.plugins.isKnownType(type);
   }
 
   async create(appId: string, resource: Partial<Resource<unknown>>) {
@@ -45,10 +51,13 @@ export class ResourceService {
     resource.id = generateShortId();
     resource.name = ensureUniqueName(app.resources, resource.name);
 
-    resource = await this.applyCreationHook(resource);
-
-    await this.resourceRepository.create(appId, resource as Resource);
-    return this.findOne(resource.id);
+    const context: HookContext = this.createHookContext(resource);
+    await this.resourceHooks.wrapAndRun('create', context, async hookContext => {
+      await this.resourceRepository.create(appId, hookContext.resource as Resource);
+      hookContext.resource = await this.findOne(resource.id);
+      return hookContext;
+    });
+    return context.resource;
   }
 
   async update(resourceId: string, changes: Partial<Resource>) {
@@ -60,15 +69,24 @@ export class ResourceService {
     }
     const appId = existingResource.appId;
     changes = cleanInputOnUpdate(changes);
-    let updatedResource = { ...existingResource, ...changes };
+    const updatedResource = { ...existingResource, ...changes };
     this.validateResource({ ...existingResource, ...changes });
-    updatedResource = await this.applyUpdateHook({
+
+    const context: UpdateResourceContext = {
+      ...this.createHookContext(updatedResource),
       changes,
       existingResource,
-      updatedResource,
-    });
-    await this.resourceRepository.update(appId, { ...changes, id: resourceId });
-    return this.findOne(resourceId);
+    };
+    await this.resourceHooks.wrapAndRun(
+      'update',
+      context,
+      async (hookContext: UpdateResourceContext) => {
+        await this.resourceRepository.update(appId, { ...changes, id: resourceId });
+        hookContext.resource = await this.findOne(resourceId);
+        return hookContext;
+      }
+    );
+    return context.resource;
   }
 
   async list(
@@ -80,31 +98,34 @@ export class ResourceService {
     let resources = app && app.resources ? app.resources : [];
     resources = applyListFilters(resources, options);
 
-    const hooks = this.createHookCache();
-    resources = await mapAsync<Resource>(resources, resource =>
-      hooks.get(resource.type).beforeList({ ...resource })
-    );
-    hooks.destroy();
+    resources = await mapAsync<Resource>(resources, async (resource: Resource) => {
+      const context = this.createHookContext(resource);
+      await this.resourceHooks.wrapAndRun('list', context, identity);
+      return context.resource as Resource;
+    });
 
     return resources;
   }
 
-  async findOne(resourceId: string) {
+  async findOne(resourceId: string): Promise<ExtendedResource> {
     let app = await this.resourceRepository.findAppByResourceId(resourceId);
     if (!app) {
       return null;
     }
-    let resource = app.resources.find(r => r.id === resourceId);
-    const plugin = this.resolvePlugin(resource.type);
-    if (plugin) {
-      resource = await plugin.beforeList({ ...resource });
+    const foundResource = app.resources.find(r => r.id === resourceId);
+    if (!foundResource) {
+      return null;
     }
-    // todo: app normalization should be done somewhere else
-    resource.appId = app._id;
-    app.id = app._id;
-    const triggers = app.triggers.filter(isTriggerForResource(resource.id));
-    app = omit(app, ['triggers', 'resources', '_id']);
-    return { ...resource, app, triggers };
+    const context = this.createHookContext(foundResource);
+    await this.resourceHooks.wrapAndRun('list', context, hookContext => {
+      const resource = hookContext.resource as any;
+      resource.appId = app._id;
+      app.id = app._id;
+      const triggers = app.triggers.filter(isTriggerForResource(resource.id));
+      app = omit(app, ['triggers', 'resources', '_id']);
+      hookContext.resource = { ...resource, app, triggers };
+    });
+    return context.resource as ExtendedResource;
   }
 
   async listRecent() {
@@ -114,16 +135,33 @@ export class ResourceService {
   }
 
   async remove(resourceId) {
+    const resource = await this.findOne(resourceId);
+    if (!resource) {
+      return false;
+    }
+
+    const context = this.createHookContext(resource);
+    await this.resourceHooks.runBefore('remove', context);
     const wasRemoved = await this.resourceRepository.remove(resourceId);
     if (wasRemoved) {
-      // todo: HandlersManager should be injected
       await this.handlersService.removeByResourceId(resourceId);
+      await this.resourceHooks.runAfter('remove', context);
     }
     return wasRemoved;
   }
 
   removeFromRecentByAppId(appId) {
     return this.resourceRepository.removeFromRecent('appId', appId);
+  }
+
+  private get resourceHooks() {
+    return this.plugins.resourceHooks;
+  }
+
+  private createHookContext(resource): HookContext {
+    return {
+      resource,
+    };
   }
 
   private validateResource(resource: Partial<Resource<unknown>>) {
@@ -143,39 +181,6 @@ export class ResourceService {
       throw new FlogoError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
     }
     return app;
-  }
-
-  private async applyCreationHook(resource: Partial<Resource<unknown>>) {
-    const resourceHooks = this.resolvePlugin(resource.type);
-    const processedResource = await resourceHooks.beforeCreate({
-      ...resource,
-    } as Resource);
-    resource.data = processedResource.data;
-    return resource;
-  }
-
-  private async applyUpdateHook(params: BeforeUpdateHookParams<unknown>) {
-    const resourceHooks = this.resolvePlugin(params.existingResource.type);
-    const resourceBeforeHook = { ...params.updatedResource };
-    const processedResource = await resourceHooks.beforeUpdate(params);
-    resourceBeforeHook.data = processedResource.data;
-    return resourceBeforeHook;
-  }
-
-  private createHookCache() {
-    const hooks = new Map<string, ResourceHooks>();
-    const resolveHook = type => {
-      let hook = hooks.get(type);
-      if (!hook) {
-        hook = this.resolvePlugin(type);
-        hooks.set(type, hook);
-      }
-      return hook;
-    };
-    return {
-      get: resolveHook,
-      destroy: () => hooks.clear(),
-    };
   }
 }
 

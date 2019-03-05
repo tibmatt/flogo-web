@@ -1,8 +1,12 @@
 import { cloneDeep } from 'lodash';
-import { ValidationError } from '@flogo-web/server/core';
-import { importApp } from './import-app';
+import {
+  ValidationError,
+  ResourceImporter,
+  parseResourceIdFromResourceUri,
+} from '@flogo-web/server/core';
+import { importApp, ImportersResolver } from './import-app';
 
-import { importedApp } from '../tests/samples/imported-app';
+import { assertCorrectImportedApp } from '../tests/samples/imported-app';
 const appToImport = require('../tests/samples/standard-app.json');
 const activities = require('../tests/samples/activities.json');
 
@@ -16,8 +20,18 @@ function idGenerator() {
   };
 }
 
-function identityPlugin() {
-  return type => data => data;
+function pluginResolver(onImport): ImportersResolver {
+  return {
+    byRef: () => onImport,
+    byType: () => onImport,
+  };
+}
+
+function importerResolver(resolveResource, resolveHandler): ResourceImporter {
+  return {
+    resource: resolveResource,
+    handler: resolveHandler,
+  };
 }
 
 let contribs: Map<string, any>;
@@ -26,17 +40,26 @@ beforeAll(() => {
   contribs = new Map([...activities, ...triggers].map(c => [c.ref, c] as [string, any]));
 });
 
-test('import app', async () => {
-  const app = await importApp(
+test('import app', () => {
+  const app = importApp(
     cloneDeep(appToImport),
-    identityPlugin(),
+    pluginResolver(
+      importerResolver(
+        i => i,
+        (h, c) => {
+          const { flowURI } = c.rawHandler.action.data;
+          h.resourceId = parseResourceIdFromResourceUri(flowURI);
+          return h;
+        }
+      )
+    ),
     idGenerator(),
     contribs
   );
-  expect(app).toMatchObject(importedApp);
+  assertCorrectImportedApp(app);
 });
 
-test('It collects and forwards plugin import validation errors', async () => {
+test('It collects and forwards plugin import validation errors', () => {
   expect.assertions(2);
   const multiResourceApp = cloneDeep(appToImport);
   const [resource] = multiResourceApp.resources;
@@ -44,59 +67,48 @@ test('It collects and forwards plugin import validation errors', async () => {
     resource,
     { ...cloneDeep(resource), id: 'flow:resource2' },
   ];
-  try {
-    let errorCount = 0;
-    const app = await importApp(
-      multiResourceApp,
-      type => {
-        return data => {
-          throw new ValidationError('Some resource validation error', [
-            {
-              keyword: 'plugin-error',
-              dataPath: '.foo',
-              params: {
-                errorCount: ++errorCount,
-              },
-            },
-          ]);
-        };
+  const throwError = data => {
+    throw new ValidationError('Some resource validation error', [
+      {
+        keyword: 'plugin-error',
+        dataPath: '.foo',
       },
+    ]);
+  };
+  try {
+    importApp(
+      multiResourceApp,
+      pluginResolver(importerResolver(throwError, throwError)),
       idGenerator(),
       contribs
     );
   } catch (e) {
     const errors = e.details.errors;
-    expect(errors).toHaveLength(2);
+    // 1 error for handler, 2 errors for resources
+    expect(errors).toHaveLength(3);
     expect(errors).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           dataPath: '.resources[0].foo',
           keyword: 'plugin-error',
-          params: {
-            errorCount: 1,
-          },
         }),
         expect.objectContaining({
           dataPath: '.resources[1].foo',
           keyword: 'plugin-error',
-          params: {
-            errorCount: 2,
-          },
+        }),
+        expect.objectContaining({
+          dataPath: '.triggers[0].handlers[0].foo',
+          keyword: 'plugin-error',
         }),
       ])
     );
   }
 });
 
-test('It throws a validation error if resource is not supported', async () => {
+test('It throws a validation error if resource is not supported', () => {
   expect.assertions(1);
   try {
-    const app = await importApp(
-      cloneDeep(appToImport),
-      type => null,
-      idGenerator(),
-      contribs
-    );
+    importApp(cloneDeep(appToImport), pluginResolver(null), idGenerator(), contribs);
   } catch (e) {
     expect(e.details.errors).toEqual(
       expect.arrayContaining([

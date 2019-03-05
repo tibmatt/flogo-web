@@ -1,28 +1,38 @@
 import { flow, map, filter } from 'lodash/fp';
-import {
-  parseResourceIdFromResourceUri,
-  convertMappingsCollectionToStandard,
-} from '@flogo-web/server/core';
-
+import { FlogoAppModel, Handler, Trigger } from '@flogo-web/core';
+import { ValidationErrorDetail } from '@flogo-web/server/core';
 import { normalizeHandlerMappings } from '../common/normalize-handler-mappings';
+import { tryAndAccumulateValidationErrors } from '../common/try-validation-errors';
 import { normalizeSettingsWithPrefix } from './normalize-settings-with-prefix';
 
+type ImportHandlerFn = (
+  triggerRef: string,
+  handler: Partial<Handler>,
+  rawHandler: FlogoAppModel.Handler
+) => Handler;
+
 export function importTriggers(
-  // todo: triggers interface
-  rawTriggers: any[],
+  rawTriggers: FlogoAppModel.Trigger[],
   normalizedResourceIds: Map<string, string>,
+  importHandler: ImportHandlerFn,
   generateId: () => string,
   createdAt: string = null
 ): {
   // todo: triggers interface
-  triggers: any[];
+  triggers: Trigger[];
+  errors: ValidationErrorDetail[];
   normalizedTriggerIds: Map<string, string>;
 } {
   const normalizedTriggerIds = new Map<string, string>();
-  const normalizeHandlers = handlerNormalizer(normalizedResourceIds, createdAt);
-  const triggers = [];
-  rawTriggers.forEach(rawTrigger => {
-    const newTrigger = {
+  const triggers: Trigger[] = [];
+  const importAllHandlers = allHandlersImporter(
+    importHandler,
+    handlerReconciler(normalizedResourceIds),
+    createdAt
+  );
+  const errors: ValidationErrorDetail[] = [];
+  rawTriggers.forEach((rawTrigger, triggerIndex) => {
+    const newTrigger: any = {
       ...rawTrigger,
       id: generateId(),
       name: rawTrigger.name || rawTrigger.id,
@@ -30,52 +40,78 @@ export function importTriggers(
       updatedAt: null,
       settings: normalizeSettingsWithPrefix(rawTrigger.settings),
     };
-    const handlers = normalizeHandlers(extractHandlers(rawTrigger));
-    triggers.push({ ...newTrigger, handlers });
+    const { errors: handlerErrors, handlers } = importAllHandlers(
+      rawTrigger.id,
+      triggerIndex,
+      rawTrigger.handlers
+    );
+    if (handlerErrors) {
+      errors.push(...handlerErrors);
+    } else {
+      newTrigger.handlers = handlers;
+    }
+    triggers.push(newTrigger);
     normalizedTriggerIds.set(rawTrigger.id, newTrigger.id);
   });
   return {
     triggers,
+    errors: errors.length > 0 ? errors : null,
     normalizedTriggerIds,
   };
 }
 
-function handlerNormalizer(
-  normalizedResourceIds: Map<string, string>,
-  createdAt: string = null
-) {
+function allHandlersImporter(
+  importHandler: ImportHandlerFn,
+  reconcileHandlers: (handlers: Handler[]) => Handler[],
+  createdAt: string
+): (
+  triggerId: string,
+  triggerIndex: number,
+  handlers: FlogoAppModel.Handler[]
+) => { errors: null | ValidationErrorDetail[]; handlers: Handler[] } {
+  return (triggerId: string, triggerIndex: number, handlers: FlogoAppModel.Handler[]) => {
+    const { errors, result } = tryAndAccumulateValidationErrors(
+      handlers,
+      (handler: FlogoAppModel.Handler) => {
+        const normalized = preNormalizeHandler(createdAt, handler);
+        // todo: pass raw handler
+        return importHandler(triggerId, normalized, handler);
+      },
+      index => `.triggers[${triggerIndex}].handlers[${index}]`
+    );
+
+    if (!errors) {
+      return { errors: null, handlers: reconcileHandlers(result) };
+    } else {
+      return { errors, handlers: null };
+    }
+  };
+}
+
+function handlerReconciler(
+  normalizedResourceIds: Map<string, string>
+): (handlers: Handler[]) => Handler[] {
   return flow(
-    map((handler: any) => {
-      const linkedResourceId = normalizedResourceIds.get(handler.actionId);
-      return {
-        handler,
-        actionId: linkedResourceId || null,
-      };
-    }),
-    filter<{ handler?: any; actionId: string }>(
-      reconciledHandler => !!reconciledHandler.actionId
-    ),
-    map(({ actionId, handler }) => ({
-      ...normalizeHandlerMappings(handler),
-      settings: normalizeSettingsWithPrefix(handler.settings),
-      actionId,
-      createdAt,
-      outputs: {},
-      updatedAt: null,
-    }))
+    filter((handler: Handler) => normalizedResourceIds.has(handler.resourceId)),
+    map(
+      handler =>
+        ({
+          ...handler,
+          resourceId: normalizedResourceIds.get(handler.resourceId),
+        } as Handler)
+    )
   );
 }
 
-function extractHandlers(trigger) {
-  const standardHandlers = trigger.handlers || [];
-  return standardHandlers.map(mapHandler);
-}
-
-function mapHandler(stdHandler) {
-  const action = stdHandler.action;
+function preNormalizeHandler(
+  createdAt: string,
+  handler: FlogoAppModel.Handler
+): Partial<Handler> {
   return {
-    settings: stdHandler.settings,
-    actionId: parseResourceIdFromResourceUri(action.data.flowURI),
-    actionMappings: convertMappingsCollectionToStandard(action.mappings),
+    ...normalizeHandlerMappings(handler),
+    settings: normalizeSettingsWithPrefix(handler.settings),
+    outputs: {},
+    createdAt,
+    updatedAt: null,
   };
 }

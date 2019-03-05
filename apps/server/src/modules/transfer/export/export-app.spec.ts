@@ -5,14 +5,23 @@ test('it exports an app', () => {
   const exported = exportApp(
     getAppToExport(),
     type => {
-      return resource => ({
-        id: resource.id,
-        data: {
-          name: resource.name,
+      return {
+        resource: resource => ({
+          id: resource.id,
+          data: {
+            name: resource.name,
+          },
+        }),
+        handler(handler, context) {
+          handler.action.settings = {
+            resourceId: 'exported=' + context.resource.id,
+          };
+          return handler;
         },
-      });
+      };
     },
-    new Map<string, ContributionSchema>(getContributionSchemas())
+    new Map<string, ContributionSchema>(getContributionSchemas()),
+    new Map<string, string>([['flow', 'github.com/project-flogo/flow']])
   );
   expect(exported).toEqual(getExpectedApp());
 });
@@ -39,7 +48,7 @@ function getAppToExport(): App {
         updatedAt: '2019-02-15T02:50:28.358Z',
         handlers: [
           {
-            actionId: '9ldwPipJc',
+            resourceId: '9ldwPipJc',
             createdAt: '2019-02-15T02:42:21.779Z',
             updatedAt: '2019-02-15T02:50:28.358Z',
             settings: {
@@ -92,10 +101,14 @@ function getExpectedApp(): FlogoAppModel.App {
         },
         handlers: [
           {
+            settings: {
+              method: 'GET',
+              path: '/test',
+            },
             action: {
               ref: 'github.com/project-flogo/flow',
-              data: {
-                flowURI: 'res://flow:some_flow',
+              settings: {
+                resourceId: 'exported=flow:some_flow',
               },
               input: {
                 in1: '=$.content',
@@ -104,10 +117,6 @@ function getExpectedApp(): FlogoAppModel.App {
                 code: 200,
                 data: '=$.out1',
               },
-            },
-            settings: {
-              method: 'GET',
-              path: '/test',
             },
           },
         ],

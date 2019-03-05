@@ -89,9 +89,9 @@ export class Exporter {
     resources: Resource[]
   ): {
     resources: Resource[];
-    previousResourceIdsLinker: Map<string, string>;
+    previousResourceIdsLinker: Map<string, Resource>;
   } {
-    const previousResourceIdsLinker = new Map();
+    const previousResourceIdsLinker = new Map<string, Resource>();
     resources.forEach(resource => {
       const oldId = resource.id;
       resource.id =
