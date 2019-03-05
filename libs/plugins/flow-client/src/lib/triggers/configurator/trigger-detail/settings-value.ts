@@ -1,7 +1,7 @@
-import { ParseResult } from '@flogo-web/parser';
+import { ParseResult, Node } from '@flogo-web/parser';
 
 export interface SettingValue {
   viewValue: string;
   parsedValue: any;
-  parsingDetails?: ParseResult;
+  parsingDetails?: ParseResult<Node>;
 }

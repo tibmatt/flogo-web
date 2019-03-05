@@ -1,7 +1,9 @@
 import { Lexer } from 'chevrotain';
 import { lexerDefinition, MappingParser } from './parser/parser';
-import { astCreatorFactory } from './ast/ast-creator';
+import { astCreatorFactory, RootAstNode, ExprNodes, Node } from './ast';
 import { ParseResult } from './parser/parse-result';
+
+export type ParseResolverResult = ParseResult<ExprNodes.ScopeResolver | null>;
 
 const lexer = new Lexer(lexerDefinition);
 // reuse the same parser instance.
@@ -11,10 +13,10 @@ const BaseCstVisitor = parserInstance.getBaseCstVisitorConstructor();
 const AstCreator = astCreatorFactory(BaseCstVisitor);
 
 export type StartingRuleName = 'mappingExpression' | 'resolver';
-export function parse(
+export function parse<T extends Node = RootAstNode>(
   text,
   startingRule: StartingRuleName = 'mappingExpression'
-): ParseResult {
+): ParseResult<T> {
   const lexResult = lexer.tokenize(text);
   // setting a new input will RESET the parser instance's state.
   parserInstance.input = lexResult.tokens;
@@ -32,6 +34,6 @@ export function parse(
   };
 }
 
-export function parseResolver(text) {
+export function parseResolver(text): ParseResolverResult {
   return parse(text, 'resolver');
 }
