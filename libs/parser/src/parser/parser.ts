@@ -547,7 +547,7 @@ export class MappingParser extends Parser {
   });
 
   protected objectItem = this.RULE('objectItem', () => {
-    this.CONSUME(Token.StringLiteral);
+    this.CONSUME(Token.DblQuoteStringLiteral);
     this.CONSUME(Token.Colon);
     this.SUBRULE(this.jsonValue);
   });

@@ -11,6 +11,5 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  
-  "include": ["**/*.spec.ts", "**/*.d.ts"]
+  "include": ["**/*.spec.ts",  "**/tests/*", "**/*.d.ts"]
 }
