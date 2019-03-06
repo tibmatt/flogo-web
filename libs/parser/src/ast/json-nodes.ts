@@ -1,37 +1,39 @@
 import { Node } from './node';
 
 import { Expr } from './expr-nodes';
+import { AstNodeType } from './node-type';
+
 export type ValueNode = ObjectNode | ArrayNode | LiteralNode | StringTemplateNode;
 
-export interface JsonNode extends Node {
-  type: 'json';
+export interface JsonRootNode extends Node {
+  type: AstNodeType.JsonRoot;
   value: ObjectNode | ArrayNode;
 }
 
 export interface ObjectNode extends Node {
-  type: 'jsonObject';
+  type: AstNodeType.JsonObject;
   children: PropertyNode[];
 }
 
 export interface ArrayNode extends Node {
-  type: 'jsonArray';
+  type: AstNodeType.JsonArray;
   children: ValueNode[];
 }
 
 export interface PropertyNode {
-  type: 'jsonProperty';
+  type: AstNodeType.JsonProperty;
   key: string;
   value: ValueNode;
 }
 
 export interface LiteralNode {
-  type: 'jsonLiteral';
+  type: AstNodeType.JsonLiteral;
   value: any;
   kind: string;
   raw: string;
 }
 
 export interface StringTemplateNode {
-  type: 'stringTemplate';
+  type: AstNodeType.StringTemplate;
   expression: Expr;
 }
