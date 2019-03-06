@@ -1,78 +1,25 @@
-[
-  {
-    "name": "cli",
-    "ref": "github.com/project-flogo/contrib/trigger/cli"
-  },
-  {
-    "name": "channel",
-    "ref": "github.com/project-flogo/contrib/trigger/channel"
-  },
-  {
-    "name": "loadtester",
-    "ref": "github.com/project-flogo/contrib/trigger/loadtester"
-  },
-  {
-    "name": "rest",
-    "ref": "github.com/project-flogo/contrib/trigger/rest"
-  },
-  {
-    "name": "timer",
-    "ref": "github.com/project-flogo/contrib/trigger/timer"
-  },
-  {
-    "name": "actreply",
-    "ref": "github.com/project-flogo/contrib/activity/actreply"
-  },
-  {
-    "name": "actreturn",
-    "ref": "github.com/project-flogo/contrib/activity/actreturn"
-  },
-  {
-    "name": "channel",
-    "ref": "github.com/project-flogo/contrib/activity/channel"
-  },
-  {
-    "name": "counter",
-    "ref": "github.com/project-flogo/contrib/activity/counter"
-  },
-  {
-    "name": "error",
-    "ref": "github.com/project-flogo/contrib/activity/error"
-  },
-  {
-    "name": "log",
-    "ref": "github.com/project-flogo/contrib/activity/log"
-  },
-  {
-    "name": "mapper",
-    "ref": "github.com/project-flogo/contrib/activity/mapper"
-  },
-  {
-    "name": "noop",
-    "ref": "github.com/project-flogo/contrib/activity/noop"
-  },
-  {
-    "name": "rest",
-    "ref": "github.com/project-flogo/contrib/activity/rest"
-  },
-  {
-    "name": "flow",
-    "ref": "github.com/project-flogo/flow"
-  },
-  {
-    "name": "subflow",
-    "ref": "github.com/project-flogo/flow/activity/subflow"
-  },
-  {
-    "name": "string",
-    "ref": "github.com/project-flogo/contrib/function/string"
-  },
-  {
-    "name": "number",
-    "ref": "github.com/project-flogo/contrib/function/number"
-  },
-  {
-    "name": "json",
-    "ref": "github.com/project-flogo/contrib/function/json"
-  }
-]
+{
+  "name": "default",
+  "description": "Default flogo contribution bundle file",
+  "contributions": [
+    "github.com/project-flogo/contrib/trigger/cli",
+    "github.com/project-flogo/contrib/trigger/channel",
+    "github.com/project-flogo/contrib/trigger/loadtester",
+    "github.com/project-flogo/contrib/trigger/rest",
+    "github.com/project-flogo/contrib/trigger/timer",
+    "github.com/project-flogo/contrib/activity/actreply",
+    "github.com/project-flogo/contrib/activity/actreturn",
+    "github.com/project-flogo/contrib/activity/channel",
+    "github.com/project-flogo/contrib/activity/counter",
+    "github.com/project-flogo/contrib/activity/error",
+    "github.com/project-flogo/contrib/activity/log",
+    "github.com/project-flogo/contrib/activity/mapper",
+    "github.com/project-flogo/contrib/activity/noop",
+    "github.com/project-flogo/contrib/activity/rest",
+    "github.com/project-flogo/flow",
+    "github.com/project-flogo/flow/activity/subflow",
+    "github.com/project-flogo/contrib/function/string",
+    "github.com/project-flogo/contrib/function/number",
+    "github.com/project-flogo/contrib/function/json"
+  ]
+}
