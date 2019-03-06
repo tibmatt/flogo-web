@@ -74,8 +74,9 @@ function allHandlersImporter(
       handlers,
       (handler: FlogoAppModel.Handler) => {
         const normalized = preNormalizeHandler(createdAt, handler);
-        // todo: pass raw handler
-        return importHandler(triggerId, normalized, handler);
+        const imported = importHandler(triggerId, normalized, handler);
+        delete imported['action'];
+        return imported;
       },
       index => `.triggers[${triggerIndex}].handlers[${index}]`
     );

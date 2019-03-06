@@ -12,8 +12,8 @@ describe('importer.common.normalize-handler-mappings', () => {
       { mappings: { output: [] } },
       { input: null },
       { output: null },
-      { input: [] },
-      { output: [] },
+      { input: {} },
+      { output: {} },
     ];
     testCases.forEach(testAction =>
       expect(
