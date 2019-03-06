@@ -3,6 +3,7 @@ import { isEmpty } from 'lodash';
 import { Task, createResourceUri, Resource } from '@flogo-web/core';
 import { isSubflowTask, TASK_TYPE } from '@flogo-web/server/core';
 import { isIterableTask } from '@flogo-web/plugins/flow-core';
+import { Dictionary } from '@flogo-web/client-core';
 
 export class TaskFormatter {
   private sourceTask: Task;
@@ -41,8 +42,8 @@ export class TaskFormatter {
       iterate?: string;
     } = {};
     const activitySettings: {
-      flowURI?;
-      mappings?;
+      flowURI?: string;
+      mappings?: Dictionary<any>;
     } = {};
     // for type 'standard' we will omit the 'type' property as a task is 'standard' by default
     let type;
