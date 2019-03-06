@@ -3,7 +3,7 @@ import { logger } from '../../../common/logging';
 import { runShellCMD } from '../../../common/utils/process';
 import { build } from './build';
 
-const path = require('path');
+import * as path from 'path';
 
 export const commander = {
   /**
@@ -35,9 +35,9 @@ export const commander = {
   build,
   add: {
     flow: install,
-    palette(enginePath, palettePath, options) {
-      options = Object.assign({}, options, { isPalette: true });
-      return install(enginePath, palettePath, options);
+    contribBundle(enginePath, contribBundlePath, options) {
+      options = Object.assign({}, options, { isContribBundle: true });
+      return install(enginePath, contribBundlePath, options);
     },
     trigger: install,
     activity: install,
@@ -49,7 +49,14 @@ export const commander = {
   },
 };
 
-function install(enginePath, contribPath, options) {
+function install(
+  enginePath,
+  contribPath,
+  options?: {
+    version?: string;
+    isContribBundle?: boolean;
+  }
+) {
   options = options || {};
   const commandParams = ['install'];
 
@@ -57,8 +64,8 @@ function install(enginePath, contribPath, options) {
     commandParams.push('-v', options.version);
   }
 
-  if (options.isPalette) {
-    commandParams.push('-p', contribPath);
+  if (options.isContribBundle) {
+    commandParams.push('-cb', contribPath);
   } else {
     commandParams.push(contribPath);
   }

@@ -64,13 +64,13 @@ function createEngine(engine, defaultFlogoDescriptorPath, skipPaletteInstall) {
         return Promise.resolve(true);
       }
       // TODO: add palette version
-      const palettePath = path.resolve(
+      const contribBundlePath = path.resolve(
         'src',
         'config',
         config.defaultEngine.defaultPalette
       );
-      logger.info(`Will install palette at ${palettePath}`);
-      return engine.installPalette(palettePath);
+      logger.info(`Will install contrib bundle at ${contribBundlePath}`);
+      return engine.installContribBundle(contribBundlePath);
     })
     .catch(error => {
       logger.error('Found error while initializing engine:');

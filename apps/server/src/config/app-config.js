@@ -60,7 +60,8 @@ const config = {
   },
   defaultEngine: {
     path: defaultEngine,
-    defaultPalette: process.env.FLOGO_WEB_DEFAULT_PALETTE || 'default-palette.json',
+    defaultPalette:
+      process.env.FLOGO_WEB_DEFAULT_PALETTE || 'default-contrib-bundle.json',
   },
   /* apps module config */
   // TODO: consolidate and cleanup
