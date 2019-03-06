@@ -21,7 +21,7 @@ export const commander = {
 
     const command = ['create'];
     if (options.libVersion && options.libVersion !== 'latest') {
-      command.push('-c', options.libVersion);
+      command.push('--coreVersion', options.libVersion);
     }
 
     if (options.flogoDescriptor) {
@@ -65,7 +65,7 @@ function install(
   }
 
   if (options.isContribBundle) {
-    commandParams.push('-cb', contribPath);
+    commandParams.push('--contribBundle', contribPath);
   } else {
     commandParams.push(contribPath);
   }
