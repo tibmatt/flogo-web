@@ -13,6 +13,12 @@ describe('ref agent', () => {
     ).toEqual('rest');
   });
 
+  test('it allow to skip the type generation', () => {
+    expect(
+      refAgent.registerRef('github.com/project-flogo/contrib/function/string', true)
+    ).toBe(undefined);
+  });
+
   test('it returns the same type for the same ref', () => {
     const ref = 'github.com/project-flogo/contrib/activity/rest';
     expect(refAgent.registerRef(ref)).toEqual(refAgent.registerRef(ref));
@@ -39,11 +45,13 @@ describe('ref agent', () => {
     refAgent.registerRef('github.com/project-flogo/contrib/activity/rest');
     refAgent.registerRef('github.com/project-flogo/contrib/trigger/rest');
     refAgent.registerRef('github.com/project-flogo/contrib/activity/log');
+    refAgent.registerRef('github.com/project-flogo/contrib/function/string', true);
     expect(refAgent.formatImports()).toEqual([
       'github.com/project-flogo/flow',
       'github.com/project-flogo/contrib/activity/rest',
       'rest_1 github.com/project-flogo/contrib/trigger/rest',
       'github.com/project-flogo/contrib/activity/log',
+      'github.com/project-flogo/contrib/function/string',
     ]);
   });
 });

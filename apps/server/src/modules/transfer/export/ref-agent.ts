@@ -1,16 +1,25 @@
 const formatImport = ([ref, { type, isAliased }]) => (isAliased ? `${type} ${ref}` : ref);
 
+interface ImportInfo {
+  isAliased: boolean;
+  type: string;
+}
+
 export class RefAgent {
-  private imports = new Map<string, { isAliased: boolean; type: string }>();
+  private imports = new Map<string, ImportInfo>();
   private uniqueTracker = new Map<string, number>();
 
-  registerRef(ref: string): string {
+  registerRef(ref: string, skipTypeGen?: boolean): string {
     if (this.imports.has(ref)) {
-      return this.imports.get(ref).type;
+      return !skipTypeGen ? this.imports.get(ref).type : undefined;
     }
 
-    const [defaultType] = ref.split('/').slice(-1);
-    const importInfo = this.ensureUniqueType(defaultType);
+    let importInfo: ImportInfo = { isAliased: false, type: undefined };
+    if (!skipTypeGen) {
+      const [defaultType] = ref.split('/').slice(-1);
+      importInfo = this.ensureUniqueType(defaultType);
+    }
+
     this.imports.set(ref, importInfo);
     return importInfo.type;
   }
