@@ -282,6 +282,11 @@ export class MapperControllerFactory {
     } else if (resolver === ROOT_TYPES.FLOW) {
       expressionHead = makeResolvable(nodeName);
       expressionTailParts = nodes.slice(1);
+    } else if (resolver === ROOT_TYPES.ITERATOR) {
+      expressionHead = `${nodeName}`;
+      expressionHead += propName ? `[${propName.data.nodeName}]` : '';
+      expressionHead = makeResolvable(expressionHead);
+      expressionTailParts = nodes.slice(2);
     } else {
       expressionHead = nodeName.indexOf('$') === -1 ? '$.' + nodeName : nodeName;
       expressionTailParts = nodes.slice(1);

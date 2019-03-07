@@ -3,6 +3,7 @@ export const ROOT_TYPES = {
   ACTIVITY: 'activity',
   TRIGGER: 'trigger',
   ERROR: 'error',
+  ITERATOR: 'iterator',
 };
 
 export const REGEX_INPUT_VALUE_INTERNAL = /^(([\w-]+)\.([\w-]+))((?:\.[\w-]+)*)$/;
