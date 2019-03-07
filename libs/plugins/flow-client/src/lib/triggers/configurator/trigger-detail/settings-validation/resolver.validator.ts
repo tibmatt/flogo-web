@@ -1,5 +1,5 @@
 import { fromPairs } from 'lodash';
-import { ScopeResolver } from '@flogo-web/parser';
+import { ExprNodes } from '@flogo-web/parser';
 import { SettingValue } from '../settings-value';
 import { isResolverExpression } from './is-resolver-expression';
 import { ErrorTypes } from './error-types';
@@ -40,13 +40,13 @@ function getParsingErrors(value: SettingValue) {
 
 function validateResolver(value: SettingValue) {
   const errors = [];
-  let resolverDetails: ScopeResolver;
+  let resolverDetails: ExprNodes.ScopeResolver;
   if (
     value.parsingDetails &&
     value.parsingDetails.ast &&
     value.parsingDetails.ast.type === 'ScopeResolver'
   ) {
-    resolverDetails = value.parsingDetails.ast as ScopeResolver;
+    resolverDetails = value.parsingDetails.ast as ExprNodes.ScopeResolver;
   } else {
     return null;
   }

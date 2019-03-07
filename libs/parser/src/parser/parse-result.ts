@@ -1,12 +1,12 @@
 import { CstElement, IRecognitionException, ILexingError } from 'chevrotain';
-import { Node } from '../ast';
+import { RootAstNode, Node } from '../ast';
 
 export type RecognitionException = IRecognitionException;
 export type LexingError = ILexingError;
 
-export interface ParseResult {
+export interface ParseResult<T extends Node = RootAstNode> {
   cst: CstElement;
-  ast: Node;
+  ast: T;
   lexErrors: LexingError[];
   parseErrors: RecognitionException[];
 }

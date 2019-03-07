@@ -4,6 +4,7 @@
  * https://godoc.org/go/ast
  */
 import { Node } from './node';
+import { AstNodeType } from './node-type';
 
 export type Expr =
   | SelectorExpr
@@ -17,39 +18,39 @@ export type Expr =
   | BasicLit;
 
 export interface ExprStmt {
-  type: 'ExprStmt';
+  type: AstNodeType.ExprStmt;
   // we call it "x" because that's the way golang's AST does it
   x: Expr;
 }
 
 export interface BasicLit extends Node {
-  type: 'BasicLit';
+  type: AstNodeType.BasicLit;
   kind: string;
   value: any;
   raw: string;
 }
 
 export interface Identifier extends Node {
-  type: 'Identifier';
+  type: AstNodeType.Identifier;
   name: string;
 }
 
 // a.b.c => (x=expr(a.b); sel='c')
 export interface SelectorExpr extends Node {
-  type: 'SelectorExpr';
+  type: AstNodeType.SelectorExpr;
   x: Expr;
-  sel: Identifier;
+  sel: string;
 }
 
 // a.b[0] => (x=expr(a.b); index=0)
 export interface IndexExpr extends Node {
-  type: 'IndexExpr';
+  type: AstNodeType.IndexExpr;
   x: Expr;
   index: number;
 }
 
 export interface CallExpr extends Node {
-  type: 'CallExpr';
+  type: AstNodeType.CallExpr;
   fun: Expr;
   args: Expr[];
 }
@@ -59,21 +60,21 @@ export interface CallExpr extends Node {
 // example: $. -> { }
 //
 export interface ScopeResolver extends Node {
-  type: 'ScopeResolver';
+  type: AstNodeType.ScopeResolver;
   name?: string;
   sel?: string;
 }
 
 // !a => (operator="!"; x="a")
 export interface UnaryExpr extends Node {
-  type: 'UnaryExpr';
+  type: AstNodeType.UnaryExpr;
   operator: string;
   x: Expr;
 }
 
 // a > b => (x="a"; operator=">"; y="b" )
 export interface BinaryExpr extends Node {
-  type: 'BinaryExpr';
+  type: AstNodeType.BinaryExpr;
   x: Expr;
   operator: string;
   y: Expr;
@@ -81,13 +82,13 @@ export interface BinaryExpr extends Node {
 
 // a ? b : c => (condition=a, body=b, else=c)
 export interface TernaryExpr extends Node {
-  type: 'TernaryExpr';
+  type: AstNodeType.TernaryExpr;
   condition: Expr;
   consequent: Expr;
   alternate: Expr;
 }
 
 export interface ParenExpr extends Node {
-  type: 'ParenExpr';
+  type: AstNodeType.ParenExpr;
   expr: Expr;
 }
