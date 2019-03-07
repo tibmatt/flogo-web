@@ -193,19 +193,19 @@ class Engine {
   }
 
   /**
-   * Add/install a palette
-   * @param palettePath Path to palette
+   * Add/install a contrib bundle
+   * @param bundlePath Path to contrib bundle
    * @param options
    * @param options.version {string} version
    */
-  installPalette(palettePath: string, options?: Options) {
+  installContribBundle(bundlePath: string, options?: Options) {
     options = Object.assign(
       {
         /* version: this.libVersion */
       },
       options
     );
-    return this._installItem('palette', palettePath, options);
+    return this._installItem('contribBundle', bundlePath, options);
   }
 
   /**
@@ -241,14 +241,20 @@ class Engine {
     });
   }
 
-  _installItem(itemType: string, ref: string, options: Options) {
+  _installItem(
+    itemType: 'activity' | 'trigger' | 'contribBundle',
+    ref: string,
+    options: Options
+  ) {
     const label = `engine:install:${itemType}`;
     console.time(label);
     options = { ...options };
-    return commander.add[itemType](this.path, ref, options).then((result: any) => {
-      console.timeEnd(label);
-      return result;
-    });
+    return commander.add[itemType as string](this.path, ref, options).then(
+      (result: any) => {
+        console.timeEnd(label);
+        return result;
+      }
+    );
   }
 
   _hasItem(where: { ref?: string }[], nameOrPath: string) {

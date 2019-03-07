@@ -3,7 +3,7 @@ import { logger } from '../../../common/logging';
 import { runShellCMD } from '../../../common/utils/process';
 import { build } from './build';
 
-const path = require('path');
+import * as path from 'path';
 
 export const commander = {
   /**
@@ -21,7 +21,7 @@ export const commander = {
 
     const command = ['create'];
     if (options.libVersion && options.libVersion !== 'latest') {
-      command.push('-c', options.libVersion);
+      command.push('--cv', options.libVersion);
     }
 
     if (options.flogoDescriptor) {
@@ -35,9 +35,9 @@ export const commander = {
   build,
   add: {
     flow: install,
-    palette(enginePath, palettePath, options) {
-      options = Object.assign({}, options, { isPalette: true });
-      return install(enginePath, palettePath, options);
+    contribBundle(enginePath, contribBundlePath, options) {
+      options = Object.assign({}, options, { isContribBundle: true });
+      return install(enginePath, contribBundlePath, options);
     },
     trigger: install,
     activity: install,
@@ -45,11 +45,20 @@ export const commander = {
   install,
   update,
   list(enginePath) {
+    // replace for this when https://github.com/project-flogo/cli/pull/42 is merged
+    // return _exec(enginePath, ['list', '--all']).then(parseJSON);
     return _exec(enginePath, ['list', '-l']).then(parseJSON);
   },
 };
 
-function install(enginePath, contribPath, options) {
+function install(
+  enginePath,
+  contribPath,
+  options?: {
+    version?: string;
+    isContribBundle?: boolean;
+  }
+) {
   options = options || {};
   const commandParams = ['install'];
 
@@ -57,8 +66,8 @@ function install(enginePath, contribPath, options) {
     commandParams.push('-v', options.version);
   }
 
-  if (options.isPalette) {
-    commandParams.push('-p', contribPath);
+  if (options.isContribBundle) {
+    commandParams.push('--file', contribPath);
   } else {
     commandParams.push(contribPath);
   }

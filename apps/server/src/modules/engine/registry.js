@@ -53,24 +53,23 @@ export function getContribInstallationController(enginePath, installContribution
   });
 }
 
-function createEngine(engine, defaultFlogoDescriptorPath, skipPaletteInstall) {
+function createEngine(engine, defaultFlogoDescriptorPath, skipBundleInstall) {
   logger.warn('Engine does not exist. Creating...');
   return engine
     .create(defaultFlogoDescriptorPath)
     .then(() => {
       logger.info('New engine created');
-      // when vendor provided it's not needed to install a palette
-      if (skipPaletteInstall) {
+      // when vendor provided it's not needed to install a contribution bundle
+      if (skipBundleInstall) {
         return Promise.resolve(true);
       }
-      // TODO: add palette version
-      const palettePath = path.resolve(
+      const contribBundlePath = path.resolve(
         'src',
         'config',
-        config.defaultEngine.defaultPalette
+        config.defaultEngine.defaultContribBundle
       );
-      logger.info(`Will install palette at ${palettePath}`);
-      return engine.installPalette(palettePath);
+      logger.info(`Will install contrib bundle at ${contribBundlePath}`);
+      return engine.installContribBundle(contribBundlePath);
     })
     .catch(error => {
       logger.error('Found error while initializing engine:');
@@ -88,7 +87,7 @@ function createEngine(engine, defaultFlogoDescriptorPath, skipPaletteInstall) {
  *
  * @param engine {Engine}
  * @param options
- * @param options.skipPaletteInstall {boolean} whether to install a palette or now
+ * @param options.skipBundleInstall {boolean} whether to install a contributions bundle or not
  * @param options.forceCreate {boolean} whether to create an engine irrespective of it's existence
  * @param options.defaultFlogoDescriptorPath {string} path to the default flogo application JSON
  * @param options.skipContribLoad {boolean} whether to refresh the list of contributions installed in the engine
@@ -99,7 +98,7 @@ export function initEngine(engine, options) {
   const defaultFlogoDescriptorPath =
     (options && options.defaultFlogoDescriptorPath) || config.defaultFlogoDescriptorPath;
   const skipContribLoad = options && options.skipContribLoad;
-  const skipPaletteInstall = options && options.skipPaletteInstall;
+  const skipBundleInstall = options && options.skipBundleInstall;
 
   return engine
     .exists()
@@ -111,7 +110,7 @@ export function initEngine(engine, options) {
     })
     .then(shouldCreateNewEngine => {
       if (shouldCreateNewEngine) {
-        return createEngine(engine, defaultFlogoDescriptorPath, skipPaletteInstall);
+        return createEngine(engine, defaultFlogoDescriptorPath, skipBundleInstall);
       }
       return true;
     })
