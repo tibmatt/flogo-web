@@ -45,9 +45,7 @@ export const commander = {
   install,
   update,
   list(enginePath) {
-    // replace for this when https://github.com/project-flogo/cli/pull/42 is merged
-    // return _exec(enginePath, ['list', '--all']).then(parseJSON);
-    return _exec(enginePath, ['list', '-l']).then(parseJSON);
+    return _exec(enginePath, ['list', '--all']).then(parseJSON);
   },
 };
 
