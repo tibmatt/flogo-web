@@ -1,16 +1,36 @@
+import { ParsedImport } from '../common/parsed-import';
+
 const formatImport = ([ref, { type, isAliased }]) => (isAliased ? `${type} ${ref}` : ref);
 
-export class RefAgent {
-  private imports = new Map<string, { isAliased: boolean; type: string }>();
-  private uniqueTracker = new Map<string, number>();
+interface ImportInfo {
+  isAliased: boolean;
+  type: string;
+}
 
-  registerRef(ref: string): string {
+export class RefAgent {
+  private imports = new Map<string, ImportInfo>();
+  private uniqueTracker = new Map<string, number>();
+  private predetermined = new Map<string, ImportInfo>();
+
+  constructor(predeterminedImports?: ParsedImport[]) {
+    if (predeterminedImports) {
+      predeterminedImports.forEach(({ ref, type, isAliased }) => {
+        this.predetermined.set(ref, { type, isAliased });
+        this.uniqueTracker.set(type, 1);
+      });
+    }
+  }
+
+  registerRef(ref: string, skipTypeGen?: boolean): string {
     if (this.imports.has(ref)) {
-      return this.imports.get(ref).type;
+      return !skipTypeGen ? this.imports.get(ref).type : undefined;
     }
 
-    const [defaultType] = ref.split('/').slice(-1);
-    const importInfo = this.ensureUniqueType(defaultType);
+    let importInfo: ImportInfo = { isAliased: false, type: undefined };
+    if (!skipTypeGen) {
+      importInfo = this.createImportInfo(ref);
+    }
+
     this.imports.set(ref, importInfo);
     return importInfo.type;
   }
@@ -19,8 +39,15 @@ export class RefAgent {
     return Array.from(this.imports.entries()).map(formatImport);
   }
 
-  hasRef(ref: string) {
-    return this.imports.has(ref);
+  private createImportInfo(ref: string): ImportInfo {
+    let importInfo: ImportInfo;
+    if (this.predetermined.has(ref)) {
+      importInfo = this.predetermined.get(ref);
+    } else {
+      const [defaultType] = ref.split('/').slice(-1);
+      importInfo = this.ensureUniqueType(defaultType);
+    }
+    return importInfo;
   }
 
   private ensureUniqueType(type: string): { type: string; isAliased: boolean } {
