@@ -2,10 +2,13 @@ import { isEmpty } from 'lodash';
 import { FlogoAppModel, Trigger, Handler, ContributionSchema } from '@flogo-web/core';
 import { HandlerExporterFn } from '../resource-exporter-fn';
 import { ExportedResourceInfo } from './exported-resource-info';
-import { AppImportsAgent } from '@flogo-web/server/core';
+import { AppImportsAgent, allFunctionsUsedIn } from '@flogo-web/server/core';
 
 function preFormatHandler(handler: Handler, type: string): FlogoAppModel.NewHandler {
   const { settings, actionMappings } = handler;
+  //todo: Replace it with AppImportsAgent.registerFunction
+  console.log("In input: ", allFunctionsUsedIn(actionMappings.input));
+  console.log("In output: ", allFunctionsUsedIn(actionMappings.output));
   return {
     settings: !isEmpty(settings) ? { ...settings } : undefined,
     action: {
