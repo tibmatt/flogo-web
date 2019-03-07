@@ -21,7 +21,7 @@ export const commander = {
 
     const command = ['create'];
     if (options.libVersion && options.libVersion !== 'latest') {
-      command.push('--coreVersion', options.libVersion);
+      command.push('--cv', options.libVersion);
     }
 
     if (options.flogoDescriptor) {
@@ -45,6 +45,8 @@ export const commander = {
   install,
   update,
   list(enginePath) {
+    // replace for this when https://github.com/project-flogo/cli/pull/42 is merged
+    // return _exec(enginePath, ['list', '--all']).then(parseJSON);
     return _exec(enginePath, ['list', '-l']).then(parseJSON);
   },
 };
@@ -65,7 +67,7 @@ function install(
   }
 
   if (options.isContribBundle) {
-    commandParams.push('--contribBundle', contribPath);
+    commandParams.push('--file', contribPath);
   } else {
     commandParams.push(contribPath);
   }
