@@ -15,6 +15,9 @@ test('it exports a flow', () => {
     resourceIdReconciler: new Map<string, Resource>([
       ['4ut01d', { id: 'flow:humanized_subflow_ref' } as Resource],
     ]),
+    importsAgent: {
+      registerRef: (string): string => string,
+    },
   });
   expect(exported).toEqual(getExpectedFlow());
 });
@@ -35,7 +38,7 @@ function getExpectedFlow(): FlogoAppModel.Resource<ResourceActionModel.FlowResou
           name: 'Log',
           description: 'Logs a message',
           activity: {
-            ref: 'some_path_to_repo/activity/log',
+            type: 'some_path_to_repo/activity/log',
             input: {
               message: 'hello world',
               addDetails: false,
@@ -47,7 +50,7 @@ function getExpectedFlow(): FlogoAppModel.Resource<ResourceActionModel.FlowResou
           name: 'Start a SubFlow',
           description: 'Activity to start a sub-flow in an existing flow',
           activity: {
-            ref: CONTRIB_REFS.SUBFLOW,
+            type: CONTRIB_REFS.SUBFLOW,
             settings: {
               flowURI: 'res://flow:humanized_subflow_ref',
             },
@@ -67,7 +70,7 @@ function getExpectedFlow(): FlogoAppModel.Resource<ResourceActionModel.FlowResou
             name: 'Log',
             description: 'Logs a message',
             activity: {
-              ref: 'some_path_to_repo/activity/log',
+              type: 'some_path_to_repo/activity/log',
               input: {
                 message: 'hello world from the error handler',
                 addDetails: true,

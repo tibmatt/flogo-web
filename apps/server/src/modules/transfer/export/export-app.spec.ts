@@ -90,10 +90,11 @@ function getExpectedApp(): FlogoAppModel.App {
     version: '0.0.1',
     appModel: '1.0.0',
     description: 'with a description',
+    imports: ['github.com/project-flogo/flow', 'some_path_to_repo/trigger/rest'],
     triggers: [
       {
         id: 'receive_http_message',
-        ref: 'some_path_to_repo/trigger/rest',
+        type: 'rest',
         name: 'Receive HTTP Message',
         description: 'Simple REST Trigger',
         settings: {
@@ -106,7 +107,7 @@ function getExpectedApp(): FlogoAppModel.App {
               path: '/test',
             },
             action: {
-              ref: 'github.com/project-flogo/flow',
+              type: 'flow',
               settings: {
                 resourceId: 'exported=flow:some_flow',
               },

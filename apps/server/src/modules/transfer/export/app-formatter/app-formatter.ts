@@ -1,5 +1,5 @@
 import { isEmpty, pick } from 'lodash';
-import { ResourceExportContext, Resource } from '@flogo-web/server/core';
+import { ResourceExportContext, Resource, AppImportsAgent } from '@flogo-web/server/core';
 import {
   App,
   FlogoAppModel,
@@ -11,11 +11,12 @@ import {
 import { ResourceExporterFn, HandlerExporterFn } from '../resource-exporter-fn';
 import { makeHandlerFormatter } from './handler-format';
 import { ExportedResourceInfo } from './exported-resource-info';
+import { RefAgent } from '../ref-agent';
 
 const APP_MODEL_VERSION = '1.0.0';
 const TRIGGER_KEYS: Array<keyof FlogoAppModel.Trigger> = [
   'id',
-  'ref',
+  'type',
   'name',
   'description',
   'settings',
@@ -33,9 +34,11 @@ export class AppFormatter {
   ) {}
 
   format(app: App, resourceIdReconciler: Map<string, Resource>): FlogoAppModel.App {
+    const importsAgent = new RefAgent();
     const exportContext: ResourceExportContext = {
       contributions: this.contributionSchemas,
       resourceIdReconciler,
+      importsAgent,
     };
 
     const { resources, resourceInfoLookup } = this.formatResources(
@@ -45,8 +48,11 @@ export class AppFormatter {
 
     const formattedTriggers = this.formatTriggers(
       app.triggers,
-      this.makeHandlerFormatter(resourceIdReconciler, resourceInfoLookup)
+      importsAgent,
+      this.makeHandlerFormatter(resourceIdReconciler, resourceInfoLookup, importsAgent)
     );
+
+    const allImports = importsAgent.formatImports();
 
     return {
       name: app.name,
@@ -55,6 +61,7 @@ export class AppFormatter {
       appModel: APP_MODEL_VERSION,
       description: app.description,
       properties: !isEmpty(app.properties) ? app.properties : undefined,
+      imports: !isEmpty(allImports) ? allImports : undefined,
       triggers: !isEmpty(formattedTriggers) ? formattedTriggers : undefined,
       resources: !isEmpty(resources) ? resources : undefined,
     };
@@ -77,6 +84,7 @@ export class AppFormatter {
 
   formatTriggers(
     triggers: Trigger[],
+    importsAgent: AppImportsAgent,
     handlerFormatter: (trigger: Trigger) => (handler: Handler) => FlogoAppModel.Handler
   ): FlogoAppModel.Trigger[] {
     return triggers
@@ -86,6 +94,7 @@ export class AppFormatter {
           {
             ...trigger,
             handlers: trigger.handlers.map(handlerFormatter(trigger)),
+            type: importsAgent.registerRef(trigger.ref),
           },
           TRIGGER_KEYS
         ) as FlogoAppModel.Trigger;
@@ -94,11 +103,13 @@ export class AppFormatter {
 
   private makeHandlerFormatter(
     resourceIdReconciler: Map<string, Resource>,
-    resourceInfoLookup: Map<string, ExportedResourceInfo>
+    resourceInfoLookup: Map<string, ExportedResourceInfo>,
+    importsAgent: AppImportsAgent
   ) {
     return makeHandlerFormatter({
       exportHandler: this.exporter.handler,
       contributionSchemas: this.contributionSchemas,
+      importsAgent,
       getResourceInfo: oldResourceId =>
         resourceInfoLookup.get(resourceIdReconciler.get(oldResourceId).id),
     });

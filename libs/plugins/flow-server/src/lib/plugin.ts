@@ -31,7 +31,7 @@ const resourceType = {
       return exportFlow(resource, context);
     },
     handler(handler: FlogoAppModel.NewHandler, context) {
-      return exportHandler(handler, context.internalHandler);
+      return exportHandler(handler, context);
     },
   },
 };

@@ -1,11 +1,13 @@
-import { FlogoAppModel, Handler, createResourceUri } from '@flogo-web/core';
+import { FlogoAppModel, createResourceUri } from '@flogo-web/core';
+import { HandlerExportContext } from '@flogo-web/server/core';
 
 export function exportHandler(
   exportedHandler: FlogoAppModel.NewHandler,
-  internalHandler: Handler
+  context: HandlerExportContext
 ): FlogoAppModel.NewHandler {
   exportedHandler.action.settings = {
-    flowURI: createResourceUri(internalHandler.resourceId),
+    flowURI: createResourceUri(context.internalHandler.resourceId),
   };
+  delete exportedHandler.action.ref;
   return exportedHandler;
 }

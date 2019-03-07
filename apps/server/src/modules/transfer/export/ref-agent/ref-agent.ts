@@ -1,5 +1,6 @@
 import { ParsedImport } from '../../common/parsed-import';
 import { FunctionRefFinder } from './function-ref-finder';
+import { AppImportsAgent } from '@flogo-web/server/core';
 
 const formatImport = ([ref, { type, isAliased }]) => (isAliased ? `${type} ${ref}` : ref);
 
@@ -8,7 +9,7 @@ interface ImportInfo {
   type: string;
 }
 
-export class RefAgent {
+export class RefAgent implements AppImportsAgent {
   private imports = new Map<string, ImportInfo>();
   private uniqueTracker = new Map<string, number>();
   private predetermined = new Map<string, ImportInfo>();
