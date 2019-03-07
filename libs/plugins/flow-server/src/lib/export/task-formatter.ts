@@ -15,9 +15,13 @@ export class TaskFormatter {
   }
 
   convert(isMapperType: boolean) {
-    const { id, name, description, activityRef, inputMappings } = this.sourceTask;
-    const { type, taskSettings, activitySettings } = this.resolveTypeAndSettings();
-    const input = isMapperType ? { mappings: inputMappings } : inputMappings;
+    const { id, name, description, activityRef } = this.sourceTask;
+    const {
+      type,
+      taskSettings,
+      activitySettings,
+      input,
+    } = this.resolveActivityProperties(isMapperType);
     return {
       id,
       type,
@@ -32,23 +36,30 @@ export class TaskFormatter {
     };
   }
 
-  resolveTypeAndSettings() {
+  resolveActivityProperties(isMapperType) {
     const taskSettings: {
       iterate?: string;
     } = {};
-    let activitySettings = {};
+    const activitySettings: {
+      flowURI?: string;
+      mappings?: { [flowOutput: string]: any };
+    } = {};
     // for type 'standard' we will omit the 'type' property as a task is 'standard' by default
     let type;
     if (isSubflowTask(this.sourceTask)) {
-      activitySettings = { flowURI: this.convertSubflowPath() };
-    } else {
-      activitySettings = this.sourceTask.activitySettings;
+      activitySettings.flowURI = this.convertSubflowPath();
+    } else if (isMapperType) {
+      activitySettings.mappings = this.sourceTask.inputMappings;
+    }
+    let input = {};
+    if (!isMapperType) {
+      input = this.sourceTask.inputMappings;
     }
     if (this.isIteratorTask()) {
       type = TASK_TYPE.ITERATOR;
       taskSettings.iterate = this.sourceTask.settings.iterate;
     }
-    return { type, taskSettings, activitySettings };
+    return { type, taskSettings, activitySettings, input };
   }
 
   convertSubflowPath() {
