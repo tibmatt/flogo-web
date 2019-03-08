@@ -1,16 +1,40 @@
 import { isEmpty } from 'lodash';
 
 import { Task, createResourceUri, Resource } from '@flogo-web/core';
-import { isSubflowTask, TASK_TYPE, AppImportsAgent } from '@flogo-web/server/core';
+import {
+  isSubflowTask,
+  TASK_TYPE,
+  AppImportsAgent,
+  allFunctionsUsedIn,
+} from '@flogo-web/server/core';
 import { isIterableTask } from '@flogo-web/plugins/flow-core';
+
+interface Mappings {
+  [propertyName: string]: string;
+}
+
+const createFnAccumulator = (functions: Set<string>) => {
+  return (mappings: Mappings) => {
+    allFunctionsUsedIn(mappings || {}).forEach(fn => functions.add(fn));
+  };
+};
 
 export class TaskFormatter {
   private sourceTask: Task;
+  readonly functionsUsed: Set<string>;
+  readonly functionAccumulator: (mappings: Mappings) => void;
 
   constructor(
     private resourceIdReconciler: Map<string, Resource>,
     private importsAgent: AppImportsAgent
-  ) {}
+  ) {
+    this.functionsUsed = new Set<string>();
+    this.functionAccumulator = createFnAccumulator(this.functionsUsed);
+  }
+
+  get allFunctions() {
+    return this.functionsUsed ? Array.from(this.functionsUsed.values()) : [];
+  }
 
   setSourceTask(sourceTask) {
     this.sourceTask = sourceTask;
@@ -43,7 +67,7 @@ export class TaskFormatter {
     const taskSettings: {
       iterate?: string;
     } = {};
-    const activitySettings: {
+    let activitySettings: {
       flowURI?: string;
       mappings?: { [flowOutput: string]: any };
     } = {};
@@ -53,7 +77,10 @@ export class TaskFormatter {
       activitySettings.flowURI = this.convertSubflowPath();
     } else if (isMapperType) {
       activitySettings.mappings = this.sourceTask.inputMappings;
+    } else {
+      activitySettings = this.sourceTask.activitySettings;
     }
+
     let input = {};
     if (!isMapperType) {
       input = this.sourceTask.inputMappings;
@@ -62,6 +89,9 @@ export class TaskFormatter {
       type = TASK_TYPE.ITERATOR;
       taskSettings.iterate = this.sourceTask.settings.iterate;
     }
+    this.functionAccumulator(taskSettings);
+    this.functionAccumulator(this.sourceTask.inputMappings);
+    this.functionAccumulator(this.sourceTask.activitySettings);
     return { type, taskSettings, activitySettings, input };
   }
 

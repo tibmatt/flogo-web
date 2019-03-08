@@ -7,8 +7,8 @@ import { AppImportsAgent, allFunctionsUsedIn } from '@flogo-web/server/core';
 function preFormatHandler(handler: Handler, type: string): FlogoAppModel.NewHandler {
   const { settings, actionMappings } = handler;
   //todo: Replace it with AppImportsAgent.registerFunction
-  console.log("In input: ", allFunctionsUsedIn(actionMappings.input));
-  console.log("In output: ", allFunctionsUsedIn(actionMappings.output));
+  console.log('In input: ', allFunctionsUsedIn(actionMappings.input));
+  console.log('In output: ', allFunctionsUsedIn(actionMappings.output));
   return {
     settings: !isEmpty(settings) ? { ...settings } : undefined,
     action: {
