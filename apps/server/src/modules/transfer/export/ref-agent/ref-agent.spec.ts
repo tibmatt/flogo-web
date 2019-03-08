@@ -1,10 +1,18 @@
 import { RefAgent } from './ref-agent';
+import { FunctionRefFinder } from './function-ref-finder';
 
 describe('ref agent', () => {
   let refAgent: RefAgent;
+  const functionsReverseLookupStub: Partial<FunctionRefFinder> = {
+    findPackage(functionName: string) {
+      if (functionName === 'used.function') {
+        return 'github.com/some-package-with-functions/ref';
+      }
+    },
+  };
 
   beforeEach(() => {
-    refAgent = new RefAgent();
+    refAgent = new RefAgent(functionsReverseLookupStub as FunctionRefFinder);
   });
 
   test('it returns the type from a ref', () => {
@@ -49,18 +57,20 @@ describe('ref agent', () => {
     refAgent.registerRef('github.com/project-flogo/contrib/trigger/rest');
     refAgent.registerRef('github.com/project-flogo/contrib/activity/log');
     refAgent.registerRef('github.com/project-flogo/contrib/function/string', true);
+    refAgent.registerFunctionName('used.function');
     expect(refAgent.formatImports()).toEqual([
       'github.com/project-flogo/flow',
       'github.com/project-flogo/contrib/activity/rest',
       'rest_1 github.com/project-flogo/contrib/trigger/rest',
       'github.com/project-flogo/contrib/activity/log',
       'github.com/project-flogo/contrib/function/string',
+      'github.com/some-package-with-functions/ref',
     ]);
   });
 
   describe('with predetermined imports', () => {
     beforeEach(() => {
-      refAgent = new RefAgent([
+      refAgent = new RefAgent(functionsReverseLookupStub as FunctionRefFinder, [
         {
           ref: 'github.com/project-flogo/contrib/activity/rest',
           isAliased: true,

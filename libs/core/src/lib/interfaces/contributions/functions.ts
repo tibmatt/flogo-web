@@ -8,6 +8,7 @@ interface FunctionArgument {
 export interface SingleFunctionSchema {
   name: string;
   description?: string;
+  varArgs?: boolean;
   args?: FunctionArgument[];
 }
 

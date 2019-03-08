@@ -1,4 +1,5 @@
-import { ParsedImport } from '../common/parsed-import';
+import { ParsedImport } from '../../common/parsed-import';
+import { FunctionRefFinder } from './function-ref-finder';
 
 const formatImport = ([ref, { type, isAliased }]) => (isAliased ? `${type} ${ref}` : ref);
 
@@ -12,7 +13,10 @@ export class RefAgent {
   private uniqueTracker = new Map<string, number>();
   private predetermined = new Map<string, ImportInfo>();
 
-  constructor(predeterminedImports?: ParsedImport[]) {
+  constructor(
+    private functionsReverseLookup: FunctionRefFinder,
+    predeterminedImports?: ParsedImport[]
+  ) {
     if (predeterminedImports) {
       predeterminedImports.forEach(({ ref, type, isAliased }) => {
         this.predetermined.set(ref, { type, isAliased });
@@ -33,6 +37,13 @@ export class RefAgent {
 
     this.imports.set(ref, importInfo);
     return importInfo.type;
+  }
+
+  registerFunctionName(functionName: string) {
+    const ref = this.functionsReverseLookup.findPackage(functionName);
+    if (ref && !this.imports.has(ref)) {
+      this.imports.set(ref, { isAliased: false, type: undefined });
+    }
   }
 
   formatImports(): string[] {
