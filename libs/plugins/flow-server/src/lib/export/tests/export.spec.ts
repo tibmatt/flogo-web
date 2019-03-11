@@ -17,6 +17,7 @@ test('it exports a flow', () => {
     ]),
     importsAgent: {
       registerRef: (string): string => string,
+      registerFunctionName: () => {},
     },
   });
   expect(exported).toEqual(getExpectedFlow());

@@ -4,15 +4,22 @@ import { HandlerExporterFn } from '../resource-exporter-fn';
 import { ExportedResourceInfo } from './exported-resource-info';
 import { AppImportsAgent, allFunctionsUsedIn } from '@flogo-web/server/core';
 
-function preFormatHandler(handler: Handler, type: string): FlogoAppModel.NewHandler {
+function preFormatHandler(
+  handler: Handler,
+  ref: string,
+  refAgent: AppImportsAgent
+): FlogoAppModel.NewHandler {
   const { settings, actionMappings } = handler;
-  //todo: Replace it with AppImportsAgent.registerFunction
-  console.log('In input: ', allFunctionsUsedIn(actionMappings.input));
-  console.log('In output: ', allFunctionsUsedIn(actionMappings.output));
+  allFunctionsUsedIn(actionMappings.input).forEach(fn =>
+    refAgent.registerFunctionName(fn)
+  );
+  allFunctionsUsedIn(actionMappings.output).forEach(fn =>
+    refAgent.registerFunctionName(fn)
+  );
   return {
     settings: !isEmpty(settings) ? { ...settings } : undefined,
     action: {
-      type,
+      type: refAgent.registerRef(ref),
       settings: null,
       ...actionMappings,
     },
@@ -36,10 +43,7 @@ export function makeHandlerFormatter({
     const triggerSchema = contributionSchemas.get(trigger.ref);
     return (handler: Handler) => {
       const resourceInfo = getResourceInfo(handler.resourceId);
-      const formattedHandler = preFormatHandler(
-        handler,
-        importsAgent.registerRef(resourceInfo.ref)
-      );
+      const formattedHandler = preFormatHandler(handler, resourceInfo.ref, importsAgent);
       return exportHandler(resourceInfo.type, formattedHandler, {
         triggerSchema,
         resource: resourceInfo.resource,

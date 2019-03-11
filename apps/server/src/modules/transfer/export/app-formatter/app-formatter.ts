@@ -11,7 +11,7 @@ import {
 import { ResourceExporterFn, HandlerExporterFn } from '../resource-exporter-fn';
 import { makeHandlerFormatter } from './handler-format';
 import { ExportedResourceInfo } from './exported-resource-info';
-import { RefAgent } from '../ref-agent';
+import { createRefAgent, RefAgent } from '../ref-agent';
 
 const APP_MODEL_VERSION = '1.0.0';
 const TRIGGER_KEYS: Array<keyof FlogoAppModel.Trigger> = [
@@ -34,7 +34,9 @@ export class AppFormatter {
   ) {}
 
   format(app: App, resourceIdReconciler: Map<string, Resource>): FlogoAppModel.App {
-    const importsAgent = new RefAgent();
+    const importsAgent: RefAgent = createRefAgent(
+      Array.from(this.contributionSchemas.values())
+    );
     const exportContext: ResourceExportContext = {
       contributions: this.contributionSchemas,
       resourceIdReconciler,

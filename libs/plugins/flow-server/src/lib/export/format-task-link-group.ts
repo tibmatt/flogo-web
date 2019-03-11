@@ -38,7 +38,7 @@ function formatGroup(
   if (!isEmpty(formattedTasks)) {
     group.tasks = formattedTasks;
   }
-  const formattedLinks = formatLinks(links);
+  const formattedLinks = formatLinks(links, importsAgent);
   if (!isEmpty(formattedLinks)) {
     group.links = formattedLinks;
   }

@@ -48,7 +48,9 @@ export class RefAgent implements AppImportsAgent {
   }
 
   formatImports(): string[] {
-    return Array.from(this.imports.entries()).map(formatImport);
+    return Array.from(this.imports.entries())
+      .sort()
+      .map(formatImport);
   }
 
   private createImportInfo(ref: string): ImportInfo {

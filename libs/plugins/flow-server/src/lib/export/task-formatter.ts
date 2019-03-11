@@ -13,27 +13,23 @@ interface Mappings {
   [propertyName: string]: string;
 }
 
-const createFnAccumulator = (functions: Set<string>) => {
+const createFnAccumulator = (registerFunction: (string) => void) => {
   return (mappings: Mappings) => {
-    allFunctionsUsedIn(mappings || {}).forEach(fn => functions.add(fn));
+    allFunctionsUsedIn(mappings || {}).forEach(fn => registerFunction(fn));
   };
 };
 
 export class TaskFormatter {
   private sourceTask: Task;
-  readonly functionsUsed: Set<string>;
   readonly functionAccumulator: (mappings: Mappings) => void;
 
   constructor(
     private resourceIdReconciler: Map<string, Resource>,
     private importsAgent: AppImportsAgent
   ) {
-    this.functionsUsed = new Set<string>();
-    this.functionAccumulator = createFnAccumulator(this.functionsUsed);
-  }
-
-  get allFunctions() {
-    return this.functionsUsed ? Array.from(this.functionsUsed.values()) : [];
+    this.functionAccumulator = createFnAccumulator(
+      importsAgent.registerFunctionName.bind(importsAgent)
+    );
   }
 
   setSourceTask(sourceTask) {
