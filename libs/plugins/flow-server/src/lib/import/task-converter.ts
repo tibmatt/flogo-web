@@ -1,14 +1,19 @@
 import { isUndefined, isArray, isPlainObject } from 'lodash';
 
-import { EXPR_PREFIX, CONTRIB_REFS } from '@flogo-web/core';
+import { EXPR_PREFIX, CONTRIB_REFS, ResourceActionModel } from '@flogo-web/core';
 import {
   FLOGO_TASK_TYPE,
   TASK_TYPE,
   EXPRESSION_TYPE,
   parseResourceIdFromResourceUri,
 } from '@flogo-web/server/core';
-import { isOutputMapperField } from '@flogo-web/plugins/flow-core';
+import { isMapperActivity, isOutputMapperField } from '@flogo-web/plugins/flow-core';
 import { normalizeIteratorValue } from './normalize-iterator-value';
+
+const isLegacyActivity = (
+  a: ResourceActionModel.Activity
+): a is ResourceActionModel.LegacyActivity =>
+  !!(<ResourceActionModel.LegacyActivity>a).mappings;
 
 export class TaskConverter {
   private resourceTask;
@@ -53,7 +58,7 @@ export class TaskConverter {
     if (this.isSubflowTask()) {
       type = FLOGO_TASK_TYPE.TASK_SUB_PROC;
       settings.flowPath = this.extractSubflowPath();
-    } else {
+    } else if (!isMapperActivity(this.activitySchema)) {
       activitySettings = this.resourceTask.activity.settings;
     }
     if (this.isIteratorTask()) {
@@ -76,17 +81,27 @@ export class TaskConverter {
   }
 
   prepareInputMappings() {
-    const inputMappings = this.convertAttributes();
-    return this.safeGetMappings().reduce((inputs, mapping) => {
-      let value = mapping.value;
-      if (isPlainObject(value)) {
-        value = EXPR_PREFIX + JSON.stringify(value, null, 2);
-      } else if (mapping.type !== EXPRESSION_TYPE.LITERAL) {
-        value = EXPR_PREFIX + value;
+    if (isLegacyActivity(this.resourceTask.activity)) {
+      const inputMappings = this.convertAttributes();
+      return this.safeGetMappings().reduce((inputs, mapping) => {
+        let value = mapping.value;
+        if (isPlainObject(value)) {
+          value = EXPR_PREFIX + JSON.stringify(value, null, 2);
+        } else if (mapping.type !== EXPRESSION_TYPE.LITERAL) {
+          value = EXPR_PREFIX + value;
+        }
+        inputs[mapping.mapTo] = value;
+        return inputs;
+      }, inputMappings);
+    } else {
+      let mappings = {};
+      if (isMapperActivity(this.activitySchema)) {
+        mappings = this.resourceTask.activity.settings.mappings || {};
+      } else {
+        mappings = this.resourceTask.activity.input || {};
       }
-      inputs[mapping.mapTo] = value;
-      return inputs;
-    }, inputMappings);
+      return mappings;
+    }
   }
 
   safeGetMappings() {
