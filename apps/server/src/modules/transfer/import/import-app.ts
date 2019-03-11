@@ -13,6 +13,7 @@ import { actionValueTypesNormalizer } from '../common/action-value-type-normaliz
 import { tryAndAccumulateValidationErrors } from '../common/try-validation-errors';
 import { validatorFactory } from './validator';
 import { importTriggers } from './import-triggers';
+import { createFromImports, IMPORT_SYNTAX } from "./imports";
 
 interface DefaultAppModelResource extends FlogoAppModel.Resource {
   data: {
@@ -34,23 +35,42 @@ export function importApp(
   contributions: Map<string, ContributionSchema>
 ): App {
   const now = new Date().toISOString();
-  const newApp = cleanAndValidateApp(
+  if(rawApp.imports) {
+    const improperImports = validateImports(rawApp.imports);
+    //TODO : write proper validation message for improper imports
+    const importsErrors = improperImports.map(importsError => ({
+      data: importsError,
+      dataPath: '.imports',
+      keyword: 'incorrect-import'
+    }));
+    if(importsErrors.length) {
+      throw new ValidationError(
+        'Validation error in imports',
+        importsErrors
+      );
+    }
+  }
+  const importsTypeToRefAgent = createFromImports(rawApp.imports);
+  let newApp = cleanAndValidateApp(
     rawApp as FlogoAppModel.App,
     Array.from(contributions.values()),
     generateId,
-    now
+    now,
+    importsTypeToRefAgent
   );
   const { resources, normalizedResourceIds } = normalizeResources(
     (rawApp.resources || []) as DefaultAppModelResource[],
     generateId,
-    now
+    now,
+    importsTypeToRefAgent
   );
   const { triggers, normalizedTriggerIds, errors: handlerErrors } = importTriggers(
     rawApp.triggers || [],
     normalizedResourceIds,
     createHandlerImportResolver(resolveImporter, contributions),
     generateId,
-    now
+    now,
+    importsTypeToRefAgent
   );
   newApp.triggers = triggers;
 
@@ -58,6 +78,7 @@ export function importApp(
     contributions,
     normalizedResourceIds: normalizedResourceIds,
     normalizedTriggerIds: normalizedTriggerIds,
+    importsTypeToRefAgent
   };
   const resolveImportHook = createResourceImportResolver(resolveImporter, context);
   const { resources: importedResources, errors: resourceErrors } = applyImportHooks(
@@ -75,8 +96,11 @@ export function importApp(
       allErrors
     );
   }
-
   return newApp;
+}
+
+function validateImports(imports) {
+  return imports.filter(eachImport => !IMPORT_SYNTAX.exec(eachImport.trim()));
 }
 
 function applyImportHooks(
@@ -95,9 +119,10 @@ function cleanAndValidateApp(
   rawApp: FlogoAppModel.App,
   contributions: ContributionSchema[],
   getNextId: () => string,
-  now = null
+  now = null,
+  importsTypeToRefAgent
 ): App {
-  const validator = createValidator(contributions);
+  const validator = createValidator(contributions, importsTypeToRefAgent);
   validator.validate(rawApp);
   rawApp = rawApp as FlogoAppModel.App;
   return constructApp({
@@ -113,7 +138,8 @@ function cleanAndValidateApp(
 function normalizeResources(
   resources: DefaultAppModelResource[],
   generateId: () => string,
-  now: string
+  now: string,
+  importsTypeToRefAgent: any
 ): { resources: Resource[]; normalizedResourceIds: Map<string, string> } {
   const normalizedResourceIds = new Map<string, string>();
   const normalizedResources: Resource[] = [];
@@ -129,6 +155,13 @@ function normalizeResources(
       updatedAt: null,
       data: resource.data,
     };
+    normalizedResource.data.tasks = normalizedResource.data.tasks.map(task => {
+      if(task.activity.type) {
+        task.activity.ref = importsTypeToRefAgent.getRef(task.activity.type);
+        delete task.activity['type'];
+      }
+      return task;
+    });
     normalizedResource = actionValueTypesNormalizer(normalizedResource);
     normalizedResources.push(normalizedResource);
     normalizedResourceIds.set(resource.id, normalizedResource.id);
@@ -140,11 +173,11 @@ function normalizeResources(
   };
 }
 
-function createValidator(contributions: ContributionSchema[]) {
+function createValidator(contributions: ContributionSchema[], importsTypeToRefAgent) {
   const contribRefs = contributions.map(c => c.ref);
   return validatorFactory(Schemas.v1.app, contribRefs, {
-    schemas: [Schemas.v1.common, Schemas.v1.trigger],
-  });
+    schemas: [Schemas.v1.common, Schemas.v1.trigger]
+  }, importsTypeToRefAgent);
 }
 
 function createResourceImportResolver(

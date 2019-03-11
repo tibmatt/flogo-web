@@ -1,4 +1,4 @@
-export interface Resource<TResourceData = unknown> {
+export interface Resource<TResourceData = any> {
   id: string;
   name: string;
   type: string;

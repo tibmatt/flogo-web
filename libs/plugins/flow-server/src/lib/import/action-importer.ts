@@ -24,7 +24,7 @@ export class ActionImporter {
   ) {}
 
   importAction(inResource: Resource, context: ResourceImportContext): Resource<FlowData> {
-    const validate = makeValidator(Array.from(context.contributions.keys()));
+    const validate = makeValidator(Array.from(context.contributions.keys()), context.importsTypeToRefAgent);
     const errors = validate(inResource);
     if (errors) {
       throw new ValidationError('Flow data validation errors', errors);
@@ -101,7 +101,7 @@ export class ActionImporter {
   }
 }
 
-function makeValidator(installedRefs: string[]) {
+function makeValidator(installedRefs: string[], importsTypeToRefAgent) {
   return createValidator(
     {
       $schema: 'http://json-schema.org/draft-07/schema#',
@@ -125,6 +125,15 @@ function makeValidator(installedRefs: string[]) {
           'activity-installed',
           'activity',
           installedRefs || []
+        ),
+      },
+      {
+        keyword: 'type-installed',
+        validate: ValidationRuleFactory.typeInstalled(
+          'type-installed',
+          'activity',
+          installedRefs || [],
+          importsTypeToRefAgent
         ),
       },
     ]

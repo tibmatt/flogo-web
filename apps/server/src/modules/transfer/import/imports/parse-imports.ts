@@ -1,6 +1,6 @@
 import { ParsedImport } from '../../common/parsed-import';
 
-const IMPORT_SYNTAX = /^(?:([\w-\.]+)\s+)?((?:[\w-\.]+\/)+([\w-\.]+))$/;
+export const IMPORT_SYNTAX = /^(?:([\w-\.]+)\s+)?((?:[\w-\.]+\/)+([\w-\.]+))$/;
 
 /**
 Parse a flogo.json import and return its parts.

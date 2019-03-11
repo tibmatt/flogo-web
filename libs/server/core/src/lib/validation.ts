@@ -48,6 +48,7 @@ function validatorRunner(validateFn: AjvNS.ValidateFunction) {
 
 export const ValidationRuleFactory = {
   contributionInstalled: contributionRuleFactory,
+  typeInstalled: contributionTypeRuleFactory
 };
 
 function contributionRuleFactory(keyword, type, refs): ValidateFn {
@@ -65,5 +66,49 @@ function contributionRuleFactory(keyword, type, refs): ValidateFn {
       ];
     }
     return isInstalled;
+  };
+}
+
+function contributionTypeRuleFactory(keyword, type, refs, agent): ValidateFn {
+  return function validator(schema, contribType) {
+    const contribRef = agent.getRef(contribType);
+    const isTypeInImports = Array.from(agent.imports.keys()).includes(contribType);
+    const isInstalled = refs.includes(contribRef);
+    const validationErrors = (validator as any).errors = [];
+    if (!isTypeInImports) {
+      validationErrors.push([
+        {
+          keyword,
+          message: `${type} "${contribType}" is not installed among the imports`,
+          params: {
+            ref: contribType,
+          },
+        },
+      ]);
+    }
+    if (!isInstalled) {
+      validationErrors.push([
+        {
+          keyword,
+          message: `${type} "${contribType}" mapped to "${contribRef}" is not installed`,
+          params: {
+            ref: contribRef,
+          },
+        },
+      ]);
+    }
+
+    /*if (!isTypeInImports || !isInstalled) {
+      (validator as any).errors = [
+        {
+          keyword,
+          message: `${type} "${contribType}" is not installed among the imports`,
+          params: {
+            ref: contribType,
+          },
+        },
+      ];
+    }*/
+    return !isInstalled || !isTypeInImports;
   };
 }

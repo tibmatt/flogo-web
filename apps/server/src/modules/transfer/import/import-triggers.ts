@@ -16,7 +16,8 @@ export function importTriggers(
   normalizedResourceIds: Map<string, string>,
   importHandler: ImportHandlerFn,
   generateId: () => string,
-  createdAt: string = null
+  createdAt: string = null,
+  importsTypeToRef: any
 ): {
   // todo: triggers interface
   triggers: Trigger[];
@@ -40,6 +41,10 @@ export function importTriggers(
       updatedAt: null,
       settings: normalizeSettingsWithPrefix(rawTrigger.settings),
     };
+    if(newTrigger.type) {
+      newTrigger.ref = importsTypeToRef.getRef(newTrigger.type);
+      delete newTrigger['type'];
+    }
     const { errors: handlerErrors, handlers } = importAllHandlers(
       rawTrigger.id,
       triggerIndex,

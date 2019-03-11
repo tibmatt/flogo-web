@@ -34,6 +34,12 @@
         "ref": "common.json#/definitions/appProperty"
       }
     },
+    "imports": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "triggers": {
       "type": "array",
       "items": {

@@ -4,6 +4,7 @@ export interface ResourceImportContext {
   contributions: Map<string, ContributionSchema>;
   normalizedTriggerIds: Map<string, string>;
   normalizedResourceIds: Map<string, string>;
+  importsTypeToRefAgent: any;
 }
 
 export interface HandlerImportContext {
