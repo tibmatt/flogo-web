@@ -11,6 +11,7 @@ import {
 } from '../../modules/apps';
 import { TriggerManager } from '../../modules/triggers';
 import { ActivitiesManager } from '../../modules/activities';
+import { FunctionManager } from '../../modules/functions';
 
 export const ModelsModule = new ContainerModule((bind: interfaces.Bind) => {
   bind(ResourceService).toSelf();
@@ -21,4 +22,5 @@ export const ModelsModule = new ContainerModule((bind: interfaces.Bind) => {
   bind(HandlersService).toSelf();
   bind(TOKENS.ContribActivitiesManager).toConstantValue(ActivitiesManager);
   bind(TOKENS.ContribTriggersManager).toConstantValue(TriggerManager);
+  bind(TOKENS.ContribFunctionsManager).toConstantValue(FunctionManager);
 });
