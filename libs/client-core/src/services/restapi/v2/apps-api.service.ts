@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { throwError, Observable } from 'rxjs';
 
 import { App } from '@flogo-web/core';
 import { FileDownloaderService } from '../../file-downloader.service';
@@ -37,15 +39,14 @@ export class AppsApiService {
     return this.restApi.get<App[]>('apps').toPromise();
   }
 
-  getApp(appId: string): Promise<App | null> {
-    return this.restApi.get<App>(`apps/${appId}`).toPromise();
+  getApp(appId: string): Observable<App | null> {
+    return this.restApi.get<App>(`apps/${appId}`);
   }
 
   updateApp(appId: string, app: any) {
     return this.restApi
       .patch<App>(`apps/${appId}`, app)
-      .toPromise()
-      .catch(error => Promise.reject(this.extractErrors(error)));
+      .pipe(catchError(err => throwError(this.extractErrors(err))));
   }
 
   deleteApp(appId: string) {

@@ -32,6 +32,7 @@ import { HandlerType, SelectionType } from './core/models';
 import { FlowState } from './core/state';
 import { FlowMetadata } from './task-configurator/models';
 import { ParamsSchemaComponent } from './params-schema';
+import { of } from 'rxjs';
 
 interface TaskContext {
   isTrigger: boolean;
@@ -153,35 +154,31 @@ export class FlowComponent implements OnInit, OnDestroy {
             title: translation['MODAL:CONFIRM-DELETION'],
             textMessage: translation['FLOWS:CONFIRM_DELETE'],
           }).result;
+        }),
+        filter(result => result === ConfirmationResult.Confirm),
+        switchMap(() => {
+          return this.app
+            ? of(this.app)
+            : this._restAPIAppsService.getApp(this.flowState.app.id);
         })
       )
-      .subscribe(result => {
-        if (result === ConfirmationResult.Confirm) {
-          const appPromise = this.app
-            ? Promise.resolve(this.app)
-            : this._restAPIAppsService.getApp(this.flowState.app.id);
-          appPromise
-            .then(app => {
-              const triggerDetails = this.getTriggerCurrentFlow(app, this.flowState.id);
-              return this._flowService.deleteFlow(
-                this.flowId,
-                triggerDetails ? triggerDetails.id : null
-              );
+      .subscribe(app => {
+        const triggerDetails = this.getTriggerCurrentFlow(app, this.flowState.id);
+        this._flowService
+          .deleteFlow(this.flowId, triggerDetails ? triggerDetails.id : null)
+          .then(() => this.navigateToApp())
+          .then(() =>
+            this.notifications.success({
+              key: 'FLOWS:SUCCESS-MESSAGE-FLOW-DELETED',
             })
-            .then(() => this.navigateToApp())
-            .then(() =>
-              this.notifications.success({
-                key: 'FLOWS:SUCCESS-MESSAGE-FLOW-DELETED',
-              })
-            )
-            .catch(err => {
-              console.error(err);
-              this.notifications.error({
-                key: 'FLOWS:ERROR-MESSAGE-REMOVE-FLOW',
-                params: err,
-              });
+          )
+          .catch(err => {
+            console.error(err);
+            this.notifications.error({
+              key: 'FLOWS:ERROR-MESSAGE-REMOVE-FLOW',
+              params: err,
             });
-        }
+          });
       });
   }
 

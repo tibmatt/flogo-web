@@ -1,4 +1,5 @@
 <flogo-apps-details-application
-  [appDetail]="appDetail"
-  (flowSelected)="onResourceSelected($event)"
+  [appId]="appId"
+  (resourceSelected)="onResourceSelected($event)"
+  (appDeleted)="onAppDeleted()"
 ></flogo-apps-details-application>

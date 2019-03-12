@@ -78,7 +78,9 @@ export class AppResourceService {
     triggerId: string
   ): Observable<{ resourceDeleted?: boolean } | { triggerDeleted?: boolean }> {
     const removeTriggerIfUnreferenced$ = triggerId
-      ? removeTriggerIfUnreferenced(triggerId, this.triggersService)
+      ? removeTriggerIfUnreferenced(triggerId, this.triggersService).pipe(
+          map(() => ({ triggerDeleted: true }))
+        )
       : EMPTY;
     return concat(
       this.deleteResource(flowId).pipe(map(() => ({ resourceDeleted: true }))),

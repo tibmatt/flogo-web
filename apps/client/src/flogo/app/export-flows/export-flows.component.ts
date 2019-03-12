@@ -65,7 +65,7 @@ export class FlogoExportFlowsComponent {
     }
     return () =>
       this.appDetailService
-        .exportFlow(flowsToExport)
+        .exportResources(flowsToExport)
         .then(appWithFlows => {
           this.control.close('Flows Exported');
           return [

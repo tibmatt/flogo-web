@@ -19,7 +19,19 @@ export interface OperationalError extends Error {
 @Injectable()
 export class ErrorService {
   public transformRestErrors(
-    errors: { code: string; status: number | string }[]
+    errors: {
+      code: string;
+      status: number | string;
+      meta?: {
+        details: {
+          detail: string;
+          property: string;
+          title: string;
+          type: string;
+          value: string;
+        }[];
+      };
+    }[]
   ): { [key: string]: boolean } {
     const firstError = errors[0];
     if (firstError && (firstError.status === 500 || firstError.status === '500')) {
@@ -27,9 +39,10 @@ export class ErrorService {
       return { unknown: true };
     }
 
+    const errorDetails = firstError.meta && firstError.meta.details;
     const transformed = {};
-    errors.forEach(error => {
-      const constraint = ERROR_MAP[error.code];
+    errorDetails.forEach(error => {
+      const constraint = ERROR_MAP[error.type];
       if (constraint) {
         transformed[constraint] = true;
       }
