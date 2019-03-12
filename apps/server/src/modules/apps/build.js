@@ -2,7 +2,7 @@ import { readFile } from 'fs-extra';
 
 import { logger } from '../../common/logging';
 import { config } from './../../config/app-config';
-import { getInitializedEngine } from './../../modules/engine';
+import { getInitializedEngine } from '../engine';
 
 import { writeJSONFile } from '../../common/utils';
 

@@ -4,9 +4,15 @@ import { Engine } from './engine';
 import { logger, engineLogger } from '../../common/logging';
 import { config } from '../../config/app-config';
 import { ContribInstallController } from '../contrib-install-controller';
+import { installResourceTypes } from './install-resource-types';
 
 const CONTRIB_INSTALLER = 'contribInstaller';
-let engineRegistry = {};
+const engineRegistry: { [key: string]: any } = {};
+let defaultResourceTypes: string[] = [];
+
+export function setDefaultResourceTypes(resourceTypes: string[]) {
+  defaultResourceTypes = [...resourceTypes];
+}
 
 /**
  * Gets initialized engine
@@ -15,7 +21,10 @@ let engineRegistry = {};
  * @param opts.forceCreate {boolean} default false
  * @returns {*}
  */
-export function getInitializedEngine(enginePath, opts = {}) {
+export function getInitializedEngine(
+  enginePath,
+  opts: { forceCreate?: boolean; noLib?: boolean; libVersion?: string } = {}
+) {
   if (engineRegistry[enginePath] && !opts.forceCreate) {
     return Promise.resolve(engineRegistry[enginePath]);
   }
@@ -53,34 +62,27 @@ export function getContribInstallationController(enginePath, installContribution
   });
 }
 
-function createEngine(engine, defaultFlogoDescriptorPath, skipBundleInstall) {
+async function createEngine(engine, defaultFlogoDescriptorPath, skipBundleInstall) {
   logger.warn('Engine does not exist. Creating...');
-  return engine
-    .create(defaultFlogoDescriptorPath)
-    .then(() => {
-      logger.info('New engine created');
-      // when vendor provided it's not needed to install a contribution bundle
-      if (skipBundleInstall) {
-        return Promise.resolve(true);
-      }
-      const contribBundlePath = path.resolve(
-        'src',
-        'config',
-        config.defaultEngine.defaultContribBundle
-      );
-      logger.info(`Will install contrib bundle at ${contribBundlePath}`);
-      return engine.installContribBundle(contribBundlePath);
-    })
-    .catch(error => {
-      logger.error('Found error while initializing engine:');
-      logger.error(error);
-      throw error;
-      // logger.error('Error initializing engine. Will try to clean up');
-      // return engine.remove().then(() => {
-      //   logger.info('Successful clean');
-      //   throw new Error(error);
-      // });
-    });
+  try {
+    await engine.create(defaultFlogoDescriptorPath);
+    if (skipBundleInstall) {
+      return true;
+    }
+    const contribBundlePath = path.resolve(
+      'src',
+      'config',
+      config.defaultEngine.defaultContribBundle
+    );
+    logger.info(`Will install contrib bundle at ${contribBundlePath}`);
+    await installResourceTypes(engine, defaultResourceTypes);
+    await engine.installContribBundle(contribBundlePath);
+  } catch (e) {
+    logger.error('Found error while initializing engine:');
+    logger.error(e);
+    throw e;
+  }
+  return true;
 }
 
 /**

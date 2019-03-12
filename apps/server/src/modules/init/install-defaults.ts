@@ -1,6 +1,6 @@
 import { AppsService } from '../apps';
 import { config } from '../../config/app-config';
-import { readJSONFile } from '../../common/utils/file';
+import { readJSONFile } from '../../common/utils/file/file';
 
 export function installDefaults(appService: AppsService) {
   return readJSONFile(config.defaultAppJsonPath)

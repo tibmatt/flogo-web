@@ -1,7 +1,7 @@
 import fs from 'fs';
 import fse from 'fs-extra';
 
-import { isJSON } from './json';
+import { isJSON } from '../json';
 
 export function asyncIsDirectory(file) {
   return new Promise((resolve, reject) => {
