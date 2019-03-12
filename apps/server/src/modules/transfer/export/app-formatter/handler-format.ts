@@ -1,8 +1,14 @@
 import { isEmpty } from 'lodash';
-import { FlogoAppModel, Trigger, Handler, ContributionSchema } from '@flogo-web/core';
+import {
+  FlogoAppModel,
+  Trigger,
+  Handler,
+  ContributionSchema,
+  MapperUtils,
+} from '@flogo-web/core';
 import { HandlerExporterFn } from '../resource-exporter-fn';
 import { ExportedResourceInfo } from './exported-resource-info';
-import { AppImportsAgent, allFunctionsUsedIn } from '@flogo-web/server/core';
+import { AppImportsAgent } from '@flogo-web/server/core';
 
 function preFormatHandler(
   handler: Handler,
@@ -10,12 +16,13 @@ function preFormatHandler(
   refAgent: AppImportsAgent
 ): FlogoAppModel.NewHandler {
   const { settings, actionMappings } = handler;
-  allFunctionsUsedIn(actionMappings.input).forEach(fn =>
-    refAgent.registerFunctionName(fn)
-  );
-  allFunctionsUsedIn(actionMappings.output).forEach(fn =>
-    refAgent.registerFunctionName(fn)
-  );
+  const registerFunctions = (fn: string) => refAgent.registerFunctionName(fn);
+  MapperUtils.functions
+    .parseAndExtractReferencesInMappings(actionMappings.input)
+    .forEach(registerFunctions);
+  MapperUtils.functions
+    .parseAndExtractReferencesInMappings(actionMappings.output)
+    .forEach(registerFunctions);
   return {
     settings: !isEmpty(settings) ? { ...settings } : undefined,
     action: {

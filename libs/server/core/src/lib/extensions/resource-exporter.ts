@@ -1,19 +1,17 @@
 import { Resource, FlogoAppModel, Handler, ContributionSchema } from '@flogo-web/core';
 import { AppImportsAgent } from './app-imports-agent';
 
-export interface BaseExportContext {
+export interface ResourceExportContext {
+  contributions: Map<string, ContributionSchema>;
+  resourceIdReconciler: Map<string, Resource>;
   importsAgent: AppImportsAgent;
 }
 
-export interface ResourceExportContext extends BaseExportContext {
-  contributions: Map<string, ContributionSchema>;
-  resourceIdReconciler: Map<string, Resource>;
-}
-
-export interface HandlerExportContext extends BaseExportContext {
+export interface HandlerExportContext {
   triggerSchema: ContributionSchema;
   resource: FlogoAppModel.Resource;
   internalHandler: Handler;
+  importsAgent: AppImportsAgent;
 }
 
 export interface ResourceExporter<TResourceData = unknown> {

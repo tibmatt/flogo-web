@@ -1,12 +1,7 @@
 import { isEmpty } from 'lodash';
 
-import { Task, createResourceUri, Resource } from '@flogo-web/core';
-import {
-  isSubflowTask,
-  TASK_TYPE,
-  AppImportsAgent,
-  allFunctionsUsedIn,
-} from '@flogo-web/server/core';
+import { Task, createResourceUri, Resource, MapperUtils } from '@flogo-web/core';
+import { isSubflowTask, TASK_TYPE, AppImportsAgent } from '@flogo-web/server/core';
 import { isIterableTask } from '@flogo-web/plugins/flow-core';
 
 interface Mappings {
@@ -15,7 +10,9 @@ interface Mappings {
 
 const createFnAccumulator = (registerFunction: (string) => void) => {
   return (mappings: Mappings) => {
-    allFunctionsUsedIn(mappings || {}).forEach(fn => registerFunction(fn));
+    MapperUtils.functions
+      .parseAndExtractReferencesInMappings(mappings || {})
+      .forEach(fn => registerFunction(fn));
   };
 };
 
