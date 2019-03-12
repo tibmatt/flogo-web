@@ -12,19 +12,19 @@ const createFnAccumulator = (registerFunction: (string) => void) => {
   return (mappings: Mappings) => {
     MapperUtils.functions
       .parseAndExtractReferencesInMappings(mappings || {})
-      .forEach(fn => registerFunction(fn));
+      .forEach(registerFunction);
   };
 };
 
 export class TaskFormatter {
   private sourceTask: Task;
-  readonly functionAccumulator: (mappings: Mappings) => void;
+  readonly accumulateFunctions: (mappings: Mappings) => void;
 
   constructor(
     private resourceIdReconciler: Map<string, Resource>,
     private importsAgent: AppImportsAgent
   ) {
-    this.functionAccumulator = createFnAccumulator(
+    this.accumulateFunctions = createFnAccumulator(
       importsAgent.registerFunctionName.bind(importsAgent)
     );
   }
@@ -82,9 +82,9 @@ export class TaskFormatter {
       type = TASK_TYPE.ITERATOR;
       taskSettings.iterate = this.sourceTask.settings.iterate;
     }
-    this.functionAccumulator(taskSettings);
-    this.functionAccumulator(this.sourceTask.inputMappings);
-    this.functionAccumulator(this.sourceTask.activitySettings);
+    this.accumulateFunctions(taskSettings);
+    this.accumulateFunctions(this.sourceTask.inputMappings);
+    this.accumulateFunctions(this.sourceTask.activitySettings);
     return { type, taskSettings, activitySettings, input };
   }
 
