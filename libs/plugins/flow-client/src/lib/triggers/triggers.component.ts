@@ -1,8 +1,7 @@
 import { pick, uniq, fromPairs, isArray } from 'lodash';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { from } from 'rxjs';
-import { takeUntil, mergeMap, reduce } from 'rxjs/operators';
+import { filter, takeUntil, mergeMap, reduce, switchMap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
 import {
@@ -12,6 +11,8 @@ import {
   Dictionary,
   SingleEmissionSubject,
   TRIGGER_MENU_OPERATION,
+  ConfirmationResult,
+  ConfirmationModalService,
 } from '@flogo-web/client-core';
 import {
   TriggersApiService,
@@ -56,9 +57,9 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
     private restAPITriggersService: TriggersApiService,
     private _restAPIHandlerService: RESTAPIHandlersService,
     private converterService: MicroServiceModelConverter,
-    private _router: Router,
-    private _translate: LanguageService,
-    private store: Store<AppState>
+    private translate: LanguageService,
+    private store: Store<AppState>,
+    private confirmationService: ConfirmationModalService
   ) {}
 
   ngOnInit() {
@@ -155,10 +156,23 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   }
 
   private deleteHandlerForTrigger(triggerId) {
-    this._restAPIHandlerService
-      .deleteHandler(this.actionId, triggerId)
-      .then(() => this._router.navigate(['/flows', this.actionId]))
-      .then(() => this.store.dispatch(new TriggerActions.RemoveHandler(triggerId)));
+    const titleKey = 'PLUGIN-FLOW:TRIGGERS:DELETE-CONFIRMATION-TITLE';
+    const messageKey = 'PLUGIN-FLOW:TRIGGERS:DELETE-CONFIRMATION-MESSAGE';
+    this.translate
+      .get([titleKey, messageKey])
+      .pipe(
+        switchMap(translation => {
+          return this.confirmationService.openModal({
+            title: translation[titleKey],
+            textMessage: translation[messageKey],
+          }).result;
+        }),
+        filter(result => result === ConfirmationResult.Confirm),
+        switchMap(() =>
+          this._restAPIHandlerService.deleteHandler(this.actionId, triggerId)
+        )
+      )
+      .subscribe(() => this.store.dispatch(new TriggerActions.RemoveHandler(triggerId)));
   }
 
   handleMenuSelection(event: TriggerMenuSelectionEvent) {
