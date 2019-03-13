@@ -259,6 +259,7 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
     }
     editableName = this.sanitizer.sanitizeHTMLInput(editableName);
     this.nameUiState.inEditMode = false;
+    this.nameUiState.errors = null;
     this.appDetailService.updateProperty('name', editableName).subscribe(null, errors => {
       this.nameUiState = {
         inEditMode: true,
