@@ -30,8 +30,8 @@ const defaultEngineName = 'flogo-web';
 const defaultEngine = path.join(enginesRoot, defaultEngineName);
 
 let libVersion = process.env.FLOGO_LIB_VERSION || process.env.FLOGO_WEB_LIB_VERSION;
-if (!libVersion || libVersion === 'latest') {
-  libVersion = 'master';
+if (!libVersion) {
+  libVersion = 'latest';
 }
 
 const config = {
