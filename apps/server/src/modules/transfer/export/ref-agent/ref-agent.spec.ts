@@ -59,11 +59,11 @@ describe('ref agent', () => {
     refAgent.registerRef('github.com/project-flogo/contrib/function/string', true);
     refAgent.registerFunctionName('used.function');
     expect(refAgent.formatImports()).toEqual([
-      'github.com/project-flogo/flow',
-      'github.com/project-flogo/contrib/activity/rest',
-      'rest_1 github.com/project-flogo/contrib/trigger/rest',
       'github.com/project-flogo/contrib/activity/log',
+      'github.com/project-flogo/contrib/activity/rest',
       'github.com/project-flogo/contrib/function/string',
+      'rest_1 github.com/project-flogo/contrib/trigger/rest',
+      'github.com/project-flogo/flow',
       'github.com/some-package-with-functions/ref',
     ]);
   });
@@ -104,9 +104,9 @@ describe('ref agent', () => {
       refAgent.registerRef('github.com/project-flogo/contrib/activity/rest');
       refAgent.registerRef('github.com/external/repo/with-yet-another/rest');
       expect(refAgent.formatImports()).toEqual([
-        'github.com/project-flogo/contrib/trigger/rest',
-        'myCoolRestAlias github.com/project-flogo/contrib/activity/rest',
         'rest_1 github.com/external/repo/with-yet-another/rest',
+        'myCoolRestAlias github.com/project-flogo/contrib/activity/rest',
+        'github.com/project-flogo/contrib/trigger/rest',
       ]);
     });
   });

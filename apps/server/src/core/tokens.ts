@@ -5,5 +5,6 @@ export const TOKENS = {
   AppsDb: Symbol('AppsDb'),
   ResourceIndexerDb: Symbol('ResourceIndexerDb'),
   ContribActivitiesManager: Symbol('ContribActivitiesManager'),
-  ContribTriggersManager: Symbol('ContribActivitiesManager'),
+  ContribFunctionsManager: Symbol('ContribFunctionsManager'),
+  ContribTriggersManager: Symbol('ContribTriggersManager'),
 };

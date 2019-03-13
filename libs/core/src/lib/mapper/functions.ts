@@ -6,6 +6,7 @@ import {
   ExprNodes,
   AstNodeType,
 } from '@flogo-web/parser';
+import { EXPR_PREFIX } from '../constants';
 
 export function parseAndExtractReferences(expression: string): string[] {
   const parseResult = parse(expression);
@@ -48,4 +49,18 @@ export function extractReferences(parseResult: ParseResult): string[] {
     },
   });
   return Array.from(functionNames.values());
+}
+
+export function parseAndExtractReferencesInMappings(mappings: {
+  [propertyName: string]: any;
+}) {
+  const functions = new Set<string>();
+  const addToFunctions: (string) => void = (fn: string) => functions.add(fn);
+  Object.values(mappings).forEach(mapping => {
+    if (typeof mapping === 'string' && mapping.startsWith(EXPR_PREFIX)) {
+      parseAndExtractReferences(mapping.substr(1)).forEach(addToFunctions);
+    }
+  });
+
+  return Array.from(functions.values());
 }

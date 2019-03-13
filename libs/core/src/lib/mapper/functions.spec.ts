@@ -1,4 +1,7 @@
-import { parseAndExtractReferences } from './functions';
+import {
+  parseAndExtractReferences,
+  parseAndExtractReferencesInMappings,
+} from './functions';
 
 describe('functions:extract-references', () => {
   describe('extracts functions in expressions', () => {
@@ -44,5 +47,45 @@ describe('functions:extract-references', () => {
        }
       }`)
     ).toEqual(['string.concat', 'template.usage', 'number.random']);
+  });
+});
+
+describe('functions:extract-references-in-mappings', () => {
+  it('Should return empty array when no expression is used', () => {
+    expect(
+      parseAndExtractReferencesInMappings({
+        test: 'testing',
+      })
+    ).toEqual([]);
+  });
+
+  it('Should not break the logic', () => {
+    expect(
+      parseAndExtractReferencesInMappings({
+        test: false,
+        test1: 'testing',
+        test2: 232143,
+        test3: '=sdafasdf',
+      })
+    ).toEqual([]);
+  });
+
+  it('Should give the proper list of functions used in the mappings', () => {
+    expect(
+      parseAndExtractReferencesInMappings({
+        test: '=string.concat("dummy", "value")',
+        test1:
+          '={"testKey": "{{ string.equal() }}", "testKey2": "{{ string.concat() }}" }',
+      })
+    ).toEqual(['string.concat', 'string.equal']);
+  });
+
+  it('Should return unique set of functions', () => {
+    expect(
+      parseAndExtractReferencesInMappings({
+        test: '=string.concat("dummy", "value")',
+        test1: '=string.concat("hello", "world")',
+      })
+    ).toEqual(['string.concat']);
   });
 });

@@ -6,6 +6,7 @@ import { TOKENS } from '../../core';
 import { ResourcePluginRegistry, ResourceTypes } from '../../extension';
 import { exportApp, ExportAppOptions } from '../transfer';
 import { ContributionsService } from '../contribs';
+import { contribsToPairs } from './contribs-to-pairs';
 
 export { ExportAppOptions };
 
@@ -22,14 +23,13 @@ export class AppExporter {
   constructor(
     private pluginRegistry: ResourcePluginRegistry,
     @inject(TOKENS.ContribActivitiesManager)
-    private contribActivitiesService: ContributionsService
+    private contribActivitiesService: ContributionsService,
+    @inject(TOKENS.ContribFunctionsManager)
+    private contribFunctionsService: ContributionsService
   ) {}
 
   async export(app, options?: ExportAppOptions) {
-    const contributions = await this.contribActivitiesService.find();
-    const contributionMap = new Map<string, ContributionSchema>(
-      contributions.map(c => [c.ref, c] as [string, ContributionSchema])
-    );
+    const contributions = await this.loadContribs();
     const resourceTypes = this.pluginRegistry.resourceTypes;
     const resourceRefs = new Map<string, string>(
       resourceTypes.allTypes().map(t => [t.type, t.ref] as [string, string])
@@ -37,9 +37,17 @@ export class AppExporter {
     return exportApp(
       app,
       resourceExportResolver(resourceTypes),
-      contributionMap,
+      contributions,
       resourceRefs,
       options
     );
+  }
+
+  private async loadContribs(): Promise<Map<string, ContributionSchema>> {
+    const [activities, functions] = await Promise.all([
+      contribsToPairs(this.contribActivitiesService.find()),
+      contribsToPairs(this.contribFunctionsService.find()),
+    ]);
+    return new Map<string, ContributionSchema>([...activities, ...functions]);
   }
 }

@@ -25,15 +25,20 @@ export function formatTaskLinkGroups(
 }
 
 function formatGroup(
-  { contributions, resourceIdReconciler }: ResourceExportContext,
+  { contributions, resourceIdReconciler, importsAgent }: ResourceExportContext,
   { tasks, links }: { tasks?; links? }
 ) {
   const group: { tasks?: any[]; links?: any[] } = {};
-  const formattedTasks = formatTasks(tasks, contributions, resourceIdReconciler);
+  const formattedTasks = formatTasks(
+    tasks,
+    contributions,
+    resourceIdReconciler,
+    importsAgent
+  );
   if (!isEmpty(formattedTasks)) {
     group.tasks = formattedTasks;
   }
-  const formattedLinks = formatLinks(links);
+  const formattedLinks = formatLinks(links, importsAgent);
   if (!isEmpty(formattedLinks)) {
     group.links = formattedLinks;
   }

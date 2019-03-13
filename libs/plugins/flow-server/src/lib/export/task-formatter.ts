@@ -1,13 +1,33 @@
 import { isEmpty } from 'lodash';
 
-import { Task, createResourceUri, Resource } from '@flogo-web/core';
-import { isSubflowTask, TASK_TYPE } from '@flogo-web/server/core';
+import { Task, createResourceUri, Resource, MapperUtils } from '@flogo-web/core';
+import { isSubflowTask, TASK_TYPE, AppImportsAgent } from '@flogo-web/server/core';
 import { isIterableTask } from '@flogo-web/plugins/flow-core';
+
+interface Mappings {
+  [propertyName: string]: string;
+}
+
+const createFnAccumulator = (registerFunction: (string) => void) => {
+  return (mappings: Mappings) => {
+    MapperUtils.functions
+      .parseAndExtractReferencesInMappings(mappings || {})
+      .forEach(registerFunction);
+  };
+};
 
 export class TaskFormatter {
   private sourceTask: Task;
+  readonly accumulateFunctions: (mappings: Mappings) => void;
 
-  constructor(private resourceIdReconciler: Map<string, Resource>) {}
+  constructor(
+    private resourceIdReconciler: Map<string, Resource>,
+    private importsAgent: AppImportsAgent
+  ) {
+    this.accumulateFunctions = createFnAccumulator(
+      importsAgent.registerFunctionName.bind(importsAgent)
+    );
+  }
 
   setSourceTask(sourceTask) {
     this.sourceTask = sourceTask;
@@ -29,7 +49,7 @@ export class TaskFormatter {
       description: !isEmpty(description) ? description : undefined,
       settings: !isEmpty(taskSettings) ? taskSettings : undefined,
       activity: {
-        ref: activityRef,
+        type: this.importsAgent.registerRef(activityRef),
         input: !isEmpty(input) ? input : undefined,
         settings: !isEmpty(activitySettings) ? activitySettings : undefined,
       },
@@ -40,7 +60,7 @@ export class TaskFormatter {
     const taskSettings: {
       iterate?: string;
     } = {};
-    const activitySettings: {
+    let activitySettings: {
       flowURI?: string;
       mappings?: { [flowOutput: string]: any };
     } = {};
@@ -50,7 +70,10 @@ export class TaskFormatter {
       activitySettings.flowURI = this.convertSubflowPath();
     } else if (isMapperType) {
       activitySettings.mappings = this.sourceTask.inputMappings;
+    } else {
+      activitySettings = this.sourceTask.activitySettings;
     }
+
     let input = {};
     if (!isMapperType) {
       input = this.sourceTask.inputMappings;
@@ -59,6 +82,9 @@ export class TaskFormatter {
       type = TASK_TYPE.ITERATOR;
       taskSettings.iterate = this.sourceTask.settings.iterate;
     }
+    this.accumulateFunctions(taskSettings);
+    this.accumulateFunctions(this.sourceTask.inputMappings);
+    this.accumulateFunctions(this.sourceTask.activitySettings);
     return { type, taskSettings, activitySettings, input };
   }
 
