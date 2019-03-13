@@ -3,7 +3,7 @@ import { inspect } from 'util';
 import { DEFAULT_APP_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../constants';
 import { runShellCMD } from './process';
 
-export * from './file/file';
+export * from './file';
 export * from './json';
 export * from './common';
 

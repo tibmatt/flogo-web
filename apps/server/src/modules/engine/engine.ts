@@ -1,7 +1,7 @@
 import * as path from 'path';
 
 import { config } from '../../config/app-config';
-import { createFolder as ensureDir } from '../../common/utils/file/file';
+import { createFolder as ensureDir } from '../../common/utils/file';
 
 import { copyBinaryToDestination, removeDir } from './file-utils';
 import { processHost } from '../../common/utils/process';

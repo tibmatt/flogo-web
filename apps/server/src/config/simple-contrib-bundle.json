@@ -5,7 +5,6 @@
     "github.com/project-flogo/contrib/trigger/rest",
     "github.com/project-flogo/contrib/activity/log",
     "github.com/project-flogo/contrib/activity/rest",
-    "github.com/project-flogo/flow",
     "github.com/project-flogo/flow/activity/subflow",
     "github.com/project-flogo/contrib/function/string"
   ]
