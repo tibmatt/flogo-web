@@ -1,9 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NavigationEnd, Router } from '@angular/router';
 import { Store, StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { BsModalModule } from 'ng2-bs3-modal';
 
 import { App } from '@flogo-web/core';
@@ -24,6 +22,7 @@ import { FlogoFlowTriggersPanelComponent } from './triggers.component';
 import { FlogoSelectTriggerComponent } from './select-trigger/select-trigger.component';
 import { TriggerBlockComponent } from './trigger-block';
 import { ConfiguratorModule as TriggersConfiguratorModule } from './configurator';
+import { ConfirmationModalService } from '@flogo-web/client-core';
 
 const TEST_STATE: FlowState = {
   ...INITIAL_STATE,
@@ -163,12 +162,7 @@ class MockHandlerService {}
 
 class MockUIConverterService {}
 
-class MockRouterService {
-  events = Observable.create(observer => {
-    observer.next(new NavigationEnd(123, '', ''));
-    observer.complete();
-  });
-}
+class MockConfirmationModal {}
 
 describe('Component: FlogoFlowTriggersPanelComponent', () => {
   let fixture: ComponentFixture<FlogoFlowTriggersPanelComponent>;
@@ -191,7 +185,6 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
         FlogoSelectTriggerComponent,
       ],
       providers: [
-        { provide: Router, useClass: MockRouterService },
         { provide: FlogoProfileService, useClass: FlogoProfileServiceMock },
         {
           provide: RESTAPIContributionsService,
@@ -200,6 +193,7 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
         { provide: TriggersApiService, useClass: MockTriggerServiceV2 },
         { provide: RESTAPIHandlersService, useClass: MockHandlerService },
         { provide: MicroServiceModelConverter, useClass: MockUIConverterService },
+        { provide: ConfirmationModalService, useClass: MockConfirmationModal },
         HttpUtilsService,
       ],
     }).compileComponents();
