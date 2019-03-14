@@ -35,6 +35,10 @@ export class ResourceTypes {
     return Array.from(this.types.values());
   }
 
+  allRefs(): string[] {
+    return this.allTypes().map(t => t.ref);
+  }
+
   private throwIfUnknown(type: string) {
     if (!this.isKnownType(type)) {
       throw new Error('Unknwon resource type' + type);
