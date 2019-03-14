@@ -48,14 +48,35 @@ function validatorRunner(validateFn: AjvNS.ValidateFunction) {
 
 export const ValidationRuleFactory = {
   contributionInstalled: contributionRuleFactory,
-  typeInstalled: contributionTypeRuleFactory
 };
 
-function contributionRuleFactory(keyword, type, refs): ValidateFn {
-  return function validator(schema, contribRef) {
+function contributionRuleFactory(keyword, type, refs, importsRefAgent): ValidateFn {
+  return function validator(schema, ref) {
+    let contribRef;
+    let isTypeInImports = false;
+    if (ref.startsWith('#')) {
+      ref = ref.substr(1);
+      contribRef = importsRefAgent.getRef(ref);
+      isTypeInImports = Array.from(importsRefAgent.imports.keys()).includes(ref);
+    } else {
+      isTypeInImports = true;
+      contribRef = ref;
+    }
     const isInstalled = refs.includes(contribRef);
+    (validator as any).errors = [];
+    if (!isTypeInImports) {
+      (validator as any).errors.push([
+        {
+          keyword,
+          message: `${type} "${contribRef}" is not installed among the imports`,
+          params: {
+            ref: contribRef,
+          },
+        },
+      ]);
+    }
     if (!isInstalled) {
-      (validator as any).errors = [
+      (validator as any).errors.push([
         {
           keyword,
           message: `${type} "${contribRef}" is not installed`,
@@ -63,52 +84,8 @@ function contributionRuleFactory(keyword, type, refs): ValidateFn {
             ref: contribRef,
           },
         },
-      ];
-    }
-    return isInstalled;
-  };
-}
-
-function contributionTypeRuleFactory(keyword, type, refs, agent): ValidateFn {
-  return function validator(schema, contribType) {
-    const contribRef = agent.getRef(contribType);
-    const isTypeInImports = Array.from(agent.imports.keys()).includes(contribType);
-    const isInstalled = refs.includes(contribRef);
-    const validationErrors = (validator as any).errors = [];
-    if (!isTypeInImports) {
-      validationErrors.push([
-        {
-          keyword,
-          message: `${type} "${contribType}" is not installed among the imports`,
-          params: {
-            ref: contribType,
-          },
-        },
       ]);
     }
-    if (!isInstalled) {
-      validationErrors.push([
-        {
-          keyword,
-          message: `${type} "${contribType}" mapped to "${contribRef}" is not installed`,
-          params: {
-            ref: contribRef,
-          },
-        },
-      ]);
-    }
-
-    /*if (!isTypeInImports || !isInstalled) {
-      (validator as any).errors = [
-        {
-          keyword,
-          message: `${type} "${contribType}" is not installed among the imports`,
-          params: {
-            ref: contribType,
-          },
-        },
-      ];
-    }*/
-    return !isInstalled || !isTypeInImports;
+    return isTypeInImports && isInstalled;
   };
 }

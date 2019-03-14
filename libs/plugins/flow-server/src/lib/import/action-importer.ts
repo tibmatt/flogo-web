@@ -24,13 +24,16 @@ export class ActionImporter {
   ) {}
 
   importAction(inResource: Resource, context: ResourceImportContext): Resource<FlowData> {
-    const validate = makeValidator(Array.from(context.contributions.keys()), context.importsTypeToRefAgent);
+    const validate = makeValidator(
+      Array.from(context.contributions.keys()),
+      context.importsRefAgent
+    );
     const errors = validate(inResource);
     if (errors) {
       throw new ValidationError('Flow data validation errors', errors);
     }
     this.activitySchemasByRef = context.contributions;
-    let resource = this.resourceToAction(inResource);
+    let resource = this.resourceToAction(inResource, context.importsRefAgent);
     if (actionHasSubflowTasks(resource.data)) {
       resource = this.reconcileSubflowTasksInAction(
         resource,
@@ -51,27 +54,27 @@ export class ActionImporter {
     return resource;
   }
 
-  resourceToAction(resource: Resource): Resource<FlowData> {
+  resourceToAction(resource: Resource, importsRefAgent): Resource<FlowData> {
     const resourceData: any = resource.data || {};
-    const errorHandler = this.getErrorHandler(resourceData);
+    const errorHandler = this.getErrorHandler(resourceData, importsRefAgent);
     return {
       ...resource,
       metadata: this.extractMetadata(resource),
       data: {
-        tasks: this.mapTasks(resourceData.tasks),
+        tasks: this.mapTasks(resourceData.tasks, importsRefAgent),
         links: this.mapLinks(resourceData.links),
         errorHandler,
       },
     };
   }
 
-  getErrorHandler(resourceData) {
+  getErrorHandler(resourceData, importsRefAgent) {
     const { errorHandler } = resourceData;
     if (isEmpty(errorHandler) || isEmpty(errorHandler.tasks)) {
       return undefined;
     }
     return {
-      tasks: this.mapTasks(errorHandler.tasks),
+      tasks: this.mapTasks(errorHandler.tasks, importsRefAgent),
       links: this.mapLinks(errorHandler.links),
     };
   }
@@ -91,17 +94,22 @@ export class ActionImporter {
     return metadata;
   }
 
-  mapTasks(tasks = []): Task[] {
-    return tasks.map(task => this.convertTask(task) as Task);
+  mapTasks(tasks = [], importsRefAgent): Task[] {
+    return tasks.map(task => this.convertTask(task, importsRefAgent) as Task);
   }
 
-  convertTask(resourceTask) {
+  convertTask(resourceTask, importsRefAgent) {
+    if (resourceTask.activity.ref.startsWith('#')) {
+      resourceTask.activity.ref = importsRefAgent.getRef(
+        resourceTask.activity.ref.substr(1)
+      );
+    }
     const activitySchema = this.activitySchemasByRef.get(resourceTask.activity.ref);
     return this.taskConverterFactory(resourceTask, activitySchema).convert();
   }
 }
 
-function makeValidator(installedRefs: string[], importsTypeToRefAgent) {
+function makeValidator(installedRefs: string[], importsRefAgent) {
   return createValidator(
     {
       $schema: 'http://json-schema.org/draft-07/schema#',
@@ -124,16 +132,8 @@ function makeValidator(installedRefs: string[], importsTypeToRefAgent) {
         validate: ValidationRuleFactory.contributionInstalled(
           'activity-installed',
           'activity',
-          installedRefs || []
-        ),
-      },
-      {
-        keyword: 'type-installed',
-        validate: ValidationRuleFactory.typeInstalled(
-          'type-installed',
-          'activity',
           installedRefs || [],
-          importsTypeToRefAgent
+          importsRefAgent
         ),
       },
     ]

@@ -14,7 +14,7 @@ export class TypeToRefAgent {
   }
 }
 
-export function createFromImports(imports: string[]) {
+export function createFromImports(imports: string[]): TypeToRefAgent {
   const parsedImports = parseImports(imports || []);
   return new TypeToRefAgent(parsedImports);
 }

@@ -3,10 +3,7 @@
   "$id": "http://github.com/project-flogo/webui/schemas/1.0.0/trigger.json",
   "type": "object",
   "additionalProperties": false,
-  "anyOf": [
-    { "required": ["id", "ref"] },
-    { "required": ["id", "type"] }
-  ],
+  "required": ["id", "ref"],
   "properties": {
     "id": {
       "type": "string",
@@ -15,11 +12,6 @@
     "ref": {
       "type": "string",
       "trigger-installed": true,
-      "minLength": 1
-    },
-    "type": {
-      "type": "string",
-      "type-installed": true,
       "minLength": 1
     },
     "name": {

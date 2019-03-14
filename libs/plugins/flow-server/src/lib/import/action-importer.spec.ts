@@ -1,16 +1,16 @@
 import { Resource, CONTRIB_REFS } from '@flogo-web/core';
 import { createActionImporter } from './create-action-importer';
-import { createFromImports } from "../../../../../../apps/server/src/modules/transfer/import/imports";
+import { createFromImports } from '../../../../../../apps/server/src/modules/transfer/import/imports';
 
 test('It imports an action', () => {
   const actionImporter = createActionImporter();
   const flowResource = getSampleFlowResource();
-  const importsTypeToRefAgent = createFromImports(["some_path_to_repo/activity/log"]);
+  const importsRefAgent = createFromImports(['some_path_to_repo/activity/log']);
   const importedFlow = actionImporter.importAction(flowResource, {
     contributions: getContributions(),
     normalizedTriggerIds: new Map(),
     normalizedResourceIds: new Map([['flow:somesubflow', 'updatedSubflowId']]),
-    importsTypeToRefAgent
+    importsRefAgent,
   });
   expect(importedFlow).toEqual(expect.objectContaining(getExpectedImport()));
 });
@@ -18,14 +18,14 @@ test('It imports an action', () => {
 test('It errors if an activity is not installed', () => {
   const actionImporter = createActionImporter();
   const flowResource = getSampleFlowResource();
-  const importsTypeToRefAgent = createFromImports([]);
+  const importsRefAgent = createFromImports(['some_path_to_repo/activity/log']);
   expect.assertions(1);
   try {
     actionImporter.importAction(flowResource, {
       contributions: new Map<string, any>([[CONTRIB_REFS.SUBFLOW, {}]]),
       normalizedTriggerIds: new Map(),
       normalizedResourceIds: new Map(),
-      importsTypeToRefAgent
+      importsRefAgent,
     });
   } catch (e) {
     expect(e).toMatchObject({
@@ -100,25 +100,6 @@ function getSampleFlowResource(): Resource {
           description: 'Simple Log Activity 2',
           activity: {
             ref: 'some_path_to_repo/activity/log',
-            input: {},
-            settings: {},
-            mappings: {
-              input: [
-                {
-                  type: 'literal',
-                  value: 12345,
-                  mapTo: 'message',
-                },
-              ],
-            },
-          },
-        },
-        {
-          id: 'log_3',
-          name: 'Log Message 3',
-          description: 'Simple Log Activity 3',
-          activity: {
-            type: 'log',
             input: {},
             settings: {},
             mappings: {
@@ -212,25 +193,6 @@ function getExpectedImport() {
           activitySettings: {},
           inputMappings: {
             message: 12345,
-          },
-        },
-        {
-          id: 'log_3',
-          name: 'Log Message 3',
-          description: 'Simple Log Activity 3',
-          activity: {
-            ref: 'some_path_to_repo/activity/log',
-            input: {},
-            settings: {},
-            mappings: {
-              input: [
-                {
-                  type: 'literal',
-                  value: 12345,
-                  mapTo: 'message',
-                },
-              ],
-            },
           },
         },
         {

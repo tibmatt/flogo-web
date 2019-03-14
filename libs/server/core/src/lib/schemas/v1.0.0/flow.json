@@ -123,19 +123,12 @@
     },
     "activity": {
       "type": "object",
-      "anyOf": [
-        { "required": ["ref"] },
-        { "required": ["type"] }
-      ],
+      "required": ["ref"],
       "additionalProperties": false,
       "properties": {
         "ref": {
           "type": "string",
           "activity-installed": true
-        },
-        "type": {
-          "type": "string",
-          "type-installed": true
         },
         "settings": {
           "type": "object",

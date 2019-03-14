@@ -4,6 +4,7 @@ import { ValidationErrorDetail } from '@flogo-web/server/core';
 import { normalizeHandlerMappings } from '../common/normalize-handler-mappings';
 import { tryAndAccumulateValidationErrors } from '../common/try-validation-errors';
 import { normalizeSettingsWithPrefix } from './normalize-settings-with-prefix';
+import { TypeToRefAgent } from './imports';
 
 type ImportHandlerFn = (
   triggerRef: string,
@@ -17,7 +18,7 @@ export function importTriggers(
   importHandler: ImportHandlerFn,
   generateId: () => string,
   createdAt: string = null,
-  importsTypeToRef: any
+  importsRefAgent: TypeToRefAgent
 ): {
   // todo: triggers interface
   triggers: Trigger[];
@@ -41,9 +42,8 @@ export function importTriggers(
       updatedAt: null,
       settings: normalizeSettingsWithPrefix(rawTrigger.settings),
     };
-    if(newTrigger.type) {
-      newTrigger.ref = importsTypeToRef.getRef(newTrigger.type);
-      delete newTrigger['type'];
+    if (newTrigger.ref.startsWith('#')) {
+      newTrigger.ref = importsRefAgent.getRef(newTrigger.ref.substr(1));
     }
     const { errors: handlerErrors, handlers } = importAllHandlers(
       rawTrigger.id,
