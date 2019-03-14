@@ -20,9 +20,7 @@ export namespace FlogoAppModel {
 
   export interface Trigger {
     id: string;
-    ref?: string;
-    // only >= v0.9.0
-    type?: string;
+    ref: string;
     // todo: confirm required
     name?: string;
     description?: string;
@@ -53,8 +51,7 @@ export namespace FlogoAppModel {
   export interface NewHandler {
     settings: Settings;
     action: {
-      ref?: string;
-      type?: string;
+      ref: string;
       settings: Settings;
       input: {
         [inputName: string]: any;
@@ -119,8 +116,7 @@ export namespace ResourceActionModel {
    * from >= v0.9.0
    * */
   export interface NewActivity {
-    ref?: string;
-    type?: string;
+    ref: string;
     settings?: {
       [settingName: string]: any;
     };

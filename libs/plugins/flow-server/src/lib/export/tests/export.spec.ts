@@ -39,7 +39,7 @@ function getExpectedFlow(): FlogoAppModel.Resource<ResourceActionModel.FlowResou
           name: 'Log',
           description: 'Logs a message',
           activity: {
-            type: 'some_path_to_repo/activity/log',
+            ref: 'some_path_to_repo/activity/log',
             input: {
               message: 'hello world',
               addDetails: false,
@@ -51,7 +51,7 @@ function getExpectedFlow(): FlogoAppModel.Resource<ResourceActionModel.FlowResou
           name: 'Start a SubFlow',
           description: 'Activity to start a sub-flow in an existing flow',
           activity: {
-            type: CONTRIB_REFS.SUBFLOW,
+            ref: CONTRIB_REFS.SUBFLOW,
             settings: {
               flowURI: 'res://flow:humanized_subflow_ref',
             },
@@ -71,7 +71,7 @@ function getExpectedFlow(): FlogoAppModel.Resource<ResourceActionModel.FlowResou
             name: 'Log',
             description: 'Logs a message',
             activity: {
-              type: 'some_path_to_repo/activity/log',
+              ref: 'some_path_to_repo/activity/log',
               input: {
                 message: 'hello world from the error handler',
                 addDetails: true,

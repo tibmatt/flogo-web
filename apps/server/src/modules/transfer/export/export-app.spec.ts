@@ -94,7 +94,7 @@ function getExpectedApp(): FlogoAppModel.App {
     triggers: [
       {
         id: 'receive_http_message',
-        type: 'rest',
+        ref: '#rest',
         name: 'Receive HTTP Message',
         description: 'Simple REST Trigger',
         settings: {
@@ -107,7 +107,7 @@ function getExpectedApp(): FlogoAppModel.App {
               path: '/test',
             },
             action: {
-              type: 'flow',
+              ref: '#flow',
               settings: {
                 resourceId: 'exported=flow:some_flow',
               },
