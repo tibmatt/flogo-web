@@ -328,7 +328,6 @@ export const getInstalledFunctions = createSelector(
         functions: schema.functions,
         name: schema.name,
         type: schema.type,
-        namespace: schema.namespace,
         ref: schema.ref,
       }));
   }

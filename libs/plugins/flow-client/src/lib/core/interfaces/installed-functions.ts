@@ -3,5 +3,4 @@ export interface InstalledFunctionSchema {
   ref: string;
   functions: any[];
   type: string;
-  namespace: string;
 }

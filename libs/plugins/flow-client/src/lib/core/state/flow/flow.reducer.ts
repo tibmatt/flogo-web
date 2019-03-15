@@ -15,40 +15,6 @@ import { runnerReducer } from './runner.reducer';
 
 const ActionType = actions.ActionType;
 
-function normalizeFunctionSchema(functionSchema) {
-  return {
-    ...functionSchema,
-    namespace:
-      functionSchema.functions && functionSchema.functions.length
-        ? functionSchema.functions[0].name.split('.')[0]
-        : undefined,
-    functions:
-      functionSchema.functions &&
-      functionSchema.functions.map(eachFunction => {
-        return {
-          ...eachFunction,
-          name: eachFunction.name.split('.')[1],
-          //ToDo: Remove once the fix for below in contrib is released
-          args:
-            eachFunction.args &&
-            eachFunction.args.map(eachArg => {
-              return {
-                ...normalizeArgs(eachArg),
-              };
-            }),
-        };
-      }),
-  };
-
-  function normalizeArgs(args) {
-    const normalizedArgs = {};
-    Object.keys(args).forEach(arg => {
-      normalizedArgs[arg.trim()] = args[arg];
-    });
-    return normalizedArgs;
-  }
-}
-
 export function flowReducer(
   state: FlowState = INITIAL_STATE,
   action: actions.ActionsUnion
@@ -56,23 +22,9 @@ export function flowReducer(
   state = runnerReducer(state, action);
   switch (action.type) {
     case ActionType.Init: {
-      const allFunctionSchemas = {};
-      Object.keys(action.payload.schemas)
-        .filter(contribSchema => {
-          return action.payload.schemas[contribSchema].type === 'flogo:function';
-        })
-        .forEach(functionRef => {
-          allFunctionSchemas[functionRef] = normalizeFunctionSchema(
-            action.payload.schemas[functionRef]
-          );
-        });
       return {
         ...INITIAL_STATE,
         ...action.payload,
-        schemas: {
-          ...action.payload.schemas,
-          ...allFunctionSchemas,
-        },
       };
     }
     case ActionType.SelectItem: {
@@ -165,7 +117,7 @@ export function flowReducer(
         ...state,
         schemas: {
           ...state.schemas,
-          [action.payload.ref]: normalizeFunctionSchema(action.payload),
+          [action.payload.ref]: action.payload,
         },
       };
     }
