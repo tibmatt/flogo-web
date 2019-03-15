@@ -16,7 +16,7 @@ import { createRefAgent, RefAgent } from '../ref-agent';
 const APP_MODEL_VERSION = '1.0.0';
 const TRIGGER_KEYS: Array<keyof FlogoAppModel.Trigger> = [
   'id',
-  'type',
+  'ref',
   'name',
   'description',
   'settings',
@@ -96,7 +96,7 @@ export class AppFormatter {
           {
             ...trigger,
             handlers: trigger.handlers.map(handlerFormatter(trigger)),
-            type: importsAgent.registerRef(trigger.ref),
+            ref: importsAgent.registerRef(trigger.ref),
           },
           TRIGGER_KEYS
         ) as FlogoAppModel.Trigger;

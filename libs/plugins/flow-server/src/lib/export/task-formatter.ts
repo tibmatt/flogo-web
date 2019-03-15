@@ -49,7 +49,7 @@ export class TaskFormatter {
       description: !isEmpty(description) ? description : undefined,
       settings: !isEmpty(taskSettings) ? taskSettings : undefined,
       activity: {
-        type: this.importsAgent.registerRef(activityRef),
+        ref: this.importsAgent.registerRef(activityRef),
         input: !isEmpty(input) ? input : undefined,
         settings: !isEmpty(activitySettings) ? activitySettings : undefined,
       },

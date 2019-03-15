@@ -1,6 +1,6 @@
+import { AppImportsAgent } from '@flogo-web/server/core';
 import { ParsedImport } from '../../common/parsed-import';
 import { FunctionRefFinder } from './function-ref-finder';
-import { AppImportsAgent } from '@flogo-web/server/core';
 
 const formatImport = ([ref, { type, isAliased }]) => (isAliased ? `${type} ${ref}` : ref);
 
@@ -26,18 +26,15 @@ export class RefAgent implements AppImportsAgent {
     }
   }
 
-  registerRef(ref: string, skipTypeGen?: boolean): string {
-    if (this.imports.has(ref)) {
-      return !skipTypeGen ? this.imports.get(ref).type : undefined;
-    }
-
-    let importInfo: ImportInfo = { isAliased: false, type: undefined };
-    if (!skipTypeGen) {
+  registerRef(ref: string): string {
+    let importInfo: ImportInfo;
+    if (!this.imports.has(ref)) {
       importInfo = this.createImportInfo(ref);
+      this.imports.set(ref, importInfo);
+    } else {
+      importInfo = this.imports.get(ref);
     }
-
-    this.imports.set(ref, importInfo);
-    return importInfo.type;
+    return importInfo && importInfo.type ? `#${importInfo.type}` : undefined;
   }
 
   registerFunctionName(functionName: string) {

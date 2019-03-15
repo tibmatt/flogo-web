@@ -53,7 +53,7 @@ function preFormatHandler(
   return {
     settings: !isEmpty(settings) ? { ...settings } : undefined,
     action: {
-      type: refAgent.registerRef(ref),
+      ref: refAgent.registerRef(ref),
       settings: null,
       ...actionMappings,
     },

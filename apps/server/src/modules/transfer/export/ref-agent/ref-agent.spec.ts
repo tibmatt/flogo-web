@@ -18,13 +18,7 @@ describe('ref agent', () => {
   test('it returns the type from a ref', () => {
     expect(
       refAgent.registerRef('github.com/project-flogo/contrib/activity/rest')
-    ).toEqual('rest');
-  });
-
-  test('it allows to skip the type generation', () => {
-    expect(
-      refAgent.registerRef('github.com/project-flogo/contrib/function/string', true)
-    ).toBe(undefined);
+    ).toEqual('#rest');
   });
 
   test('it returns the same type for the same ref', () => {
@@ -34,21 +28,21 @@ describe('ref agent', () => {
 
   test('it ensures types are unique', () => {
     expect(refAgent.registerRef('github.com/project-flogo/ACTIVITY/rest')).toEqual(
-      'rest'
+      '#rest'
     );
     expect(refAgent.registerRef('github.com/project-flogo/TRIGGER/rest')).toEqual(
-      'rest_1'
+      '#rest_1'
     );
     // repeated on purpose
     expect(refAgent.registerRef('github.com/project-flogo/TRIGGER/rest')).toEqual(
-      'rest_1'
+      '#rest_1'
     );
     expect(refAgent.registerRef('github.com/project-flogo/SOMETHING_ELSE/rest')).toEqual(
-      'rest_2'
+      '#rest_2'
     );
     expect(
       refAgent.registerRef('github.com/project-flogo/SOMETHING_ELSE/rest_1')
-    ).toEqual('rest_1_1');
+    ).toEqual('#rest_1_1');
   });
 
   test('it formats into the flogo.json imports syntax', () => {
@@ -56,12 +50,10 @@ describe('ref agent', () => {
     refAgent.registerRef('github.com/project-flogo/contrib/activity/rest');
     refAgent.registerRef('github.com/project-flogo/contrib/trigger/rest');
     refAgent.registerRef('github.com/project-flogo/contrib/activity/log');
-    refAgent.registerRef('github.com/project-flogo/contrib/function/string', true);
     refAgent.registerFunctionName('used.function');
     expect(refAgent.formatImports()).toEqual([
       'github.com/project-flogo/contrib/activity/log',
       'github.com/project-flogo/contrib/activity/rest',
-      'github.com/project-flogo/contrib/function/string',
       'rest_1 github.com/project-flogo/contrib/trigger/rest',
       'github.com/project-flogo/flow',
       'github.com/some-package-with-functions/ref',
@@ -92,11 +84,11 @@ describe('ref agent', () => {
     test('it should return the corresponding predetermined type when registering a matching ref', () => {
       expect(
         refAgent.registerRef('github.com/project-flogo/contrib/activity/rest')
-      ).toEqual('myCoolRestAlias');
+      ).toEqual('#myCoolRestAlias');
     });
 
     test('it should consider the predetermined imports when ensuring type uniqueness', () => {
-      expect(refAgent.registerRef('github.com/other-repo/log')).toEqual('log_1');
+      expect(refAgent.registerRef('github.com/other-repo/log')).toEqual('#log_1');
     });
 
     test('it should format only the used the imports', () => {
