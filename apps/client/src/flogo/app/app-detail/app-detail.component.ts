@@ -315,11 +315,16 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
             title: translation['MODAL:CONFIRM-DELETION'],
             textMessage: translation['APP-DETAIL:CONFIRM_DELETE'],
           }).result;
+        }),
+        switchMap(result => {
+          return result === ConfirmationResult.Confirm
+            ? this.appDetailService.deleteApp()
+            : observableOf(false);
         })
       )
-      .subscribe(result => {
-        if (result === ConfirmationResult.Confirm) {
-          this.appDetailService.deleteApp();
+      .subscribe(isDeleted => {
+        if (isDeleted) {
+          this.appDeleted.emit();
         }
       });
   }

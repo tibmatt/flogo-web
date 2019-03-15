@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
-import { throwError, Observable } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
+import { throwError, Observable, of } from 'rxjs';
 
 import { App } from '@flogo-web/core';
 import { FileDownloaderService } from '../../file-downloader.service';
@@ -49,12 +49,11 @@ export class AppsApiService {
       .pipe(catchError(err => throwError(this.extractErrors(err))));
   }
 
-  deleteApp(appId: string) {
-    return this.restApi
-      .delete(`apps/${appId}`)
-      .toPromise()
-      .then(() => true)
-      .catch(error => Promise.reject(this.extractErrors(error)));
+  deleteApp(appId: string): Observable<boolean> {
+    return this.restApi.delete(`apps/${appId}`).pipe(
+      switchMap(() => of(true)),
+      catchError(err => throwError(this.extractErrors(err)))
+    );
   }
 
   // todo: combine with exportflows
