@@ -10,6 +10,7 @@ export interface App {
   description?: string;
   createdAt?: string;
   updatedAt?: string;
+  imports?: string[];
   // todo: rename to resources
   resources?: Resource[];
   triggers?: Trigger[];

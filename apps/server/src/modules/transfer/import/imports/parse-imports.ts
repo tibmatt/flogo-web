@@ -1,6 +1,6 @@
 import { ParsedImport } from '../../common/parsed-import';
 
-const IMPORT_SYNTAX = /^(?:([\w-\.]+)\s+)?((?:[\w-\.]+\/)+([\w-\.]+))$/;
+export const IMPORT_SYNTAX = /^(?:([\w-\.]+)\s+)?((?:[\w-\.]+\/)+([\w-\.]+))$/;
 
 /**
 Parse a flogo.json import and return its parts.
@@ -12,11 +12,7 @@ An import could has the following possibilities:
 @return {ParsedImport}
 */
 export function parseSingleImport(fromImport: string): ParsedImport {
-  const parsedElements = IMPORT_SYNTAX.exec(fromImport.trim());
-  if (!parsedElements) {
-    throw new Error(`Received string is not an import (${fromImport})`);
-  }
-  const [, alias, ref, type] = parsedElements;
+  const [, alias, ref, type] = IMPORT_SYNTAX.exec(fromImport.trim());
   return {
     ref,
     type: alias || type,

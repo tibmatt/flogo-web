@@ -3,3 +3,4 @@ export * from './resource-importer';
 export * from './plugin';
 export * from './resource-exporter';
 export * from './app-imports-agent';
+export * from './imports-ref-agent';

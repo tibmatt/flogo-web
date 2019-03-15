@@ -50,20 +50,51 @@ export const ValidationRuleFactory = {
   contributionInstalled: contributionRuleFactory,
 };
 
-function contributionRuleFactory(keyword, type, refs): ValidateFn {
-  return function validator(schema, contribRef) {
-    const isInstalled = refs.includes(contribRef);
-    if (!isInstalled) {
-      (validator as any).errors = [
-        {
-          keyword,
-          message: `${type} "${contribRef}" is not installed`,
-          params: {
-            ref: contribRef,
+function contributionRuleFactory(keyword, type, refs, importsRefAgent): ValidateFn {
+  return function validator(schema, ref) {
+    const contribInstallationError = validateContribInstallation(refs, keyword);
+    if (ref.startsWith('#')) {
+      const normalizedRef = ref.substr(1);
+      const fullPathRef = importsRefAgent.getRef(normalizedRef);
+      if (!importsRefAgent.imports.get(normalizedRef)) {
+        (validator as any).errors = [
+          {
+            keyword: `${keyword}-missing-import`,
+            message: `"${ref}" is not installed among the imports`,
+            params: {
+              ref: ref,
+            },
           },
-        },
-      ];
+        ];
+        return false;
+      } else {
+        (validator as any).errors = contribInstallationError(fullPathRef, ref);
+        if ((validator as any).errors.length) {
+          return false;
+        }
+      }
+    } else {
+      (validator as any).errors = contribInstallationError(ref, ref);
+      if ((validator as any).errors.length) {
+        return false;
+      }
     }
-    return isInstalled;
+    return true;
   };
 }
+
+const validateContribInstallation = (installedRefs, keyword) => (fullPathRef, ref) => {
+  let errors = [];
+  if (!installedRefs.includes(fullPathRef)) {
+    errors = [
+      {
+        keyword,
+        message: `"${ref}" is not installed in the engine`,
+        params: {
+          ref: ref,
+        },
+      },
+    ];
+  }
+  return errors;
+};

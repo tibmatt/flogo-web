@@ -10,5 +10,6 @@ export function constructApp(inputData, generateId?: () => string): App {
     updatedAt: null,
     triggers: [],
     resources: [],
+    imports: [],
   };
 }

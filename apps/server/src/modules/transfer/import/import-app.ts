@@ -6,6 +6,7 @@ import {
   ValidationError,
   ResourceImporter,
   ValidationErrorDetail,
+  ImportsRefAgent,
 } from '@flogo-web/server/core';
 
 import { constructApp } from '../../../core/models/app';
@@ -13,6 +14,7 @@ import { actionValueTypesNormalizer } from '../common/action-value-type-normaliz
 import { tryAndAccumulateValidationErrors } from '../common/try-validation-errors';
 import { validatorFactory } from './validator';
 import { importTriggers } from './import-triggers';
+import { createFromImports, IMPORT_SYNTAX } from './imports';
 
 interface DefaultAppModelResource extends FlogoAppModel.Resource {
   data: {
@@ -34,11 +36,27 @@ export function importApp(
   contributions: Map<string, ContributionSchema>
 ): App {
   const now = new Date().toISOString();
+  if (rawApp.imports) {
+    const improperImports = validateImports(rawApp.imports);
+    const importsErrors = improperImports.map(importsError => ({
+      keyword: 'improper-import',
+      dataPath: '.imports',
+      message: `${importsError} - Validation error in imports`,
+      params: {
+        ref: importsError,
+      },
+    }));
+    if (importsErrors.length) {
+      throw new ValidationError('Validation error in imports', importsErrors);
+    }
+  }
+  const importsRefAgent = createFromImports(rawApp.imports);
   const newApp = cleanAndValidateApp(
     rawApp as FlogoAppModel.App,
     Array.from(contributions.values()),
     generateId,
-    now
+    now,
+    importsRefAgent
   );
   const { resources, normalizedResourceIds } = normalizeResources(
     (rawApp.resources || []) as DefaultAppModelResource[],
@@ -48,9 +66,10 @@ export function importApp(
   const { triggers, normalizedTriggerIds, errors: handlerErrors } = importTriggers(
     rawApp.triggers || [],
     normalizedResourceIds,
-    createHandlerImportResolver(resolveImporter, contributions),
+    createHandlerImportResolver(resolveImporter, contributions, importsRefAgent),
     generateId,
-    now
+    now,
+    importsRefAgent
   );
   newApp.triggers = triggers;
 
@@ -58,6 +77,7 @@ export function importApp(
     contributions,
     normalizedResourceIds: normalizedResourceIds,
     normalizedTriggerIds: normalizedTriggerIds,
+    importsRefAgent,
   };
   const resolveImportHook = createResourceImportResolver(resolveImporter, context);
   const { resources: importedResources, errors: resourceErrors } = applyImportHooks(
@@ -75,8 +95,11 @@ export function importApp(
       allErrors
     );
   }
-
   return newApp;
+}
+
+function validateImports(imports) {
+  return imports.filter(eachImport => !IMPORT_SYNTAX.exec(eachImport.trim()));
 }
 
 function applyImportHooks(
@@ -95,9 +118,10 @@ function cleanAndValidateApp(
   rawApp: FlogoAppModel.App,
   contributions: ContributionSchema[],
   getNextId: () => string,
-  now = null
+  now = null,
+  importsRefAgent: ImportsRefAgent
 ): App {
-  const validator = createValidator(contributions);
+  const validator = createValidator(contributions, importsRefAgent);
   validator.validate(rawApp);
   rawApp = rawApp as FlogoAppModel.App;
   return constructApp({
@@ -140,11 +164,19 @@ function normalizeResources(
   };
 }
 
-function createValidator(contributions: ContributionSchema[]) {
+function createValidator(
+  contributions: ContributionSchema[],
+  importsRefAgent: ImportsRefAgent
+) {
   const contribRefs = contributions.map(c => c.ref);
-  return validatorFactory(Schemas.v1.app, contribRefs, {
-    schemas: [Schemas.v1.common, Schemas.v1.trigger],
-  });
+  return validatorFactory(
+    Schemas.v1.app,
+    contribRefs,
+    {
+      schemas: [Schemas.v1.common, Schemas.v1.trigger],
+    },
+    importsRefAgent
+  );
 }
 
 function createResourceImportResolver(
@@ -175,13 +207,17 @@ function createResourceImportResolver(
 
 function createHandlerImportResolver(
   resolveResourceImporter: ImportersResolver,
-  contributions: Map<string, ContributionSchema>
+  contributions: Map<string, ContributionSchema>,
+  importsRefAgent: ImportsRefAgent
 ) {
   return (
     triggerRef: string,
     handler: FlogoAppModel.Handler,
     rawHandler: FlogoAppModel.Handler
   ): Handler => {
+    if (handler.action.ref.startsWith('#')) {
+      handler.action.ref = importsRefAgent.getRef(handler.action.ref.substr(1));
+    }
     const ref = handler.action && handler.action.ref;
     const resourceImporter = resolveResourceImporter.byRef(ref);
     if (resourceImporter) {
