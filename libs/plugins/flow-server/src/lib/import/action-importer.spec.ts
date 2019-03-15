@@ -1,11 +1,14 @@
 import { Resource, CONTRIB_REFS } from '@flogo-web/core';
 import { createActionImporter } from './create-action-importer';
-import { createFromImports } from '../../../../../../apps/server/src/modules/transfer/import/imports';
+import { ImportsRefAgent } from '@flogo-web/server/core';
+
+const importsRefAgent: ImportsRefAgent = {
+  getRef: ref => ref,
+};
 
 test('It imports an action', () => {
   const actionImporter = createActionImporter();
   const flowResource = getSampleFlowResource();
-  const importsRefAgent = createFromImports(['some_path_to_repo/activity/log']);
   const importedFlow = actionImporter.importAction(flowResource, {
     contributions: getContributions(),
     normalizedTriggerIds: new Map(),
@@ -18,7 +21,6 @@ test('It imports an action', () => {
 test('It errors if an activity is not installed', () => {
   const actionImporter = createActionImporter();
   const flowResource = getSampleFlowResource();
-  const importsRefAgent = createFromImports(['some_path_to_repo/activity/log']);
   expect.assertions(1);
   try {
     actionImporter.importAction(flowResource, {

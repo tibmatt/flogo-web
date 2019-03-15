@@ -6,6 +6,7 @@ import {
   ValidationError,
   ResourceImporter,
   ValidationErrorDetail,
+  ImportsRefAgent,
 } from '@flogo-web/server/core';
 
 import { constructApp } from '../../../core/models/app';
@@ -13,7 +14,7 @@ import { actionValueTypesNormalizer } from '../common/action-value-type-normaliz
 import { tryAndAccumulateValidationErrors } from '../common/try-validation-errors';
 import { validatorFactory } from './validator';
 import { importTriggers } from './import-triggers';
-import { createFromImports, IMPORT_SYNTAX, TypeToRefAgent } from './imports';
+import { createFromImports, IMPORT_SYNTAX } from './imports';
 
 interface DefaultAppModelResource extends FlogoAppModel.Resource {
   data: {
@@ -37,14 +38,12 @@ export function importApp(
   const now = new Date().toISOString();
   if (rawApp.imports) {
     const improperImports = validateImports(rawApp.imports);
-    //TODO : write proper validation message for improper imports
     const importsErrors = improperImports.map(importsError => ({
-      keyword: 'incorrect-import',
+      keyword: 'improper-import',
       dataPath: '.imports',
       message: `${importsError} - Validation error in imports`,
-      data: importsError,
       params: {
-        importsError,
+        ref: importsError,
       },
     }));
     if (importsErrors.length) {
@@ -120,7 +119,7 @@ function cleanAndValidateApp(
   contributions: ContributionSchema[],
   getNextId: () => string,
   now = null,
-  importsRefAgent: TypeToRefAgent
+  importsRefAgent: ImportsRefAgent
 ): App {
   const validator = createValidator(contributions, importsRefAgent);
   validator.validate(rawApp);
@@ -167,7 +166,7 @@ function normalizeResources(
 
 function createValidator(
   contributions: ContributionSchema[],
-  importsRefAgent: TypeToRefAgent
+  importsRefAgent: ImportsRefAgent
 ) {
   const contribRefs = contributions.map(c => c.ref);
   return validatorFactory(
@@ -209,7 +208,7 @@ function createResourceImportResolver(
 function createHandlerImportResolver(
   resolveResourceImporter: ImportersResolver,
   contributions: Map<string, ContributionSchema>,
-  importsRefAgent: TypeToRefAgent
+  importsRefAgent: ImportsRefAgent
 ) {
   return (
     triggerRef: string,

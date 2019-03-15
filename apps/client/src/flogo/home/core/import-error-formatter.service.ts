@@ -29,11 +29,22 @@ export class ImportErrorFormatterService {
       case 'activity-installed':
         messageHeader = this._translate.instant('IMPORT-ERROR:ACTIVITY_MISSING');
         break;
+      case 'activity-installed-missing-import':
+        messageHeader = this._translate.instant(
+          'IMPORT-ERROR:ACTIVITY_MISSING_IN_IMPORT'
+        );
+        break;
       case 'trigger-installed':
         messageHeader = this._translate.instant('IMPORT-ERROR:TRIGGER_MISSING');
         break;
+      case 'trigger-installed-missing-import':
+        messageHeader = this._translate.instant('IMPORT-ERROR:TRIGGER_MISSING_IN_IMPORT');
+        break;
       case 'supported-resource-type':
         messageHeader = this._translate.instant('IMPORT-ERROR:UNSUPPORTED_RESOURCE_TYPE');
+        break;
+      case 'improper-import':
+        messageHeader = this._translate.instant('IMPORT-ERROR:IMPROPER_IMPORT');
         break;
       default:
         messageHeader = this._translate.instant('APP-LIST:BROKEN_RULE_UNKNOWN');
@@ -84,8 +95,31 @@ export class ImportErrorFormatterService {
           ref: detail.params.ref,
         });
         break;
+      case 'activity-installed-missing-import':
+        errorMessage = this._translate.instant(
+          'IMPORT-ERROR:ACTIVITY_MISSING_IN_IMPORT_CONTENT',
+          {
+            ref: detail.params.ref,
+            dataPath: detail.dataPath,
+          }
+        );
+        break;
       case 'trigger-installed':
         errorMessage = this._translate.instant('IMPORT-ERROR:TRIGGER_MISSING_CONTENT', {
+          ref: detail.params.ref,
+        });
+        break;
+      case 'trigger-installed-missing-import':
+        errorMessage = this._translate.instant(
+          'IMPORT-ERROR:TRIGGER_MISSING_IN_IMPORT_CONTENT',
+          {
+            ref: detail.params.ref,
+            dataPath: detail.dataPath,
+          }
+        );
+        break;
+      case 'improper-import':
+        errorMessage = this._translate.instant('IMPORT-ERROR:IMPROPER_IMPORT_CONTENT', {
           ref: detail.params.ref,
         });
         break;

@@ -1,2 +1,2 @@
 export * from './parse-imports';
-export * from './type-to-ref-agent';
+export * from './extract-imports-ref';

@@ -1,11 +1,11 @@
 import { Resource, Handler, ContributionSchema, FlogoAppModel } from '@flogo-web/core';
-import { TypeToRefAgent } from '../../../../../../apps/server/src/modules/transfer/import/imports';
+import { ImportsRefAgent } from '@flogo-web/server/core';
 
 export interface ResourceImportContext {
   contributions: Map<string, ContributionSchema>;
   normalizedTriggerIds: Map<string, string>;
   normalizedResourceIds: Map<string, string>;
-  importsRefAgent: TypeToRefAgent;
+  importsRefAgent: ImportsRefAgent;
 }
 
 export interface HandlerImportContext {

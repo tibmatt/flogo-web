@@ -11,6 +11,7 @@ import {
   Schemas,
   ValidationRuleFactory,
   ValidationError,
+  ImportsRefAgent,
 } from '@flogo-web/server/core';
 
 import { FlowData } from '../flow';
@@ -54,7 +55,10 @@ export class ActionImporter {
     return resource;
   }
 
-  resourceToAction(resource: Resource, importsRefAgent): Resource<FlowData> {
+  resourceToAction(
+    resource: Resource,
+    importsRefAgent: ImportsRefAgent
+  ): Resource<FlowData> {
     const resourceData: any = resource.data || {};
     const errorHandler = this.getErrorHandler(resourceData, importsRefAgent);
     return {
@@ -109,7 +113,7 @@ export class ActionImporter {
   }
 }
 
-function makeValidator(installedRefs: string[], importsRefAgent) {
+function makeValidator(installedRefs: string[], importsRefAgent: ImportsRefAgent) {
   return createValidator(
     {
       $schema: 'http://json-schema.org/draft-07/schema#',

@@ -1,6 +1,5 @@
-import { ValidationRuleFactory } from '@flogo-web/server/core';
+import { ImportsRefAgent, ValidationRuleFactory } from '@flogo-web/server/core';
 import { validatorFactory as commonValidatorFactory } from '../../../../common/validator';
-import { TypeToRefAgent } from '../imports';
 
 /**
  * @param schema
@@ -13,7 +12,7 @@ export function validatorFactory(
   schema,
   contributionRefs: string[],
   options = {},
-  importsRefAgent: TypeToRefAgent
+  importsRefAgent: ImportsRefAgent
 ) {
   const validator = commonValidatorFactory(schema, options);
   validator.addValidationRule('trigger-installed', {
