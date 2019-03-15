@@ -22,7 +22,6 @@ export interface TriggerSchema extends BaseSchema {
 export interface FunctionSchema extends BaseSchema {
   type: 'flogo:function';
   functions: any[];
-  namespace: string;
 }
 export interface SchemaAttribute {
   name: string;

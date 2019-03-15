@@ -4,6 +4,7 @@ import * as lodash from 'lodash';
 import { TreeNode } from 'primeng/components/common/api';
 import { MapperTreeNode } from '../models';
 import { ArrayMappingInfo } from '../models/array-mapping';
+import { InstalledFunctionSchema } from '../../../core';
 
 @Injectable()
 export class TreeNodeFactoryService {
@@ -92,8 +93,7 @@ export class TreeNodeFactoryService {
     // return result;
   }
 
-  // todo: functions type
-  fromFunctions(functionMap: any) {
+  fromFunctions(functionMap: InstalledFunctionSchema[]) {
     // is it an object?
     if (functionMap !== Object(functionMap)) {
       return [];
@@ -118,16 +118,13 @@ export class TreeNodeFactoryService {
     let node = {};
     Object.keys(functionMap).forEach(func => {
       const currentFunction = functionMap[func];
-      if (currentFunction.namespace) {
+      if (currentFunction.functions && currentFunction.functions.length > 0) {
         Object.keys(currentFunction.functions).forEach(subFunc => {
           const currentChildFunction = currentFunction.functions[subFunc];
-          node = this.createFromFunctionsNode(
-            currentChildFunction,
-            currentFunction.namespace
-          );
-          pushToCategory(currentFunction.namespace, node);
+          node = this.createFromFunctionsNode(currentChildFunction, currentFunction.name);
+          pushToCategory(currentFunction.name, node);
         });
-      } else if (!currentFunction.namespace) {
+      } else if (!currentFunction.functions) {
         node = this.createFromFunctionsNode(currentFunction);
         nodes.push(node);
       } else {
@@ -149,7 +146,7 @@ export class TreeNodeFactoryService {
     return sort(allNodes);
   }
 
-  private createFromFunctionsNode(currentFunction, namespace?) {
+  private createFromFunctionsNode(currentFunction, groupName?: string) {
     const functionName = currentFunction.name;
     const description = currentFunction.description;
     const args = currentFunction.args.reduce((allArgs, current) => {
@@ -162,8 +159,8 @@ export class TreeNodeFactoryService {
       return allArgs;
     }, []);
     let snippet = '';
-    if (namespace) {
-      snippet = `${namespace}.${functionName}(${args.join(', ')})`;
+    if (groupName) {
+      snippet = `${groupName}.${functionName}(${args.join(', ')})`;
     } else {
       snippet = `${functionName}(${args.join(', ')})`;
     }
