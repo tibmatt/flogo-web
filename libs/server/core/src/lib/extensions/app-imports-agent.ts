@@ -1,4 +1,4 @@
 export interface AppImportsAgent {
-  registerRef(string): string | undefined;
-  registerFunctionName(string): void;
+  registerRef(ref: string): string | undefined;
+  registerFunctionName(functionName: string): void;
 }

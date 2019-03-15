@@ -6,32 +6,9 @@ import {
   ContributionSchema,
   MapperUtils,
 } from '@flogo-web/core';
+import { AppImportsAgent } from '@flogo-web/server/core';
 import { HandlerExporterFn } from '../resource-exporter-fn';
 import { ExportedResourceInfo } from './exported-resource-info';
-import { AppImportsAgent } from '@flogo-web/server/core';
-
-function preFormatHandler(
-  handler: Handler,
-  ref: string,
-  refAgent: AppImportsAgent
-): FlogoAppModel.NewHandler {
-  const { settings, actionMappings } = handler;
-  const registerFunctions = (fn: string) => refAgent.registerFunctionName(fn);
-  MapperUtils.functions
-    .parseAndExtractReferencesInMappings(actionMappings.input)
-    .forEach(registerFunctions);
-  MapperUtils.functions
-    .parseAndExtractReferencesInMappings(actionMappings.output)
-    .forEach(registerFunctions);
-  return {
-    settings: !isEmpty(settings) ? { ...settings } : undefined,
-    action: {
-      type: refAgent.registerRef(ref),
-      settings: null,
-      ...actionMappings,
-    },
-  };
-}
 
 interface HandlerFormatterParams {
   exportHandler: HandlerExporterFn;
@@ -62,4 +39,29 @@ export function makeHandlerFormatter({
       });
     };
   };
+}
+
+function preFormatHandler(
+  handler: Handler,
+  ref: string,
+  refAgent: AppImportsAgent
+): FlogoAppModel.NewHandler {
+  const { settings, actionMappings } = handler;
+  const registerFunctions = (fn: string) => refAgent.registerFunctionName(fn);
+  extractFunctions(actionMappings && actionMappings.input).forEach(registerFunctions);
+  extractFunctions(actionMappings && actionMappings.output).forEach(registerFunctions);
+  return {
+    settings: !isEmpty(settings) ? { ...settings } : undefined,
+    action: {
+      type: refAgent.registerRef(ref),
+      settings: null,
+      ...actionMappings,
+    },
+  };
+}
+
+function extractFunctions(mappings: { [name: string]: any }): string[] {
+  return !isEmpty(mappings)
+    ? MapperUtils.functions.parseAndExtractReferencesInMappings(mappings)
+    : [];
 }
