@@ -86,11 +86,11 @@ export class AppsApiServiceMock extends AppsApiService {
     });
   }
 
-  deleteApp(id: string): Promise<boolean> {
+  deleteApp(id: string): Observable<boolean> {
     remove(this.mockApplications, (n: App) => {
       return n.id === id;
     });
-    return Promise.resolve(true);
+    return of(true);
   }
 
   getApp(id: string): Observable<App> {

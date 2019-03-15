@@ -119,7 +119,7 @@ export class FlogoAppsListComponent implements OnInit {
   }
 
   remove(application: App) {
-    this.apiApplications.deleteApp(application.id).then(() => {
+    this.apiApplications.deleteApp(application.id).subscribe(() => {
       this.listAllApps();
     });
   }
