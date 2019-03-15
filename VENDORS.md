@@ -1,11 +1,15 @@
 # Third party dependencies change log
 All notable changes to this project's dependencies will be documented in this file.
 
+## v0.5.8
+
+- No changes
+
 ## v0.5.7
 
 ### Production Dependencies
 
-- ** New **
+- **New**
   - [@koa/cors@2](https://github.com/koajs/cors) [MIT]
   - [date-fns@2.0.0](https://github.com/date-fns/date-fns) [MIT]
   - [dotenv@^6.0.0](https://github.com/motdotla/dotenv) [BSD-2-Clause]
