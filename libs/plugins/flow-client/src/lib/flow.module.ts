@@ -26,7 +26,7 @@ import { featureReducer } from './core/state';
 
 import { FlogoFlowDiagramComponent } from './flow-diagram/flow-diagram.component';
 import { FlowTabsComponent } from './flow-tabs/flow-tabs.component';
-import { SaveEffects } from './core/effects';
+import { SaveEffects, TriggerMappingsEffects } from './core/effects';
 
 import { DebugPanelModule } from './debug-panel';
 import { TaskAddModule } from './task-add';
@@ -36,7 +36,7 @@ import { TaskAddModule } from './task-add';
     CommonModule,
     ScrollingModule,
     StoreModule.forFeature('flow', featureReducer),
-    EffectsModule.forFeature([SaveEffects]),
+    EffectsModule.forFeature([SaveEffects, TriggerMappingsEffects]),
     FlogoSharedModule,
     FlogoLogsModule,
     DiagramModule,

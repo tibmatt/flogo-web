@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, EMPTY } from 'rxjs';
 import { filter, map, switchMap, take } from 'rxjs/operators';
 
 import { Injectable } from '@angular/core';
@@ -17,7 +17,8 @@ export class SaveEffects {
       ActionType.TaskItemCreated,
       ActionType.RemoveItem,
       ActionType.ItemUpdated,
-      ActionType.CommitItemConfiguration
+      ActionType.CommitItemConfiguration,
+      ActionType.UpdateMetadata
     ),
     switchMap(() => this.saveFlow()),
     filter(flowWasSaved => flowWasSaved),

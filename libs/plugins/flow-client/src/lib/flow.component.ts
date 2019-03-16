@@ -1,4 +1,4 @@
-import { cloneDeep, filter as _filter, get, isEmpty, pick, isEqual } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 import { takeUntil, switchMap, take, filter } from 'rxjs/operators';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,7 +10,6 @@ import {
 
 import {
   MetadataAttribute,
-  Task,
   LanguageService,
   Item,
   ConfirmationResult,
@@ -19,14 +18,13 @@ import {
   mergeItemWithSchema,
   SingleEmissionSubject,
 } from '@flogo-web/client-core';
-import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 import { NotificationsService } from '@flogo-web/client-core/notifications';
-import { AppsApiService, RESTAPIHandlersService } from '@flogo-web/client-core/services';
+import { AppsApiService } from '@flogo-web/client-core/services';
 
 import { TestRunnerService } from './core/test-runner/test-runner.service';
 import { MonacoEditorLoaderService } from './shared/monaco-editor';
 
-import { FlowData, Trigger } from './core';
+import { FlowData } from './core';
 import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { HandlerType, SelectionType } from './core/models';
 import { FlowState } from './core/state';
@@ -59,7 +57,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   @HostBinding('@initialAnimation') initialAnimation = true;
   @ViewChild('inputSchemaModal') defineInputSchema: ParamsSchemaComponent;
   public flowState: FlowState;
-  public triggersList: Trigger[];
   public runnableInfo: {
     disabled: boolean;
     disableReason?: string;
@@ -72,8 +69,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   backToAppHover = false;
 
   @HostBinding('hidden') loading: boolean;
-  public hasTrigger: boolean;
-  public currentTrigger: any;
   public app: any;
   public isflowMenuOpen = false;
 
@@ -82,7 +77,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   constructor(
     public translate: LanguageService,
     private _flowService: FlowsService,
-    private _restAPIHandlerService: RESTAPIHandlersService,
     private _restAPIAppsService: AppsApiService,
     private _router: Router,
     private confirmationModalService: ConfirmationModalService,
@@ -92,10 +86,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     private monacoLoaderService: MonacoEditorLoaderService
   ) {
     this._isDiagramEdited = false;
-
     this.loading = true;
-    this.hasTrigger = true;
-    this.currentTrigger = null;
     this.app = null;
   }
 
@@ -188,7 +179,6 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private initFlowData(flowData: FlowData) {
     this.flowName = flowData.flow.name;
-    this.triggersList = flowData.triggers;
   }
 
   private getCurrentRunStateForTask(taskID: string) {
@@ -373,10 +363,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       });
   }
 
-  private _getAllTasks() {
-    return { ...this.flowState.mainItems, ...this.flowState.errorItems };
-  }
-
   /*-------------------------------*
    |      APP NAVIGATION           |
    *-------------------------------*/
@@ -400,6 +386,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   onRunFlow(modifiedInputs: MetadataAttribute[]) {
     let flowUpdatePromise;
     if (modifiedInputs.length) {
+      // TODO: when re-enabling test runner make sure the update for metadata happens through store/action
       this.flowState.metadata.input = modifiedInputs;
       flowUpdatePromise = this._updateFlow();
     } else {
@@ -433,73 +420,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public onFlowSchemaSave(newMetadata: FlowMetadata) {
-    this.flowState.metadata.input = this.mergeFlowInputMetadata(newMetadata.input);
-    this.flowState.metadata.output = newMetadata.output;
-
-    const getAllProps = from => from.map(o => o.name);
-    const outputNames = getAllProps(newMetadata.output);
-    const inputNames = getAllProps(newMetadata.input);
-    this.cleanDanglingTaskOutputMappings(outputNames);
-
-    this.cleanDanglingTriggerMappingsToFlow(inputNames);
-    this._updateFlow();
-  }
-
-  private mergeFlowInputMetadata(
-    inputMetadata: MetadataAttribute[]
-  ): MetadataAttribute[] {
-    return inputMetadata.map(input => {
-      const existingInput = this.flowState.metadata.input.find(
-        i => i.name === input.name && i.type === input.type
-      );
-      if (existingInput) {
-        input.value = existingInput.value;
-      }
-      return input;
-    });
-  }
-
-  // when flow schema's input change we need to remove the trigger mappings that were referencing them
-  private cleanDanglingTriggerMappingsToFlow(inputNames: string[]) {
-    const handlersToUpdate = this.triggersList.reduce((result, trigger) => {
-      const handlersToUpdateInTrigger = trigger.handlers
-        .filter(handler => handler.resourceId === this.flowId)
-        .reduce(reduceToUpdatableHandlers, [])
-        .map(handler => ({ handler, triggerId: trigger.id }));
-      return result.concat(handlersToUpdateInTrigger);
-    }, []);
-    if (handlersToUpdate.length > 0) {
-      return Promise.all(
-        handlersToUpdate.map(({ handler, triggerId }) => {
-          return this._restAPIHandlerService.updateHandler(
-            triggerId,
-            this.flowId,
-            handler
-          );
-        })
-      );
-    }
-    return Promise.resolve();
-
-    function reduceToUpdatableHandlers(result, handler) {
-      const actionInputMappings = get(handler, 'actionMappings.input', {});
-      const applicableMappings = pick(actionInputMappings, inputNames);
-      if (isEqual(applicableMappings, actionInputMappings)) {
-        handler.actionMappings.input = applicableMappings;
-        result.push(handler);
-      }
-      return result;
-    }
-  }
-
-  // when flow schema's output change we need to remove the task mappings that were referencing them
-  private cleanDanglingTaskOutputMappings(outputNames: string[]) {
-    const isMapperContribAndHasMapping = (task: Task) => {
-      const schema = this.flowState.schemas[task.ref];
-      return isMapperActivity(schema) && !isEmpty(task.inputMappings);
-    };
-    _filter(this._getAllTasks(), isMapperContribAndHasMapping).forEach((task: Task) => {
-      task.inputMappings = pick(task.inputMappings, outputNames);
-    });
+    this._flowService.currentFlowDetails.updateMetadata(newMetadata);
   }
 }
