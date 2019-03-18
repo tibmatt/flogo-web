@@ -1,8 +1,6 @@
-import { isEqual } from 'lodash';
 import { Store, select } from '@ngrx/store';
-import { distinctUntilChanged } from 'rxjs/operators';
 
-import { GraphNode, Item } from '@flogo-web/client-core';
+import { FlowMetadata } from '@flogo-web/client-core';
 
 import { FlowActions, FlowSelectors } from '../state';
 import { AppState } from '../state/app.state';
@@ -17,19 +15,8 @@ export class FlogoFlowDetails {
     return this.store.pipe(select(FlowSelectors.getRunnableState));
   }
 
-  get itemsChange$() {
-    return this.store.pipe(select(FlowSelectors.getAllItems));
-  }
-
   get flowState$() {
     return this.store.pipe(select(FlowSelectors.selectFlowState));
-  }
-
-  get selectionChange$() {
-    return this.store.pipe(
-      select(FlowSelectors.selectCurrentSelection),
-      distinctUntilChanged(isEqual)
-    );
   }
 
   removeItem(handlerType: HandlerType, itemId: string) {
@@ -41,22 +28,7 @@ export class FlogoFlowDetails {
     );
   }
 
-  updateItem(
-    handlerType: HandlerType,
-    {
-      item,
-      node,
-    }: {
-      item: { id: string } & Partial<Item>;
-      node?: { id: string } & Partial<GraphNode>;
-    }
-  ) {
-    this.store.dispatch(
-      new FlowActions.ItemUpdated({
-        handlerType,
-        item,
-        node,
-      })
-    );
+  updateMetadata(metadata: FlowMetadata) {
+    this.store.dispatch(new FlowActions.UpdateMetadata(metadata));
   }
 }

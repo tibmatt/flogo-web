@@ -23,3 +23,6 @@ export { FlowActions };
 
 import * as FlowSelectors from './flow/flow.selectors';
 export { FlowSelectors };
+
+import * as TriggerActions from './triggers/triggers.actions';
+export { TriggerActions };

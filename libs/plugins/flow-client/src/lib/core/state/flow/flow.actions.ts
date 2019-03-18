@@ -7,6 +7,7 @@ import {
   Item,
   ItemTask,
   StepAttribute,
+  FlowMetadata,
 } from '@flogo-web/client-core';
 import { HandlerType } from '../../models';
 import { FlowState } from './flow.state';
@@ -23,6 +24,7 @@ export enum ActionType {
   ItemUpdated = '[Flow] Item updated',
   CommitItemConfiguration = '[Flow] Commit item configuration',
   CancelItemConfiguration = '[Flow] Cancel item configuration',
+  UpdateMetadata = '[Flow] Update Metadata',
   ClearSelection = '[Flow] Clear selection',
   RunFromStart = '[Run Flow] Run from start',
   RunFromTask = '[Run Flow] Run from tile',
@@ -119,6 +121,11 @@ export class CancelItemConfiguration implements BaseFlowAction {
   readonly type = ActionType.CancelItemConfiguration;
 }
 
+export class UpdateMetadata implements BaseFlowAction {
+  readonly type = ActionType.UpdateMetadata;
+  constructor(public payload: FlowMetadata) {}
+}
+
 export class RunFromStart implements BaseFlowAction {
   readonly type = ActionType.RunFromStart;
 }
@@ -187,6 +194,7 @@ export type ActionsUnion =
   | RemoveItem
   | CreateBranch
   | ItemUpdated
+  | UpdateMetadata
   | CommitItemConfiguration
   | CancelItemConfiguration
   | NewExecutionRegistered

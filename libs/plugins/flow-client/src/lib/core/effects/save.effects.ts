@@ -17,7 +17,8 @@ export class SaveEffects {
       ActionType.TaskItemCreated,
       ActionType.RemoveItem,
       ActionType.ItemUpdated,
-      ActionType.CommitItemConfiguration
+      ActionType.CommitItemConfiguration,
+      ActionType.UpdateMetadata
     ),
     switchMap(() => this.saveFlow()),
     filter(flowWasSaved => flowWasSaved),

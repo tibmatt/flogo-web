@@ -11,6 +11,8 @@ import { removeItem } from './cases/remove-item';
 import { itemUpdate, nodeUpdate } from './cases/item-update';
 import { executionUpdate } from './cases/execution-update';
 import { commitTaskConfiguration } from './cases/commit-task-configuration';
+import { updateMetadata } from './cases/update-metadata';
+import { cleanDanglingTaskOutputMappings } from './cases/clean-dangling-tasks-output-mappings';
 import { runnerReducer } from './runner.reducer';
 
 const ActionType = actions.ActionType;
@@ -67,6 +69,11 @@ export function flowReducer(
         ...state,
         taskConfigure: null,
       };
+    }
+    case ActionType.UpdateMetadata: {
+      state = updateMetadata(state, action.payload);
+      state = cleanDanglingTaskOutputMappings(state);
+      return state;
     }
     case ActionType.ConfigureItem: {
       return {
