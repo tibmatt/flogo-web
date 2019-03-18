@@ -235,7 +235,8 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
       if (
         cstNodeType === 'object' ||
         cstNodeType === 'array' ||
-        cstNodeType === 'stringTemplate'
+        cstNodeType === 'stringTemplate' ||
+        cstNodeType === 'inlineObjectExpr'
       ) {
         return <JsonNodes.ObjectNode | JsonNodes.ArrayNode>this.visit(ctx[cstNodeType]);
       } else {
@@ -247,6 +248,13 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     stringTemplate(ctx): JsonNodes.StringTemplateNode {
+      return {
+        type: AstNodeType.StringTemplate,
+        expression: <ExprNodes.Expr>this.visit(ctx.expression),
+      };
+    }
+
+    inlineObjectExpr(ctx): JsonNodes.StringTemplateNode {
       return {
         type: AstNodeType.StringTemplate,
         expression: <ExprNodes.Expr>this.visit(ctx.expression),

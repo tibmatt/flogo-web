@@ -12,7 +12,6 @@ import {
   tokenMatcher,
   createToken,
   IMultiModeLexerDefinition,
-  TokenVocabulary,
 } from 'chevrotain';
 import { Identifier } from '../ast/expr-nodes';
 import { UnicodeCategory } from './unicode';
@@ -192,6 +191,20 @@ const StringTemplateClose = createToken({
   pop_mode: true,
 });
 
+const InlineObjectExprOpen = createToken({
+  name: 'InlineObjectExprOpen',
+  label: 'Open inline object expression',
+  pattern: /"=/,
+  push_mode: 'inline_object_expr',
+});
+
+const InlineObjectExprClose = createToken({
+  name: 'InlineObjectExprClose',
+  label: 'Close inline object expression',
+  pattern: /"/,
+  pop_mode: true,
+});
+
 const NumberLiteral = createToken({
   name: 'NumberLiteral',
   label: 'NumberLiteral',
@@ -293,6 +306,8 @@ export const Token = {
   SingleQuoteStringLiteral,
   StringTemplateOpen,
   StringTemplateClose,
+  InlineObjectExprOpen,
+  InlineObjectExprClose,
   LParen,
   RParen,
   LCurly,
@@ -318,6 +333,39 @@ export const Token = {
   IdentifierName,
 };
 
+const objectExpressionMode = (close: TokenType) => {
+  return [
+    WhiteSpace,
+    Lookup,
+    NumberLiteral,
+    StringLiteral,
+    NestedDblQuoteStringLiteral,
+    SingleQuoteStringLiteral,
+    close,
+    LParen,
+    RParen,
+    LSquare,
+    RSquare,
+    TernaryOper,
+    Dot,
+    Comma,
+    Colon,
+    True,
+    False,
+    Nil,
+    Null,
+    Nullable,
+    LogicalAnd,
+    MulOp,
+    AddOp,
+    RelOp,
+    LogicalOr,
+    BinaryOp,
+    ResolverIdentifier,
+    IdentifierName,
+  ];
+};
+
 export const lexerDefinition: IMultiModeLexerDefinition = {
   modes: {
     default: [
@@ -325,6 +373,7 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       Lookup,
       NumberLiteral,
       StringTemplateOpen,
+      InlineObjectExprOpen,
       StringLiteral,
       DblQuoteStringLiteral,
       SingleQuoteStringLiteral,
@@ -352,36 +401,8 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       ResolverIdentifier,
       IdentifierName,
     ],
-    string_template: [
-      WhiteSpace,
-      Lookup,
-      NumberLiteral,
-      StringLiteral,
-      NestedDblQuoteStringLiteral,
-      SingleQuoteStringLiteral,
-      StringTemplateClose,
-      LParen,
-      RParen,
-      LSquare,
-      RSquare,
-      TernaryOper,
-      Dot,
-      Comma,
-      Colon,
-      True,
-      False,
-      Nil,
-      Null,
-      Nullable,
-      LogicalAnd,
-      MulOp,
-      AddOp,
-      RelOp,
-      LogicalOr,
-      BinaryOp,
-      ResolverIdentifier,
-      IdentifierName,
-    ],
+    string_template: objectExpressionMode(StringTemplateClose),
+    inline_object_expr: objectExpressionMode(InlineObjectExprClose),
   },
   defaultMode: 'default',
 };
@@ -566,6 +587,7 @@ export class MappingParser extends Parser {
   protected jsonValue = this.RULE('jsonValue', () => {
     this.OR([
       { ALT: () => this.SUBRULE(this.stringTemplate) },
+      { ALT: () => this.SUBRULE(this.inlineObjectExpr) },
       { ALT: () => this.CONSUME(Token.DblQuoteStringLiteral) },
       { ALT: () => this.CONSUME(Token.NumberLiteral) },
       { ALT: () => this.SUBRULE(this.object) },
@@ -580,5 +602,11 @@ export class MappingParser extends Parser {
     this.CONSUME(Token.StringTemplateOpen);
     this.SUBRULE(this.expression);
     this.CONSUME(Token.StringTemplateClose);
+  });
+
+  protected inlineObjectExpr = this.RULE('inlineObjectExpr', () => {
+    this.CONSUME(Token.InlineObjectExprOpen);
+    this.SUBRULE(this.expression);
+    this.CONSUME(Token.InlineObjectExprClose);
   });
 }

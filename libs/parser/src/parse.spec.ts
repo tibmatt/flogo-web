@@ -1,4 +1,4 @@
-import { LiteralNode, PropertyNode, StringTemplateNode } from './ast';
+import { JsonNodes } from './ast';
 import { parse, parseResolver } from './parse';
 import './tests/jest-matchers';
 
@@ -27,7 +27,7 @@ describe('parse', function() {
           {
             type: 'jsonProperty',
             key: 'simpleLiteral',
-            value: <LiteralNode>{
+            value: <JsonNodes.LiteralNode>{
               type: 'jsonLiteral',
               value: 'bar',
               kind: 'string',
@@ -37,7 +37,7 @@ describe('parse', function() {
           {
             type: 'jsonProperty',
             key: 'stringTemplate',
-            value: <StringTemplateNode>{
+            value: <JsonNodes.StringTemplateNode>{
               type: 'stringTemplate',
               expression: {
                 type: 'SelectorExpr',
@@ -50,13 +50,101 @@ describe('parse', function() {
               },
             },
           },
-          <PropertyNode>{
+          <JsonNodes.PropertyNode>{
             type: 'jsonProperty',
             key: 'stringTemplateInArray',
             value: {
               type: 'jsonArray',
               children: [
-                <StringTemplateNode>{
+                <JsonNodes.StringTemplateNode>{
+                  type: 'stringTemplate',
+                  expression: {
+                    type: 'CallExpr',
+                    fun: {
+                      type: 'Identifier',
+                      name: 'somefunc',
+                    },
+                    args: [
+                      {
+                        type: 'BasicLit',
+                        kind: 'number',
+                        value: 3,
+                        raw: '3',
+                      },
+                    ],
+                  },
+                },
+                {
+                  type: 'jsonLiteral',
+                  value: 'somelit',
+                  kind: 'string',
+                  raw: '"somelit"',
+                },
+                {
+                  type: 'stringTemplate',
+                  expression: {
+                    type: 'SelectorExpr',
+                    x: {
+                      type: 'ScopeResolver',
+                      name: 'activity',
+                      sel: 'x',
+                    },
+                    sel: <any>'y',
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  it('parses inline object expressions', function() {
+    const parseResult = parse(`{
+      "simpleLiteral": "bar",
+      "stringTemplate": "=$activity[x].y",
+      "stringTemplateInArray": ["=somefunc(3)", "somelit", "=$activity[x].y"]
+    }`);
+
+    expect(parseResult.ast).toMatchObject({
+      type: 'json',
+      value: {
+        type: 'jsonObject',
+        children: [
+          {
+            type: 'jsonProperty',
+            key: 'simpleLiteral',
+            value: <JsonNodes.LiteralNode>{
+              type: 'jsonLiteral',
+              value: 'bar',
+              kind: 'string',
+              raw: '"bar"',
+            },
+          },
+          {
+            type: 'jsonProperty',
+            key: 'stringTemplate',
+            value: <JsonNodes.StringTemplateNode>{
+              type: 'stringTemplate',
+              expression: {
+                type: 'SelectorExpr',
+                x: {
+                  type: 'ScopeResolver',
+                  name: 'activity',
+                  sel: 'x',
+                },
+                sel: <any>'y',
+              },
+            },
+          },
+          <JsonNodes.PropertyNode>{
+            type: 'jsonProperty',
+            key: 'stringTemplateInArray',
+            value: {
+              type: 'jsonArray',
+              children: [
+                <JsonNodes.StringTemplateNode>{
                   type: 'stringTemplate',
                   expression: {
                     type: 'CallExpr',
