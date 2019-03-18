@@ -73,7 +73,6 @@ function createTabsForTrigger(triggerId: string): Dictionary<TriggerConfigureTab
 function createTriggerState(trigger: Trigger, tabIds: string[]): TriggerConfigureTrigger {
   return {
     id: trigger.id,
-    name: trigger.name,
     tabs: tabIds,
     isValid: true,
     isDirty: false,

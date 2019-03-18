@@ -29,7 +29,6 @@ export interface TriggerConfigureGroup {
 
 export interface TriggerConfigureTrigger {
   id: string;
-  name: string;
   tabs: string[];
   isValid: boolean;
   isDirty: boolean;
