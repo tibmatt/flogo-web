@@ -1,4 +1,4 @@
-import { Observable, EMPTY } from 'rxjs';
+import { Observable } from 'rxjs';
 import { filter, map, switchMap, take } from 'rxjs/operators';
 
 import { Injectable } from '@angular/core';
