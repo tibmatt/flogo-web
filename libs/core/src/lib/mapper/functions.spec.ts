@@ -113,4 +113,33 @@ describe('functions:extract-references-in-mappings', () => {
       })
     ).toEqual(['string.concat']);
   });
+
+  it('should process object mappings', () => {
+    expect(
+      parseAndExtractReferencesInMappings({
+        test: { inside: '=string.concat("dummy", "value")' },
+        test1: {
+          nested: {
+            inside: '=$hello.world',
+            inside2: '=number.random(4)',
+          },
+        },
+      })
+    ).toEqual(['string.concat', 'number.random']);
+  });
+
+  it('should process object mappings in arrays', () => {
+    expect(
+      parseAndExtractReferencesInMappings({
+        test: ['=string.concat("dummy", "value")'],
+        test1: {
+          nestedArray: ['=$activity[a].b', '=number.random(4)'],
+        },
+        test2: {
+          nestedArray2: [{ mappingInObjectInArray: '=object.inArray()' }],
+        },
+        foo: null,
+      })
+    ).toEqual(['string.concat', 'number.random', 'object.inArray']);
+  });
 });
