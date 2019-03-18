@@ -10,7 +10,6 @@ import {
 import { isMapperActivity, isOutputMapperField } from '@flogo-web/plugins/flow-core';
 import { normalizeIteratorValue } from './normalize-iterator-value';
 
-
 export class TaskConverter {
   private resourceTask;
   private activitySchema;
