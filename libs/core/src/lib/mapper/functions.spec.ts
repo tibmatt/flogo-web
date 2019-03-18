@@ -38,15 +38,40 @@ describe('functions:extract-references', () => {
     });
   });
 
-  it('extracts functions in objects', () => {
+  it('extracts functions in object templates', () => {
     expect(
       parseAndExtractReferences(`{
        "prop":"{{ string.concat(template.usage(), \\"foo\\") }}",
        "object":{
           "nested":"{{ number.random() }}"
-       }
+       },
+       "array": [ "{{ in.array() }}", "{{second.inArray()}}" ]
       }`)
-    ).toEqual(['string.concat', 'template.usage', 'number.random']);
+    ).toEqual([
+      'string.concat',
+      'template.usage',
+      'number.random',
+      'in.array',
+      'second.inArray',
+    ]);
+  });
+
+  it('extracts functions in object mappings', () => {
+    expect(
+      parseAndExtractReferences(`{
+       "prop":"=string.concat(template.usage(), \\"foo\\")",
+       "object":{
+          "nested": "=number.random()"
+       },
+       "array": [ "=in.array()", "=second.inArray()" ]
+      }`)
+    ).toEqual([
+      'string.concat',
+      'template.usage',
+      'number.random',
+      'in.array',
+      'second.inArray',
+    ]);
   });
 });
 
@@ -59,7 +84,7 @@ describe('functions:extract-references-in-mappings', () => {
     ).toEqual([]);
   });
 
-  it('Should not break the logic', () => {
+  it('Should ignore mapping errors', () => {
     expect(
       parseAndExtractReferencesInMappings({
         test: false,
