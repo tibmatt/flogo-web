@@ -10,10 +10,6 @@ import {
 import { isMapperActivity, isOutputMapperField } from '@flogo-web/plugins/flow-core';
 import { normalizeIteratorValue } from './normalize-iterator-value';
 
-const isLegacyActivity = (
-  a: ResourceActionModel.Activity
-): a is ResourceActionModel.LegacyActivity =>
-  !!(<ResourceActionModel.LegacyActivity>a).mappings;
 
 export class TaskConverter {
   private resourceTask;
@@ -81,7 +77,10 @@ export class TaskConverter {
   }
 
   prepareInputMappings() {
-    if (isLegacyActivity(this.resourceTask.activity)) {
+    if (isMapperActivity(this.activitySchema)) {
+      const inputMappings = this.resourceTask.activity.settings.mappings || {};
+      return inputMappings;
+    } else {
       const inputMappings = this.convertAttributes();
       return this.safeGetMappings().reduce((inputs, mapping) => {
         let value = mapping.value;
@@ -93,14 +92,6 @@ export class TaskConverter {
         inputs[mapping.mapTo] = value;
         return inputs;
       }, inputMappings);
-    } else {
-      let mappings = {};
-      if (isMapperActivity(this.activitySchema)) {
-        mappings = this.resourceTask.activity.settings.mappings || {};
-      } else {
-        mappings = this.resourceTask.activity.input || {};
-      }
-      return mappings;
     }
   }
 
