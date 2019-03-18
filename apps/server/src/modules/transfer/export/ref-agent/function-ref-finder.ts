@@ -15,7 +15,9 @@ export class FunctionRefFinder {
   constructor(fromContribs: ContributionSchema[]) {
     fromContribs.forEach((contrib: ContributionSchema) => {
       if (isFunctionContrib(contrib) && contrib.functions) {
-        contrib.functions.forEach(addToFunctions(this.functions, contrib.ref));
+        contrib.functions.forEach(
+          addToFunctions(this.functions, contrib.name, contrib.ref)
+        );
       }
     });
   }
@@ -25,8 +27,12 @@ export class FunctionRefFinder {
   }
 }
 
-function addToFunctions(functions: Map<string, string>, packageRef: string) {
+function addToFunctions(
+  functions: Map<string, string>,
+  namespace: string,
+  packageRef: string
+) {
   return (f: SingleFunctionSchema) => {
-    functions.set(f.name, packageRef);
+    functions.set(`${namespace}.${f.name}`, packageRef);
   };
 }

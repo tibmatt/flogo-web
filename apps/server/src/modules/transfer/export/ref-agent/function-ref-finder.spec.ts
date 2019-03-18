@@ -48,7 +48,7 @@ function getTestData(): ContributionSchema[] {
       homepage: 'https://github.com/prject-flogo/contrib/tree/master/function/number',
       functions: [
         {
-          name: 'number.random',
+          name: 'random',
           description: 'generate a random number',
           varArgs: true,
           args: [
@@ -70,7 +70,7 @@ function getTestData(): ContributionSchema[] {
       homepage: 'https://github.com/project-flogo/contrib/tree/master/function/string',
       functions: [
         {
-          name: 'string.concat',
+          name: 'concat',
           description: 'concatenate a set of string',
           varArgs: true,
           args: [
@@ -81,7 +81,7 @@ function getTestData(): ContributionSchema[] {
           ],
         },
         {
-          name: 'string.equals',
+          name: 'equals',
           description: 'check if two strings are equal',
           args: [
             {
@@ -95,7 +95,7 @@ function getTestData(): ContributionSchema[] {
           ],
         },
         {
-          name: 'string.equalsIgnoreCase',
+          name: 'equalsIgnoreCase',
           description: 'check if two strings are equal ignoring case',
           args: [
             {
@@ -109,7 +109,7 @@ function getTestData(): ContributionSchema[] {
           ],
         },
         {
-          name: 'string.float',
+          name: 'float',
           description: 'convert the string to a float',
           args: [
             {
@@ -119,7 +119,7 @@ function getTestData(): ContributionSchema[] {
           ],
         },
         {
-          name: 'string.integer',
+          name: 'integer',
           description: 'convert the string to an integer',
           args: [
             {
@@ -129,7 +129,7 @@ function getTestData(): ContributionSchema[] {
           ],
         },
         {
-          name: 'string.len',
+          name: 'len',
           description: 'get the length of a string',
           args: [
             {
@@ -139,7 +139,7 @@ function getTestData(): ContributionSchema[] {
           ],
         },
         {
-          name: 'string.substring',
+          name: 'substring',
           description: 'get a substring from a string',
           args: [
             {
