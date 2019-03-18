@@ -1,3 +1,4 @@
+import { ContributionType } from '../../constants';
 import {
   SchemaAttributeDescriptor,
   SchemaOutput,
@@ -6,14 +7,14 @@ import {
 import { FunctionsSchema } from './functions';
 
 export interface ActivitySchema extends BaseContributionSchema {
-  type: 'flogo:activity';
+  type: ContributionType.Activity;
   settings?: SchemaAttributeDescriptor[];
   input?: SchemaAttributeDescriptor[];
   output?: SchemaOutput[];
 }
 
 export interface TriggerSchema extends BaseContributionSchema {
-  type: 'flogo:trigger';
+  type: ContributionType.Trigger;
   reply?: SchemaAttributeDescriptor[];
   output?: SchemaAttributeDescriptor[];
   settings?: SchemaAttributeDescriptor[];

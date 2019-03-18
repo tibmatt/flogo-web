@@ -1,4 +1,5 @@
 import { BaseContributionSchema } from './common';
+import { ContributionType } from '../../constants';
 
 interface FunctionArgument {
   name: string;
@@ -13,5 +14,6 @@ export interface SingleFunctionSchema {
 }
 
 export interface FunctionsSchema extends BaseContributionSchema {
+  type: ContributionType.Function;
   functions: SingleFunctionSchema[];
 }
