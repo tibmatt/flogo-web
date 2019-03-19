@@ -10,7 +10,7 @@ import {
   Dictionary,
 } from '@flogo-web/client-core';
 
-import { REGEX_INPUT_VALUE_EXTERNAL, ROOT_TYPES } from '../constants';
+import { ROOT_TYPES } from '../constants';
 // todo: shared models should be moved to core
 import {
   FlowMetadata,
@@ -131,7 +131,7 @@ export class MapperTranslator {
       return rawExpression.substr(1);
     }
     return !isString(rawExpression) || inputType === MAPPING_TYPE.LITERAL_ASSIGNMENT
-      ? JSON.stringify(rawExpression)
+      ? JSON.stringify(rawExpression, null, 2)
       : rawExpression;
   }
 
@@ -157,7 +157,10 @@ export class MapperTranslator {
   static parseExpression(expression: string) {
     const mappingType = mappingTypeFromExpression(expression);
     let value = expression;
-    if (mappingType === MAPPING_TYPE.LITERAL_ASSIGNMENT) {
+    if (
+      mappingType === MAPPING_TYPE.LITERAL_ASSIGNMENT ||
+      mappingType === MAPPING_TYPE.OBJECT_TEMPLATE
+    ) {
       value = value !== 'nil' ? JSON.parse(value) : null;
     } else {
       value = EXPR_PREFIX + value;
@@ -193,24 +196,8 @@ export class MapperTranslator {
   }
 
   private static processInputValue(inputValue: any) {
-    let value = MapperTranslator.rawExpressionToString(inputValue);
-    value = MapperTranslator.upgradeLegacyMappingIfNeeded(value);
+    const value = MapperTranslator.rawExpressionToString(inputValue);
     return { value, mappingType: mappingTypeFromExpression(value) };
-  }
-
-  private static upgradeLegacyMappingIfNeeded(mappingValue: string) {
-    const legacyMapping = REGEX_INPUT_VALUE_EXTERNAL.exec(mappingValue);
-    if (!legacyMapping) {
-      return mappingValue;
-    }
-    const [, type, name, property, tail] = legacyMapping;
-    let head;
-    if (type === 'T') {
-      head = `trigger.${name}`;
-    } else {
-      head = `activity.${name}.${property}`;
-    }
-    return `$\{${head}}${tail}`;
   }
 
   private static addTileToOutputContext(

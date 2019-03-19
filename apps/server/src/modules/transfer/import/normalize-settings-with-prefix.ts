@@ -1,4 +1,4 @@
-import { isString, isPlainObject, mapValues } from 'lodash';
+import { isString, mapValues } from 'lodash';
 import { EXPR_PREFIX, FlogoAppModel } from '@flogo-web/core';
 
 export function normalizeSettingsWithPrefix(
@@ -12,9 +12,7 @@ function normalizeSetting(setting: any) {
     return setting;
   }
   let normalizedValue = setting;
-  if (isPlainObject(setting)) {
-    normalizedValue = EXPR_PREFIX + JSON.stringify(setting, null, 2);
-  } else if (isString(setting) && setting.startsWith('$')) {
+  if (isString(setting) && setting.startsWith('$')) {
     normalizedValue = EXPR_PREFIX + setting;
   }
   return normalizedValue;

@@ -92,7 +92,7 @@ describe('importer.common.normalize-handler-mappings', () => {
       output: {
         field1: '=$.fromFlow',
         field2: '=property.subaccess',
-        field3: '={\n  "x": "1"\n}',
+        field3: { x: '1' },
         field4: 'foobar',
       },
     });

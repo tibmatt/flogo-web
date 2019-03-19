@@ -76,7 +76,7 @@ describe('MapperTranslator', function() {
       );
     });
     it('translates object mappings', function() {
-      expect(translatedMappings['objectTemplate']).toEqual('={ "myThing": 44 }');
+      expect(translatedMappings['objectTemplate']).toEqual({ myThing: 44 });
     });
   });
 
