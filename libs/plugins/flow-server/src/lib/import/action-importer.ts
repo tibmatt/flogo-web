@@ -12,6 +12,7 @@ import {
   ValidationRuleFactory,
   ValidationError,
   ImportsRefAgent,
+  toActualReference,
 } from '@flogo-web/server/core';
 
 import { FlowData } from '../flow';
@@ -103,11 +104,10 @@ export class ActionImporter {
   }
 
   convertTask(resourceTask, importsRefAgent) {
-    if (resourceTask.activity.ref.startsWith('#')) {
-      resourceTask.activity.ref = importsRefAgent.getRef(
-        resourceTask.activity.ref.substr(1)
-      );
-    }
+    resourceTask.activity.ref = toActualReference(
+      resourceTask.activity.ref,
+      importsRefAgent
+    );
     const activitySchema = this.activitySchemasByRef.get(resourceTask.activity.ref);
     return this.taskConverterFactory(resourceTask, activitySchema).convert();
   }

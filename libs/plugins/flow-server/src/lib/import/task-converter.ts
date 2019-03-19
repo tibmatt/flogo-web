@@ -7,8 +7,33 @@ import {
   EXPRESSION_TYPE,
   parseResourceIdFromResourceUri,
 } from '@flogo-web/server/core';
-import { isMapperActivity, isOutputMapperField } from '@flogo-web/plugins/flow-core';
+import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 import { normalizeIteratorValue } from './normalize-iterator-value';
+
+const isStandardMappings = (activity: ResourceActionModel.NewActivity) => {
+  return (
+    activity.settings &&
+    activity.settings.mappings &&
+    isPlainObject(activity.settings.mappings)
+  );
+};
+
+const isLegacyMappings = (activity: ResourceActionModel.LegacyActivity) => {
+  return activity.input && activity.input.mappings && isArray(activity.input.mappings);
+};
+
+const normalizeMappingValue = (value: any, mappingType?: string) => {
+  if (isUndefined(value)) {
+    return value;
+  }
+  if (isPlainObject(value)) {
+    value = EXPR_PREFIX + JSON.stringify(value, null, 2);
+  } else if (mappingType && mappingType !== EXPRESSION_TYPE.LITERAL) {
+    // mappingType is passed for the case of old mappings structure ({mapTo, type: MappingType, value})
+    value = EXPR_PREFIX + value;
+  }
+  return value;
+};
 
 export class TaskConverter {
   private resourceTask;
@@ -62,69 +87,75 @@ export class TaskConverter {
     return { type, settings, activitySettings };
   }
 
-  extractSubflowPath() {
+  prepareInputMappings() {
+    if (isMapperActivity(this.activitySchema)) {
+      return this.getInputMappingsForMapperContribs();
+    } else {
+      return this.getInputMappingsForNormalContribs();
+    }
+  }
+
+  private extractSubflowPath() {
     const activitySettings = this.resourceTask.activity.settings;
     return parseResourceIdFromResourceUri(activitySettings.flowURI);
   }
 
-  isSubflowTask() {
+  private isSubflowTask() {
     return this.resourceTask.activity.ref === CONTRIB_REFS.SUBFLOW;
   }
 
-  isIteratorTask() {
+  private isIteratorTask() {
     return this.resourceTask.type === TASK_TYPE.ITERATOR;
   }
 
-  prepareInputMappings() {
-    if (isMapperActivity(this.activitySchema)) {
-      const inputMappings = this.resourceTask.activity.settings.mappings || {};
-      return inputMappings;
-    } else {
-      const inputMappings = this.convertAttributes();
-      return this.safeGetMappings().reduce((inputs, mapping) => {
-        let value = mapping.value;
-        if (isPlainObject(value)) {
-          value = EXPR_PREFIX + JSON.stringify(value, null, 2);
-        } else if (mapping.type !== EXPRESSION_TYPE.LITERAL) {
-          value = EXPR_PREFIX + value;
-        }
-        inputs[mapping.mapTo] = value;
+  private getInputMappingsForNormalContribs() {
+    const inputMappings = this.convertAttributes();
+    return this.safeGetMappings().reduce((inputs, mapping) => {
+      const value = normalizeMappingValue(mapping.value, mapping.type);
+      if (isUndefined(value)) {
         return inputs;
-      }, inputMappings);
-    }
+      }
+      inputs[mapping.mapTo] = value;
+      return inputs;
+    }, inputMappings);
   }
 
-  safeGetMappings() {
+  private safeGetMappings() {
     const mappings = this.resourceTask.activity.mappings || {};
     const { input: resourceInputMappings = [] } = mappings;
     return resourceInputMappings;
   }
 
-  convertAttributes() {
+  private convertAttributes() {
     // in the past schema used name `inputs` but now uses `input`, server model was using inputs
     // todo: fcastill - support input only
     const schemaInputs = this.activitySchema.input || this.activitySchema.inputs || [];
     const activityInput = this.resourceTask.activity.input || {};
     return schemaInputs.reduce((attributes, schemaInput) => {
-      let value = activityInput[schemaInput.name];
+      const value = normalizeMappingValue(activityInput[schemaInput.name]);
       if (isUndefined(value)) {
         return attributes;
       }
-      if (isOutputMapperField(schemaInput) && isArray(value)) {
-        value = value.reduce((mapping, outputMapping) => {
-          mapping[outputMapping.mapTo] =
-            outputMapping.type !== EXPRESSION_TYPE.LITERAL
-              ? EXPR_PREFIX + outputMapping.value
-              : outputMapping.value;
-          return mapping;
-        }, {});
-        return { ...attributes, ...value };
-      } else {
-        attributes[schemaInput.name] = isPlainObject(value)
-          ? EXPR_PREFIX + JSON.stringify(value, null, 2)
-          : value;
-      }
+      attributes[schemaInput.name] = value;
       return attributes;
     }, {});
+  }
+
+  private getInputMappingsForMapperContribs() {
+    let inputMappings = {};
+    const activity = this.resourceTask.activity;
+    if (isStandardMappings(activity)) {
+      inputMappings = activity.settings.mappings || {};
+    } else if (isLegacyMappings(activity)) {
+      inputMappings = activity.input.mappings.reduce((mapping, outputMapping) => {
+        const value = normalizeMappingValue(outputMapping.value, outputMapping.type);
+        if (isUndefined(value)) {
+          return mapping;
+        }
+        mapping[outputMapping.mapTo] = value;
+        return mapping;
+      }, {});
+    }
+    return inputMappings;
   }
 }

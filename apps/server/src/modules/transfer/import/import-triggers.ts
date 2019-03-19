@@ -1,6 +1,10 @@
 import { flow, map, filter } from 'lodash/fp';
 import { FlogoAppModel, Handler, Trigger } from '@flogo-web/core';
-import { ImportsRefAgent, ValidationErrorDetail } from '@flogo-web/server/core';
+import {
+  ImportsRefAgent,
+  ValidationErrorDetail,
+  toActualReference,
+} from '@flogo-web/server/core';
 import { normalizeHandlerMappings } from '../common/normalize-handler-mappings';
 import { tryAndAccumulateValidationErrors } from '../common/try-validation-errors';
 import { normalizeSettingsWithPrefix } from './normalize-settings-with-prefix';
@@ -41,9 +45,7 @@ export function importTriggers(
       updatedAt: null,
       settings: normalizeSettingsWithPrefix(rawTrigger.settings),
     };
-    if (newTrigger.ref.startsWith('#')) {
-      newTrigger.ref = importsRefAgent.getRef(newTrigger.ref.substr(1));
-    }
+    newTrigger.ref = toActualReference(newTrigger.ref, importsRefAgent);
     const { errors: handlerErrors, handlers } = importAllHandlers(
       rawTrigger.id,
       triggerIndex,

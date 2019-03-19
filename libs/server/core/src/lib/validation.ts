@@ -1,3 +1,5 @@
+import { toActualReference } from './resource';
+
 const Ajv = require('ajv');
 import AjvNS from 'ajv';
 
@@ -52,49 +54,32 @@ export const ValidationRuleFactory = {
 
 function contributionRuleFactory(keyword, type, refs, importsRefAgent): ValidateFn {
   return function validator(schema, ref) {
-    const contribInstallationError = validateContribInstallation(refs, keyword);
-    if (ref.startsWith('#')) {
-      const normalizedRef = ref.substr(1);
-      const fullPathRef = importsRefAgent.getRef(normalizedRef);
-      if (!importsRefAgent.imports.get(normalizedRef)) {
+    if (ref.startsWith('#') && !importsRefAgent.imports.get(ref.substr(1))) {
+      (validator as any).errors = [
+        {
+          keyword: `${keyword}-missing-import`,
+          message: `"${ref}" is not found among the "imports"`,
+          params: {
+            ref: ref,
+          },
+        },
+      ];
+      return false;
+    } else {
+      const refToValidateWith = toActualReference(ref, importsRefAgent);
+      if (!refs.includes(refToValidateWith)) {
         (validator as any).errors = [
           {
-            keyword: `${keyword}-missing-import`,
-            message: `"${ref}" is not installed among the imports`,
+            keyword,
+            message: `"${ref}" is not installed in the engine`,
             params: {
               ref: ref,
             },
           },
         ];
         return false;
-      } else {
-        (validator as any).errors = contribInstallationError(fullPathRef, ref);
-        if ((validator as any).errors.length) {
-          return false;
-        }
-      }
-    } else {
-      (validator as any).errors = contribInstallationError(ref, ref);
-      if ((validator as any).errors.length) {
-        return false;
       }
     }
     return true;
   };
 }
-
-const validateContribInstallation = (installedRefs, keyword) => (fullPathRef, ref) => {
-  let errors = [];
-  if (!installedRefs.includes(fullPathRef)) {
-    errors = [
-      {
-        keyword,
-        message: `"${ref}" is not installed in the engine`,
-        params: {
-          ref: ref,
-        },
-      },
-    ];
-  }
-  return errors;
-};
