@@ -1,7 +1,7 @@
 import { ContributionSchema, ContributionType } from '@flogo-web/core';
 import { ImportsRefAgent } from '@flogo-web/server/core';
 import { ParsedImport } from '../../common/parsed-import';
-import { parseImports } from './parse-imports';
+import { parseImports } from '../../common/parse-imports';
 
 export function createFromImports(
   imports: string[],
@@ -23,7 +23,9 @@ export class ExtractImportsRef implements ImportsRefAgent {
     );
     parsedImports.forEach(parsedImport => {
       const contrib = contribSchemas.get(parsedImport.ref);
-      this.imports.get(contrib.type).set(parsedImport.type, parsedImport.ref);
+      if (contrib) {
+        this.imports.get(contrib.type).set(parsedImport.type, parsedImport.ref);
+      }
     });
   }
 

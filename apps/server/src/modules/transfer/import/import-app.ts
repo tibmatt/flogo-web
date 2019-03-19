@@ -19,9 +19,10 @@ import {
 import { constructApp } from '../../../core/models/app';
 import { actionValueTypesNormalizer } from '../common/action-value-type-normalizer';
 import { tryAndAccumulateValidationErrors } from '../common/try-validation-errors';
+import { IMPORT_SYNTAX } from '../common/parse-imports';
 import { validatorFactory } from './validator';
 import { importTriggers } from './import-triggers';
-import { createFromImports, IMPORT_SYNTAX } from './imports';
+import { createFromImports } from './imports';
 
 interface DefaultAppModelResource extends FlogoAppModel.Resource {
   data: {
@@ -44,18 +45,7 @@ export function importApp(
 ): App {
   const now = new Date().toISOString();
   if (rawApp.imports) {
-    const improperImports = validateImports(rawApp.imports);
-    const importsErrors = improperImports.map(importsError => ({
-      keyword: 'improper-import',
-      dataPath: '.imports',
-      message: `${importsError} - Validation error in imports`,
-      params: {
-        ref: importsError,
-      },
-    }));
-    if (importsErrors.length) {
-      throw new ValidationError('Validation error in imports', importsErrors);
-    }
+    validateImports(rawApp.imports);
   }
   const importsRefAgent = createFromImports(rawApp.imports, contributions);
   const newApp = cleanAndValidateApp(
@@ -106,7 +96,20 @@ export function importApp(
 }
 
 function validateImports(imports) {
-  return imports.filter(eachImport => !IMPORT_SYNTAX.exec(eachImport.trim()));
+  const improperImports = imports.filter(
+    eachImport => !IMPORT_SYNTAX.exec(eachImport.trim())
+  );
+  const importsErrors = improperImports.map(importsError => ({
+    keyword: 'improper-import',
+    dataPath: '.imports',
+    message: `${importsError} - Validation error in imports`,
+    params: {
+      ref: importsError,
+    },
+  }));
+  if (importsErrors.length) {
+    throw new ValidationError('Validation error in imports', importsErrors);
+  }
 }
 
 function applyImportHooks(
@@ -138,6 +141,7 @@ function cleanAndValidateApp(
     description: rawApp.description,
     version: rawApp.version,
     properties: rawApp.properties || [],
+    imports: rawApp.imports,
   });
 }
 

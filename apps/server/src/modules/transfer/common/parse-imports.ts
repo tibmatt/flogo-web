@@ -1,4 +1,4 @@
-import { ParsedImport } from '../../common/parsed-import';
+import { ParsedImport } from './parsed-import';
 
 export const IMPORT_SYNTAX = /^(?:([\w-\.]+)\s+)?((?:[\w-\.]+\/)+([\w-\.]+))$/;
 

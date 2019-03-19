@@ -5,6 +5,7 @@ import {
   FlogoAppModel,
   ResourceActionModel,
   CONTRIB_REFS,
+  ContributionType,
 } from '@flogo-web/core';
 import { FLOGO_TASK_TYPE } from '@flogo-web/server/core';
 import { exportFlow } from '..';
@@ -16,7 +17,7 @@ test('it exports a flow', () => {
       ['4ut01d', { id: 'flow:humanized_subflow_ref' } as Resource],
     ]),
     importsAgent: {
-      registerRef: (string): string => string,
+      getAliasRef: (type, ref): string => ref,
       registerFunctionName: () => {},
     },
   });
@@ -146,7 +147,7 @@ function getContributions(): Array<[string, ContributionSchema]> {
       'github-com-tibco-software-flogo-contrib-tibco-log',
       {
         name: 'tibco-log',
-        type: 'flogo:activity',
+        type: ContributionType.Activity,
         ref: 'some_path_to_repo/activity/log',
         version: '0.0.1',
         title: 'Log Message',

@@ -4,6 +4,7 @@ import {
   Trigger,
   Handler,
   ContributionSchema,
+  ContributionType,
   MapperUtils,
 } from '@flogo-web/core';
 import { AppImportsAgent } from '@flogo-web/server/core';
@@ -53,7 +54,7 @@ function preFormatHandler(
   return {
     settings: !isEmpty(settings) ? { ...settings } : undefined,
     action: {
-      ref: refAgent.registerRef(ref),
+      ref: refAgent.getAliasRef(ContributionType.Action, ref),
       settings: null,
       ...actionMappings,
     },

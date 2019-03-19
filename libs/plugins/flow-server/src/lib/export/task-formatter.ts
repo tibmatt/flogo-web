@@ -1,6 +1,12 @@
 import { isEmpty } from 'lodash';
 
-import { Task, createResourceUri, Resource, MapperUtils } from '@flogo-web/core';
+import {
+  Task,
+  createResourceUri,
+  Resource,
+  MapperUtils,
+  ContributionType,
+} from '@flogo-web/core';
 import { isSubflowTask, TASK_TYPE, AppImportsAgent } from '@flogo-web/server/core';
 import { isIterableTask } from '@flogo-web/plugins/flow-core';
 
@@ -49,7 +55,7 @@ export class TaskFormatter {
       description: !isEmpty(description) ? description : undefined,
       settings: !isEmpty(taskSettings) ? taskSettings : undefined,
       activity: {
-        ref: this.importsAgent.registerRef(activityRef),
+        ref: this.importsAgent.getAliasRef(ContributionType.Activity, activityRef),
         input: !isEmpty(input) ? input : undefined,
         settings: !isEmpty(activitySettings) ? activitySettings : undefined,
       },
