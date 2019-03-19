@@ -14,7 +14,7 @@ describe('transfer.common.normalizeSettingsWithPrefix', () => {
       setting1: 'literal_value',
       setting2: '=$assignment_value',
       setting3: 20,
-      setting4: '=' + JSON.stringify(sampleJSON, null, 2),
+      setting4: { ...sampleJSON },
     });
   });
 });

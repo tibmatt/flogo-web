@@ -5,6 +5,3 @@ export const ROOT_TYPES = {
   ERROR: 'error',
   ITERATOR: 'iterator',
 };
-
-export const REGEX_INPUT_VALUE_INTERNAL = /^(([\w-]+)\.([\w-]+))((?:\.[\w-]+)*)$/;
-export const REGEX_INPUT_VALUE_EXTERNAL = /^\{(A([\w-]+)|T|E)\.([\w-]+)\}((?:\.[\w-]+)*)$/;

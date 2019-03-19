@@ -26,9 +26,8 @@ const normalizeMappingValue = (value: any, mappingType?: string) => {
   if (isUndefined(value)) {
     return value;
   }
-  if (isPlainObject(value)) {
-    value = EXPR_PREFIX + JSON.stringify(value, null, 2);
-  } else if (mappingType && mappingType !== EXPRESSION_TYPE.LITERAL) {
+
+  if (mappingType && mappingType !== EXPRESSION_TYPE.LITERAL && !isPlainObject(value)) {
     // mappingType is passed for the case of old mappings structure ({mapTo, type: MappingType, value})
     value = EXPR_PREFIX + value;
   }

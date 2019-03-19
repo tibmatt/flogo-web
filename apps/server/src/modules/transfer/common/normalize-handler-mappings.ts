@@ -7,9 +7,7 @@ const CURRENT_SCOPE_RESOLVER = '$';
 const normalizeAndAccumulateMapping = (reducedMappings, mapping) => {
   mapping = prefixWithScopeResolver(mapping);
   let value = mapping.value;
-  if (isPlainObject(value)) {
-    value = EXPR_PREFIX + JSON.stringify(value, null, 2);
-  } else if (mapping.type !== MAPPING_EXPRESSION_TYPE.LITERAL) {
+  if (mapping.type !== MAPPING_EXPRESSION_TYPE.LITERAL && !isPlainObject(value)) {
     value = EXPR_PREFIX + value;
   }
   reducedMappings[mapping.mapTo] = value;
