@@ -234,7 +234,7 @@ export class AppsService {
     appId,
     { format, flowIds }: { appModel?: string; format?: string; flowIds?: string[] } = {}
   ) {
-    const app = await this.findOne(appId);
+    const app = await this.appsDb.findOne({ _id: appId });
     if (!app) {
       throw ErrorManager.makeError('Application not found', {
         type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND,
