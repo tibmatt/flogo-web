@@ -1,13 +1,13 @@
 import { isUndefined, isArray, isPlainObject } from 'lodash';
 
-import { EXPR_PREFIX, CONTRIB_REFS } from '@flogo-web/core';
+import { EXPR_PREFIX, CONTRIB_REFS, ResourceActionModel } from '@flogo-web/core';
 import {
   FLOGO_TASK_TYPE,
   TASK_TYPE,
   EXPRESSION_TYPE,
   parseResourceIdFromResourceUri,
 } from '@flogo-web/server/core';
-import { isOutputMapperField } from '@flogo-web/plugins/flow-core';
+import { isMapperActivity, isOutputMapperField } from '@flogo-web/plugins/flow-core';
 import { normalizeIteratorValue } from './normalize-iterator-value';
 
 export class TaskConverter {
@@ -53,7 +53,7 @@ export class TaskConverter {
     if (this.isSubflowTask()) {
       type = FLOGO_TASK_TYPE.TASK_SUB_PROC;
       settings.flowPath = this.extractSubflowPath();
-    } else {
+    } else if (!isMapperActivity(this.activitySchema)) {
       activitySettings = this.resourceTask.activity.settings;
     }
     if (this.isIteratorTask()) {
@@ -76,17 +76,22 @@ export class TaskConverter {
   }
 
   prepareInputMappings() {
-    const inputMappings = this.convertAttributes();
-    return this.safeGetMappings().reduce((inputs, mapping) => {
-      let value = mapping.value;
-      if (isPlainObject(value)) {
-        value = EXPR_PREFIX + JSON.stringify(value, null, 2);
-      } else if (mapping.type !== EXPRESSION_TYPE.LITERAL) {
-        value = EXPR_PREFIX + value;
-      }
-      inputs[mapping.mapTo] = value;
-      return inputs;
-    }, inputMappings);
+    if (isMapperActivity(this.activitySchema)) {
+      const inputMappings = this.resourceTask.activity.settings.mappings || {};
+      return inputMappings;
+    } else {
+      const inputMappings = this.convertAttributes();
+      return this.safeGetMappings().reduce((inputs, mapping) => {
+        let value = mapping.value;
+        if (isPlainObject(value)) {
+          value = EXPR_PREFIX + JSON.stringify(value, null, 2);
+        } else if (mapping.type !== EXPRESSION_TYPE.LITERAL) {
+          value = EXPR_PREFIX + value;
+        }
+        inputs[mapping.mapTo] = value;
+        return inputs;
+      }, inputMappings);
+    }
   }
 
   safeGetMappings() {
