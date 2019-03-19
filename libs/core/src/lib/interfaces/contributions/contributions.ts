@@ -23,4 +23,12 @@ export interface TriggerSchema extends BaseContributionSchema {
   };
 }
 
-export type ContributionSchema = TriggerSchema | ActivitySchema | FunctionsSchema;
+export interface ActionSchema extends BaseContributionSchema {
+  type: ContributionType.Action;
+}
+
+export type ContributionSchema =
+  | TriggerSchema
+  | ActivitySchema
+  | FunctionsSchema
+  | ActionSchema;

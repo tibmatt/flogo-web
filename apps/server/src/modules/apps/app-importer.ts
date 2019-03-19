@@ -1,13 +1,9 @@
 import shortid from 'shortid';
-import { injectable, inject } from 'inversify';
+import { injectable } from 'inversify';
 
-import { ContributionSchema } from '@flogo-web/core';
-
-import { TOKENS } from '../../core';
 import { ResourceTypes, ResourcePluginRegistry } from '../../extension';
-import { ContributionsService } from '../contribs';
 import { importApp, ImportersResolver } from '../transfer';
-import { contribsToPairs } from './contribs-to-pairs';
+import { AllContribsService } from '../all-contribs';
 
 function resourceImportResolver(porting: ResourceTypes): ImportersResolver {
   return {
@@ -24,14 +20,11 @@ function resourceImportResolver(porting: ResourceTypes): ImportersResolver {
 export class AppImporter {
   constructor(
     private pluginRegistry: ResourcePluginRegistry,
-    @inject(TOKENS.ContribActivitiesManager)
-    private contribActivitiesService: ContributionsService,
-    @inject(TOKENS.ContribTriggersManager)
-    private contribTriggersService: ContributionsService
+    private allContribsService: AllContribsService
   ) {}
 
   async import(app) {
-    const contributions = await this.loadContribs();
+    const contributions = await this.allContribsService.allByRef();
     const { id, ...newApp } = await importApp(
       app,
       resourceImportResolver(this.pluginRegistry.resourceTypes),
@@ -39,13 +32,5 @@ export class AppImporter {
       contributions
     );
     return { _id: id, ...newApp };
-  }
-
-  private async loadContribs() {
-    const [activities, triggers] = await Promise.all([
-      contribsToPairs(this.contribActivitiesService.find()),
-      contribsToPairs(this.contribTriggersService.find()),
-    ]);
-    return new Map<string, ContributionSchema>([...activities, ...triggers]);
   }
 }
