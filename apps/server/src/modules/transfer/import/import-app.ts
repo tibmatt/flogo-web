@@ -7,6 +7,7 @@ import {
   ResourceImporter,
   ValidationErrorDetail,
   ImportsRefAgent,
+  toActualReference,
 } from '@flogo-web/server/core';
 
 import { constructApp } from '../../../core/models/app';
@@ -215,9 +216,7 @@ function createHandlerImportResolver(
     handler: FlogoAppModel.Handler,
     rawHandler: FlogoAppModel.Handler
   ): Handler => {
-    if (handler.action.ref.startsWith('#')) {
-      handler.action.ref = importsRefAgent.getRef(handler.action.ref.substr(1));
-    }
+    handler.action.ref = toActualReference(handler.action.ref, importsRefAgent);
     const ref = handler.action && handler.action.ref;
     const resourceImporter = resolveResourceImporter.byRef(ref);
     if (resourceImporter) {
