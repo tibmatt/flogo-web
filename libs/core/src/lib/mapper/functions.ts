@@ -1,3 +1,4 @@
+import { isObject, isArray } from 'lodash';
 import {
   ParseResult,
   parse,
@@ -56,11 +57,14 @@ export function parseAndExtractReferencesInMappings(mappings: {
 }) {
   const functions = new Set<string>();
   const addToFunctions: (string) => void = (fn: string) => functions.add(fn);
-  Object.values(mappings).forEach(mapping => {
-    if (typeof mapping === 'string' && mapping.startsWith(EXPR_PREFIX)) {
-      parseAndExtractReferences(mapping.substr(1)).forEach(addToFunctions);
+  (function extract(current: any) {
+    if (typeof current === 'string' && current.startsWith(EXPR_PREFIX)) {
+      parseAndExtractReferences(current.substr(1)).forEach(addToFunctions);
+    } else if (isArray(current)) {
+      current.forEach(extract);
+    } else if (isObject(current)) {
+      Object.values(current).forEach(extract);
     }
-  });
-
+  })(mappings);
   return Array.from(functions.values());
 }

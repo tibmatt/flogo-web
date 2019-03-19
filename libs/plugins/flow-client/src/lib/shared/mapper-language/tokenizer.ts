@@ -1,3 +1,4 @@
+// can debug in: https://microsoft.github.io/monaco-editor/monarch.html
 export function load() {
   return {
     keywords: ['true', 'false', 'null', 'nil'],
@@ -64,6 +65,12 @@ export function load() {
         { include: '@baseExpr' },
         [/[()\[\]]/, '@brackets'],
         [/}}/, { token: '@rematch', next: '@pop' }],
+      ],
+
+      inlineObjectExpr: [
+        { include: '@baseExpr' },
+        [/[()\[\]]/, '@brackets'],
+        [/\"/, { token: '@rematch', next: '@pop' }],
       ],
 
       json: [
@@ -173,6 +180,14 @@ export function load() {
             token: 'string-template.open',
             bracket: '@open',
             next: '@templateExpr',
+          },
+        ],
+        [
+          /=/,
+          {
+            token: 'string-template.open',
+            bracket: '@open',
+            next: '@inlineObjectExpr',
           },
         ],
         [
