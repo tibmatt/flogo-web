@@ -1,4 +1,10 @@
-import { App, FlogoAppModel, ContributionSchema, Handler } from '@flogo-web/core';
+import {
+  App,
+  FlogoAppModel,
+  ContributionSchema,
+  ContributionType,
+  Handler,
+} from '@flogo-web/core';
 import {
   Resource,
   ResourceImportContext,
@@ -51,7 +57,7 @@ export function importApp(
       throw new ValidationError('Validation error in imports', importsErrors);
     }
   }
-  const importsRefAgent = createFromImports(rawApp.imports);
+  const importsRefAgent = createFromImports(rawApp.imports, contributions);
   const newApp = cleanAndValidateApp(
     rawApp as FlogoAppModel.App,
     Array.from(contributions.values()),
@@ -216,7 +222,11 @@ function createHandlerImportResolver(
     handler: FlogoAppModel.Handler,
     rawHandler: FlogoAppModel.Handler
   ): Handler => {
-    handler.action.ref = toActualReference(handler.action.ref, importsRefAgent);
+    handler.action.ref = toActualReference(
+      handler.action.ref,
+      ContributionType.Action,
+      importsRefAgent
+    );
     const ref = handler.action && handler.action.ref;
     const resourceImporter = resolveResourceImporter.byRef(ref);
     if (resourceImporter) {

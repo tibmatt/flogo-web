@@ -1,7 +1,10 @@
-import { toActualReference } from './resource';
-
 const Ajv = require('ajv');
 import AjvNS from 'ajv';
+
+import { ContributionType } from '@flogo-web/core';
+import { ImportsRefAgent } from '@flogo-web/server/core';
+
+import { toActualReference } from './resource';
 
 export type ValidateFn = AjvNS.SchemaValidateFunction | AjvNS.ValidateFunction;
 
@@ -52,9 +55,20 @@ export const ValidationRuleFactory = {
   contributionInstalled: contributionRuleFactory,
 };
 
-function contributionRuleFactory(keyword, type, refs, importsRefAgent): ValidateFn {
+function contributionRuleFactory(
+  keyword,
+  type,
+  refs,
+  {
+    contribType,
+    importsRefAgent,
+  }: { contribType: ContributionType; importsRefAgent: ImportsRefAgent }
+): ValidateFn {
   return function validator(schema, ref) {
-    if (ref.startsWith('#') && !importsRefAgent.imports.get(ref.substr(1))) {
+    if (
+      ref.startsWith('#') &&
+      !importsRefAgent.getPackageRef(contribType, ref.substr(1))
+    ) {
       (validator as any).errors = [
         {
           keyword: `${keyword}-missing-import`,
@@ -66,7 +80,7 @@ function contributionRuleFactory(keyword, type, refs, importsRefAgent): Validate
       ];
       return false;
     } else {
-      const refToValidateWith = toActualReference(ref, importsRefAgent);
+      const refToValidateWith = toActualReference(ref, contribType, importsRefAgent);
       if (!refs.includes(refToValidateWith)) {
         (validator as any).errors = [
           {

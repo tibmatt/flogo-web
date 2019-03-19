@@ -1,10 +1,12 @@
 import { flow, map, filter } from 'lodash/fp';
-import { FlogoAppModel, Handler, Trigger } from '@flogo-web/core';
+
+import { FlogoAppModel, Handler, Trigger, ContributionType } from '@flogo-web/core';
 import {
   ImportsRefAgent,
   ValidationErrorDetail,
   toActualReference,
 } from '@flogo-web/server/core';
+
 import { normalizeHandlerMappings } from '../common/normalize-handler-mappings';
 import { tryAndAccumulateValidationErrors } from '../common/try-validation-errors';
 import { normalizeSettingsWithPrefix } from './normalize-settings-with-prefix';
@@ -23,7 +25,6 @@ export function importTriggers(
   createdAt: string = null,
   importsRefAgent: ImportsRefAgent
 ): {
-  // todo: triggers interface
   triggers: Trigger[];
   errors: ValidationErrorDetail[];
   normalizedTriggerIds: Map<string, string>;
@@ -45,7 +46,11 @@ export function importTriggers(
       updatedAt: null,
       settings: normalizeSettingsWithPrefix(rawTrigger.settings),
     };
-    newTrigger.ref = toActualReference(newTrigger.ref, importsRefAgent);
+    newTrigger.ref = toActualReference(
+      newTrigger.ref,
+      ContributionType.Trigger,
+      importsRefAgent
+    );
     const { errors: handlerErrors, handlers } = importAllHandlers(
       rawTrigger.id,
       triggerIndex,

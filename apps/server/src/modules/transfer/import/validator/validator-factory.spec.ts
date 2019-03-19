@@ -3,7 +3,7 @@ import { validatorFactory } from './validator-factory';
 describe('importer.validator-factory', () => {
   let validator;
   beforeEach(() => {
-    validator = validatorFactory(makeTestSchema(), ['ref/to/a/trigger']);
+    validator = validatorFactory(makeTestSchema(), ['ref/to/a/trigger'], null, null);
   });
 
   test('should error for not installed contributions', () => {

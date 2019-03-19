@@ -1,3 +1,4 @@
+import { ContributionType } from '@flogo-web/core';
 import { ImportsRefAgent } from '../extensions';
 
 const ALIAS_PREFIX = '#';
@@ -21,10 +22,14 @@ const UPGRADE_SPECIAL_CONTRIB = new Map<string, string>([
   ],
 ]);
 
-export function toActualReference(contribRef: string, agent: ImportsRefAgent): string {
+export function toActualReference(
+  contribRef: string,
+  contribType: ContributionType,
+  agent: ImportsRefAgent
+): string {
   let actualRef = contribRef;
   if (contribRef.startsWith(ALIAS_PREFIX)) {
-    actualRef = agent.getRef(contribRef.substr(1));
+    actualRef = agent.getPackageRef(contribType, contribRef.substr(1));
   }
   // return the contrib's upgraded reference path if any or the actual ref
   return UPGRADE_SPECIAL_CONTRIB.get(actualRef) || actualRef;
