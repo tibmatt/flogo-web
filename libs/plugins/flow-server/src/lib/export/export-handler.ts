@@ -8,6 +8,5 @@ export function exportHandler(
   exportedHandler.action.settings = {
     flowURI: createResourceUri(context.internalHandler.resourceId),
   };
-  delete exportedHandler.action.ref;
   return exportedHandler;
 }
