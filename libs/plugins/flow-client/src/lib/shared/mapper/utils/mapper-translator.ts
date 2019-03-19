@@ -1,4 +1,4 @@
-import { isString, isArray, fromPairs } from 'lodash';
+import { isString, isObject, isArray, fromPairs } from 'lodash';
 import { resolveExpressionType } from '@flogo-web/parser';
 
 import {
@@ -27,6 +27,8 @@ export interface AttributeDescriptor {
   required?: boolean;
   allowed?: any[];
 }
+
+const stringify = v => JSON.stringify(v, null, 2);
 
 function getEnumDescriptor(attr: AttributeDescriptor) {
   let allowed = isArray(attr.allowed) ? [...attr.allowed] : [];
@@ -130,9 +132,20 @@ export class MapperTranslator {
     if (isString(rawExpression) && rawExpression.startsWith('=')) {
       return rawExpression.substr(1);
     }
-    return !isString(rawExpression) || inputType === MAPPING_TYPE.LITERAL_ASSIGNMENT
-      ? JSON.stringify(rawExpression, null, 2)
-      : rawExpression;
+    if (isObject(rawExpression)) {
+      let value: object & { mapping?: any } = rawExpression;
+      if (value.mapping) {
+        value = value.mapping;
+      }
+      return stringify(value);
+    } else if (
+      !isString(rawExpression) ||
+      inputType === MAPPING_TYPE.LITERAL_ASSIGNMENT
+    ) {
+      return stringify(rawExpression);
+    } else {
+      return rawExpression;
+    }
   }
 
   static translateMappingsOut(mappings: {
@@ -156,12 +169,11 @@ export class MapperTranslator {
 
   static parseExpression(expression: string) {
     const mappingType = mappingTypeFromExpression(expression);
-    let value = expression;
-    if (
-      mappingType === MAPPING_TYPE.LITERAL_ASSIGNMENT ||
-      mappingType === MAPPING_TYPE.OBJECT_TEMPLATE
-    ) {
+    let value: any = expression;
+    if (mappingType === MAPPING_TYPE.LITERAL_ASSIGNMENT) {
       value = value !== 'nil' ? JSON.parse(value) : null;
+    } else if (mappingType === MAPPING_TYPE.OBJECT_TEMPLATE) {
+      value = { mapping: JSON.parse(value) };
     } else {
       value = EXPR_PREFIX + value;
     }

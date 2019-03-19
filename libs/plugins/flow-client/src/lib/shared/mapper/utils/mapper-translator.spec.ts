@@ -9,7 +9,9 @@ describe('MapperTranslator', function() {
       simpleString: 'my string',
       attrAssignment: '=$activity[myActivity].attr',
       exprAssignment: '=$activity[myActivity].attr + 4',
-      objectTemplate: '={ "myExample": "{{ someProp }}"}',
+      objectTemplate: { mapping: { myExample: '=someProp' } },
+      stringifiedObjTemplate: '={ "myExample": "{{ someProp }}"}',
+      unwrappedTemplate: { myExample: '{{ someProp }}' },
     });
 
     describe('for literal assignments', function() {
@@ -34,9 +36,21 @@ describe('MapperTranslator', function() {
       );
     });
     it('translates object templates', function() {
-      const objectMapping = translatedMappings['objectTemplate'];
-      expect(objectMapping).toBeTruthy();
-      expect(JSON.parse(objectMapping.expression)).toEqual(
+      expect(JSON.parse(translatedMappings['objectTemplate'].expression)).toEqual(
+        jasmine.objectContaining({
+          myExample: '=someProp',
+        })
+      );
+    });
+    it('translates stringified object templates', function() {
+      expect(JSON.parse(translatedMappings['stringifiedObjTemplate'].expression)).toEqual(
+        jasmine.objectContaining({
+          myExample: '{{ someProp }}',
+        })
+      );
+    });
+    it('translates unwrapped object templates', function() {
+      expect(JSON.parse(translatedMappings['unwrappedTemplate'].expression)).toEqual(
         jasmine.objectContaining({
           myExample: '{{ someProp }}',
         })
@@ -76,7 +90,7 @@ describe('MapperTranslator', function() {
       );
     });
     it('translates object mappings', function() {
-      expect(translatedMappings['objectTemplate']).toEqual({ myThing: 44 });
+      expect(translatedMappings['objectTemplate']).toEqual({ mapping: { myThing: 44 } });
     });
   });
 
