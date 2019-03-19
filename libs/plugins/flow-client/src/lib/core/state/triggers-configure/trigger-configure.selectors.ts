@@ -29,17 +29,6 @@ export const getAllTabs = createSelector(
   state => state.tabs
 );
 
-const getConfigurableTriggerDetails = createSelector(
-  selectHandlers,
-  selectTriggers,
-  (handlers, triggers) => {
-    return Object.values(handlers).map(handler => ({
-      trigger: triggers[handler.triggerId],
-      handler,
-    }));
-  }
-);
-
 export const selectCurrentTriggerId = createSelector(
   selectTriggerConfigure,
   triggerConfigureState =>
@@ -52,14 +41,15 @@ const selectTriggerConfigureTriggers = createSelector(
 );
 export const getTriggerStatuses = createSelector(
   selectTriggerConfigureTriggers,
-  (triggers): TriggerStatus[] =>
-    Object.keys(triggers).map(
+  selectTriggers,
+  (triggerConfigure, triggers): TriggerStatus[] =>
+    Object.keys(triggerConfigure).map(
       (triggerId): TriggerStatus => {
         return {
           id: triggerId,
           name: triggers[triggerId].name,
-          isValid: triggers[triggerId].isValid,
-          isDirty: triggers[triggerId].isDirty,
+          isValid: triggerConfigure[triggerId].isValid,
+          isDirty: triggerConfigure[triggerId].isDirty,
         };
       }
     )
@@ -135,19 +125,6 @@ export const getCurrentTriggerOverallStatus = (store: Store<FlowState>) => {
     switchMap(isTriggerInitialized => (isTriggerInitialized ? currentTabs$ : empty$))
   );
 };
-
-export const getConfigureModalState = createSelector(
-  selectTriggerConfigure,
-  selectFlowMetadata,
-  getConfigurableTriggerDetails,
-  (triggerConfigure, flowMetadata, triggers) => {
-    return {
-      triggers,
-      flowMetadata,
-      triggerConfigure,
-    };
-  }
-);
 
 export const getCurrentSchema = createSelector(
   selectTriggers,
