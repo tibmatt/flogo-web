@@ -52,6 +52,7 @@ export enum ValueType {
   Any = 'any',
   Params = 'params',
   ComplexObject = 'complexObject',
+  Bytes = 'bytes',
 }
 
 const _allTypes: ReadonlyArray<ValueType> = Object.values(ValueType);
@@ -66,6 +67,7 @@ const _defaultValuesForValueTypes: [ValueType, any][] = [
   [ValueType.Params, null],
   [ValueType.Any, null],
   [ValueType.ComplexObject, null],
+  [ValueType.Bytes, ''],
 ];
 
 export namespace ValueType {

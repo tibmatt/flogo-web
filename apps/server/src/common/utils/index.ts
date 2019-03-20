@@ -119,6 +119,7 @@ export function getDefaultValueByType(type) {
     [FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY]: [],
     [FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS]: null,
     [FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT]: null,
+    [FLOGO_TASK_ATTRIBUTE_TYPE.BYTES]: '',
   };
 
   if (!Object.hasOwnProperty.call(defaultValues, type)) {

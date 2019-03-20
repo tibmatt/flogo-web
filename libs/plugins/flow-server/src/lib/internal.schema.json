@@ -90,7 +90,8 @@
             "params",
             "any",
             "complexObject",
-            "complex_object"
+            "complex_object",
+            "bytes"
           ]
         },
         "value": {
