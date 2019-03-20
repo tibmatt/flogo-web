@@ -22,8 +22,7 @@ const COMPLEX_TYPES = [
   ValueType.Any,
   ValueType.ComplexObject,
   ValueType.Object,
-  ValueType.Params,
-  ValueType.Bytes,
+  ValueType.Params
 ];
 
 @Component({
