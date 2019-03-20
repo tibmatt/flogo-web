@@ -34,13 +34,6 @@
               >{{ 'NAVBAR:HELP-OPEN-INSTRUCTIONS' | translate }}</a
             >
           </li>
-          <li>
-            <a
-              href="https://community.tibco.com/products/project-flogo?_ga=1.213003284.1423112884.1479356766"
-              target="_blank"
-              >{{ 'NAVBAR:HELP-COMMUNITY' | translate }}</a
-            >
-          </li>
         </ul>
         <div class="flogo-header__divider"></div>
         <ul (click)="closeNavMenu()">
@@ -76,7 +69,3 @@
     </div>
   </div>
 </nav>
-<flogo-walkthrough
-  [isActivated]="isWalkthroughActivated"
-  (closedModal)="onClosedInstructions($event)"
-></flogo-walkthrough>

@@ -243,32 +243,6 @@
         }
       }
     },
-    "client-e2e": {
-      "root": "apps/client-e2e",
-      "projectType": "application",
-      "prefix": "",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "apps/client-e2e/protractor.conf.js",
-            "devServerTarget": "client:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "client:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": "apps/client-e2e/tsconfig.e2e.json",
-            "exclude": ["**/node_modules/**"]
-          }
-        }
-      }
-    },
     "server-core": {
       "root": "libs/server/core",
       "sourceRoot": "libs/server/core/src",
