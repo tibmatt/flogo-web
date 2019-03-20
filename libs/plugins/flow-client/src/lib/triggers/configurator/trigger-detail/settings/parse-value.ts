@@ -29,7 +29,6 @@ function coerce(type: ValueType, inputValue: string) {
       return toNumber(inputValue);
     case ValueType.Boolean:
       return coerceToBoolean(inputValue);
-    case ValueType.ComplexObject:
     case ValueType.Array:
     case ValueType.Object:
     case ValueType.Params:

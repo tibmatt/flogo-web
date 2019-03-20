@@ -107,7 +107,7 @@
           "output": [
             {
               "name": "someResponse",
-              "type": "complex_object"
+              "type": "string"
             }
           ]
         },

@@ -20,7 +20,6 @@ import { parseValue } from '../parse-value';
 const COMPLEX_TYPES = [
   ValueType.Array,
   ValueType.Any,
-  ValueType.ComplexObject,
   ValueType.Object,
   ValueType.Params,
 ];
