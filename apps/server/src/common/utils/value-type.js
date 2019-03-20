@@ -21,6 +21,8 @@ export function normalizeValueType(type) {
     case 'complexobject':
     case 'complex_object':
       return FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT;
+    case 'bytes':
+      return FLOGO_TASK_ATTRIBUTE_TYPE.BYTES;
     case 'array':
       return FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY;
     case 'params':

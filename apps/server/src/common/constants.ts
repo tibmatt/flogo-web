@@ -15,6 +15,7 @@ export const FLOGO_TASK_ATTRIBUTE_TYPE = {
   PARAMS: 'params',
   ANY: 'any',
   COMPLEX_OBJECT: 'complexObject',
+  BYTES: 'bytes',
 };
 
 export const FLOGO_ENGINE_STATUS = {

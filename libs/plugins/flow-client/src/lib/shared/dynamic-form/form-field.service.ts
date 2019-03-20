@@ -19,6 +19,7 @@ export class FormFieldService {
     };
     switch (field.type) {
       case ValueType.String:
+      case ValueType.Bytes:
         return new Textbox(initOpts);
       case ValueType.Double:
       case ValueType.Integer:
