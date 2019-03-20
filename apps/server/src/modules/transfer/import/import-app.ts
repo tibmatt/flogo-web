@@ -13,7 +13,6 @@ import {
   ResourceImporter,
   ValidationErrorDetail,
   ImportsRefAgent,
-  toActualReference,
 } from '@flogo-web/server/core';
 
 import { constructApp } from '../../../core/models/app';
@@ -226,10 +225,9 @@ function createHandlerImportResolver(
     handler: FlogoAppModel.Handler,
     rawHandler: FlogoAppModel.Handler
   ): Handler => {
-    handler.action.ref = toActualReference(
-      handler.action.ref,
+    handler.action.ref = importsRefAgent.getPackageRef(
       ContributionType.Action,
-      importsRefAgent
+      handler.action.ref
     );
     const ref = handler.action && handler.action.ref;
     const resourceImporter = resolveResourceImporter.byRef(ref);

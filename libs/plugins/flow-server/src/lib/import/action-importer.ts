@@ -12,7 +12,6 @@ import {
   ValidationRuleFactory,
   ValidationError,
   ImportsRefAgent,
-  toActualReference,
 } from '@flogo-web/server/core';
 
 import { FlowData } from '../flow';
@@ -104,10 +103,9 @@ export class ActionImporter {
   }
 
   convertTask(resourceTask, importsRefAgent: ImportsRefAgent) {
-    resourceTask.activity.ref = toActualReference(
-      resourceTask.activity.ref,
+    resourceTask.activity.ref = importsRefAgent.getPackageRef(
       ContributionType.Activity,
-      importsRefAgent
+      resourceTask.activity.ref
     );
     const activitySchema = this.activitySchemasByRef.get(resourceTask.activity.ref);
     return this.taskConverterFactory(resourceTask, activitySchema).convert();
@@ -138,7 +136,7 @@ function makeValidator(installedRefs: string[], importsRefAgent: ImportsRefAgent
           'activity-installed',
           'activity',
           installedRefs || [],
-          { contribType: ContributionType.Activity, importsRefAgent }
+          ref => importsRefAgent.getPackageRef(ContributionType.Activity, ref)
         ),
       },
     ]

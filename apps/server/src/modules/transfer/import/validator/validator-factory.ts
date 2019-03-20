@@ -22,7 +22,7 @@ export function validatorFactory(
       'trigger-installed',
       'Trigger',
       contributionRefs || [],
-      { contribType: ContributionType.Trigger, importsRefAgent }
+      ref => importsRefAgent.getPackageRef(ContributionType.Trigger, ref)
     ),
   });
   return validator;

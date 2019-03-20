@@ -1,15 +1,8 @@
 import { ContributionSchema, ContributionType } from '@flogo-web/core';
 import { ImportsRefAgent } from '@flogo-web/server/core';
 import { ParsedImport } from '../../common/parsed-import';
-import { parseImports } from '../../common/parse-imports';
 
-export function createFromImports(
-  imports: string[],
-  contribSchemas: Map<string, ContributionSchema>
-): ImportsRefAgent {
-  const parsedImports = parseImports(imports || []);
-  return new ExtractImportsRef(parsedImports, contribSchemas);
-}
+const ALIAS_PREFIX = '#';
 
 export class ExtractImportsRef implements ImportsRefAgent {
   private imports: Map<ContributionType, Map<string, string>>;
@@ -30,6 +23,10 @@ export class ExtractImportsRef implements ImportsRefAgent {
   }
 
   getPackageRef(category: ContributionType, alias: string) {
-    return this.imports.get(category).get(alias);
+    let actualRef = alias;
+    if (alias.startsWith(ALIAS_PREFIX)) {
+      actualRef = this.imports.get(category).get(alias.substr(1));
+    }
+    return actualRef;
   }
 }

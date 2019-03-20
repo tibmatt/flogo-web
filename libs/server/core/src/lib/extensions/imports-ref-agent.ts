@@ -5,16 +5,16 @@ import { ContributionType } from '@flogo-web/core';
  */
 export interface ImportsRefAgent {
   /**
-   * Translate aliased ref (`ref`) to package ref `github.com/path/to/full/package-ref`
+   * Translate aliased ref (`#ref`) to package ref `github.com/path/to/full/package-ref`
    *
    * @example
    *  if there is an import registered as "github.com/project-flogo/contrib/activity/rest"
-   *  importAgent.getPackageRef(ContributionType.Activity, 'rest')
+   *  importAgent.getPackageRef(ContributionType.Activity, '#rest')
    *  // outputs github.com/project-flogo/contrib/activity/rest
    *
    *  @example
    *  if there is an import registered as "myAliasedLog github.com/project-flogo/contrib/activity/log"
-   *  importAgent.getPackageRef(ContributionType.Activity, 'myAliasedLog')
+   *  importAgent.getPackageRef(ContributionType.Activity, '#myAliasedLog')
    *  // outputs github.com/project-flogo/contrib/activity/log
    * @param contribType
    * @param aliasRef

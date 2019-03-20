@@ -1,11 +1,6 @@
 const Ajv = require('ajv');
 import AjvNS from 'ajv';
 
-import { ContributionType } from '@flogo-web/core';
-import { ImportsRefAgent } from '@flogo-web/server/core';
-
-import { toActualReference } from './resource';
-
 export type ValidateFn = AjvNS.SchemaValidateFunction | AjvNS.ValidateFunction;
 
 export interface CustomValidation {
@@ -59,33 +54,27 @@ function contributionRuleFactory(
   keyword,
   type,
   refs,
-  {
-    contribType,
-    importsRefAgent,
-  }: { contribType: ContributionType; importsRefAgent: ImportsRefAgent }
+  translateAliasedRef: (fromRef) => string
 ): ValidateFn {
-  return function validator(schema, ref) {
-    if (
-      ref.startsWith('#') &&
-      !importsRefAgent.getPackageRef(contribType, ref.substr(1))
-    ) {
+  return function validator(schema, ref: string) {
+    const translatedRef = translateAliasedRef(ref);
+    if (ref.startsWith('#') && !translatedRef) {
       (validator as any).errors = [
         {
           keyword: `${keyword}-missing-import`,
-          message: `"${ref}" is not found among the "imports"`,
+          message: `Could not find import for "${ref}": ${ref} is not declared in the "imports" or it references an `,
           params: {
-            ref: ref,
+            ref,
           },
         },
       ];
       return false;
     } else {
-      const refToValidateWith = toActualReference(ref, contribType, importsRefAgent);
-      if (!refs.includes(refToValidateWith)) {
+      if (!refs.includes(translatedRef)) {
         (validator as any).errors = [
           {
             keyword,
-            message: `"${ref}" is not installed in the engine`,
+            message: `contribution "${ref}" is not installed`,
             params: {
               ref: ref,
             },
