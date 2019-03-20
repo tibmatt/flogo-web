@@ -133,7 +133,6 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
               "node_modules/@angular/cdk/overlay-prebuilt.css",
-              "apps/client/src/assets/ui-pattern/css/tibco-cloud-ui-pattern.css",
               "apps/client/src/styles.less"
             ],
             "scripts": [
@@ -199,7 +198,6 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
               "node_modules/@angular/cdk/overlay-prebuilt.css",
-              "apps/client/src/assets/ui-pattern/css/tibco-cloud-ui-pattern.css",
               "apps/client/src/styles.less"
             ],
             "scripts": [
