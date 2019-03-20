@@ -14,7 +14,6 @@ export const FLOGO_TASK_ATTRIBUTE_TYPE = {
   ARRAY: 'array',
   PARAMS: 'params',
   ANY: 'any',
-  COMPLEX_OBJECT: 'complexObject',
   BYTES: 'bytes',
 };
 

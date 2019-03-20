@@ -12,7 +12,6 @@ export class IconsService {
     [ValueType.Integer]: '#flogo-mapper-icon-integer',
     [ValueType.Long]: '#flogo-mapper-icon-long',
     [ValueType.Params]: '#flogo-mapper-icon-params',
-    [ValueType.ComplexObject]: '#flogo-mapper-icon-complex-object',
     [ValueType.Bytes]: '#flogo-mapper-icon-bytes',
     [ValueType.Any]: '#flogo-mapper-icon-any',
     [ValueType.Object]: '#flogo-mapper-icon-object',

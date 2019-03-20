@@ -33,7 +33,6 @@ export class FormFieldService {
       case ValueType.Object:
       case ValueType.Array:
       case ValueType.Any:
-      case ValueType.ComplexObject:
       case ValueType.Params:
         return new ObjectType(initOpts);
       default:

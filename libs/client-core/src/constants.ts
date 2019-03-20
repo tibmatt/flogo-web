@@ -51,7 +51,6 @@ export enum ValueType {
   Array = 'array',
   Any = 'any',
   Params = 'params',
-  ComplexObject = 'complexObject',
   Bytes = 'bytes',
 }
 
@@ -66,7 +65,6 @@ const _defaultValuesForValueTypes: [ValueType, any][] = [
   [ValueType.Array, []],
   [ValueType.Params, null],
   [ValueType.Any, null],
-  [ValueType.ComplexObject, null],
   [ValueType.Bytes, ''],
 ];
 

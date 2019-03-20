@@ -15,17 +15,13 @@ describe('importer.common.actionValueTypesNormalizer', () => {
     tasks: [
       {
         id: 'task1',
-        attributes: [
-          { name: 'attr1', type: 'double' },
-          { name: 'attr2', type: 'complex_object' },
-        ],
+        attributes: [{ name: 'attr1', type: 'double' }],
       },
       {
         id: 'task2',
         attributes: [
           { name: 'attr1', type: 'number' },
-          { name: 'attr2', type: 'complexObject' },
-          { name: 'attr3', type: 'uknowntype' },
+          { name: 'attr2', type: 'uknowntype' },
         ],
       },
     ],

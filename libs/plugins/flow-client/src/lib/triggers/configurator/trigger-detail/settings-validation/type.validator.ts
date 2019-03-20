@@ -20,7 +20,6 @@ export function getStrictTypeValidator(
     case ValueType.Boolean:
       return booleanValidator;
     case ValueType.Object:
-    case ValueType.ComplexObject:
     case ValueType.Params:
       return getObjectValidator(schemaType);
     case ValueType.Array:
