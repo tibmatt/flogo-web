@@ -5,6 +5,15 @@ import { build } from './build';
 
 import * as path from 'path';
 
+interface ListContributionDetails {
+  name: string;
+  //TODO: Maintain it as a type in core?
+  type: 'flogo:action' | 'flogo:activity' | 'flogo:trigger' | 'flogo:function';
+  ref: string;
+  path: string;
+  descriptor: string;
+}
+
 export const commander = {
   /**
    *
@@ -45,7 +54,7 @@ export const commander = {
   install,
   update,
   list(enginePath) {
-    return _exec(enginePath, ['list', '--all']).then(parseJSON);
+    return _exec(enginePath, ['list']).then(parseContributionList);
   },
 };
 
@@ -75,6 +84,13 @@ function install(
 
 function update(enginePath, contribNameOrPath) {
   return _exec(enginePath, ['update', contribNameOrPath]);
+}
+
+function parseContributionList(cmdResult: string): ListContributionDetails[] {
+  return parseJSON(cmdResult).map((contrib: ListContributionDetails) => ({
+    ...contrib,
+    path: path.join(contrib.path, contrib.descriptor),
+  }));
 }
 
 function _exec(enginePath, params) {
