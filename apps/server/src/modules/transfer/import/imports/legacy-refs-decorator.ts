@@ -1,8 +1,8 @@
-import { ImportsRefAgent } from '../extensions';
-
-const ALIAS_PREFIX = '#';
 // Allow users to use old contribution reference and replace it with it's new reference
-const UPGRADE_SPECIAL_CONTRIB = new Map<string, string>([
+import { ImportsRefAgent } from '@flogo-web/server/core';
+import { ContributionType } from '@flogo-web/core';
+
+const LEGACY_REFS = new Map<string, string>([
   [
     'github.com/TIBCOSoftware/flogo-contrib/activity/actreply',
     'github.com/project-flogo/contrib/activity/actreply',
@@ -21,11 +21,14 @@ const UPGRADE_SPECIAL_CONTRIB = new Map<string, string>([
   ],
 ]);
 
-export function toActualReference(contribRef: string, agent: ImportsRefAgent): string {
-  let actualRef = contribRef;
-  if (contribRef.startsWith(ALIAS_PREFIX)) {
-    actualRef = agent.getRef(contribRef.substr(1));
+export class LegacyRefsDecorator implements ImportsRefAgent {
+  constructor(private decoratedAgent: ImportsRefAgent) {}
+
+  getPackageRef(contribType: ContributionType, aliasRef: string) {
+    let packageRef = this.decoratedAgent.getPackageRef(contribType, aliasRef);
+    if (LEGACY_REFS.has(packageRef)) {
+      packageRef = LEGACY_REFS.get(packageRef);
+    }
+    return packageRef;
   }
-  // return the contrib's upgraded reference path if any or the actual ref
-  return UPGRADE_SPECIAL_CONTRIB.get(actualRef) || actualRef;
 }

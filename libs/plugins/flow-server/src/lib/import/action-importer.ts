@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { Task } from '@flogo-web/core';
+import { Task, ContributionType } from '@flogo-web/core';
 import {
   Resource,
   ResourceImportContext,
@@ -12,7 +12,6 @@ import {
   ValidationRuleFactory,
   ValidationError,
   ImportsRefAgent,
-  toActualReference,
 } from '@flogo-web/server/core';
 
 import { FlowData } from '../flow';
@@ -99,14 +98,14 @@ export class ActionImporter {
     return metadata;
   }
 
-  mapTasks(tasks = [], importsRefAgent): Task[] {
+  mapTasks(tasks = [], importsRefAgent: ImportsRefAgent): Task[] {
     return tasks.map(task => this.convertTask(task, importsRefAgent) as Task);
   }
 
-  convertTask(resourceTask, importsRefAgent) {
-    resourceTask.activity.ref = toActualReference(
-      resourceTask.activity.ref,
-      importsRefAgent
+  convertTask(resourceTask, importsRefAgent: ImportsRefAgent) {
+    resourceTask.activity.ref = importsRefAgent.getPackageRef(
+      ContributionType.Activity,
+      resourceTask.activity.ref
     );
     const activitySchema = this.activitySchemasByRef.get(resourceTask.activity.ref);
     return this.taskConverterFactory(resourceTask, activitySchema).convert();
@@ -137,7 +136,7 @@ function makeValidator(installedRefs: string[], importsRefAgent: ImportsRefAgent
           'activity-installed',
           'activity',
           installedRefs || [],
-          importsRefAgent
+          ref => importsRefAgent.getPackageRef(ContributionType.Activity, ref)
         ),
       },
     ]

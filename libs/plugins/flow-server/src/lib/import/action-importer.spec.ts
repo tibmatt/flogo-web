@@ -3,7 +3,7 @@ import { createActionImporter } from './create-action-importer';
 import { ImportsRefAgent } from '@flogo-web/server/core';
 
 const importsRefAgent: ImportsRefAgent = {
-  getRef: ref => ref,
+  getPackageRef: (type, ref) => ref,
 };
 
 test('It imports an action', () => {

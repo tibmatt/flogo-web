@@ -1,4 +1,6 @@
+import { ContributionType } from '@flogo-web/core';
+
 export interface AppImportsAgent {
-  registerRef(ref: string): string | undefined;
+  getAliasRef(contribType: ContributionType, packageRef: string): string | undefined;
   registerFunctionName(functionName: string): void;
 }

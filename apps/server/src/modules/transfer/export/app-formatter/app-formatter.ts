@@ -4,6 +4,7 @@ import {
   App,
   FlogoAppModel,
   ContributionSchema,
+  ContributionType,
   Handler,
   Trigger,
 } from '@flogo-web/core';
@@ -34,9 +35,7 @@ export class AppFormatter {
   ) {}
 
   format(app: App, resourceIdReconciler: Map<string, Resource>): FlogoAppModel.App {
-    const importsAgent: RefAgent = createRefAgent(
-      Array.from(this.contributionSchemas.values())
-    );
+    const importsAgent: RefAgent = createRefAgent(this.contributionSchemas, app.imports);
     const exportContext: ResourceExportContext = {
       contributions: this.contributionSchemas,
       resourceIdReconciler,
@@ -96,7 +95,7 @@ export class AppFormatter {
           {
             ...trigger,
             handlers: trigger.handlers.map(handlerFormatter(trigger)),
-            ref: importsAgent.registerRef(trigger.ref),
+            ref: importsAgent.getAliasRef(ContributionType.Trigger, trigger.ref),
           },
           TRIGGER_KEYS
         ) as FlogoAppModel.Trigger;

@@ -1,4 +1,4 @@
-import { ContributionSchema } from '@flogo-web/core';
+import { ContributionSchema, ContributionType } from '@flogo-web/core';
 import { FunctionRefFinder } from './function-ref-finder';
 
 test('It finds the functions by name', () => {
@@ -21,7 +21,7 @@ function getTestData(): ContributionSchema[] {
       name: 'flogo-timer',
       version: '0.0.2',
       title: 'Timer',
-      type: 'flogo:trigger',
+      type: ContributionType.Trigger,
       description: 'Simple Timer trigger',
       homepage: 'https://github.com/project-flogo/contrib/tree/master/trigger/timer',
       ref: 'github.com/project-flogo/contrib/trigger/timer',
@@ -41,7 +41,7 @@ function getTestData(): ContributionSchema[] {
     {
       ref: 'github.com/project-flogo/contrib/function/number',
       name: 'number',
-      type: 'flogo:function',
+      type: ContributionType.Function,
       version: '0.0.1',
       title: 'Number Functions',
       description: 'Number Functions',
@@ -63,7 +63,7 @@ function getTestData(): ContributionSchema[] {
     {
       ref: 'github.com/project-flogo/contrib/function/string',
       name: 'string',
-      type: 'flogo:function',
+      type: ContributionType.Function,
       version: '0.0.1',
       title: 'String Functions',
       description: 'String Functions',

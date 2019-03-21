@@ -1,5 +1,3 @@
-import { toActualReference } from './resource';
-
 const Ajv = require('ajv');
 import AjvNS from 'ajv';
 
@@ -52,26 +50,31 @@ export const ValidationRuleFactory = {
   contributionInstalled: contributionRuleFactory,
 };
 
-function contributionRuleFactory(keyword, type, refs, importsRefAgent): ValidateFn {
-  return function validator(schema, ref) {
-    if (ref.startsWith('#') && !importsRefAgent.imports.get(ref.substr(1))) {
+function contributionRuleFactory(
+  keyword,
+  type,
+  refs,
+  translateAliasedRef: (fromRef) => string
+): ValidateFn {
+  return function validator(schema, ref: string) {
+    const translatedRef = translateAliasedRef(ref);
+    if (ref.startsWith('#') && !translatedRef) {
       (validator as any).errors = [
         {
           keyword: `${keyword}-missing-import`,
-          message: `"${ref}" is not found among the "imports"`,
+          message: `Could not find import for "${ref}": ${ref} is not declared in the "imports" or it references an `,
           params: {
-            ref: ref,
+            ref,
           },
         },
       ];
       return false;
     } else {
-      const refToValidateWith = toActualReference(ref, importsRefAgent);
-      if (!refs.includes(refToValidateWith)) {
+      if (!refs.includes(translatedRef)) {
         (validator as any).errors = [
           {
             keyword,
-            message: `"${ref}" is not installed in the engine`,
+            message: `contribution "${ref}" is not installed`,
             params: {
               ref: ref,
             },

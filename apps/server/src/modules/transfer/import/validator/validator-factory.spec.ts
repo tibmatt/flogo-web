@@ -2,8 +2,14 @@ import { validatorFactory } from './validator-factory';
 
 describe('importer.validator-factory', () => {
   let validator;
+  const refCases = new Map().set('ref/to/a/trigger', 'ref/to/a/trigger');
+
   beforeEach(() => {
-    validator = validatorFactory(makeTestSchema(), ['ref/to/a/trigger']);
+    validator = validatorFactory(makeTestSchema(), ['ref/to/a/trigger'], null, {
+      getPackageRef(contribType, aliasRef: string) {
+        return refCases.get(aliasRef);
+      },
+    });
   });
 
   test('should error for not installed contributions', () => {
