@@ -130,7 +130,7 @@ export class RunApiService {
 
         // then restart from that state with data
         // TODO: document response data
-        return this.restApi.post('runner/processes/restart', {
+        return this.restApi.post<RestartResponse>('runner/processes/restart', {
           initialState: filteredSnapshot,
           interceptor,
         });

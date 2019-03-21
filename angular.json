@@ -560,5 +560,18 @@
     "defaultCollection": "@nrwl/schematics",
     "packageManager": "yarn"
   },
-  "defaultProject": "client"
+  "defaultProject": "client",
+  "schematics": {
+    "@nrwl/schematics:library": {
+      "unitTestRunner": "karma",
+      "framework": "angular"
+    },
+    "@nrwl/schematics:application": {
+      "unitTestRunner": "karma",
+      "e2eTestRunner": "protractor"
+    },
+    "@nrwl/schematics:node-application": {
+      "framework": "express"
+    }
+  }
 }
