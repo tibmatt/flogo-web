@@ -17,9 +17,6 @@
     "client": {
       "tags": ["client"]
     },
-    "client-e2e": {
-      "tags": []
-    },
     "server-core": {
       "tags": ["server"]
     },

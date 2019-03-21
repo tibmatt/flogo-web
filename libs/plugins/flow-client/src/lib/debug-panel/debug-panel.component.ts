@@ -41,7 +41,10 @@ const SELECTOR_FOR_CURRENT_ELEMENT = 'flogo-diagram-tile-task.is-selected';
 const STATUS_OPEN = 'open';
 const STATUS_CLOSED = 'closed';
 
-const mapFormInputChangesToSaveAction = (store, activity$) =>
+const mapFormInputChangesToSaveAction = (
+  store,
+  activity$: Observable<ItemActivityTask>
+) =>
   pipe(
     filter((formInfo: FieldsInfo) =>
       Boolean(formInfo && formInfo.form && formInfo.form.get('input'))

@@ -133,7 +133,6 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
               "node_modules/@angular/cdk/overlay-prebuilt.css",
-              "apps/client/src/assets/ui-pattern/css/tibco-cloud-ui-pattern.css",
               "apps/client/src/styles.less"
             ],
             "scripts": [
@@ -199,7 +198,6 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
               "node_modules/@angular/cdk/overlay-prebuilt.css",
-              "apps/client/src/assets/ui-pattern/css/tibco-cloud-ui-pattern.css",
               "apps/client/src/styles.less"
             ],
             "scripts": [
@@ -240,32 +238,6 @@
               "apps/client/tsconfig.app.json",
               "apps/client/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**"]
-          }
-        }
-      }
-    },
-    "client-e2e": {
-      "root": "apps/client-e2e",
-      "projectType": "application",
-      "prefix": "",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "apps/client-e2e/protractor.conf.js",
-            "devServerTarget": "client:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "client:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": "apps/client-e2e/tsconfig.e2e.json",
             "exclude": ["**/node_modules/**"]
           }
         }
@@ -588,5 +560,18 @@
     "defaultCollection": "@nrwl/schematics",
     "packageManager": "yarn"
   },
-  "defaultProject": "client"
+  "defaultProject": "client",
+  "schematics": {
+    "@nrwl/schematics:library": {
+      "unitTestRunner": "karma",
+      "framework": "angular"
+    },
+    "@nrwl/schematics:application": {
+      "unitTestRunner": "karma",
+      "e2eTestRunner": "protractor"
+    },
+    "@nrwl/schematics:node-application": {
+      "framework": "express"
+    }
+  }
 }
