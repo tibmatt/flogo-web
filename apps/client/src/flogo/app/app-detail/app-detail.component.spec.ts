@@ -16,7 +16,7 @@ import {
   FlogoProfileService,
   RESTAPIContributionsService,
 } from '@flogo-web/client/core';
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client/common';
 import { NotificationsServiceMock } from '@flogo-web/client/core/notifications/testing';
 import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
 import { NotificationsService } from '@flogo-web/client/core/notifications/notifications.service';

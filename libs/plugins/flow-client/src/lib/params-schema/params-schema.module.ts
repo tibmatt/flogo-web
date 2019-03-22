@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { SharedModule } from '@flogo-web/client-shared';
+import { SharedModule } from '@flogo-web/client/common';
 
 import { ParamsSchemaComponent } from './params-schema.component';
 import { ButtonComponent } from './button/button.component';

@@ -5,7 +5,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { DiagramModule } from '@flogo-web/client/diagram';
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client/common';
 import { LogsModule as FlogoLogsModule } from '@flogo-web/client/logs';
 
 import { MonacoEditorModule } from './shared/monaco-editor';

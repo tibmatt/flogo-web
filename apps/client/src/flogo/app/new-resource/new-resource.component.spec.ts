@@ -7,7 +7,7 @@ import { CoreModule as FlogoCoreModule, ResourceService } from '@flogo-web/clien
 import { MODAL_TOKEN, ModalControl } from '@flogo-web/client/core/modal';
 
 import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client/common';
 import { NewResourceComponent, NewResourceData } from './new-resource.component';
 
 import { RESOURCE_PLUGINS_CONFIG } from '../../core';

@@ -17,7 +17,7 @@ import {
 import { HOSTNAME } from '@flogo-web/client/core/services';
 import { createTranslateLoader } from '@flogo-web/client/core/language';
 import { initializer } from '@flogo-web/client/core/initializer';
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client/common';
 import { LogsModule as FlogoLogsModule } from '@flogo-web/client/logs';
 
 import { CoreModule as LocalCoreModule, RESOURCE_PLUGINS_CONFIG } from './core';

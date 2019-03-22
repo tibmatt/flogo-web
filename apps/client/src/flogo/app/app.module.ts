@@ -8,7 +8,7 @@ import { PortalModule } from '@angular/cdk/portal';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { ModalService } from '@flogo-web/client/core/modal';
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/client/common';
 
 import { AppDetailService, AppResourcesStateService } from './core';
 import { FlogoApplicationComponent } from './app.component';
