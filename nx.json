@@ -12,22 +12,16 @@
       "tags": ["client"]
     },
     "core": {
-      "tags": []
+      "tags": ["shared"]
     },
-    "client-core": {
+    "lib-client": {
       "tags": ["client"]
+    },
+    "lib-server": {
+      "tags": ["server"]
     },
     "parser": {
       "tags": ["shared"]
-    },
-    "server": {
-      "tags": ["server"]
-    },
-    "client": {
-      "tags": ["client"]
-    },
-    "server-core": {
-      "tags": ["server"]
     },
     "plugins-flow-server": {
       "tags": ["server", "plugin"]
@@ -37,6 +31,12 @@
     },
     "plugins-flow-core": {
       "tags": ["shared", "plugin"]
+    },
+    "server": {
+      "tags": ["server"]
+    },
+    "client": {
+      "tags": ["client"]
     }
   }
 }

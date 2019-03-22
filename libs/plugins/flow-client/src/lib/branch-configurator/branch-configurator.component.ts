@@ -10,7 +10,7 @@ import {
   ItemBranch,
   LanguageService,
   SingleEmissionSubject,
-} from '@flogo-web/client/core';
+} from '@flogo-web/lib-client/core';
 import { FlowState } from '../core/state';
 import { AppState } from '../core/state/app.state';
 import { FlogoFlowService as FlowsService, InstalledFunctionSchema } from '../core';

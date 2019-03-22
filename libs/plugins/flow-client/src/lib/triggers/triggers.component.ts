@@ -13,11 +13,11 @@ import {
   TRIGGER_MENU_OPERATION,
   ConfirmationResult,
   ConfirmationModalService,
-} from '@flogo-web/client/core';
+} from '@flogo-web/lib-client/core';
 import {
   TriggersApiService,
   RESTAPIHandlersService,
-} from '@flogo-web/client/core/services';
+} from '@flogo-web/lib-client/core/services';
 
 import { Trigger } from '../core';
 import { MicroServiceModelConverter } from '../core/models/profiles/microservice-converter.model';

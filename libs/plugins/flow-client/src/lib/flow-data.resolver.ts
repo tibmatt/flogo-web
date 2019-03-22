@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { ActivatedResourceRoute } from '@flogo-web/client/core';
+import { ActivatedResourceRoute } from '@flogo-web/lib-client/core';
 
 import { FlogoFlowService, FlowData, ResourceFlowData } from './core';
 

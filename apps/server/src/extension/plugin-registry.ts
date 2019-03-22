@@ -5,7 +5,7 @@ import {
   ResourceType,
   ResourceHooks,
   ResourceExtensionRegistrar,
-} from '@flogo-web/server/core';
+} from '@flogo-web/lib-server/core';
 
 import { TOKENS } from '../core';
 import { HookApplicator } from './hooks';

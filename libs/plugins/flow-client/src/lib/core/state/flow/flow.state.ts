@@ -4,7 +4,7 @@ import {
   StepAttribute,
   UiFlow,
   TriggerHandler,
-} from '@flogo-web/client/core';
+} from '@flogo-web/lib-client/core';
 import { CurrentSelection } from '../../models';
 import { Trigger, TriggerConfigureState } from '../../interfaces';
 

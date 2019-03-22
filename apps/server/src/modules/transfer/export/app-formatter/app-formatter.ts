@@ -1,5 +1,9 @@
 import { isEmpty, pick } from 'lodash';
-import { ResourceExportContext, Resource, AppImportsAgent } from '@flogo-web/server/core';
+import {
+  ResourceExportContext,
+  Resource,
+  AppImportsAgent,
+} from '@flogo-web/lib-server/core';
 import {
   App,
   FlogoAppModel,

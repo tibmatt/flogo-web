@@ -5,7 +5,7 @@ import {
   SchemaAttribute,
   TriggerSchema,
   TriggerHandler,
-} from '@flogo-web/client/core';
+} from '@flogo-web/lib-client/core';
 import { MapperController, MapperControllerFactory } from '../../../shared/mapper';
 import {
   CurrentTriggerState,

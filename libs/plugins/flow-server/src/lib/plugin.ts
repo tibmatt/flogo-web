@@ -6,7 +6,7 @@ import {
   Resource,
   FlogoPlugin,
   HandlerImportContext,
-} from '@flogo-web/server/core';
+} from '@flogo-web/lib-server/core';
 
 import { createActionImporter, importHandler } from './import';
 import { exportFlow, exportHandler } from './export';

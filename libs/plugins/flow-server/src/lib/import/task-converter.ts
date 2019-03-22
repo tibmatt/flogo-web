@@ -6,7 +6,7 @@ import {
   TASK_TYPE,
   EXPRESSION_TYPE,
   parseResourceIdFromResourceUri,
-} from '@flogo-web/server/core';
+} from '@flogo-web/lib-server/core';
 import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 import { normalizeIteratorValue } from './normalize-iterator-value';
 

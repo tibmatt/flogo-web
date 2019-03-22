@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 
-import { SingleEmissionSubject } from '@flogo-web/client/core/models';
+import { SingleEmissionSubject } from '@flogo-web/lib-client/core/models';
 
 import { MapperController } from '../../../shared/mapper/services/mapper-controller';
 import {

@@ -1,4 +1,4 @@
-import { MAPPING_EXPRESSION_TYPE } from '@flogo-web/server/core';
+import { MAPPING_EXPRESSION_TYPE } from '@flogo-web/lib-server/core';
 import { FlogoAppModel } from '@flogo-web/core';
 import { normalizeHandlerMappings } from './normalize-handler-mappings';
 

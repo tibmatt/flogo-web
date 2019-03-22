@@ -2,8 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
-import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
-import { RESTAPIContributionsService } from '@flogo-web/client/core/services';
+import { FakeRootLanguageModule } from '@flogo-web/lib-client/core/language/testing';
+import { RESTAPIContributionsService } from '@flogo-web/lib-client/core/services';
 
 import { FlogoFlowService } from '../core';
 import { TASKADD_OPTIONS, TaskAddComponent } from './task-add.component';

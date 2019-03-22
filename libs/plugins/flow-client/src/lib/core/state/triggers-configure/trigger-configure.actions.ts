@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Dictionary, TriggerSchema } from '@flogo-web/client/core';
+import { Dictionary, TriggerSchema } from '@flogo-web/lib-client/core';
 import { TriggerConfigureTabType } from '../../interfaces';
 
 export enum TriggerConfigureActionType {

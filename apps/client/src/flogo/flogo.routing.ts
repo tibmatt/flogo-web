@@ -1,6 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
-import { ExternalWindowComponent } from '@flogo-web/client/logs';
+import { ExternalWindowComponent } from '@flogo-web/lib-client/logs';
 
 import { resourcePlugins } from '../plugins';
 import { ResourceGuard } from './core/resource.guard';

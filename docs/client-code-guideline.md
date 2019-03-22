@@ -37,7 +37,7 @@ When you define class, you also need to add `Component`, `Directive`... as suffi
 
 Read [angular's official testing guide](https://angular.io/guide/testing) and about the [different types of testing](https://vsavkin.com/three-ways-to-test-angular-2-components-dcea8e90bd8d).
 
-DO NOT import the TranslateModule directly, instead use the [language testing utilities](/flogo/core/language/testing) under `@flogo-web/client/core/language/testing`.
+DO NOT import the TranslateModule directly, instead use the [language testing utilities](/flogo/core/language/testing) under `@flogo-web/lib-client/core/language/testing`.
 
 ## Reference
 

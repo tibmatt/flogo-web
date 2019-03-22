@@ -1,4 +1,4 @@
-import { ImportsRefAgent } from '@flogo-web/server/core';
+import { ImportsRefAgent } from '@flogo-web/lib-server/core';
 import { LegacyRefsDecorator } from './legacy-refs-decorator';
 import { ContributionType } from '@flogo-web/core';
 

@@ -8,7 +8,7 @@ import {
   UiFlow,
   TriggerHandler,
   isSubflowTask,
-} from '@flogo-web/client/core';
+} from '@flogo-web/lib-client/core';
 
 import { FlowResource, Trigger, ResourceFlowData, ApiFlowResource } from '../interfaces';
 

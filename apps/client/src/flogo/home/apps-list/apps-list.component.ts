@@ -8,8 +8,8 @@ import {
   ViewChild,
 } from '@angular/core';
 import { App } from '@flogo-web/core';
-import { NotificationsService } from '@flogo-web/client/core/notifications';
-import { AppsApiService } from '@flogo-web/client/core/services';
+import { NotificationsService } from '@flogo-web/lib-client/core/notifications';
+import { AppsApiService } from '@flogo-web/lib-client/core/services';
 
 @Component({
   selector: 'flogo-home-apps-list',

@@ -281,9 +281,9 @@
         }
       }
     },
-    "server-core": {
-      "root": "libs/server/core",
-      "sourceRoot": "libs/server/core/src",
+    "lib-server": {
+      "root": "libs/lib-server",
+      "sourceRoot": "libs/lib-server",
       "projectType": "library",
       "prefix": "flogo-web",
       "architect": {
@@ -291,8 +291,8 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "libs/server/core/tsconfig.lib.json",
-              "libs/server/core/tsconfig.spec.json"
+              "libs/lib-server/tsconfig.lib.json",
+              "libs/lib-server/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
           }
@@ -300,25 +300,24 @@
         "test": {
           "builder": "@nrwl/builders:jest",
           "options": {
-            "jestConfig": "libs/server/core/jest.config.js",
-            "tsConfig": "libs/server/core/tsconfig.spec.json",
-            "passWithNoTests": true
+            "jestConfig": "libs/lib-server/jest.config.js",
+            "tsConfig": "libs/lib-server/tsconfig.spec.json"
           }
         }
       }
     },
-    "client-core": {
-      "root": "libs/client",
-      "sourceRoot": "libs/client",
+    "lib-client": {
+      "root": "libs/lib-client",
+      "sourceRoot": "libs/lib-client",
       "projectType": "library",
       "prefix": "flogo",
       "architect": {
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "libs/client/test.ts",
-            "tsConfig": "libs/client/tsconfig.spec.json",
-            "karmaConfig": "libs/client/karma.conf.js",
+            "main": "libs/lib-client/test.ts",
+            "tsConfig": "libs/lib-client/tsconfig.spec.json",
+            "karmaConfig": "libs/lib-client/karma.conf.js",
             "scripts": [
               "node_modules/lodash/lodash.min.js",
               "node_modules/jquery/dist/jquery.min.js",
@@ -330,8 +329,8 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "libs/client/tsconfig.lib.json",
-              "libs/client/tsconfig.spec.json"
+              "libs/lib-client/tsconfig.lib.json",
+              "libs/lib-client/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
           }

@@ -13,12 +13,12 @@ import {
   CoreModule as GlobalCoreModule,
   LanguageService,
   FLOGO_VERSION,
-} from '@flogo-web/client/core';
-import { HOSTNAME } from '@flogo-web/client/core/services';
-import { createTranslateLoader } from '@flogo-web/client/core/language';
-import { initializer } from '@flogo-web/client/core/initializer';
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client/common';
-import { LogsModule as FlogoLogsModule } from '@flogo-web/client/logs';
+} from '@flogo-web/lib-client/core';
+import { HOSTNAME } from '@flogo-web/lib-client/core/services';
+import { createTranslateLoader } from '@flogo-web/lib-client/core/language';
+import { initializer } from '@flogo-web/lib-client/core/initializer';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
+import { LogsModule as FlogoLogsModule } from '@flogo-web/lib-client/logs';
 
 import { CoreModule as LocalCoreModule, RESOURCE_PLUGINS_CONFIG } from './core';
 import { appRoutingProviders, routing } from './flogo.routing';

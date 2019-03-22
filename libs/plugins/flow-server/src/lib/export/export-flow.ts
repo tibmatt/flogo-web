@@ -7,7 +7,7 @@ import {
   Metadata,
   MetadataAttribute,
 } from '@flogo-web/core';
-import { ResourceExportContext } from '@flogo-web/server/core';
+import { ResourceExportContext } from '@flogo-web/lib-server/core';
 import { formatTaskLinkGroups } from './format-task-link-group';
 
 export function exportFlow(

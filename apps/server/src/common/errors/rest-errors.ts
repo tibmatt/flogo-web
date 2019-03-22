@@ -1,4 +1,4 @@
-import { FlogoError } from '@flogo-web/server/core';
+import { FlogoError } from '@flogo-web/lib-server/core';
 import { ERROR_TYPES } from './error-types';
 
 export interface RestErrorDetails {

@@ -1,5 +1,5 @@
 import { Logger } from 'winston';
-import { ResourceHook, HookContext, ResourceHooks } from '@flogo-web/server/core';
+import { ResourceHook, HookContext, ResourceHooks } from '@flogo-web/lib-server/core';
 
 export type ResourceLifecycleStage = 'create' | 'update' | 'remove' | 'list';
 const lifecycleStages: ResourceLifecycleStage[] = ['create', 'update', 'remove', 'list'];

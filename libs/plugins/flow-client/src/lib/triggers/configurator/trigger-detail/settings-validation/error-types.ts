@@ -1,4 +1,4 @@
-import { ValueType } from '@flogo-web/client/core';
+import { ValueType } from '@flogo-web/lib-client/core';
 
 export enum ErrorTypes {
   Required = 'required',

@@ -1,7 +1,7 @@
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { Observable, timer, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { ResourceService } from '@flogo-web/client/core';
+import { ResourceService } from '@flogo-web/lib-client/core';
 
 export class UniqueNameValidator {
   static make(resourceService: ResourceService, appId: string): AsyncValidatorFn {

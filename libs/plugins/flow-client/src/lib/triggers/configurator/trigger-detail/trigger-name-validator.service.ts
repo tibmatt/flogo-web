@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { timer, Observable } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
-import { TriggersApiService } from '@flogo-web/client/core/services';
+import { TriggersApiService } from '@flogo-web/lib-client/core/services';
 
 const DEBOUNCE_MS = 300;
 const isSameTrigger = (triggers, currentTriggerId) =>

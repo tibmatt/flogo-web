@@ -1,5 +1,5 @@
 // Allow users to use old contribution reference and replace it with it's new reference
-import { ImportsRefAgent } from '@flogo-web/server/core';
+import { ImportsRefAgent } from '@flogo-web/lib-server/core';
 import { ContributionType } from '@flogo-web/core';
 
 const LEGACY_REFS = new Map<string, string>([

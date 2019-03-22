@@ -1,4 +1,4 @@
-import { MAPPING_TYPE } from '@flogo-web/client/core';
+import { MAPPING_TYPE } from '@flogo-web/lib-client/core';
 import { MapperTranslator } from './mapper-translator';
 
 describe('MapperTranslator', function() {

@@ -1,4 +1,4 @@
-import { ItemSubflow } from '@flogo-web/client/core';
+import { ItemSubflow } from '@flogo-web/lib-client/core';
 import { FlowState } from '../flow.state';
 import { RemoveItem } from '../flow.actions';
 import { getGraphName, getItem, getItemsDictionaryName, PayloadOf } from '../../utils';

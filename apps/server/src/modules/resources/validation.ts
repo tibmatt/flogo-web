@@ -1,4 +1,8 @@
-import { createValidator, CustomValidation, ValidatorFn } from '@flogo-web/server/core';
+import {
+  createValidator,
+  CustomValidation,
+  ValidatorFn,
+} from '@flogo-web/lib-server/core';
 const resourceSchema = require('./resource.schema.json');
 
 type RegisteredTypeCheckFn = (type: string) => boolean;

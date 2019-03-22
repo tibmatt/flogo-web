@@ -10,8 +10,8 @@ import {
   FlowGraph,
   GraphNodeDictionary,
   FunctionSchema,
-} from '@flogo-web/client/core';
-import { DiagramSelectionType } from '@flogo-web/client/diagram';
+} from '@flogo-web/lib-client/core';
+import { DiagramSelectionType } from '@flogo-web/lib-client/diagram';
 
 import { FlowState } from './flow.state';
 import { getGraphName, getItemsDictionaryName, nodesContainErrors } from '../utils';

@@ -34,13 +34,13 @@ import {
   RESTAPIContributionsService,
   ContribSchema,
   SingleEmissionSubject,
-} from '@flogo-web/client/core';
-import { ModalService } from '@flogo-web/client/core/modal';
+} from '@flogo-web/lib-client/core';
+import { ModalService } from '@flogo-web/lib-client/core/modal';
 import {
   ConfirmationResult,
   ConfirmationModalService,
-} from '@flogo-web/client/core/confirmation';
-import { NotificationsService } from '@flogo-web/client/core/notifications';
+} from '@flogo-web/lib-client/core/confirmation';
+import { NotificationsService } from '@flogo-web/lib-client/core/notifications';
 import {
   AppDetailService,
   SETTING_DONT_WARN_MISSING_TRIGGERS,

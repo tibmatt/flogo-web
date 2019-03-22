@@ -1,7 +1,7 @@
 import {
   HandlerImportContext,
   parseResourceIdFromResourceUri,
-} from '@flogo-web/server/core';
+} from '@flogo-web/lib-server/core';
 import { FlogoAppModel } from '@flogo-web/core';
 import { FLOW_POINTER } from '../constants';
 

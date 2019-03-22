@@ -1,5 +1,5 @@
 import { pick } from 'lodash';
-import { Resource } from '@flogo-web/server/core';
+import { Resource } from '@flogo-web/lib-server/core';
 
 const EDITABLE_FIELDS_CREATION: Array<keyof Resource> = [
   'name',

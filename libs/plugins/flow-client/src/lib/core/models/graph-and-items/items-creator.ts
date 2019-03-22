@@ -1,5 +1,5 @@
 import { fromPairs } from 'lodash';
-import { ActivitySchema, flow as backendFlow } from '@flogo-web/client/core';
+import { ActivitySchema, flow as backendFlow } from '@flogo-web/lib-client/core';
 
 import { ItemFactory } from './item-factory';
 

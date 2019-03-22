@@ -1,8 +1,12 @@
 import { Component, HostBinding, Inject } from '@angular/core';
 import { Resource } from '@flogo-web/core';
-import { ERROR_CODE } from '@flogo-web/client/core';
-import { NotificationsService } from '@flogo-web/client/core/notifications';
-import { MODAL_TOKEN, modalAnimate, ModalControl } from '@flogo-web/client/core/modal';
+import { ERROR_CODE } from '@flogo-web/lib-client/core';
+import { NotificationsService } from '@flogo-web/lib-client/core/notifications';
+import {
+  MODAL_TOKEN,
+  modalAnimate,
+  ModalControl,
+} from '@flogo-web/lib-client/core/modal';
 import { AppDetailService } from '../core';
 
 export interface ExportFlowsData {

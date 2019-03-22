@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LanguageService, ValidationDetail } from '@flogo-web/client/core';
+import { LanguageService, ValidationDetail } from '@flogo-web/lib-client/core';
 
 @Injectable()
 export class ImportErrorFormatterService {

@@ -1,5 +1,5 @@
 import { ContributionType } from '@flogo-web/core';
-import { AppImportsAgent } from '@flogo-web/server/core';
+import { AppImportsAgent } from '@flogo-web/lib-server/core';
 import { ParsedImport } from '../../common/parsed-import';
 import { FunctionRefFinder } from './function-ref-finder';
 

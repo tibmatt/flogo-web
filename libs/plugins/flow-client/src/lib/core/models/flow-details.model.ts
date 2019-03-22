@@ -1,6 +1,6 @@
 import { Store, select } from '@ngrx/store';
 
-import { FlowMetadata } from '@flogo-web/client/core';
+import { FlowMetadata } from '@flogo-web/lib-client/core';
 
 import { FlowActions, FlowSelectors } from '../state';
 import { AppState } from '../state/app.state';

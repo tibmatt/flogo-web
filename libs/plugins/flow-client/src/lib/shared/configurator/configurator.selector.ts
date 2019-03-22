@@ -1,7 +1,7 @@
 import { select, Store } from '@ngrx/store';
 import { Observable, of as observableOf } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
-import { FLOGO_TASK_TYPE } from '@flogo-web/client/core';
+import { FLOGO_TASK_TYPE } from '@flogo-web/lib-client/core';
 import { FlowSelectors, FlowState } from '../../core/state';
 import { AppState } from '../../core/state/app.state';
 

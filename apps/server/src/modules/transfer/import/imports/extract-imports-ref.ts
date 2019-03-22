@@ -1,5 +1,5 @@
 import { ContributionSchema, ContributionType } from '@flogo-web/core';
-import { ImportsRefAgent } from '@flogo-web/server/core';
+import { ImportsRefAgent } from '@flogo-web/lib-server/core';
 import { ParsedImport } from '../../common/parsed-import';
 
 const ALIAS_PREFIX = '#';

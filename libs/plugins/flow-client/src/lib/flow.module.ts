@@ -4,9 +4,9 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
-import { DiagramModule } from '@flogo-web/client/diagram';
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client/common';
-import { LogsModule as FlogoLogsModule } from '@flogo-web/client/logs';
+import { DiagramModule } from '@flogo-web/lib-client/diagram';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
+import { LogsModule as FlogoLogsModule } from '@flogo-web/lib-client/logs';
 
 import { MonacoEditorModule } from './shared/monaco-editor';
 import { FormBuilderModule as FlogoCommonFormBuilderModule } from './shared/dynamic-form';

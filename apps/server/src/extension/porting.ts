@@ -1,5 +1,9 @@
 import { Logger } from 'winston';
-import { ResourceImporter, ResourceExporter, ResourceType } from '@flogo-web/server/core';
+import {
+  ResourceImporter,
+  ResourceExporter,
+  ResourceType,
+} from '@flogo-web/lib-server/core';
 
 export class ResourceTypes {
   readonly types = new Map<string, ResourceType>();

@@ -12,7 +12,7 @@ import {
   ValidationRuleFactory,
   ValidationError,
   ImportsRefAgent,
-} from '@flogo-web/server/core';
+} from '@flogo-web/lib-server/core';
 
 import { FlowData } from '../flow';
 import { TaskConverter } from './task-converter';

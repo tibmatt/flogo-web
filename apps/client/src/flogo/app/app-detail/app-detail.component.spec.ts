@@ -15,11 +15,11 @@ import {
   CoreModule as FlogoCoreModule,
   FlogoProfileService,
   RESTAPIContributionsService,
-} from '@flogo-web/client/core';
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client/common';
-import { NotificationsServiceMock } from '@flogo-web/client/core/notifications/testing';
-import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
-import { NotificationsService } from '@flogo-web/client/core/notifications/notifications.service';
+} from '@flogo-web/lib-client/core';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
+import { NotificationsServiceMock } from '@flogo-web/lib-client/core/notifications/testing';
+import { FakeRootLanguageModule } from '@flogo-web/lib-client/core/language/testing';
+import { NotificationsService } from '@flogo-web/lib-client/core/notifications/notifications.service';
 
 import { RESOURCE_PLUGINS_CONFIG } from '../../core';
 import { AppDetailService, AppResourcesStateService } from '../core';

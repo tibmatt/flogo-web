@@ -7,7 +7,7 @@ import {
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { ResourceService, ActivatedResourceRoute } from '@flogo-web/client/core';
+import { ResourceService, ActivatedResourceRoute } from '@flogo-web/lib-client/core';
 
 @Injectable({ providedIn: 'root' })
 export class ResourceGuard implements CanActivate {

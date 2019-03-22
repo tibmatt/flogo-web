@@ -1,4 +1,4 @@
-import { ValueType } from '@flogo-web/client/core';
+import { ValueType } from '@flogo-web/lib-client/core';
 
 export interface FlowMetadata {
   type: 'metadata';

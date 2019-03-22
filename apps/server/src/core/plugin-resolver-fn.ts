@@ -1,3 +1,3 @@
-import { ResourceHooks } from '@flogo-web/server/core';
+import { ResourceHooks } from '@flogo-web/lib-server/core';
 
 export type PluginResolverFn = (resourceType: string) => ResourceHooks;

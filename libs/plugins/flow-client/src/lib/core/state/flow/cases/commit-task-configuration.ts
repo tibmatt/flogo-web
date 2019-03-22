@@ -1,4 +1,4 @@
-import { ItemSubflow } from '@flogo-web/client/core';
+import { ItemSubflow } from '@flogo-web/lib-client/core';
 import { PayloadOf, getItem } from '../../utils';
 import { FlowState } from '../flow.state';
 import { CommitItemConfiguration } from '../flow.actions';

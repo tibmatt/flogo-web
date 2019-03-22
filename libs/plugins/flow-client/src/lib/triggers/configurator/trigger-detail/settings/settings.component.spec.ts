@@ -2,7 +2,7 @@ import { ElementRef } from '@angular/core';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
-import { ConfirmationService } from '@flogo-web/client/core/confirmation';
+import { ConfirmationService } from '@flogo-web/lib-client/core/confirmation';
 
 import { ConfigureSettingsComponent } from './settings.component';
 import { EDITION_DATA_TOKEN } from './confirm-edition/confirm-edition.component';

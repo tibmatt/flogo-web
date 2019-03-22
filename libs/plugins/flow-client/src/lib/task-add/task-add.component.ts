@@ -1,7 +1,7 @@
 import { Component, Inject, InjectionToken, OnInit } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 
-import { ActivitySchema } from '@flogo-web/client/core';
+import { ActivitySchema } from '@flogo-web/lib-client/core';
 
 import { filterActivitiesBy } from './core/filter-activities-by';
 import { Activity, TaskAddOptions } from './core/task-add-options';

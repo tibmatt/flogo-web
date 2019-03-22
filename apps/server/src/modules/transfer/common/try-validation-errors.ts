@@ -1,4 +1,4 @@
-import { ValidationErrorDetail, isValidationError } from '@flogo-web/server/core';
+import { ValidationErrorDetail, isValidationError } from '@flogo-web/lib-server/core';
 
 const prefixDataPath = (prefix: string) => (d: ValidationErrorDetail) => ({
   ...d,
