@@ -4,7 +4,7 @@ import {
   Dictionary,
   ErrorService,
   RESTAPIContributionsService,
-} from '@flogo-web/client-core';
+} from '@flogo-web/client/core';
 
 import { mockTriggerDetails } from '../../ui-model-trigger.mock';
 import {

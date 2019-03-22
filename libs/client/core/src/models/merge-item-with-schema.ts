@@ -1,6 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { ItemTask, ActivitySchema, Task } from '../interfaces';
-import { TaskAttribute } from '..';
+import { ItemTask, ActivitySchema, Task, TaskAttribute } from '../interfaces';
 
 export interface PartialActivitySchema {
   version?: ActivitySchema['version'];

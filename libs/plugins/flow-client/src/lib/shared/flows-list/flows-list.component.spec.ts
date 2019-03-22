@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 import { Resource } from '@flogo-web/core';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
-import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
+import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
 
 import { RESOURCE_TYPE_FLOW } from '../../core';
 import { FlowsListComponent } from './flows-list.component';

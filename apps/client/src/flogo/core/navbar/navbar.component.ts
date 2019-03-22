@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { FLOGO_VERSION } from '@flogo-web/client-core';
+import { FLOGO_VERSION } from '@flogo-web/client/core';
 
 @Component({
   selector: 'flogo-navbar',

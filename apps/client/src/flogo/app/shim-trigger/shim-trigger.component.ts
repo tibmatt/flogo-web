@@ -1,7 +1,7 @@
 import { flatMap, map, defaults } from 'lodash';
 import { Component, HostBinding, Inject } from '@angular/core';
-import { LanguageService } from '@flogo-web/client-core';
-import { MODAL_TOKEN, modalAnimate, ModalControl } from '@flogo-web/client-core/modal';
+import { LanguageService } from '@flogo-web/client/core';
+import { MODAL_TOKEN, modalAnimate, ModalControl } from '@flogo-web/client/core/modal';
 import { CONTRIB_REFS } from '@flogo-web/core';
 
 export interface ShimTriggerData {

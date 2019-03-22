@@ -3,7 +3,7 @@ import {
   FLOGO_ERROR_ROOT_NAME,
   FLOGO_TASK_TYPE,
   ValueType,
-} from '@flogo-web/client-core';
+} from '@flogo-web/client/core';
 
 export function makeErrorTask(): Task {
   return {

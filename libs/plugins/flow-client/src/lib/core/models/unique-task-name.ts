@@ -1,5 +1,5 @@
 import { reduce, toInteger } from 'lodash';
-import { FLOGO_TASK_TYPE, ItemTask } from '@flogo-web/client-core';
+import { FLOGO_TASK_TYPE, ItemTask } from '@flogo-web/client/core';
 import { normalizeTaskName } from '@flogo-web/client-shared';
 
 const isBranchTask = task => task.type === FLOGO_TASK_TYPE.TASK_BRANCH;

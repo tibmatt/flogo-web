@@ -3,10 +3,10 @@ import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 
-import { CoreModule as FlogoCoreModule, ResourceService } from '@flogo-web/client-core';
-import { MODAL_TOKEN, ModalControl } from '@flogo-web/client-core/modal';
+import { CoreModule as FlogoCoreModule, ResourceService } from '@flogo-web/client/core';
+import { MODAL_TOKEN, ModalControl } from '@flogo-web/client/core/modal';
 
-import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
+import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
 import { NewResourceComponent, NewResourceData } from './new-resource.component';
 

@@ -1,6 +1,6 @@
 import { isObject, isEmpty } from 'lodash';
 import { AbstractControl, Validators, ValidationErrors } from '@angular/forms';
-import { ValueType } from '@flogo-web/client-core';
+import { ValueType } from '@flogo-web/client/core';
 import { BaseField } from '../field-base';
 
 function isObjectValidator(control: AbstractControl): ValidationErrors | null {

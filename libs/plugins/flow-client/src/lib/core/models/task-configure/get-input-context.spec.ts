@@ -1,4 +1,4 @@
-import { NodeType, FLOGO_TASK_TYPE } from '@flogo-web/client-core';
+import { NodeType, FLOGO_TASK_TYPE } from '@flogo-web/client/core';
 import { FlowState, INITIAL_STATE } from '../../state';
 import { getPrecedingTasksForErrorHandler } from './get-input-context';
 

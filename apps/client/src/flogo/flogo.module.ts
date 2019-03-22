@@ -13,10 +13,10 @@ import {
   CoreModule as GlobalCoreModule,
   LanguageService,
   FLOGO_VERSION,
-} from '@flogo-web/client-core';
-import { HOSTNAME } from '@flogo-web/client-core/services';
-import { createTranslateLoader } from '@flogo-web/client-core/language';
-import { initializer } from '@flogo-web/client-core/initializer';
+} from '@flogo-web/client/core';
+import { HOSTNAME } from '@flogo-web/client/core/services';
+import { createTranslateLoader } from '@flogo-web/client/core/language';
+import { initializer } from '@flogo-web/client/core/initializer';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
 import { LogsModule as FlogoLogsModule } from '@flogo-web/client-logs';
 

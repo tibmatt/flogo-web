@@ -3,7 +3,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { FlowGraph, SingleEmissionSubject } from '@flogo-web/client-core';
+import { FlowGraph, SingleEmissionSubject } from '@flogo-web/client/core';
 import {
   DiagramAction,
   DiagramActionType,

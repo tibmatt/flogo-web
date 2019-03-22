@@ -7,7 +7,7 @@ import {
   Validators,
   AsyncValidatorFn,
 } from '@angular/forms';
-import { Dictionary } from '@flogo-web/client-core';
+import { Dictionary } from '@flogo-web/client/core';
 import {
   SettingControlInfo,
   SettingControlGroup,

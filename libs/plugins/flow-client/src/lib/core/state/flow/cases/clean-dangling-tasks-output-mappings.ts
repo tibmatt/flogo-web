@@ -1,5 +1,5 @@
 import { isEmpty, pick, fromPairs } from 'lodash';
-import { Task, Dictionary, Item, ItemTask, ContribSchema } from '@flogo-web/client-core';
+import { Task, Dictionary, Item, ItemTask, ContribSchema } from '@flogo-web/client/core';
 import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 import { FlowState } from '../flow.state';
 

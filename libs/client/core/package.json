@@ -1,5 +1,5 @@
 {
-  "name": "@flogo-web/client-core",
+  "name": "@flogo-web/client/core",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^7.1.0",

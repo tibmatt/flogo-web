@@ -2,7 +2,7 @@ import { By } from '@angular/platform-browser';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 
-import { LogService } from '@flogo-web/client-core/services';
+import { LogService } from '@flogo-web/client/core/services';
 
 import { SearchPipe } from '../search.pipe';
 import { LogsContentComponent } from './content.component';

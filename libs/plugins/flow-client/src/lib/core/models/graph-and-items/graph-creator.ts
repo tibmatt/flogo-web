@@ -9,7 +9,7 @@ import {
   ItemActivityTask,
   isBranchConfigured,
   isSubflowTask,
-} from '@flogo-web/client-core';
+} from '@flogo-web/client/core';
 import { isIterableTask } from '@flogo-web/plugins/flow-core';
 
 const defaultFeatures: NodeFeatures = {

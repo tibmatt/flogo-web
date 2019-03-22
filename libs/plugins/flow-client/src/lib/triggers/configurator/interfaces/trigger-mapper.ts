@@ -1,4 +1,4 @@
-import { FlowMetadata } from '@flogo-web/client-core';
+import { FlowMetadata } from '@flogo-web/client/core';
 import { Tabs } from '../../../shared/tabs/models/tabs.model';
 import { HandlerMappings } from './configurator';
 

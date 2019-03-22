@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { CoreModule as FlogoCoreModule } from '@flogo-web/client-core';
+import { CoreModule as FlogoCoreModule } from '@flogo-web/client/core';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
 
 import { CoreModule as FlowCoreModule } from '../core';

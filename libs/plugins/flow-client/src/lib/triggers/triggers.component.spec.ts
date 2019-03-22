@@ -11,9 +11,9 @@ import {
   HttpUtilsService,
   RESTAPIContributionsService,
   FlogoProfileService,
-} from '@flogo-web/client-core/services';
-import { FlogoProfileServiceMock } from '@flogo-web/client-core/services/profile.service.mock';
-import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
+} from '@flogo-web/client/core/services';
+import { FlogoProfileServiceMock } from '@flogo-web/client/core/services/profile.service.mock';
+import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
 import { InstallerModule } from '../shared/installer';
 import { MicroServiceModelConverter } from '../core/models/profiles/microservice-converter.model';
 import { featureReducer, FlowState, Init, INITIAL_STATE } from '../core/state';
@@ -22,7 +22,7 @@ import { FlogoFlowTriggersPanelComponent } from './triggers.component';
 import { FlogoSelectTriggerComponent } from './select-trigger/select-trigger.component';
 import { TriggerBlockComponent } from './trigger-block';
 import { ConfiguratorModule as TriggersConfiguratorModule } from './configurator';
-import { ConfirmationModalService } from '@flogo-web/client-core';
+import { ConfirmationModalService } from '@flogo-web/client/core';
 
 const TEST_STATE: FlowState = {
   ...INITIAL_STATE,

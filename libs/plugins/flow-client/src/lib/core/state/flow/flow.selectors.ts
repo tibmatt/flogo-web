@@ -10,7 +10,7 @@ import {
   FlowGraph,
   GraphNodeDictionary,
   FunctionSchema,
-} from '@flogo-web/client-core';
+} from '@flogo-web/client/core';
 import { DiagramSelectionType } from '@flogo-web/diagram';
 
 import { FlowState } from './flow.state';

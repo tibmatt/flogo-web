@@ -1,4 +1,4 @@
-import { ValueType } from '@flogo-web/client-core';
+import { ValueType } from '@flogo-web/client/core';
 import { MapperControllerFactory } from '../../../shared/mapper';
 import { CurrentTriggerState } from '../interfaces';
 import { ConfigureTriggerSchema, ConfigureTriggersMock } from '../mocks/triggers.mock';

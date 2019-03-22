@@ -9,7 +9,7 @@ import {
   isSubflowTask,
   mergeItemWithSchema,
   PartialActivitySchema,
-} from '@flogo-web/client-core';
+} from '@flogo-web/client/core';
 import { FlowState } from '../../state';
 import { makeErrorTask } from '../make-error-task';
 import { FlowMetadata } from '../../../task-configurator/models';

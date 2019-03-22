@@ -1,7 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoDependenciesFakeLanguageModule } from '@flogo-web/client-core/language/testing';
+import { NoDependenciesFakeLanguageModule } from '@flogo-web/client/core/language/testing';
 import { ActionButtonsComponent } from './action-buttons.component';
 
 describe('Component: ActionButtonsComponent', () => {

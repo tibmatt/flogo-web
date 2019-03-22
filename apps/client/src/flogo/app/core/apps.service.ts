@@ -9,8 +9,8 @@ import {
   ErrorService,
   TriggersApiService,
   AppResourceService,
-} from '@flogo-web/client-core';
-import { NotificationsService } from '@flogo-web/client-core/notifications';
+} from '@flogo-web/client/core';
+import { NotificationsService } from '@flogo-web/client/core/notifications';
 import { AppResourcesStateService } from './app-resources-state.service';
 
 interface NewResource {

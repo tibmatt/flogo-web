@@ -7,7 +7,7 @@ import {
   ConfirmationService,
   ConfirmationResult,
   SingleEmissionSubject,
-} from '@flogo-web/client-core';
+} from '@flogo-web/client/core';
 
 import { TriggerConfigureSelectors } from '../../core/state/triggers-configure';
 import * as TriggerConfigureActions from '../../core/state/triggers-configure/trigger-configure.actions';

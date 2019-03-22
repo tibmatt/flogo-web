@@ -1,6 +1,6 @@
 import { Observable, OperatorFunction } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ItemActivityTask, ActivitySchema } from '@flogo-web/client-core';
+import { ItemActivityTask, ActivitySchema } from '@flogo-web/client/core';
 
 export interface DebugActivityTask extends ItemActivityTask {
   schemaHomepage: string;

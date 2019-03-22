@@ -11,7 +11,7 @@ import {
   TrackByFunction,
 } from '@angular/core';
 
-import { FlowGraph } from '@flogo-web/client-core';
+import { FlowGraph } from '@flogo-web/client/core';
 
 import { DiagramAction, DiagramSelection, Tile } from '../interfaces';
 import { EMPTY_MATRIX, RowIndexService } from '../shared';

@@ -2,7 +2,7 @@ import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Dictionary, Item, ItemActivityTask } from '@flogo-web/client-core';
+import { Dictionary, Item, ItemActivityTask } from '@flogo-web/client/core';
 import { HandlerType } from '../core/models';
 import { FlowSelectors, FlowActions, FlowState } from '../core/state';
 

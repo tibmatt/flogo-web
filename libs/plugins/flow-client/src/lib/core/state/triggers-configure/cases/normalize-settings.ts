@@ -1,5 +1,5 @@
 import { mapValues, isString } from 'lodash';
-import { Dictionary } from '@flogo-web/client-core';
+import { Dictionary } from '@flogo-web/client/core';
 
 export function normalizeSettings(settings: Dictionary<any>): Dictionary<any> {
   return mapValues(settings, removeExpressionPrefix);

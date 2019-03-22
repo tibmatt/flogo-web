@@ -7,7 +7,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { SvgRefFixerService } from '@flogo-web/client-core';
+import { SvgRefFixerService } from '@flogo-web/client/core';
 
 import {
   DiagramSelection,

@@ -1,6 +1,6 @@
 import { times } from 'lodash';
 
-import { GraphNodeDictionary, NodeType } from '@flogo-web/client-core';
+import { GraphNodeDictionary, NodeType } from '@flogo-web/client/core';
 
 import { Tile } from '../interfaces';
 import { NodeMatrix, TileMatrix } from './matrix';

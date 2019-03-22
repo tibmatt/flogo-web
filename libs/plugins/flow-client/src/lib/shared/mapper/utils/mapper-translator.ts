@@ -8,7 +8,7 @@ import {
   ValueType,
   MAPPING_TYPE,
   Dictionary,
-} from '@flogo-web/client-core';
+} from '@flogo-web/client/core';
 
 import { ROOT_TYPES } from '../constants';
 // todo: shared models should be moved to core

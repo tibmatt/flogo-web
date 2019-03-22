@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CoreModule } from '@flogo-web/client-core';
+import { CoreModule } from '@flogo-web/client/core';
 import { SharedModule } from '@flogo-web/client-shared';
 
 import { DiagramComponent } from './diagram/diagram.component';

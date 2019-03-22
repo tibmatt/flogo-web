@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { trigger } from '@angular/animations';
 
-import { SvgRefFixerService } from '@flogo-web/client-core';
+import { SvgRefFixerService } from '@flogo-web/client/core';
 
 import { AbstractTileTaskComponent } from './abstract-tile-task.component';
 import { OpenCloseMenuAnimation } from './tile.animations';

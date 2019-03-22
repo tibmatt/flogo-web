@@ -5,10 +5,10 @@ import { Injectable } from '@angular/core';
 import { Effect, ofType, Actions } from '@ngrx/effects';
 import { Store, select, Action } from '@ngrx/store';
 
-import { RESTAPIHandlersService } from '@flogo-web/client-core/services';
+import { RESTAPIHandlersService } from '@flogo-web/client/core/services';
 import { FlowActions, FlowState, FlowSelectors, TriggerActions } from '../state';
 import { Handler } from '@flogo-web/core';
-import { TriggerHandler } from '@flogo-web/client-core';
+import { TriggerHandler } from '@flogo-web/client/core';
 const ActionType = FlowActions.ActionType;
 
 const mapToUpdateAction = (handler: TriggerHandler) =>

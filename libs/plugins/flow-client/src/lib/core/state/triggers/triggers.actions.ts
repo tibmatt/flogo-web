@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Dictionary, TriggerSchema, TriggerHandler } from '@flogo-web/client-core';
+import { Dictionary, TriggerSchema, TriggerHandler } from '@flogo-web/client/core';
 import { Trigger } from '../../interfaces';
 
 export enum TriggerActionType {

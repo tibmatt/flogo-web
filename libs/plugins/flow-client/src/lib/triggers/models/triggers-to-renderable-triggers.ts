@@ -1,4 +1,4 @@
-import { Dictionary, TriggerHandler } from '@flogo-web/client-core';
+import { Dictionary, TriggerHandler } from '@flogo-web/client/core';
 import { Trigger } from '../../core/interfaces';
 import { RenderableTrigger } from '../interfaces/renderable-trigger';
 

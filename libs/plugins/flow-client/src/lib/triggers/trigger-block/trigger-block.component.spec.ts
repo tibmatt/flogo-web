@@ -1,7 +1,7 @@
 import { Component, DebugElement, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
+import { FakeRootLanguageModule } from '@flogo-web/client/core/language/testing';
 import { Trigger } from '../../core';
 import { TriggerBlockComponent } from './trigger-block.component';
 

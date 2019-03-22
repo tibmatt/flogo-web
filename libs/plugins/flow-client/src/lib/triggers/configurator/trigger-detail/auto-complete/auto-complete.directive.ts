@@ -35,7 +35,7 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 
-import { SingleEmissionSubject } from '@flogo-web/client-core';
+import { SingleEmissionSubject } from '@flogo-web/client/core';
 
 import { SettingValue } from '../settings-value';
 import { FieldValueAccesorDirective } from '../settings/form-field/field.directive';

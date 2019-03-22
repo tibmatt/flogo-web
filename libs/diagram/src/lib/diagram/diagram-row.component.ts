@@ -9,7 +9,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 
-import { NodeType } from '@flogo-web/client-core';
+import { NodeType } from '@flogo-web/client/core';
 
 import { Tile, TaskTile, TileType, DiagramAction, DiagramSelection } from '../interfaces';
 import { actionEventFactory } from '../action-event-factory';

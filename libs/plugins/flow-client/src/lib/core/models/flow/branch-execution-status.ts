@@ -1,4 +1,4 @@
-import { GraphNode, Dictionary, NodeType } from '@flogo-web/client-core';
+import { GraphNode, Dictionary, NodeType } from '@flogo-web/client/core';
 
 export function isBranchExecuted(node: GraphNode, nodes: Dictionary<GraphNode>): boolean {
   if (!node || !nodes || !isBranchNode(node)) {
