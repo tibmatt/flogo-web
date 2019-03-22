@@ -22,7 +22,7 @@
       "@flogo-web/client-shared": ["libs/client-shared/src/index.ts"],
       "@flogo-web/plugins/flow-client": ["libs/plugins/flow-client/src/index.ts"],
       "@flogo-web/plugins/flow-core": ["libs/plugins/flow-core/src/index.ts"],
-      "@flogo-web/diagram": ["libs/diagram/src/index.ts"],
+      "@flogo-web/client/diagram": ["libs/client/diagram/src/index.ts"],
       "@flogo-web/client-logs": ["libs/client-logs/src/index.ts"],
       "@flogo-web/assets": ["libs/assets/src/index.ts"],
       "@flogo-web/core": ["libs/core/src/index.ts"]

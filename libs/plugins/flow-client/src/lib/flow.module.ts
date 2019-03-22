@@ -4,7 +4,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
-import { DiagramModule } from '@flogo-web/diagram';
+import { DiagramModule } from '@flogo-web/client/diagram';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
 import { LogsModule as FlogoLogsModule } from '@flogo-web/client-logs';
 

@@ -15,7 +15,7 @@ import {
   DiagramSelectionType,
   BUTTON_INSERT_CLASS,
   SELECTED_INSERT_TILE_CLASS,
-} from '@flogo-web/diagram';
+} from '@flogo-web/client/diagram';
 import { AddActivityService } from './add-activity.service';
 
 const BRANCH_ANIMATION_DURATION = 300;

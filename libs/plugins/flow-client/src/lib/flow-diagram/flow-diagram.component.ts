@@ -10,7 +10,7 @@ import {
   DiagramSelection,
   DiagramActionChild,
   DiagramActionSelf,
-} from '@flogo-web/diagram';
+} from '@flogo-web/client/diagram';
 
 import { HandlerType } from '../core/models';
 import { newBranchId } from '../core/models/flow/id-generator';
