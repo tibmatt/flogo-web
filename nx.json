@@ -8,6 +8,15 @@
     "nx.json": "*"
   },
   "projects": {
+    "assets": {
+      "tags": ["client"]
+    },
+    "core": {
+      "tags": []
+    },
+    "client-core": {
+      "tags": ["client"]
+    },
     "parser": {
       "tags": ["shared"]
     },
@@ -23,29 +32,11 @@
     "plugins-flow-server": {
       "tags": ["server", "plugin"]
     },
-    "client-core": {
-      "tags": ["client"]
-    },
-    "client-shared": {
-      "tags": ["client"]
-    },
     "plugins-flow-client": {
       "tags": ["client", "plugin"]
     },
     "plugins-flow-core": {
       "tags": ["shared", "plugin"]
-    },
-    "diagram": {
-      "tags": ["client", "component"]
-    },
-    "client-logs": {
-      "tags": ["client", "component"]
-    },
-    "assets": {
-      "tags": ["client"]
-    },
-    "core": {
-      "tags": []
     }
   }
 }

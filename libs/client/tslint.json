@@ -1,16 +1,16 @@
 {
-  "extends": "../tslint.json",
+  "extends": "../../tslint.json",
   "rules": {
     "directive-selector": [
       true,
       "attribute",
-      "flogo-diagram",
+      "fg",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "flogo-diagram",
+      "flogo",
       "kebab-case"
     ]
   }
