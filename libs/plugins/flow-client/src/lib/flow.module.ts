@@ -6,7 +6,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { DiagramModule } from '@flogo-web/client/diagram';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
-import { LogsModule as FlogoLogsModule } from '@flogo-web/client-logs';
+import { LogsModule as FlogoLogsModule } from '@flogo-web/client/logs';
 
 import { MonacoEditorModule } from './shared/monaco-editor';
 import { FormBuilderModule as FlogoCommonFormBuilderModule } from './shared/dynamic-form';

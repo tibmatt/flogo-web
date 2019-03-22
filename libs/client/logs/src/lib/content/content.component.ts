@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { LogService } from '@flogo-web/client/core/services';
+import { LogService } from '@flogo-web/client/core';
 
 @Component({
   selector: 'flogo-logs-content',
