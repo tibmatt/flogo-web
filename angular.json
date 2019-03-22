@@ -107,7 +107,7 @@
               "apps/client/src/favicon.ico",
               "apps/client/src/assets",
               {
-                "input": "libs/client-assets/assets",
+                "input": "libs/assets/assets",
                 "glob": "**/*",
                 "output": "/assets"
               },
@@ -209,7 +209,7 @@
               "apps/client/src/favicon.ico",
               "apps/client/src/assets",
               {
-                "input": "libs/client-assets/assets",
+                "input": "libs/assets/assets",
                 "glob": "**/*",
                 "output": "/assets"
               },
@@ -392,7 +392,7 @@
             ],
             "assets": [
               {
-                "input": "libs/client-assets/assets",
+                "input": "libs/assets/assets",
                 "glob": "**/*",
                 "output": "/assets"
               },
@@ -513,17 +513,17 @@
         }
       }
     },
-    "client-assets": {
-      "root": "libs/client-assets",
-      "sourceRoot": "libs/client-assets/src",
+    "assets": {
+      "root": "libs/assets",
+      "sourceRoot": "libs/assets/src",
       "projectType": "library",
       "prefix": "flogo-web",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "libs/client-assets/tsconfig.lib.json",
-            "project": "libs/client-assets/ng-package.json"
+            "tsConfig": "libs/assets/tsconfig.lib.json",
+            "project": "libs/assets/ng-package.json"
           }
         }
       }
