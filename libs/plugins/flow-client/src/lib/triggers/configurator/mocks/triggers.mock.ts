@@ -1,4 +1,4 @@
-import { TriggerSchema, ValueType } from '@flogo-web/client-core';
+import { TriggerSchema, ValueType } from '@flogo-web/lib-client/core';
 
 export const TriggersMock = [
   {

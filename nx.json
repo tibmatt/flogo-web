@@ -8,26 +8,23 @@
     "nx.json": "*"
   },
   "projects": {
+    "assets": {
+      "tags": ["client"]
+    },
+    "core": {
+      "tags": ["shared"]
+    },
+    "lib-client": {
+      "tags": ["client"]
+    },
+    "lib-server": {
+      "tags": ["server"]
+    },
     "parser": {
       "tags": ["shared"]
     },
-    "server": {
-      "tags": ["server"]
-    },
-    "client": {
-      "tags": ["client"]
-    },
-    "server-core": {
-      "tags": ["server"]
-    },
     "plugins-flow-server": {
       "tags": ["server", "plugin"]
-    },
-    "client-core": {
-      "tags": ["client"]
-    },
-    "client-shared": {
-      "tags": ["client"]
     },
     "plugins-flow-client": {
       "tags": ["client", "plugin"]
@@ -35,17 +32,11 @@
     "plugins-flow-core": {
       "tags": ["shared", "plugin"]
     },
-    "diagram": {
-      "tags": ["client", "component"]
+    "server": {
+      "tags": ["server"]
     },
-    "client-logs": {
-      "tags": ["client", "component"]
-    },
-    "client-assets": {
+    "client": {
       "tags": ["client"]
-    },
-    "core": {
-      "tags": []
     }
   }
 }

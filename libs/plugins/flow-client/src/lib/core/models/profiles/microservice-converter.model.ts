@@ -18,7 +18,7 @@ import {
   Item,
   ItemSubflow,
   FunctionSchema,
-} from '@flogo-web/client-core';
+} from '@flogo-web/lib-client/core';
 import { Resource } from '@flogo-web/core';
 import { makeGraphAndItems } from '../graph-and-items';
 import { ItemFactory } from '../graph-and-items/item-factory';

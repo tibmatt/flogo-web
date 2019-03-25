@@ -3,11 +3,11 @@ import { Store, select } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 
+import { SingleEmissionSubject } from '@flogo-web/lib-client/core';
 import {
   ConfirmationService,
   ConfirmationResult,
-  SingleEmissionSubject,
-} from '@flogo-web/client-core';
+} from '@flogo-web/lib-client/confirmation';
 
 import { TriggerConfigureSelectors } from '../../core/state/triggers-configure';
 import * as TriggerConfigureActions from '../../core/state/triggers-configure/trigger-configure.actions';

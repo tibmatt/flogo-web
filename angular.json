@@ -3,6 +3,44 @@
   "version": 1,
   "newProjectRoot": "",
   "projects": {
+    "assets": {
+      "root": "libs/assets",
+      "sourceRoot": "libs/assets/src",
+      "projectType": "library",
+      "prefix": "flogo-web",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "libs/assets/tsconfig.lib.json",
+            "project": "libs/assets/ng-package.json"
+          }
+        }
+      }
+    },
+    "core": {
+      "root": "libs/core",
+      "sourceRoot": "libs/core/src",
+      "projectType": "library",
+      "prefix": "flogo-web",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/core/tsconfig.lib.json", "libs/core/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "passWithNoTests": true,
+            "jestConfig": "libs/core/jest.config.js",
+            "tsConfig": "libs/core/tsconfig.spec.json"
+          }
+        }
+      }
+    },
     "parser": {
       "root": "libs/parser",
       "sourceRoot": "libs/parser/src",
@@ -107,7 +145,7 @@
               "apps/client/src/favicon.ico",
               "apps/client/src/assets",
               {
-                "input": "libs/client-assets/assets",
+                "input": "libs/assets/assets",
                 "glob": "**/*",
                 "output": "/assets"
               },
@@ -209,7 +247,7 @@
               "apps/client/src/favicon.ico",
               "apps/client/src/assets",
               {
-                "input": "libs/client-assets/assets",
+                "input": "libs/assets/assets",
                 "glob": "**/*",
                 "output": "/assets"
               },
@@ -243,9 +281,9 @@
         }
       }
     },
-    "server-core": {
-      "root": "libs/server/core",
-      "sourceRoot": "libs/server/core/src",
+    "lib-server": {
+      "root": "libs/lib-server",
+      "sourceRoot": "libs/lib-server",
       "projectType": "library",
       "prefix": "flogo-web",
       "architect": {
@@ -253,8 +291,8 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "libs/server/core/tsconfig.lib.json",
-              "libs/server/core/tsconfig.spec.json"
+              "libs/lib-server/tsconfig.lib.json",
+              "libs/lib-server/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
           }
@@ -262,32 +300,24 @@
         "test": {
           "builder": "@nrwl/builders:jest",
           "options": {
-            "jestConfig": "libs/server/core/jest.config.js",
-            "tsConfig": "libs/server/core/tsconfig.spec.json",
-            "passWithNoTests": true
+            "jestConfig": "libs/lib-server/jest.config.js",
+            "tsConfig": "libs/lib-server/tsconfig.spec.json"
           }
         }
       }
     },
-    "client-core": {
-      "root": "libs/client-core",
-      "sourceRoot": "libs/client-core/src",
+    "lib-client": {
+      "root": "libs/lib-client",
+      "sourceRoot": "libs/lib-client",
       "projectType": "library",
-      "prefix": "flogo-web",
+      "prefix": "flogo",
       "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "libs/client-core/tsconfig.lib.json",
-            "project": "libs/client-core/ng-package.json"
-          }
-        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "libs/client-core/src/test.ts",
-            "tsConfig": "libs/client-core/tsconfig.spec.json",
-            "karmaConfig": "libs/client-core/karma.conf.js",
+            "main": "libs/lib-client/test.ts",
+            "tsConfig": "libs/lib-client/tsconfig.spec.json",
+            "karmaConfig": "libs/lib-client/karma.conf.js",
             "scripts": [
               "node_modules/lodash/lodash.min.js",
               "node_modules/jquery/dist/jquery.min.js",
@@ -299,41 +329,8 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "libs/client-core/tsconfig.lib.json",
-              "libs/client-core/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
-          }
-        }
-      }
-    },
-    "client-shared": {
-      "root": "libs/client-shared",
-      "sourceRoot": "libs/client-shared/src",
-      "projectType": "library",
-      "prefix": "flogo-web",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "libs/client-shared/tsconfig.lib.json",
-            "project": "libs/client-shared/ng-package.json"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "libs/client-shared/src/test.ts",
-            "tsConfig": "libs/client-shared/tsconfig.spec.json",
-            "karmaConfig": "libs/client-shared/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "libs/client-shared/tsconfig.lib.json",
-              "libs/client-shared/tsconfig.spec.json"
+              "libs/lib-client/tsconfig.lib.json",
+              "libs/lib-client/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
           }
@@ -392,7 +389,7 @@
             ],
             "assets": [
               {
-                "input": "libs/client-assets/assets",
+                "input": "libs/assets/assets",
                 "glob": "**/*",
                 "output": "/assets"
               },
@@ -443,110 +440,6 @@
             "passWithNoTests": true,
             "jestConfig": "libs/plugins/flow-core/jest.config.js",
             "tsConfig": "libs/plugins/flow-core/tsconfig.spec.json"
-          }
-        }
-      }
-    },
-    "diagram": {
-      "root": "libs/diagram",
-      "sourceRoot": "libs/diagram/src",
-      "projectType": "library",
-      "prefix": "flogo-libs/diagram",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "libs/diagram/tsconfig.lib.json",
-            "project": "libs/diagram/ng-package.json"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "libs/diagram/src/test.ts",
-            "tsConfig": "libs/diagram/tsconfig.spec.json",
-            "karmaConfig": "libs/diagram/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "libs/diagram/tsconfig.lib.json",
-              "libs/diagram/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
-          }
-        }
-      }
-    },
-    "client-logs": {
-      "root": "libs/client-logs",
-      "sourceRoot": "libs/client-logs/src",
-      "projectType": "library",
-      "prefix": "flogo-logs",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "libs/client-logs/tsconfig.lib.json",
-            "project": "libs/client-logs/ng-package.json"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "libs/client-logs/src/test.ts",
-            "tsConfig": "libs/client-logs/tsconfig.spec.json",
-            "karmaConfig": "libs/client-logs/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "libs/client-logs/tsconfig.lib.json",
-              "libs/client-logs/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
-          }
-        }
-      }
-    },
-    "client-assets": {
-      "root": "libs/client-assets",
-      "sourceRoot": "libs/client-assets/src",
-      "projectType": "library",
-      "prefix": "flogo-web",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "libs/client-assets/tsconfig.lib.json",
-            "project": "libs/client-assets/ng-package.json"
-          }
-        }
-      }
-    },
-    "core": {
-      "root": "libs/core",
-      "sourceRoot": "libs/core/src",
-      "projectType": "library",
-      "prefix": "flogo-web",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/core/tsconfig.lib.json", "libs/core/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/builders:jest",
-          "options": {
-            "passWithNoTests": true,
-            "jestConfig": "libs/core/jest.config.js",
-            "tsConfig": "libs/core/tsconfig.spec.json"
           }
         }
       }

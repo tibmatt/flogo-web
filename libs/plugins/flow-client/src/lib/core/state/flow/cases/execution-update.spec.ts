@@ -1,4 +1,4 @@
-import { GraphNode, NodeType } from '@flogo-web/client-core';
+import { GraphNode, NodeType } from '@flogo-web/lib-client/core';
 import { executionUpdate } from './execution-update';
 import { FlowState, INITIAL_STATE } from '../flow.state';
 

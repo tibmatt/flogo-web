@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { TRIGGER_MENU_OPERATION } from '@flogo-web/client-core';
+import { TRIGGER_MENU_OPERATION } from '@flogo-web/lib-client/core';
 import { Trigger } from '../../core';
 import { TriggerMenuSelectionEvent } from './models';
 import { CONTRIB_REFS } from '@flogo-web/core';

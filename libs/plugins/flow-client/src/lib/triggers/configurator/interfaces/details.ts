@@ -1,5 +1,5 @@
 import { ValidatorFn } from '@angular/forms';
-import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo-web/client-core';
+import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo-web/lib-client/core';
 import {
   TriggerConfigureTab,
   TriggerConfigureField,

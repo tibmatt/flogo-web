@@ -1,4 +1,4 @@
-import { LanguageService } from '@flogo-web/client-core';
+import { LanguageService } from '@flogo-web/lib-client/language';
 
 import { ImportErrorFormatterService } from './import-error-formatter.service';
 import { mockImportErrorResponse } from '../app-import/mocks/error.response.mock';

@@ -1,7 +1,7 @@
 import { cold, getTestScheduler } from 'jasmine-marbles';
 import { AppDetailService } from './apps.service';
 import { AppResourcesStateService } from './app-resources-state.service';
-import { AppResourceService } from '@flogo-web/client-core';
+import { AppResourceService } from '@flogo-web/lib-client/core';
 import { Trigger, Resource } from '@flogo-web/core';
 
 describe('AppsService', () => {

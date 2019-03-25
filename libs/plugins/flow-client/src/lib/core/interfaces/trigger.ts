@@ -1,4 +1,4 @@
-import { TriggerHandler } from '@flogo-web/client-core';
+import { TriggerHandler } from '@flogo-web/lib-client/core';
 
 export interface Trigger {
   id: string;

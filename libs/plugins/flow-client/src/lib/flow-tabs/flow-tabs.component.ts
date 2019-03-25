@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { takeUntil } from 'rxjs/operators';
-import { SingleEmissionSubject } from '@flogo-web/client-core/models';
+import { SingleEmissionSubject } from '@flogo-web/lib-client/core/models';
 
 import {
   FlowActions,

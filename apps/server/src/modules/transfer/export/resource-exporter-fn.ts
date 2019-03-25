@@ -1,5 +1,5 @@
 import { Resource, FlogoAppModel } from '@flogo-web/core';
-import { ResourceExportContext, HandlerExportContext } from '@flogo-web/server/core';
+import { ResourceExportContext, HandlerExportContext } from '@flogo-web/lib-server/core';
 
 export type ResourceExporterFn = (
   resource: Resource,

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
 import { FlowsListComponent } from './flows-list.component';
 
 @NgModule({

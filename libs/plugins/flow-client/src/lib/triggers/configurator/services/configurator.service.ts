@@ -4,11 +4,11 @@ import { select, Store } from '@ngrx/store';
 import { of as observableOf, forkJoin } from 'rxjs';
 import { mergeMap, take, tap } from 'rxjs/operators';
 
-import { TriggerHandler } from '@flogo-web/client-core';
+import { TriggerHandler } from '@flogo-web/lib-client/core';
 import {
   RESTAPIHandlersService,
   TriggersApiService,
-} from '@flogo-web/client-core/services';
+} from '@flogo-web/lib-client/core/services';
 
 import { AppState } from '../../../core/state/app.state';
 import * as TriggerActions from '../../../core/state/triggers/triggers.actions';

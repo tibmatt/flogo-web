@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { MapperUtils } from '@flogo-web/core';
-import { typeMapper, AppImportsAgent } from '@flogo-web/server/core';
+import { typeMapper, AppImportsAgent } from '@flogo-web/lib-server/core';
 import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE as LEGACY_LINK_TYPE } from '../constants';
 
 export function formatLinks(links = [], importsAgent: AppImportsAgent) {

@@ -3,7 +3,7 @@ import {
   ValidationError,
   ResourceImporter,
   parseResourceIdFromResourceUri,
-} from '@flogo-web/server/core';
+} from '@flogo-web/lib-server/core';
 import { importApp, ImportersResolver } from './import-app';
 
 import { assertCorrectImportedApp } from '../tests/samples/imported-app';

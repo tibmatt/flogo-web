@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { App } from '@flogo-web/core';
-import { Resource } from '@flogo-web/server/core';
+import { Resource } from '@flogo-web/lib-server/core';
 import { TOKENS } from '../../core';
 import { ISONow } from '../../common/utils';
 import { Database } from '../../common/database.service';

@@ -1,5 +1,5 @@
 import { FlogoAppModel } from '@flogo-web/core';
-import { TriggerSchema, FlowMetadata, TriggerHandler } from '@flogo-web/client-core';
+import { TriggerSchema, FlowMetadata, TriggerHandler } from '@flogo-web/lib-client/core';
 
 import { InstalledFunctionSchema, Trigger, TriggerConfigureState } from '../../../core';
 import { Tabs } from '../../../shared/tabs/models/tabs.model';

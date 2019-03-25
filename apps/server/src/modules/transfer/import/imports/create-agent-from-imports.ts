@@ -1,5 +1,5 @@
 import { ContributionSchema } from '@flogo-web/core';
-import { ImportsRefAgent } from '@flogo-web/server/core';
+import { ImportsRefAgent } from '@flogo-web/lib-server/core';
 import { parseImports } from '../../common/parse-imports';
 import { ExtractImportsRef } from './extract-imports-ref';
 import { LegacyRefsDecorator } from './legacy-refs-decorator';

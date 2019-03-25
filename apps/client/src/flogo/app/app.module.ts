@@ -3,12 +3,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { A11yModule } from '@angular/cdk/a11y';
-import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
-import { ModalService } from '@flogo-web/client-core/modal';
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
+import { ConfirmationModule } from '@flogo-web/lib-client/confirmation';
+import { ModalModule as FlogoModalModule } from '@flogo-web/lib-client/modal';
 
 import { AppDetailService, AppResourcesStateService } from './core';
 import { FlogoApplicationComponent } from './app.component';
@@ -32,12 +33,14 @@ import {
     CommonModule,
     FormsModule,
     FlogoSharedModule,
+    FlogoModalModule,
+    OverlayModule,
     RouterModule,
     AppRoutingModule,
     A11yModule,
-    OverlayModule,
     PortalModule,
     ScrollingModule,
+    ConfirmationModule,
   ],
   declarations: [
     FlogoApplicationDetailComponent,
@@ -53,12 +56,13 @@ import {
     ResourceBadgeComponent,
     ResourceListComponent,
   ],
-  providers: [AppDetailService, AppResourcesStateService, ModalService],
+  providers: [AppDetailService, AppResourcesStateService],
   entryComponents: [
     FlogoExportFlowsComponent,
     TriggerShimBuildComponent,
     NewResourceComponent,
     MissingTriggerConfirmationComponent,
   ],
+  exports: [NewResourceComponent],
 })
 export class FlogoApplicationModule {}

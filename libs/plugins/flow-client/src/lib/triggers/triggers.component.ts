@@ -5,19 +5,21 @@ import { filter, takeUntil, mergeMap, reduce, switchMap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
 import {
-  LanguageService,
   FlowMetadata,
   TriggerSchema,
   Dictionary,
   SingleEmissionSubject,
   TRIGGER_MENU_OPERATION,
-  ConfirmationResult,
+} from '@flogo-web/lib-client/core';
+import {
   ConfirmationModalService,
-} from '@flogo-web/client-core';
+  ConfirmationResult,
+} from '@flogo-web/lib-client/confirmation';
+import { LanguageService } from '@flogo-web/lib-client/language';
 import {
   TriggersApiService,
   RESTAPIHandlersService,
-} from '@flogo-web/client-core/services';
+} from '@flogo-web/lib-client/core/services';
 
 import { Trigger } from '../core';
 import { MicroServiceModelConverter } from '../core/models/profiles/microservice-converter.model';

@@ -49,7 +49,7 @@
     "release:client-version": "node -r esm tools/release/client-version.js",
     "release:build-engines": "node -r esm tools/release/build-engines.js",
     "release:copy-docker-files": "node -r esm tools/release/copy-docker-files.js",
-    "preinstall": "yarn --cwd libs/client-assets link && yarn link @flogo-web/client-assets"
+    "preinstall": "yarn --cwd libs/assets link && yarn link @flogo-web/assets"
   },
   "author": "TIBCO Software Inc.",
   "dependencies": {

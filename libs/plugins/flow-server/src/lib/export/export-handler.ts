@@ -1,5 +1,5 @@
 import { FlogoAppModel, createResourceUri } from '@flogo-web/core';
-import { HandlerExportContext } from '@flogo-web/server/core';
+import { HandlerExportContext } from '@flogo-web/lib-server/core';
 
 export function exportHandler(
   exportedHandler: FlogoAppModel.NewHandler,

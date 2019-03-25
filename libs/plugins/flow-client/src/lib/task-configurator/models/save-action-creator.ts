@@ -10,7 +10,7 @@ import {
   ItemSubflow,
   ItemTask,
   Dictionary,
-} from '@flogo-web/client-core';
+} from '@flogo-web/lib-client/core';
 import { AppState } from '../../core/state/app.state';
 import { FlowState, FlowSelectors, FlowActions } from '../../core/state';
 import { HandlerType } from '../../core/models';

@@ -1,7 +1,7 @@
 import { flow, map, filter } from 'lodash/fp';
 
 import { FlogoAppModel, Handler, Trigger, ContributionType } from '@flogo-web/core';
-import { ImportsRefAgent, ValidationErrorDetail } from '@flogo-web/server/core';
+import { ImportsRefAgent, ValidationErrorDetail } from '@flogo-web/lib-server/core';
 
 import { normalizeHandlerMappings } from '../common/normalize-handler-mappings';
 import { tryAndAccumulateValidationErrors } from '../common/try-validation-errors';

@@ -9,8 +9,8 @@ import {
 } from '@angular/core';
 import { has } from 'lodash';
 import { BsModalComponent } from 'ng2-bs3-modal';
-import { FLOGO_CONTRIB_TYPE } from '@flogo-web/client-core';
-import { RESTAPIContributionsService } from '@flogo-web/client-core/services';
+import { FLOGO_CONTRIB_TYPE } from '@flogo-web/lib-client/core';
+import { RESTAPIContributionsService } from '@flogo-web/lib-client/core/services';
 
 import {
   FLOGO_INSTALLER_STATUS_STANDBY,

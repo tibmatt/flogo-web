@@ -31,13 +31,13 @@ import {
   FlowGraph,
   GraphNode,
   Interceptor,
-  LanguageService,
   NodeType,
   ItemActivityTask,
   ActivitySchema,
-} from '@flogo-web/client-core';
-import { NotificationsService } from '@flogo-web/client-core/notifications';
-import { OperationalError } from '@flogo-web/client-core/services';
+} from '@flogo-web/lib-client/core';
+import { NotificationsService } from '@flogo-web/lib-client/notifications';
+import { LanguageService } from '@flogo-web/lib-client/language';
+import { OperationalError } from '@flogo-web/lib-client/core/services';
 
 import { FlowActions, FlowSelectors } from '../state';
 import { isBranchExecuted } from '../models/flow/branch-execution-status';

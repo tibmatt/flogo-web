@@ -1,5 +1,5 @@
 import { ContributionSchema, CONTRIB_REFS, Resource } from '@flogo-web/core';
-import { isSubflowTask, AppImportsAgent } from '@flogo-web/server/core';
+import { isSubflowTask, AppImportsAgent } from '@flogo-web/lib-server/core';
 import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 import { TaskFormatter } from './task-formatter';
 

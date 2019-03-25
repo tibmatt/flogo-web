@@ -1,5 +1,8 @@
 import { Component, Inject } from '@angular/core';
-import { ConfirmationControl, ConfirmationContent } from '@flogo-web/client-core';
+import {
+  ConfirmationControl,
+  ConfirmationContent,
+} from '@flogo-web/lib-client/confirmation';
 import { TriggerStatus } from '../interfaces';
 import { TRIGGER_STATUS_TOKEN } from './status.token';
 

@@ -7,7 +7,7 @@ import {
   FlogoError,
   ValidationError,
   HookContext,
-} from '@flogo-web/server/core';
+} from '@flogo-web/lib-server/core';
 // todo: can't import directly from 'apps' barrel, it will create a circular dependency and inversify will also complain
 import { HandlersService } from '../apps/handlers-service';
 import { ResourcePluginRegistry } from '../../extension';

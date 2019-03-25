@@ -1,6 +1,6 @@
 import { fromPairs, isEqual } from 'lodash';
 import { FormGroup } from '@angular/forms';
-import { Dictionary, TriggerHandler } from '@flogo-web/client-core';
+import { Dictionary, TriggerHandler } from '@flogo-web/lib-client/core';
 import { MapperController, MapperTranslator } from '../../../../shared/mapper';
 import { SettingControlGroup } from '../../interfaces';
 import { SaveParams } from './save-params';

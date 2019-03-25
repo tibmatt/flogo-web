@@ -10,7 +10,7 @@ import {
   GraphNode,
   Item,
   isSubflowTask,
-} from '@flogo-web/client-core';
+} from '@flogo-web/lib-client/core';
 
 import { makeTaskNodes, makeBranchNode } from './graph-creator';
 import { makeBranchItem, makeTaskItems } from './items-creator';

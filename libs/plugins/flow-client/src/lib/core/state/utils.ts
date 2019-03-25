@@ -1,4 +1,4 @@
-import { Item, GraphNodeDictionary } from '@flogo-web/client-core';
+import { Item, GraphNodeDictionary } from '@flogo-web/lib-client/core';
 import { HandlerType } from '../models';
 import { FlowState } from './flow/flow.state';
 

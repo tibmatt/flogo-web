@@ -7,7 +7,7 @@ import {
   CONTRIB_REFS,
   ContributionType,
 } from '@flogo-web/core';
-import { FLOGO_TASK_TYPE } from '@flogo-web/server/core';
+import { FLOGO_TASK_TYPE } from '@flogo-web/lib-server/core';
 import { exportFlow } from '..';
 
 test('it exports a flow', () => {

@@ -1,4 +1,4 @@
-import { ResourcePluginManifest } from '@flogo-web/client-core';
+import { ResourcePluginManifest } from '@flogo-web/lib-client/core';
 
 export const resourcePlugins: ResourcePluginManifest[] = [
   {

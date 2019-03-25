@@ -6,8 +6,8 @@ import {
   GraphNode,
   Item,
   NodeType,
-} from '@flogo-web/client-core';
-import { ObjectSlice } from '@flogo-web/client-core/testing';
+} from '@flogo-web/lib-client/core';
+import { ObjectSlice } from '@flogo-web/lib-client/core/testing';
 import { makeGraphAndItems } from '.';
 
 describe('flow.core.models.graph-and-items', function() {

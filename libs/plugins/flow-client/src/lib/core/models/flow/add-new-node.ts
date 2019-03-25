@@ -1,4 +1,4 @@
-import { FlowGraph, GraphNode, NodeType } from '@flogo-web/client-core';
+import { FlowGraph, GraphNode, NodeType } from '@flogo-web/lib-client/core';
 import { insertNode } from './insert-node';
 
 export type NewNode = { id: string } & Partial<GraphNode>;

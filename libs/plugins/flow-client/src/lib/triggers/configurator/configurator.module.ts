@@ -2,10 +2,9 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule as NgCommonModule } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
 
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
 
 import { MapperModule } from '../../shared/mapper';
 import { MonacoEditorModule } from '../../shared/monaco-editor';
@@ -35,7 +34,6 @@ import {
     NgCommonModule,
     ReactiveFormsModule,
     ScrollingModule,
-    OverlayModule,
     PortalModule,
     FlogoSharedModule,
     MapperModule,

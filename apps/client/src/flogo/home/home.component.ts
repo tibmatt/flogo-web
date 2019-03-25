@@ -3,7 +3,7 @@ import { bufferCount, exhaustMap } from 'rxjs/operators';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { App } from '@flogo-web/core';
-import { FlowSummary, AppsApiService } from '@flogo-web/client-core';
+import { FlowSummary, AppsApiService } from '@flogo-web/lib-client/core';
 
 @Component({
   selector: 'flogo-home',

@@ -13,7 +13,7 @@ import {
   ResourceImporter,
   ValidationErrorDetail,
   ImportsRefAgent,
-} from '@flogo-web/server/core';
+} from '@flogo-web/lib-server/core';
 
 import { constructApp } from '../../../core/models/app';
 import { actionValueTypesNormalizer } from '../common/action-value-type-normalizer';

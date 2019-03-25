@@ -36,7 +36,7 @@ import {
   FlowGraph,
   GraphNode,
   NodeType,
-} from '@flogo-web/client-core';
+} from '@flogo-web/lib-client/core';
 import { FlowResource, ResourceFlowData } from '../../interfaces';
 
 const DEBUG = false;

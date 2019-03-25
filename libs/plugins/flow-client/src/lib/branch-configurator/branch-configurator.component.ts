@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { cloneDeep } from 'lodash';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { skip, takeUntil } from 'rxjs/operators';
 import { animate, style, transition, trigger } from '@angular/animations';
 import {
   FLOGO_TASK_TYPE,
   GraphNode,
   ItemBranch,
-  LanguageService,
   SingleEmissionSubject,
-} from '@flogo-web/client-core';
+} from '@flogo-web/lib-client/core';
+import { LanguageService } from '@flogo-web/lib-client/language';
 import { FlowState } from '../core/state';
 import { AppState } from '../core/state/app.state';
 import { FlogoFlowService as FlowsService, InstalledFunctionSchema } from '../core';

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ValueType, SchemaAttribute } from '@flogo-web/client-core';
+import { ValueType, SchemaAttribute } from '@flogo-web/lib-client/core';
 import { Textbox } from './textbox/textbox';
 import { BaseField } from './field-base';
 import { NumberType } from './number/number';

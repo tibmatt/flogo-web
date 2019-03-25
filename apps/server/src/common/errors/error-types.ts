@@ -1,4 +1,4 @@
-import { ErrorCodes } from '@flogo-web/server/core';
+import { ErrorCodes } from '@flogo-web/lib-server/core';
 
 export const ERROR_TYPES = {
   COMMON: {

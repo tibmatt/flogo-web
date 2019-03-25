@@ -1,4 +1,4 @@
-import { Resource } from '@flogo-web/server/core';
+import { Resource } from '@flogo-web/lib-server/core';
 
 import { DEFAULT_APP_TYPE, DEFAULT_APP_VERSION } from '../../../common/constants';
 import { normalizeName } from './utils/normalize-name';

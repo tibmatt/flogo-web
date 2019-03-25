@@ -13,7 +13,7 @@ import {
   isSubflowTask,
   extractItemInputsFromTask,
   taskIdGenerator,
-} from '@flogo-web/client-core';
+} from '@flogo-web/lib-client/core';
 
 import { FlowState, FlowActions, FlowSelectors } from '../../core/state';
 import { PayloadOf } from '../../core/state/utils';

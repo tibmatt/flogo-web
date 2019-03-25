@@ -9,17 +9,19 @@ import {
   flush,
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 import { App } from '@flogo-web/core';
 import {
   CoreModule as FlogoCoreModule,
   FlogoProfileService,
   RESTAPIContributionsService,
-} from '@flogo-web/client-core';
-import { SharedModule as FlogoSharedModule } from '@flogo-web/client-shared';
-import { NotificationsServiceMock } from '@flogo-web/client-core/notifications/testing';
-import { FakeRootLanguageModule } from '@flogo-web/client-core/language/testing';
-import { NotificationsService } from '@flogo-web/client-core/notifications/notifications.service';
+} from '@flogo-web/lib-client/core';
+import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
+import { NotificationsServiceMock } from '@flogo-web/lib-client/notifications/testing';
+import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
+import { ModalModule as FlogoModalModule } from '@flogo-web/lib-client/modal';
+import { NotificationsService } from '@flogo-web/lib-client/notifications';
 
 import { RESOURCE_PLUGINS_CONFIG } from '../../core';
 import { AppDetailService, AppResourcesStateService } from '../core';
@@ -62,7 +64,13 @@ describe('FlogoApplicationDetailComponent component', () => {
 
   beforeEach(done => {
     TestBed.configureTestingModule({
-      imports: [FakeRootLanguageModule, FlogoCoreModule, FlogoSharedModule],
+      imports: [
+        FakeRootLanguageModule,
+        FlogoCoreModule,
+        OverlayModule,
+        FlogoSharedModule,
+        FlogoModalModule,
+      ],
       declarations: [
         ResourceComponent,
         ResourceListComponent,

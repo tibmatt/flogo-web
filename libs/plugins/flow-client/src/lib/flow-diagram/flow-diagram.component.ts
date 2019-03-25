@@ -3,14 +3,14 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { FlowGraph, SingleEmissionSubject } from '@flogo-web/client-core';
+import { FlowGraph, SingleEmissionSubject } from '@flogo-web/lib-client/core';
 import {
   DiagramAction,
   DiagramActionType,
   DiagramSelection,
   DiagramActionChild,
   DiagramActionSelf,
-} from '@flogo-web/diagram';
+} from '@flogo-web/lib-client/diagram';
 
 import { HandlerType } from '../core/models';
 import { newBranchId } from '../core/models/flow/id-generator';

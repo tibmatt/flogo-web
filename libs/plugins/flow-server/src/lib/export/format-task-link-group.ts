@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { ResourceActionModel, FlowData } from '@flogo-web/core';
-import { ResourceExportContext } from '@flogo-web/server/core';
+import { ResourceExportContext } from '@flogo-web/lib-server/core';
 import { formatLinks } from './format-links';
 import { formatTasks } from './format-tasks';
 

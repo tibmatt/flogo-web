@@ -1,5 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { SchemaAttribute, ValueType } from '@flogo-web/client-core';
+import { SchemaAttribute, ValueType } from '@flogo-web/lib-client/core';
 import { SettingValue } from '../settings-value';
 import { requiredValidator } from './required.validator';
 import { getAllowedValueValidator } from './allowed-value.validator';

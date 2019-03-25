@@ -1,6 +1,6 @@
 import { Resource, CONTRIB_REFS } from '@flogo-web/core';
 import { createActionImporter } from './create-action-importer';
-import { ImportsRefAgent } from '@flogo-web/server/core';
+import { ImportsRefAgent } from '@flogo-web/lib-server/core';
 
 const importsRefAgent: ImportsRefAgent = {
   getPackageRef: (type, ref) => ref,

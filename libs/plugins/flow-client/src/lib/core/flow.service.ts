@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { of as observableOfValue, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { UiFlow, ResourceService, AppResourceService } from '@flogo-web/client-core';
+import { UiFlow, ResourceService, AppResourceService } from '@flogo-web/lib-client/core';
 
 import { savableFlow } from './models/backend-flow/flow.model';
 import { MicroServiceModelConverter } from './models/profiles/microservice-converter.model';

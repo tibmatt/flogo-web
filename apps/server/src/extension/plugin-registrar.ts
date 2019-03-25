@@ -1,4 +1,4 @@
-import { FlogoPlugin, PluginServer } from '@flogo-web/server/core';
+import { FlogoPlugin, PluginServer } from '@flogo-web/lib-server/core';
 import { ResourcePluginRegistry } from './plugin-registry';
 
 export class ServerPluginRegistrar {

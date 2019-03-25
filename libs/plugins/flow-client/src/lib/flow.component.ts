@@ -10,16 +10,18 @@ import {
 
 import {
   MetadataAttribute,
-  LanguageService,
   Item,
-  ConfirmationResult,
-  ConfirmationModalService,
   FLOGO_TASK_TYPE,
   mergeItemWithSchema,
   SingleEmissionSubject,
-} from '@flogo-web/client-core';
-import { NotificationsService } from '@flogo-web/client-core/notifications';
-import { AppsApiService } from '@flogo-web/client-core/services';
+} from '@flogo-web/lib-client/core';
+import {
+  ConfirmationResult,
+  ConfirmationModalService,
+} from '@flogo-web/lib-client/confirmation';
+import { LanguageService } from '@flogo-web/lib-client/language';
+import { NotificationsService } from '@flogo-web/lib-client/notifications';
+import { AppsApiService } from '@flogo-web/lib-client/core/services';
 
 import { TestRunnerService } from './core/test-runner/test-runner.service';
 import { MonacoEditorLoaderService } from './shared/monaco-editor';

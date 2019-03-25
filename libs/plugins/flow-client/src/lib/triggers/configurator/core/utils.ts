@@ -1,6 +1,6 @@
 import { isString } from 'lodash';
 
-import { FlowMetadata } from '@flogo-web/client-core';
+import { FlowMetadata } from '@flogo-web/lib-client/core';
 
 import { Tabs } from '../../../shared/tabs/models/tabs.model';
 import { TRIGGER_TABS } from './constants';

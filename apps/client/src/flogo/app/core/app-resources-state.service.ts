@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { shareReplay, map } from 'rxjs/operators';
 
 import { Resource, Trigger } from '@flogo-web/core';
-import { ResourcePluginManifest } from '@flogo-web/client-core';
+import { ResourcePluginManifest } from '@flogo-web/lib-client/core';
 
 import { RESOURCE_PLUGINS_CONFIG } from '../../core';
 import { TriggerGroup } from './trigger-group.interface';

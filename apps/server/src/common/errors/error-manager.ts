@@ -1,4 +1,4 @@
-import { FlogoError, ValidationError } from '@flogo-web/server/core';
+import { FlogoError, ValidationError } from '@flogo-web/lib-server/core';
 import { ERROR_TYPES } from './error-types';
 import { RestError } from './rest-errors';
 

@@ -1,6 +1,6 @@
 import { sortBy } from 'lodash';
 import { Trigger, Resource } from '@flogo-web/core';
-import { ResourcePluginManifest, Dictionary } from '@flogo-web/client-core';
+import { ResourcePluginManifest, Dictionary } from '@flogo-web/lib-client/core';
 
 import { ResourceWithPlugin } from './resource-with-plugin';
 import { TriggerGroup } from './trigger-group.interface';

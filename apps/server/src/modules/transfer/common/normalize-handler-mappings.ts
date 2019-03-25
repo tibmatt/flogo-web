@@ -1,7 +1,7 @@
 import { isString, isPlainObject } from 'lodash';
 import { parse } from '@flogo-web/parser';
 import { EXPR_PREFIX, FlogoAppModel, Handler } from '@flogo-web/core';
-import { MAPPING_EXPRESSION_TYPE, EXPRESSION_TYPE } from '@flogo-web/server/core';
+import { MAPPING_EXPRESSION_TYPE, EXPRESSION_TYPE } from '@flogo-web/lib-server/core';
 
 const CURRENT_SCOPE_RESOLVER = '$';
 const normalizeAndAccumulateMapping = (reducedMappings, mapping) => {

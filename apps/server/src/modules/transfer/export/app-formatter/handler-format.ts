@@ -7,7 +7,7 @@ import {
   ContributionType,
   MapperUtils,
 } from '@flogo-web/core';
-import { AppImportsAgent } from '@flogo-web/server/core';
+import { AppImportsAgent } from '@flogo-web/lib-server/core';
 import { HandlerExporterFn } from '../resource-exporter-fn';
 import { ExportedResourceInfo } from './exported-resource-info';
 

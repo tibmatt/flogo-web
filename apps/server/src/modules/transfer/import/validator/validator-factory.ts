@@ -1,5 +1,5 @@
 import { ContributionType } from '@flogo-web/core';
-import { ImportsRefAgent, ValidationRuleFactory } from '@flogo-web/server/core';
+import { ImportsRefAgent, ValidationRuleFactory } from '@flogo-web/lib-server/core';
 import { validatorFactory as commonValidatorFactory } from '../../../../common/validator';
 
 /**
