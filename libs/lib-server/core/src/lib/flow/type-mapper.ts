@@ -1,5 +1,12 @@
 import { invert } from 'lodash';
-import { MAPPING_EXPRESSION_TYPE } from './constants';
+
+export const MAPPING_EXPRESSION_TYPE = {
+  ASSIGN: 1,
+  LITERAL: 2,
+  EXPRESSION: 3,
+  OBJECT: 4,
+  ARRAY: 5,
+};
 
 export const TASK_TYPE = {
   ITERATOR: 'iterator',

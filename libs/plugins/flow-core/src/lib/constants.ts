@@ -12,10 +12,3 @@ export const FLOGO_TASK_TYPE = {
 };
 export const TASK_HANDLER_NAME_ROOT = 'rootTask';
 export const TASK_HANDLER_NAME_ERROR = 'errorHandler';
-export const MAPPING_EXPRESSION_TYPE = {
-  ASSIGN: 1,
-  LITERAL: 2,
-  EXPRESSION: 3,
-  OBJECT: 4,
-  ARRAY: 5,
-};

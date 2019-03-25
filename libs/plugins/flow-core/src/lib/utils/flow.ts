@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import { TASK_HANDLER_NAME_ROOT } from './constants';
+import { TASK_HANDLER_NAME_ROOT } from '../constants';
 
 export function safeGetTasksInHandler(action, handler) {
   return get(action, getInternalTasksPath(handler), []);

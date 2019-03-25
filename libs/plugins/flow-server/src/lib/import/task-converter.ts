@@ -2,12 +2,11 @@ import { isUndefined, isArray, isPlainObject } from 'lodash';
 
 import { EXPR_PREFIX, CONTRIB_REFS, ResourceActionModel } from '@flogo-web/core';
 import {
-  FLOGO_TASK_TYPE,
   TASK_TYPE,
   EXPRESSION_TYPE,
   parseResourceIdFromResourceUri,
 } from '@flogo-web/lib-server/core';
-import { isMapperActivity } from '@flogo-web/plugins/flow-core';
+import { isMapperActivity, FLOGO_TASK_TYPE } from '@flogo-web/plugins/flow-core';
 import { normalizeIteratorValue } from './normalize-iterator-value';
 
 const isStandardMappings = (activity: ResourceActionModel.NewActivity) => {

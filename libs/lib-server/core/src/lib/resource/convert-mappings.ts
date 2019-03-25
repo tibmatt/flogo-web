@@ -1,4 +1,4 @@
-import { typeMapper } from '../flow-utils';
+import { typeMapper } from '../flow/type-mapper';
 
 export function portMappings(
   mappingTypesDictionary,

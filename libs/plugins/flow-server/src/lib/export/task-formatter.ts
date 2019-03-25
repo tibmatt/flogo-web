@@ -1,14 +1,13 @@
 import { isEmpty } from 'lodash';
 
 import {
-  Task,
   createResourceUri,
   Resource,
   MapperUtils,
   ContributionType,
 } from '@flogo-web/core';
-import { isSubflowTask, TASK_TYPE, AppImportsAgent } from '@flogo-web/lib-server/core';
-import { isIterableTask } from '@flogo-web/plugins/flow-core';
+import { TASK_TYPE, AppImportsAgent } from '@flogo-web/lib-server/core';
+import { Task, isSubflowTask, isIterableTask } from '@flogo-web/plugins/flow-core';
 
 interface Mappings {
   [propertyName: string]: string;

@@ -1,10 +1,8 @@
 import { isEmpty } from 'lodash';
-import { Task, ContributionType } from '@flogo-web/core';
+import { ContributionType } from '@flogo-web/core';
 import {
   Resource,
   ResourceImportContext,
-  actionHasSubflowTasks,
-  forEachSubflowTaskInAction,
   LINK_TYPE,
   fromStandardTypeMapper,
   createValidator,
@@ -13,7 +11,12 @@ import {
   ValidationError,
   ImportsRefAgent,
 } from '@flogo-web/lib-server/core';
-import { FlowData } from '@flogo-web/plugins/flow-core';
+import {
+  FlowData,
+  actionHasSubflowTasks,
+  forEachSubflowTaskInAction,
+  Task,
+} from '@flogo-web/plugins/flow-core';
 
 import { TaskConverter } from './task-converter';
 
