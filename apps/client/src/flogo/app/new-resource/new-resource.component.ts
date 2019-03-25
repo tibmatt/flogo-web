@@ -1,11 +1,7 @@
 import { Component, HostBinding, Inject, HostListener } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 
-import {
-  MODAL_TOKEN,
-  modalAnimate,
-  ModalControl,
-} from '@flogo-web/lib-client/core/modal';
+import { MODAL_TOKEN, modalAnimate, ModalControl } from '@flogo-web/lib-client/modal';
 import { ResourceService, ResourcePluginManifest } from '@flogo-web/lib-client/core';
 
 import { RESOURCE_PLUGINS_CONFIG } from '../../core';

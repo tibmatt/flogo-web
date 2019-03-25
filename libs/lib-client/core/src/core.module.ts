@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
-import { OverlayModule } from '@angular/cdk/overlay';
 
 import {
   createDefaultRestApiHttpHeaders,
@@ -23,22 +22,9 @@ import { SvgRefFixerService } from './services/svg-ref-fixer.service';
 import { LogService } from './services/log.service';
 import { ShimTriggerBuildApiService } from './services/restapi/v2/shim-trigger-build-api.service';
 import { FileDownloaderService } from './services/file-downloader.service';
-import {
-  ConfirmationModalComponent,
-  ConfirmationModalService,
-  ConfirmationService,
-} from './confirmation';
-import { NotificationsModule } from './notifications';
-import { ModalService } from './modal';
 
 @NgModule({
-  imports: [
-    HttpClientModule,
-    RouterModule,
-    OverlayModule,
-    TranslateModule,
-    NotificationsModule,
-  ],
+  imports: [HttpClientModule, RouterModule, TranslateModule],
   providers: [
     {
       provide: DEFAULT_REST_HEADERS,
@@ -65,12 +51,9 @@ import { ModalService } from './modal';
     LogService,
     SvgRefFixerService,
     FileDownloaderService,
-    ConfirmationService,
-    ConfirmationModalService,
-    ModalService,
   ],
-  declarations: [ConfirmationModalComponent],
-  exports: [NotificationsModule],
-  entryComponents: [ConfirmationModalComponent],
+  declarations: [],
+  exports: [],
+  entryComponents: [],
 })
 export class CoreModule {}

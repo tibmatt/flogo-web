@@ -6,7 +6,9 @@ import {
   ConfirmationModalComponent,
 } from './confirmation-modal.component';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ConfirmationModalService {
   constructor(public confirmationService: ConfirmationService) {}
 

@@ -1,6 +1,6 @@
 import { Observable, BehaviorSubject } from 'rxjs';
-import { Notification, NotificationMessage } from '../notifications';
-import { NotificationsService } from '../notifications.service';
+import { Notification, NotificationMessage } from '../src/notifications';
+import { NotificationsService } from '../src/notifications.service';
 
 export class NotificationsServiceMock implements Partial<NotificationsService> {
   notificationsSource = new BehaviorSubject([]);

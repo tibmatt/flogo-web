@@ -27,7 +27,7 @@ i.e. from most preferable to least preferable:
 Use this approach if you _only_ need the LanguageService.
 
 ```javascript
-import { fakeLanguageProvider } from lib-client;
+import { fakeLanguageProvider } from '@flogo-web/lib-client/language/testing';
 TestBed.configureTestingModule({
   imports: [],
   declarations: [],
@@ -43,7 +43,7 @@ For example if your template declares something like `<div>{{ 'MY-TRANSLATE-KEY'
 Example:
 
 ```javascript
-import { FakeTranslatePipe } from '@flogo-web/lib-client/core/language/testing';
+import { FakeTranslatePipe } from '@flogo-web/lib-client/language/testing';
 TestBed.configureTestingModule({
   imports: [],
   declarations: [FakeTranslatePipe, MyComponentUnderTestThatUsesTranslatePipe],
@@ -54,12 +54,12 @@ TestBed.configureTestingModule({
 ## NoDependenciesFakeLanguageModule
 
 Use this if you need both the LanguageService and the translate pipe and your test module and its dependent submodules
-**don't** depend on flogo's CoreModule or SharedModule.
+**DO NOT** depend on flogo's CoreModule or SharedModule.
 
 Example:
 
 ```javascript
-import { NoDependenciesFakeLanguageModule } from '@flogo-web/lib-client/core/language/testing';
+import { NoDependenciesFakeLanguageModule } from '@flogo-web/lib-client/language/testing';
 TestBed.configureTestingModule({
   imports: [NoDependenciesFakeLanguageModule],
   declarations: [MyComponentUnderTestThatUsesLanguageServiceAndTranslatePipe],
@@ -74,7 +74,7 @@ Use this if your test module depends on flogo's CoreModule or SharedModule.
 Example:
 
 ```javascript
-import { FakeRootLanguageModule } from lib-client;
+import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
 TestBed.configureTestingModule({
   imports: [
     FakeRootLanguageModule,

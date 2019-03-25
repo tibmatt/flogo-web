@@ -8,7 +8,7 @@ import {
   HttpUtilsService,
   FlogoProfileService,
 } from '@flogo-web/lib-client/core/services';
-import { FakeRootLanguageModule } from '@flogo-web/lib-client/core/language/testing';
+import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
 import { TriggersApiServiceMock } from '@flogo-web/lib-client/core/services/restapi/v2/triggers-api.service.mock';
 import { FlogoProfileServiceMock } from '@flogo-web/lib-client/core/services/profile.service.mock';
 

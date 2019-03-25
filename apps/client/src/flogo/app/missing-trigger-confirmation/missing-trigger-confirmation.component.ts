@@ -1,9 +1,5 @@
 import { Component, HostBinding, Inject } from '@angular/core';
-import {
-  modalAnimate,
-  ModalControl,
-  MODAL_TOKEN,
-} from '@flogo-web/lib-client/core/modal';
+import { modalAnimate, ModalControl, MODAL_TOKEN } from '@flogo-web/lib-client/modal';
 
 export interface ConfirmationParams {
   type: 'export' | 'build';

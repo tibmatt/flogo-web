@@ -5,15 +5,17 @@ import { filter, takeUntil, mergeMap, reduce, switchMap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
 import {
-  LanguageService,
   FlowMetadata,
   TriggerSchema,
   Dictionary,
   SingleEmissionSubject,
   TRIGGER_MENU_OPERATION,
-  ConfirmationResult,
-  ConfirmationModalService,
 } from '@flogo-web/lib-client/core';
+import {
+  ConfirmationModalService,
+  ConfirmationResult,
+} from '@flogo-web/lib-client/confirmation';
+import { LanguageService } from '@flogo-web/lib-client/language';
 import {
   TriggersApiService,
   RESTAPIHandlersService,

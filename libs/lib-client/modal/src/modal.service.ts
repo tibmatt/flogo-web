@@ -2,6 +2,7 @@ import { Injectable, InjectionToken, Injector } from '@angular/core';
 import { ComponentType, Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { ModalControl } from './modal-control';
+import { ModalModule } from './modal.module';
 
 export const MODAL_TOKEN = new InjectionToken<any>('flogo/core/modal-token');
 
@@ -9,7 +10,9 @@ export interface ModalContent {
   control: ModalControl;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: ModalModule,
+})
 export class ModalService {
   constructor(private injector: Injector, private overlay: Overlay) {}
 

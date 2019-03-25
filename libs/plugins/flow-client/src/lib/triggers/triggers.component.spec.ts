@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Store, StoreModule } from '@ngrx/store';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { BsModalModule } from 'ng2-bs3-modal';
 
 import { App } from '@flogo-web/core';
@@ -11,9 +12,10 @@ import {
   HttpUtilsService,
   RESTAPIContributionsService,
   FlogoProfileService,
-} from '@flogo-web/lib-client/core/services';
+} from '@flogo-web/lib-client/core';
 import { FlogoProfileServiceMock } from '@flogo-web/lib-client/core/services/profile.service.mock';
-import { FakeRootLanguageModule } from '@flogo-web/lib-client/core/language/testing';
+import { ConfirmationModalService } from '@flogo-web/lib-client/confirmation';
+import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
 import { InstallerModule } from '../shared/installer';
 import { MicroServiceModelConverter } from '../core/models/profiles/microservice-converter.model';
 import { featureReducer, FlowState, Init, INITIAL_STATE } from '../core/state';
@@ -22,7 +24,6 @@ import { FlogoFlowTriggersPanelComponent } from './triggers.component';
 import { FlogoSelectTriggerComponent } from './select-trigger/select-trigger.component';
 import { TriggerBlockComponent } from './trigger-block';
 import { ConfiguratorModule as TriggersConfiguratorModule } from './configurator';
-import { ConfirmationModalService } from '@flogo-web/lib-client/core';
 
 const TEST_STATE: FlowState = {
   ...INITIAL_STATE,
@@ -164,7 +165,7 @@ class MockUIConverterService {}
 
 class MockConfirmationModal {}
 
-describe('Component: FlogoFlowTriggersPanelComponent', () => {
+describe('Component: TriggersComponent', () => {
   let fixture: ComponentFixture<FlogoFlowTriggersPanelComponent>;
   let store: Store<FlowState>;
 
@@ -175,6 +176,7 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
         InstallerModule,
         BsModalModule,
         TriggersConfiguratorModule,
+        OverlayModule,
         StoreModule.forRoot({
           flow: featureReducer,
         }),

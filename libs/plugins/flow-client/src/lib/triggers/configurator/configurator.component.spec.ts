@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { Store, StoreModule } from '@ngrx/store';
-import { FakeRootLanguageModule } from '@flogo-web/lib-client/core/language/testing';
+import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
 
 import { featureReducer, FlowState, INITIAL_STATE } from '../../core/state';
 import { ConfiguratorModule } from './configurator.module';

@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NotificationsService } from './notifications.service';
 import { NotificationsComponent } from './notifications.component';
-import { NotificationsServiceMock } from './testing/notifications.service.mock';
+import { NotificationsServiceMock } from '../testing/notifications.service.mock';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('NotificationsComponent', () => {

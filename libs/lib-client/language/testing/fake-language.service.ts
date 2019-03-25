@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { of as observableOf, Observable } from 'rxjs';
-import { LanguageService } from '../language.service';
+import { LanguageService } from '@flogo-web/lib-client/language';
 
 @Injectable()
 export class FakeLanguageService implements LanguageService {

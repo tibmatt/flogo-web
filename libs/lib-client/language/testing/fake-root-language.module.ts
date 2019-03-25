@@ -1,6 +1,6 @@
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NgModule } from '@angular/core';
-import { LanguageService } from '../language.service';
+import { LanguageService } from '@flogo-web/lib-client/language';
 
 @NgModule({
   imports: [TranslateModule.forRoot()],

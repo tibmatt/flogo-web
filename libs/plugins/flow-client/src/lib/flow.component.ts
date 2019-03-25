@@ -10,15 +10,17 @@ import {
 
 import {
   MetadataAttribute,
-  LanguageService,
   Item,
-  ConfirmationResult,
-  ConfirmationModalService,
   FLOGO_TASK_TYPE,
   mergeItemWithSchema,
   SingleEmissionSubject,
 } from '@flogo-web/lib-client/core';
-import { NotificationsService } from '@flogo-web/lib-client/core/notifications';
+import {
+  ConfirmationResult,
+  ConfirmationModalService,
+} from '@flogo-web/lib-client/confirmation';
+import { LanguageService } from '@flogo-web/lib-client/language';
+import { NotificationsService } from '@flogo-web/lib-client/notifications';
 import { AppsApiService } from '@flogo-web/lib-client/core/services';
 
 import { TestRunnerService } from './core/test-runner/test-runner.service';

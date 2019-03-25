@@ -20,7 +20,7 @@ import {
   Dictionary,
 } from '@flogo-web/lib-client/core';
 import { isMapperActivity } from '@flogo-web/plugins/flow-core';
-import { NotificationsService } from '@flogo-web/lib-client/core/notifications';
+import { NotificationsService } from '@flogo-web/lib-client/notifications';
 
 import {
   MapperTranslator,

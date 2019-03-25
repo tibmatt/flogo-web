@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule as NgCommonModule } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
 
 import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
@@ -35,7 +34,6 @@ import {
     NgCommonModule,
     ReactiveFormsModule,
     ScrollingModule,
-    OverlayModule,
     PortalModule,
     FlogoSharedModule,
     MapperModule,

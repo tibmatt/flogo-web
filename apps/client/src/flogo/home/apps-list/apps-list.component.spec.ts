@@ -8,9 +8,9 @@ import {
   AppsApiService,
   HttpUtilsService,
 } from '@flogo-web/lib-client/core/services';
-import { NotificationsService } from '@flogo-web/lib-client/core/notifications';
-import { NotificationsServiceMock } from '@flogo-web/lib-client/core/notifications/testing';
-import { FakeRootLanguageModule } from '@flogo-web/lib-client/core/language/testing';
+import { NotificationsService } from '@flogo-web/lib-client/notifications';
+import { NotificationsServiceMock } from '@flogo-web/lib-client/notifications/testing';
+import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
 import { AppsApiServiceMock } from '@flogo-web/lib-client/core/services/restapi/v2/apps-api.service.mock';
 import { TimeFromNowPipe, FlogoDeletePopupComponent } from '@flogo-web/lib-client/common';
 

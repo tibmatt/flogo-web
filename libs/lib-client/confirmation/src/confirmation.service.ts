@@ -4,7 +4,9 @@ import { ComponentType, ComponentPortal, PortalInjector } from '@angular/cdk/por
 import { ConfirmationControl } from './confirmation-control';
 import { ConfirmationContent } from './confirmation-content';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ConfirmationService {
   constructor(private injector: Injector, private overlay: Overlay) {}
 

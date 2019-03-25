@@ -10,7 +10,7 @@ import {
   TriggersApiService,
   AppResourceService,
 } from '@flogo-web/lib-client/core';
-import { NotificationsService } from '@flogo-web/lib-client/core/notifications';
+import { NotificationsService } from '@flogo-web/lib-client/notifications';
 import { AppResourcesStateService } from './app-resources-state.service';
 
 interface NewResource {

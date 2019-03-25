@@ -25,7 +25,6 @@ import {
 
 import { App, Trigger, CONTRIB_REFS } from '@flogo-web/core';
 import {
-  LanguageService,
   FlowSummary,
   ERROR_CODE,
   LocalStorageService,
@@ -35,12 +34,13 @@ import {
   ContribSchema,
   SingleEmissionSubject,
 } from '@flogo-web/lib-client/core';
-import { ModalService } from '@flogo-web/lib-client/core/modal';
+import { LanguageService } from '@flogo-web/lib-client/language';
+import { ModalService } from '@flogo-web/lib-client/modal';
 import {
   ConfirmationResult,
   ConfirmationModalService,
-} from '@flogo-web/lib-client/core/confirmation';
-import { NotificationsService } from '@flogo-web/lib-client/core/notifications';
+} from '@flogo-web/lib-client/confirmation';
+import { NotificationsService } from '@flogo-web/lib-client/notifications';
 import {
   AppDetailService,
   SETTING_DONT_WARN_MISSING_TRIGGERS,

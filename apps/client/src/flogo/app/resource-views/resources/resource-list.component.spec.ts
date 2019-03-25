@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component, Output, EventEmitter, DebugElement } from '@angular/core';
 
-import { NoDependenciesFakeLanguageModule } from '@flogo-web/lib-client/core/language/testing';
+import { NoDependenciesFakeLanguageModule } from '@flogo-web/lib-client/language/testing';
 import { TimeFromNowPipe, FlogoDeletePopupComponent } from '@flogo-web/lib-client/common';
 
 import { ResourceBadgeComponent } from '../resource-badge';
