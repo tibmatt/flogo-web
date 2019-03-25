@@ -2,12 +2,12 @@ import { isEmpty } from 'lodash';
 import {
   Resource,
   FlogoAppModel,
-  FlowData,
   ResourceActionModel,
   Metadata,
   MetadataAttribute,
 } from '@flogo-web/core';
 import { ResourceExportContext } from '@flogo-web/lib-server/core';
+import { FlowData } from '@flogo-web/plugins/flow-core';
 import { formatTaskLinkGroups } from './format-task-link-group';
 
 export function exportFlow(

@@ -13,8 +13,8 @@ import {
   ValidationError,
   ImportsRefAgent,
 } from '@flogo-web/lib-server/core';
+import { FlowData } from '@flogo-web/plugins/flow-core';
 
-import { FlowData } from '../flow';
 import { TaskConverter } from './task-converter';
 
 export class ActionImporter {

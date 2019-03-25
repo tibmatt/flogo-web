@@ -7,11 +7,11 @@ import {
   FlogoPlugin,
   HandlerImportContext,
 } from '@flogo-web/lib-server/core';
+import { FlowData } from '@flogo-web/plugins/flow-core';
 
 import { createActionImporter, importHandler } from './import';
 import { exportFlow, exportHandler } from './export';
 import { resourceHooks } from './hooks';
-import { FlowData } from './flow';
 import { FLOW_REF } from './constants';
 
 const resourceType = {

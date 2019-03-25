@@ -1,5 +1,5 @@
 import { ResourceHooks, ValidationError } from '@flogo-web/lib-server/core';
-import { FlowData } from '@flogo-web/core';
+import { FlowData } from '@flogo-web/plugins/flow-core';
 import { validateFlowData } from './validation';
 import { isFlowResource } from './is-flow-resource';
 

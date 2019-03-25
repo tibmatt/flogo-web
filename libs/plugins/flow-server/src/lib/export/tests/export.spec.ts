@@ -1,6 +1,5 @@
 import {
   Resource,
-  FlowData,
   ContributionSchema,
   FlogoAppModel,
   ResourceActionModel,
@@ -8,6 +7,7 @@ import {
   ContributionType,
 } from '@flogo-web/core';
 import { FLOGO_TASK_TYPE } from '@flogo-web/lib-server/core';
+import { FlowData } from '@flogo-web/plugins/flow-core';
 import { exportFlow } from '..';
 
 test('it exports a flow', () => {
