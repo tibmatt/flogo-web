@@ -1,5 +1,5 @@
 import { filter, keys, map, max, toNumber } from 'lodash';
-import { FLOGO_TASK_TYPE } from '../../constants';
+import { FLOGO_TASK_TYPE } from '@flogo-web/lib-client/core';
 
 export function calculateNextId(items: any, parseInput?) {
   let maxCount;

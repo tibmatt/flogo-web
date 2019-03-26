@@ -1,26 +1,26 @@
-import { assign } from 'lodash';
+import { assign, fromPairs } from 'lodash';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
+import { CONTRIB_REFS } from '@flogo-web/core';
 import {
   ItemActivityTask,
   ItemSubflow,
   NodeType,
   Task,
-  activitySchemaToTask,
-  createSubFlowTask,
-  isSubflowTask,
-  extractItemInputsFromTask,
-  taskIdGenerator,
+  ItemTask,
 } from '@flogo-web/lib-client/core';
 
+import { HandlerType, InsertTaskSelection } from '../../core/models';
+import { uniqueTaskName } from '../../core/models/unique-task-name';
 import { FlowState, FlowActions, FlowSelectors } from '../../core/state';
 import { PayloadOf } from '../../core/state/utils';
 import { makeNode } from '../../core/models/graph-and-items/graph-creator';
-import { HandlerType, InsertTaskSelection } from '../../core/models';
-import { uniqueTaskName } from '../../core/models/unique-task-name';
-import { CONTRIB_REFS } from '@flogo-web/core';
+import { isSubflowTask } from '../../core/models/flow/is-subflow-task';
+
+import { activitySchemaToTask, createSubFlowTask } from './task-factories';
+import { taskIdGenerator } from './profile';
 
 interface TaskAddData {
   ref: string;
@@ -123,4 +123,8 @@ function createItem(task, isSubflow) {
     (<ItemActivityTask>item).return = task.return;
   }
   return item;
+}
+
+export function extractItemInputsFromTask(task: Task): ItemTask['input'] {
+  return fromPairs(task.attributes.inputs.map(attr => [attr.name, attr.value]));
 }

@@ -11,16 +11,16 @@ import {
   RESTAPIHandlersService,
   HttpUtilsService,
   RESTAPIContributionsService,
-  FlogoProfileService,
 } from '@flogo-web/lib-client/core';
 import { FlogoProfileServiceMock } from '@flogo-web/lib-client/core/services/profile.service.mock';
 import { ConfirmationModalService } from '@flogo-web/lib-client/confirmation';
 import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
 import { InstallerModule } from '../shared/installer';
 import { MicroServiceModelConverter } from '../core/models/profiles/microservice-converter.model';
+import { FlogoProfileService } from '../core';
 import { featureReducer, FlowState, Init, INITIAL_STATE } from '../core/state';
-import { FlogoFlowTriggersPanelComponent } from './triggers.component';
 
+import { FlogoFlowTriggersPanelComponent } from './triggers.component';
 import { FlogoSelectTriggerComponent } from './select-trigger/select-trigger.component';
 import { TriggerBlockComponent } from './trigger-block';
 import { ConfiguratorModule as TriggersConfiguratorModule } from './configurator';

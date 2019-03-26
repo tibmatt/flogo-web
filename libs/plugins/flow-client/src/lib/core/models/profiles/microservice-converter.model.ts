@@ -11,12 +11,9 @@ import {
   FlowMetadata,
   MetadataAttribute,
   FLOGO_FLOW_DIAGRAM_NODE_TYPE,
-  flogoGenTriggerID,
-  flogoGenNodeID,
   Dictionary,
   ErrorService,
   RESTAPIContributionsService,
-  isSubflowTask,
   UiFlow,
   FLOGO_CONTRIB_TYPE,
   Item,
@@ -25,6 +22,8 @@ import {
 import { makeGraphAndItems } from '../graph-and-items';
 import { ItemFactory } from '../graph-and-items/item-factory';
 import { ApiFlowResource } from '../../interfaces';
+import { flogoGenTriggerID, flogoGenNodeID } from './utils';
+import { isSubflowTask } from '../flow/is-subflow-task';
 
 export interface FlowInfo {
   id: string;

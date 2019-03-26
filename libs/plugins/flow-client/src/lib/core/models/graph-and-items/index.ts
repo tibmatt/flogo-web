@@ -7,12 +7,12 @@ import {
   FlowGraph,
   GraphNode,
   Item,
-  isSubflowTask,
 } from '@flogo-web/lib-client/core';
 import { Task as BackendTask, Link as BackendLink } from '@flogo-web/plugins/flow-core';
 
 import { makeTaskNodes, makeBranchNode } from './graph-creator';
 import { makeBranchItem, makeTaskItems } from './items-creator';
+import { isSubflowTask } from '../flow/is-subflow-task';
 
 export type BranchIdGenerator = () => string;
 

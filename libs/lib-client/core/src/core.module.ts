@@ -16,7 +16,6 @@ import { ConfigurationService } from './services/configuration.service';
 import { ErrorService, WindowRef, SanitizeService, RunApiService } from './services';
 import { ChildWindowService } from './services/child-window.service';
 import { AppResourceService } from './services/app-resource.service';
-import { FlogoProfileService } from './services/profile.service';
 import { RESTAPIContributionsService } from './services/restapi/v2/contributions.service';
 import { SvgRefFixerService } from './services/svg-ref-fixer.service';
 import { LogService } from './services/log.service';
@@ -47,7 +46,6 @@ import { FileDownloaderService } from './services/file-downloader.service';
     SanitizeService,
     WindowRef,
     AppResourceService,
-    FlogoProfileService,
     LogService,
     SvgRefFixerService,
     FileDownloaderService,

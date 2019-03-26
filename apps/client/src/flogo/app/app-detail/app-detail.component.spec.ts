@@ -14,7 +14,6 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { App } from '@flogo-web/core';
 import {
   CoreModule as FlogoCoreModule,
-  FlogoProfileService,
   RESTAPIContributionsService,
 } from '@flogo-web/lib-client/core';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
@@ -84,7 +83,6 @@ describe('FlogoApplicationDetailComponent component', () => {
         ResourceViewsSelectorComponent,
       ],
       providers: [
-        FlogoProfileService,
         AppResourcesStateService,
         { provide: AppDetailService, useClass: MockAppDetailService },
         {

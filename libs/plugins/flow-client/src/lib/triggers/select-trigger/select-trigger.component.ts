@@ -9,10 +9,8 @@ import {
   Output,
 } from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
-import {
-  TriggersApiService,
-  FlogoProfileService,
-} from '@flogo-web/lib-client/core/services';
+import { TriggersApiService } from '@flogo-web/lib-client/core/services';
+import { FlogoProfileService } from '../../core';
 
 @Component({
   selector: 'flogo-flow-select-trigger',

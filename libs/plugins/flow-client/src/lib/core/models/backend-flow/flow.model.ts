@@ -15,9 +15,7 @@ import {
   FlowMetadata,
   MetadataAttribute,
   FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
-  isSubflowTask,
   getDefaultValue,
-  mergeItemWithSchema,
   AttributeMapping as DiagramTaskAttributeMapping,
   TaskAttribute as DiagramTaskAttribute,
   flowToJSON_Attribute,
@@ -36,6 +34,8 @@ import {
   NodeType,
 } from '@flogo-web/lib-client/core';
 import { FlowResource, ResourceFlowData } from '../../interfaces';
+import { isSubflowTask } from '../flow/is-subflow-task';
+import { mergeItemWithSchema } from '../merge-item-with-schema';
 
 const DEBUG = false;
 const INFO = true;

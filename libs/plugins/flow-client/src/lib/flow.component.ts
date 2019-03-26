@@ -12,7 +12,6 @@ import {
   MetadataAttribute,
   Item,
   FLOGO_TASK_TYPE,
-  mergeItemWithSchema,
   SingleEmissionSubject,
 } from '@flogo-web/lib-client/core';
 import {
@@ -28,7 +27,7 @@ import { MonacoEditorLoaderService } from './shared/monaco-editor';
 
 import { FlowData } from './core';
 import { FlogoFlowService as FlowsService } from './core/flow.service';
-import { HandlerType, SelectionType } from './core/models';
+import { HandlerType, SelectionType, mergeItemWithSchema } from './core/models';
 import { FlowState } from './core/state';
 import { FlowMetadata } from './task-configurator/models';
 import { ParamsSchemaComponent } from './params-schema';

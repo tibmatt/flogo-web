@@ -12,13 +12,15 @@ import {
   ItemActivityTask,
   ItemSubflow,
   ItemTask,
-  isSubflowTask,
   Task,
-  mergeItemWithSchema,
   SingleEmissionSubject,
   Dictionary,
 } from '@flogo-web/lib-client/core';
-import { isMapperActivity } from '@flogo-web/plugins/flow-core';
+import {
+  isMapperActivity,
+  isAcceptableIterateValue,
+  isIterableTask,
+} from '@flogo-web/plugins/flow-core';
 import { NotificationsService } from '@flogo-web/lib-client/notifications';
 
 import {
@@ -36,15 +38,16 @@ import {
   ITERATOR_OUTPUT_KEY,
 } from './models';
 import { SubFlowConfig } from './subflow-config';
+import { AppState } from '../core/state/app.state';
+import { mergeItemWithSchema } from '../core/models';
+import { hasTaskWithSameName } from '../core/models/unique-task-name';
+import { isSubflowTask } from '../core/models/flow/is-subflow-task';
 import {
   getFlowMetadata,
   getInputContext,
 } from '../core/models/task-configure/get-input-context';
 import { getStateWhenConfigureChanges } from '../shared/configurator/configurator.selector';
 import { createSaveAction } from './models/save-action-creator';
-import { hasTaskWithSameName } from '../core/models/unique-task-name';
-import { AppState } from '../core/state/app.state';
-import { isAcceptableIterateValue, isIterableTask } from '@flogo-web/plugins/flow-core';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',

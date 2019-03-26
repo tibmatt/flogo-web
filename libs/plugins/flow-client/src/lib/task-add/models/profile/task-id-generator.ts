@@ -1,6 +1,6 @@
-import { calculateNextId } from '../calculate-next-id';
+import { calculateNextId } from './calculate-next-id';
 
-export function microserviceTaskIdGenerator(items?: any, currentTask?: any) {
+export function taskIdGenerator(items?: any, currentTask?: any): string {
   let taskID = '';
   if (items) {
     if (currentTask) {
@@ -14,6 +14,5 @@ export function microserviceTaskIdGenerator(items?: any, currentTask?: any) {
     // tslint:disable-next-line:no-bitwise
     taskID = '' + (Date.now() >>> 1);
   }
-
   return taskID;
 }

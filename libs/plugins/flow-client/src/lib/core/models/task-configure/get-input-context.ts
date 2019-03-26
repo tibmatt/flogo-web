@@ -1,4 +1,5 @@
 import { defaultsDeep, get } from 'lodash';
+import { ActivitySchema } from '@flogo-web/core';
 import {
   Dictionary,
   GraphNode,
@@ -6,14 +7,12 @@ import {
   ItemSubflow,
   ItemTask,
   NodeType,
-  isSubflowTask,
-  mergeItemWithSchema,
-  PartialActivitySchema,
 } from '@flogo-web/lib-client/core';
 import { FlowState } from '../../state';
 import { makeErrorTask } from '../make-error-task';
 import { FlowMetadata } from '../../../task-configurator/models';
-import { ActivitySchema } from '@flogo-web/core';
+import { isSubflowTask } from '../flow/is-subflow-task';
+import { mergeItemWithSchema, PartialActivitySchema } from '../merge-item-with-schema';
 
 // todo: fcastill - specify return interfaces
 export function getInputContext(taskId: string, state: FlowState): any[] {

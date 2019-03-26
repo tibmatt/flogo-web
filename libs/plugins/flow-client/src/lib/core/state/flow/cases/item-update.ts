@@ -1,13 +1,8 @@
-import {
-  BaseItemTask,
-  GraphNode,
-  Item,
-  ItemBranch,
-  isBranchConfigured,
-} from '@flogo-web/lib-client/core';
+import { BaseItemTask, GraphNode, Item, ItemBranch } from '@flogo-web/lib-client/core';
 import { FlowState } from '../flow.state';
 import { getGraphName, getItemsDictionaryName } from '../../utils';
 import { HandlerType } from '../../../models';
+import { isBranchConfigured } from '../../../models/flow/is-branch-configured';
 
 export function nodeUpdate(
   state: FlowState,

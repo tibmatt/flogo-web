@@ -6,12 +6,12 @@ import {
   TriggersApiService,
   RESTAPIContributionsService,
   HttpUtilsService,
-  FlogoProfileService,
-} from '@flogo-web/lib-client/core/services';
+} from '@flogo-web/lib-client/core';
 import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
 import { TriggersApiServiceMock } from '@flogo-web/lib-client/core/services/restapi/v2/triggers-api.service.mock';
 import { FlogoProfileServiceMock } from '@flogo-web/lib-client/core/services/profile.service.mock';
 
+import { FlogoProfileService } from '../../core';
 import { TriggersModule } from '../triggers.module';
 import { FlogoSelectTriggerComponent } from './select-trigger.component';
 

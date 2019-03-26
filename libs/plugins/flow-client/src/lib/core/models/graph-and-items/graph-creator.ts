@@ -6,14 +6,14 @@ import {
   NodeType,
   Dictionary,
   ItemActivityTask,
-  isBranchConfigured,
-  isSubflowTask,
 } from '@flogo-web/lib-client/core';
 import {
   isIterableTask,
   Task as BackendTask,
   Link as BackendLink,
 } from '@flogo-web/plugins/flow-core';
+import { isSubflowTask } from '../flow/is-subflow-task';
+import { isBranchConfigured } from '../flow/is-branch-configured';
 
 const defaultFeatures: NodeFeatures = {
   selectable: true,

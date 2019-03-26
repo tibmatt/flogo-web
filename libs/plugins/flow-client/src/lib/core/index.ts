@@ -1,6 +1,7 @@
 export { CoreModule } from './core.module';
 
 export { FlogoFlowService } from './flow.service';
+export { FlogoProfileService } from './profile.service';
 export { FlowData } from './flow-data';
 export {
   MicroServiceModelConverter,

@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { ActivitySchema } from '@flogo-web/core';
-import { ItemTask, Task, TaskAttribute } from '../interfaces';
+import { ItemTask, Task, TaskAttribute } from '@flogo-web/lib-client/core';
 
 export type PartialActivitySchema = Partial<ActivitySchema>;
 
