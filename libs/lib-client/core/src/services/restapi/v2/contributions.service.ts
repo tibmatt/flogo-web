@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ContribSchema } from '../../../interfaces';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+import { ContributionSchema } from '@flogo-web/core';
 import { FLOGO_CONTRIB_TYPE } from '../../../constants';
 import { RestApiService } from '../rest-api.service';
-import { Observable } from 'rxjs';
 
 interface InstallationData {
   url: string;
@@ -14,7 +15,7 @@ interface InstallationData {
 export class RESTAPIContributionsService {
   constructor(private restApi: RestApiService) {}
 
-  getContributionDetails<T extends ContribSchema = ContribSchema>(
+  getContributionDetails<T extends ContributionSchema = ContributionSchema>(
     ref: string
   ): Promise<T> {
     return this.restApi
@@ -23,11 +24,13 @@ export class RESTAPIContributionsService {
       .toPromise();
   }
 
-  getShimContributionDetails<T extends ContribSchema = ContribSchema>() {
+  getShimContributionDetails<T extends ContributionSchema = ContributionSchema>() {
     return this.restApi.get<T[]>(this.getApiPath() + '?filter[shim]=' + true);
   }
 
-  listContribs<T extends ContribSchema = ContribSchema>(type: FLOGO_CONTRIB_TYPE) {
+  listContribs<T extends ContributionSchema = ContributionSchema>(
+    type: FLOGO_CONTRIB_TYPE
+  ) {
     return this.restApi.get<T[]>(this.getApiPath() + '?filter[type]=' + type).toPromise();
   }
 

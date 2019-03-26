@@ -23,15 +23,14 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 
-import { App, Trigger, CONTRIB_REFS } from '@flogo-web/core';
+import { App, Trigger, ContributionSchema, CONTRIB_REFS } from '@flogo-web/core';
 import {
-  FlowSummary,
+  ResourceSummary,
   ERROR_CODE,
   LocalStorageService,
   SanitizeService,
   ShimTriggerBuildApiService,
   RESTAPIContributionsService,
-  ContribSchema,
   SingleEmissionSubject,
 } from '@flogo-web/lib-client/core';
 import { LanguageService } from '@flogo-web/lib-client/language';
@@ -83,7 +82,7 @@ interface FieldUiState {
 })
 export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, OnInit {
   @Input() appId: string;
-  @Output() resourceSelected = new EventEmitter<FlowSummary>();
+  @Output() resourceSelected = new EventEmitter<ResourceSummary>();
   @Output() appDeleted = new EventEmitter<void>();
 
   application: App;
@@ -106,7 +105,7 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
   isBuildBoxShown = false;
   isBuilding: boolean;
 
-  shimmableTriggerSchema$: Observable<ContribSchema[]>;
+  shimmableTriggerSchema$: Observable<ContributionSchema[]>;
   shimTriggerOptions = [];
 
   private destroyed$ = SingleEmissionSubject.create();
@@ -480,7 +479,7 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
   }
 }
 
-function getShimmableTriggerBuildOption(shimmableTriggerDetail: ContribSchema) {
+function getShimmableTriggerBuildOption(shimmableTriggerDetail: ContributionSchema) {
   switch (shimmableTriggerDetail.ref) {
     case CONTRIB_REFS.LAMBDA:
       return {

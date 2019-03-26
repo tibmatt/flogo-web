@@ -10,8 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-
-import { ValueType } from '@flogo-web/lib-client/core';
+import { ValueType } from '@flogo-web/core';
 
 import { SettingValue } from '../../settings-value';
 import { SettingControlInfo } from '../../../interfaces';

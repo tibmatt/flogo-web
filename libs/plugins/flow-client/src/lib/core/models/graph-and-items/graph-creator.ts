@@ -5,12 +5,15 @@ import {
   NodeStatus,
   NodeType,
   Dictionary,
-  flow as backendFlow,
   ItemActivityTask,
   isBranchConfigured,
   isSubflowTask,
 } from '@flogo-web/lib-client/core';
-import { isIterableTask } from '@flogo-web/plugins/flow-core';
+import {
+  isIterableTask,
+  Task as BackendTask,
+  Link as BackendLink,
+} from '@flogo-web/plugins/flow-core';
 
 const defaultFeatures: NodeFeatures = {
   selectable: true,
@@ -29,7 +32,7 @@ const defaultStatus: NodeStatus = {
 };
 
 export function makeTaskNodes(
-  tasks: backendFlow.Task[],
+  tasks: BackendTask[],
   items: Dictionary<Item>
 ): Dictionary<GraphNode> {
   return tasks.reduce(
@@ -42,7 +45,7 @@ export function makeTaskNodes(
   );
 }
 
-function makeTask(task: backendFlow.Task, item: Item): GraphNode {
+function makeTask(task: BackendTask, item: Item): GraphNode {
   const isFinal = (<ItemActivityTask>item).return;
   return makeNode({
     type: NodeType.Task,
@@ -62,7 +65,7 @@ function makeTask(task: backendFlow.Task, item: Item): GraphNode {
   });
 }
 
-export function makeBranchNode(id: string, link: backendFlow.Link): GraphNode {
+export function makeBranchNode(id: string, link: BackendLink): GraphNode {
   return makeNode({
     id,
     type: NodeType.Branch,

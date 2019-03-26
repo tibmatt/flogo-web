@@ -1,7 +1,6 @@
 import {
   difference,
   cloneDeep,
-  find,
   get,
   each,
   includes,
@@ -11,6 +10,7 @@ import {
   isUndefined,
 } from 'lodash';
 
+import { ActivitySchema, ValueType } from '@flogo-web/core';
 import {
   FlowMetadata,
   MetadataAttribute,
@@ -25,11 +25,9 @@ import {
   flowToJSON_Link,
   flowToJSON_Mapping,
   flowToJSON_Task,
-  ValueType,
   FLOGO_TASK_TYPE,
   Dictionary,
   Item,
-  ActivitySchema,
   ItemActivityTask,
   ItemBranch,
   ItemTask,

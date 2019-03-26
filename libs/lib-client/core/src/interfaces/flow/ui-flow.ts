@@ -1,6 +1,6 @@
-import { App } from '@flogo-web/core';
+import { App, ContributionSchema } from '@flogo-web/core';
 import { FlowGraph } from '../graph';
-import { Dictionary, ContribSchema } from '../common';
+import { Dictionary } from '../common';
 import { FlowMetadata } from './flow-metadata';
 import { Item } from './items';
 
@@ -16,5 +16,5 @@ export interface UiFlow {
   errorItems: Dictionary<Item>;
   mainGraph: FlowGraph;
   errorGraph: FlowGraph;
-  schemas: Dictionary<ContribSchema>;
+  schemas: Dictionary<ContributionSchema>;
 }

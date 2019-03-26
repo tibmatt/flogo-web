@@ -1,13 +1,12 @@
 import { isEmpty } from 'lodash';
-import { ResourceActionModel } from '@flogo-web/core';
-import { FlowData } from '@flogo-web/plugins/flow-core';
+import { FlowData, FlowResourceModel } from '@flogo-web/plugins/flow-core';
 import { ResourceExportContext } from '@flogo-web/lib-server/core';
 import { formatLinks } from './format-links';
 import { formatTasks } from './format-tasks';
 
 export interface TaskLinkGroup {
-  tasks?: ResourceActionModel.Task[];
-  links?: ResourceActionModel.Link[];
+  tasks?: FlowResourceModel.Task[];
+  links?: FlowResourceModel.Link[];
 }
 
 export function formatTaskLinkGroups(

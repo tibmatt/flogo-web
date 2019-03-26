@@ -1,4 +1,5 @@
-import { Dictionary, TriggerSchema } from '@flogo-web/lib-client/core';
+import { TriggerSchema } from '@flogo-web/core';
+import { Dictionary } from '@flogo-web/lib-client/core';
 import { FlowState } from '../../flow/flow.state';
 import { OpenConfigureWithSelection } from '../trigger-configure.actions';
 import {

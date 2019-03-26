@@ -1,4 +1,4 @@
-import { TriggerSchema, ValueType } from '@flogo-web/lib-client/core';
+import { TriggerSchema, ValueType, ContributionType } from '@flogo-web/core';
 
 export const TriggersMock = [
   {
@@ -253,7 +253,7 @@ export const ConfigureTriggersMock = [
 ];
 
 export const ConfigureTriggerSchema: TriggerSchema = {
-  type: 'flogo:trigger',
+  type: ContributionType.Trigger,
   name: 'flogo-rest',
   version: '0.0.1',
   title: 'Receive HTTP Message',

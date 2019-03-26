@@ -1,11 +1,10 @@
 import { isEmpty } from 'lodash';
 import { Injectable } from '@angular/core';
 import {
-  Dictionary,
-  SchemaAttribute,
+  SchemaAttributeDescriptor as SchemaAttribute,
   TriggerSchema,
-  TriggerHandler,
-} from '@flogo-web/lib-client/core';
+} from '@flogo-web/core';
+import { Dictionary, TriggerHandler } from '@flogo-web/lib-client/core';
 import { MapperController, MapperControllerFactory } from '../../../shared/mapper';
 import {
   CurrentTriggerState,

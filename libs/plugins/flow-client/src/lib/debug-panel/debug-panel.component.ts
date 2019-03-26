@@ -15,8 +15,8 @@ import {
   withLatestFrom,
 } from 'rxjs/operators';
 
+import { ActivitySchema } from '@flogo-web/core';
 import {
-  ActivitySchema,
   Dictionary,
   ItemActivityTask,
   StepAttribute,

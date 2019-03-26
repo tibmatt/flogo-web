@@ -1,4 +1,4 @@
-export interface FlowSummary {
+export interface ResourceSummary {
   id: string;
   name: string;
   description: string;

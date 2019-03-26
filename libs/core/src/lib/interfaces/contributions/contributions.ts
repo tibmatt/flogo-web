@@ -11,6 +11,15 @@ export interface ActivitySchema extends BaseContributionSchema {
   settings?: SchemaAttributeDescriptor[];
   input?: SchemaAttributeDescriptor[];
   output?: SchemaOutput[];
+  return?: boolean;
+  /**
+   * @deprecated should use 'input'
+   */
+  inputs?: SchemaAttributeDescriptor[];
+  /**
+   * @deprecated should use 'output'
+   */
+  outputs?: SchemaOutput[];
 }
 
 export interface TriggerSchema extends BaseContributionSchema {
@@ -21,6 +30,10 @@ export interface TriggerSchema extends BaseContributionSchema {
   handler?: {
     settings: SchemaAttributeDescriptor[];
   };
+  /**
+   * @deprecated should use 'output'
+   */
+  outputs?: SchemaOutput[];
 }
 
 export interface ActionSchema extends BaseContributionSchema {

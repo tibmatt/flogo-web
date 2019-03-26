@@ -1,28 +1,30 @@
 import { Injectable } from '@angular/core';
 import { fromPairs, isUndefined, uniqueId, pick } from 'lodash';
 import {
+  Resource,
+  FunctionsSchema,
   ActivitySchema,
+  TriggerSchema,
+  ValueType,
+} from '@flogo-web/core';
+import {
   FlowMetadata,
   MetadataAttribute,
-  ValueType,
   FLOGO_FLOW_DIAGRAM_NODE_TYPE,
   flogoGenTriggerID,
   flogoGenNodeID,
   Dictionary,
   ErrorService,
   RESTAPIContributionsService,
-  TriggerSchema,
   isSubflowTask,
   UiFlow,
   FLOGO_CONTRIB_TYPE,
   Item,
   ItemSubflow,
-  FunctionSchema,
 } from '@flogo-web/lib-client/core';
-import { Resource } from '@flogo-web/core';
 import { makeGraphAndItems } from '../graph-and-items';
 import { ItemFactory } from '../graph-and-items/item-factory';
-import { FlowResource, ApiFlowResource } from '../../interfaces';
+import { ApiFlowResource } from '../../interfaces';
 
 export interface FlowInfo {
   id: string;
@@ -214,8 +216,8 @@ export class MicroServiceModelConverter {
     return this.contribService.listContribs<ActivitySchema>(FLOGO_CONTRIB_TYPE.ACTIVITY);
   }
 
-  private getAllFunctionSchemas(): Promise<FunctionSchema[]> {
-    return this.contribService.listContribs<FunctionSchema>(FLOGO_CONTRIB_TYPE.FUNCTION);
+  private getAllFunctionSchemas(): Promise<FunctionsSchema[]> {
+    return this.contribService.listContribs<FunctionsSchema>(FLOGO_CONTRIB_TYPE.FUNCTION);
   }
 
   private cleanDanglingSubflowMappings(items: Dictionary<Item>) {

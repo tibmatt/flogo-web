@@ -1,5 +1,4 @@
-import { ValueType } from '@flogo-web/lib-client/core';
-import { EXPR_PREFIX } from '@flogo-web/core';
+import { EXPR_PREFIX, ValueType } from '@flogo-web/core';
 
 export const CONDITION_KEY = 'condition';
 

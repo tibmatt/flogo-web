@@ -1,6 +1,7 @@
 import { assign, get, isUndefined, uniqueId, cloneDeep, each, trimStart } from 'lodash';
-import { ValueType, FLOGO_TASK_TYPE } from '../constants';
+import { ValueType } from '@flogo-web/core';
 import { isMapperActivity } from '@flogo-web/plugins/flow-core';
+import { FLOGO_TASK_TYPE } from '../constants';
 
 export function flogoGenTriggerID(): string {
   return `Flogo::Trigger::${Date.now()}`;

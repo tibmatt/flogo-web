@@ -1,11 +1,8 @@
 import { cloneDeep } from 'lodash';
-import { ItemTask, ActivitySchema, Task, TaskAttribute } from '../interfaces';
+import { ActivitySchema } from '@flogo-web/core';
+import { ItemTask, Task, TaskAttribute } from '../interfaces';
 
-export interface PartialActivitySchema {
-  version?: ActivitySchema['version'];
-  inputs?: ActivitySchema['inputs'];
-  outputs?: ActivitySchema['outputs'];
-}
+export type PartialActivitySchema = Partial<ActivitySchema>;
 
 export function mergeItemWithSchema(item: ItemTask, schema: PartialActivitySchema): Task {
   item = cloneDeep(item);

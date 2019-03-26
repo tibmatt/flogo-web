@@ -26,6 +26,7 @@ import {
   tap,
 } from 'rxjs/operators';
 
+import { ActivitySchema } from '@flogo-web/core';
 import {
   Dictionary,
   FlowGraph,
@@ -33,7 +34,6 @@ import {
   Interceptor,
   NodeType,
   ItemActivityTask,
-  ActivitySchema,
 } from '@flogo-web/lib-client/core';
 import { NotificationsService } from '@flogo-web/lib-client/notifications';
 import { LanguageService } from '@flogo-web/lib-client/language';

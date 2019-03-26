@@ -3,7 +3,7 @@ import { bufferCount, exhaustMap } from 'rxjs/operators';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { App } from '@flogo-web/core';
-import { FlowSummary, AppsApiService } from '@flogo-web/lib-client/core';
+import { ResourceSummary, AppsApiService } from '@flogo-web/lib-client/core';
 
 @Component({
   selector: 'flogo-home',
@@ -12,7 +12,7 @@ import { FlowSummary, AppsApiService } from '@flogo-web/lib-client/core';
 })
 export class FlogoHomeComponent implements OnInit, OnDestroy {
   public recent: Array<any> = [];
-  flows: Array<FlowSummary> = [];
+  flows: Array<ResourceSummary> = [];
   application: App = null;
 
   isFlying = false;

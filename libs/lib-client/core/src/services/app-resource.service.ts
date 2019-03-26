@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 
+import { Resource, TriggerSchema } from '@flogo-web/core';
 import {
   TriggersApiService,
   RESTAPIHandlersService as HandlersService,
   ResourceService,
   RESTAPIContributionsService,
 } from './restapi';
-import { TriggerSchema } from '../interfaces';
-import { Resource } from '@flogo-web/core';
 import { concat, EMPTY, Observable, defer } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 

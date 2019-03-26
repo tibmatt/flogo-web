@@ -4,9 +4,9 @@ import { from } from 'rxjs';
 import { filter, takeUntil, mergeMap, reduce, switchMap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
+import { TriggerSchema } from '@flogo-web/core';
 import {
   FlowMetadata,
-  TriggerSchema,
   Dictionary,
   SingleEmissionSubject,
   TRIGGER_MENU_OPERATION,

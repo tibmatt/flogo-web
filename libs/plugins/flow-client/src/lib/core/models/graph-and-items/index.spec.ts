@@ -1,5 +1,5 @@
+import { ContributionSchema } from '@flogo-web/core';
 import {
-  ContribSchema,
   Dictionary,
   FLOGO_TASK_TYPE,
   FlowGraph,
@@ -270,7 +270,7 @@ describe('flow.core.models.graph-and-items', function() {
     const graphAndItems = makeGraphAndItems(
       tasks,
       links,
-      <ContribSchema[]>mockSchemas,
+      <ContributionSchema[]>mockSchemas,
       () => `dummy_branch_${branchId++}`
     );
     graph = graphAndItems.graph;

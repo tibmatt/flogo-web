@@ -1,9 +1,8 @@
 import {
-  Dictionary,
+  SchemaAttributeDescriptor as SchemaAttribute,
   TriggerSchema,
-  SchemaAttribute,
-  TriggerHandler,
-} from '@flogo-web/lib-client/core';
+} from '@flogo-web/core';
+import { Dictionary, TriggerHandler } from '@flogo-web/lib-client/core';
 import { Trigger } from '../../../interfaces';
 import { ConfigureTriggerDetails } from '../../../../triggers/configurator/interfaces';
 

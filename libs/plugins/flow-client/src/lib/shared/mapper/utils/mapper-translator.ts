@@ -1,16 +1,16 @@
 import { isString, isObject, isArray, fromPairs } from 'lodash';
 import { resolveExpressionType } from '@flogo-web/parser';
-
+import { EXPR_PREFIX, ValueType } from '@flogo-web/core';
 import {
   Task as FlowTile,
   FLOGO_ERROR_ROOT_NAME,
   FLOGO_TASK_TYPE,
-  ValueType,
   MAPPING_TYPE,
   Dictionary,
 } from '@flogo-web/lib-client/core';
 
 import { ROOT_TYPES } from '../constants';
+
 // todo: shared models should be moved to core
 import {
   FlowMetadata,
@@ -18,7 +18,6 @@ import {
   Properties as MapperSchemaProperties,
 } from '../../../task-configurator/models';
 import { Mappings, MapExpression } from '../models';
-import { EXPR_PREFIX } from '@flogo-web/core';
 
 export type MappingsValidatorFn = (mappings: Mappings) => boolean;
 export interface AttributeDescriptor {

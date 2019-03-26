@@ -5,7 +5,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-import { Resource } from '@flogo-web/core';
+import { Resource, ActivitySchema } from '@flogo-web/core';
 import {
   FLOGO_TASK_TYPE,
   Item,
@@ -13,7 +13,6 @@ import {
   ItemSubflow,
   ItemTask,
   isSubflowTask,
-  ActivitySchema,
   Task,
   mergeItemWithSchema,
   SingleEmissionSubject,

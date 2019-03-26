@@ -1,4 +1,3 @@
-// todo: move into flow plugin once modularization is finalized
 export interface FlowData {
   tasks: Task[];
   links?: Link[];

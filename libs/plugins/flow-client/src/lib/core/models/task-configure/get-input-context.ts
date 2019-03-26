@@ -13,6 +13,7 @@ import {
 import { FlowState } from '../../state';
 import { makeErrorTask } from '../make-error-task';
 import { FlowMetadata } from '../../../task-configurator/models';
+import { ActivitySchema } from '@flogo-web/core';
 
 // todo: fcastill - specify return interfaces
 export function getInputContext(taskId: string, state: FlowState): any[] {
@@ -121,7 +122,7 @@ function mapItemIdsToTasks(
       const node = from.nodes[nodeId];
       if (canUseItemOutputs(node)) {
         const item = <ItemTask>from.items[nodeId];
-        let schema: PartialActivitySchema = flowState.schemas[item.ref];
+        let schema: PartialActivitySchema = flowState.schemas[item.ref] as ActivitySchema;
         if (isSubflowItem(item)) {
           const subFlowSchema = flowState.linkedSubflows[item.settings.flowPath];
           schema = { outputs: get(subFlowSchema, 'metadata.output', []) };

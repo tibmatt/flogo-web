@@ -1,6 +1,5 @@
 import { Observable } from 'rxjs';
-import { Resource } from '@flogo-web/core';
-import { ActivitySchema } from '@flogo-web/lib-client/core';
+import { Resource, ActivitySchema } from '@flogo-web/core';
 
 export interface TaskAddOptions {
   activities$: Observable<Activity[]>;

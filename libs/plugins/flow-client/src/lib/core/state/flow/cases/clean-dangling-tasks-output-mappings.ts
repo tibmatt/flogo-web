@@ -1,11 +1,6 @@
 import { isEmpty, pick, fromPairs } from 'lodash';
-import {
-  Task,
-  Dictionary,
-  Item,
-  ItemTask,
-  ContribSchema,
-} from '@flogo-web/lib-client/core';
+import { ContributionSchema } from '@flogo-web/core';
+import { Task, Dictionary, Item, ItemTask } from '@flogo-web/lib-client/core';
 import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 import { FlowState } from '../flow.state';
 
@@ -38,7 +33,7 @@ export function cleanDanglingTaskOutputMappings(state: FlowState) {
 }
 
 function itemCleaner(
-  schemas: Dictionary<ContribSchema>,
+  schemas: Dictionary<ContributionSchema>,
   outputNames: string[]
 ): (items: Dictionary<Item>) => Dictionary<Item> {
   const isMapperContribAndHasMapping = ([taskId, task]: [string, Task]) => {

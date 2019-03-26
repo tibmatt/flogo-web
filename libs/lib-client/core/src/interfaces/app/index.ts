@@ -1,1 +1,1 @@
-export * from './flow-summary';
+export * from './resource-summary';

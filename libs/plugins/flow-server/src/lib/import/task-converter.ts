@@ -1,15 +1,19 @@
 import { isUndefined, isArray, isPlainObject } from 'lodash';
 
-import { EXPR_PREFIX, CONTRIB_REFS, ResourceActionModel } from '@flogo-web/core';
+import { EXPR_PREFIX, CONTRIB_REFS } from '@flogo-web/core';
 import {
   TASK_TYPE,
   EXPRESSION_TYPE,
   parseResourceIdFromResourceUri,
 } from '@flogo-web/lib-server/core';
-import { isMapperActivity, FLOGO_TASK_TYPE } from '@flogo-web/plugins/flow-core';
+import {
+  isMapperActivity,
+  FLOGO_TASK_TYPE,
+  FlowResourceModel,
+} from '@flogo-web/plugins/flow-core';
 import { normalizeIteratorValue } from './normalize-iterator-value';
 
-const isStandardMappings = (activity: ResourceActionModel.NewActivity) => {
+const isStandardMappings = (activity: FlowResourceModel.NewActivity) => {
   return (
     activity.settings &&
     activity.settings.mappings &&
@@ -17,7 +21,7 @@ const isStandardMappings = (activity: ResourceActionModel.NewActivity) => {
   );
 };
 
-const isLegacyMappings = (activity: ResourceActionModel.LegacyActivity) => {
+const isLegacyMappings = (activity: FlowResourceModel.LegacyActivity) => {
   return activity.input && activity.input.mappings && isArray(activity.input.mappings);
 };
 

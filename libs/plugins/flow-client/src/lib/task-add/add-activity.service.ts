@@ -4,8 +4,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { Observable } from 'rxjs';
 
-import { Resource } from '@flogo-web/core';
-import { ActivitySchema } from '@flogo-web/lib-client/core';
+import { Resource, ActivitySchema } from '@flogo-web/core';
 
 import { FlowActions, FlowSelectors, FlowState } from '../core/state';
 import { TaskAddComponent, TASKADD_OPTIONS } from './task-add.component';

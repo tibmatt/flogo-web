@@ -1,6 +1,7 @@
 import { NodeType, FLOGO_TASK_TYPE } from '@flogo-web/lib-client/core';
 import { FlowState, INITIAL_STATE } from '../../state';
 import { getPrecedingTasksForErrorHandler } from './get-input-context';
+import { ContributionType } from '@flogo-web/core';
 
 describe('taskConfigure.getInputContext', function() {
   let state: FlowState;
@@ -66,7 +67,7 @@ describe('taskConfigure.getInputContext', function() {
           homepage: 'logHome',
           name: 'tibco-log',
           title: 'Log Message',
-          type: 'flogo:activity',
+          type: ContributionType.Activity,
           description: 'Simple Log Activity',
           return: false,
           version: '0.0.1',

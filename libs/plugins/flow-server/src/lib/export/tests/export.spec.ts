@@ -2,12 +2,14 @@ import {
   Resource,
   ContributionSchema,
   FlogoAppModel,
-  ResourceActionModel,
   CONTRIB_REFS,
   ContributionType,
 } from '@flogo-web/core';
-import { FLOGO_TASK_TYPE } from '@flogo-web/plugins/flow-core';
-import { FlowData } from '@flogo-web/plugins/flow-core';
+import {
+  FLOGO_TASK_TYPE,
+  FlowResourceModel,
+  FlowData,
+} from '@flogo-web/plugins/flow-core';
 import { exportFlow } from '..';
 
 test('it exports a flow', () => {
@@ -24,7 +26,7 @@ test('it exports a flow', () => {
   expect(exported).toEqual(getExpectedFlow());
 });
 
-function getExpectedFlow(): FlogoAppModel.Resource<ResourceActionModel.FlowResourceData> {
+function getExpectedFlow(): FlogoAppModel.Resource<FlowResourceModel.FlowResourceData> {
   return {
     id: 'flow:flow_to_export',
     data: {

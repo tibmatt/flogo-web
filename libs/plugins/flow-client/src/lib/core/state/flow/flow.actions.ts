@@ -1,7 +1,6 @@
 import { Action } from '@ngrx/store';
-import { Resource } from '@flogo-web/core';
+import { Resource, ActivitySchema } from '@flogo-web/core';
 import {
-  ActivitySchema,
   Dictionary,
   GraphNode,
   Item,

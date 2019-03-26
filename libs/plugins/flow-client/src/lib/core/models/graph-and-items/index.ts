@@ -1,30 +1,25 @@
 import { fromPairs } from 'lodash';
 
+import { CONTRIB_REFS, ActivitySchema, ContributionSchema } from '@flogo-web/core';
 import {
-  ActivitySchema,
   FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
-  ContribSchema,
   Dictionary,
-  flow as backendFlow,
   FlowGraph,
   GraphNode,
   Item,
   isSubflowTask,
 } from '@flogo-web/lib-client/core';
+import { Task as BackendTask, Link as BackendLink } from '@flogo-web/plugins/flow-core';
 
 import { makeTaskNodes, makeBranchNode } from './graph-creator';
 import { makeBranchItem, makeTaskItems } from './items-creator';
-import { CONTRIB_REFS } from '@flogo-web/core';
-
-type Task = backendFlow.Task;
-type Link = backendFlow.Link;
 
 export type BranchIdGenerator = () => string;
 
 export function makeGraphAndItems(
-  tasks: Task[],
-  links: Link[],
-  contribSchemas: ContribSchema[],
+  tasks: BackendTask[],
+  links: BackendLink[],
+  contribSchemas: ContributionSchema[],
   getNewBranchId: BranchIdGenerator
 ): { items: Dictionary<Item>; graph: FlowGraph } {
   const getActivitySchema = activitySchemaFinder(contribSchemas);
@@ -48,7 +43,7 @@ export function makeGraphAndItems(
 }
 
 function createAndAppendBranches(
-  links: backendFlow.Link[],
+  links: BackendLink[],
   getNewBranchId: BranchIdGenerator,
   items: Dictionary<Item>,
   nodes: Dictionary<GraphNode>
@@ -74,9 +69,9 @@ function createAndAppendBranches(
   return { nodes, items };
 }
 
-function activitySchemaFinder(contribSchemas: ContribSchema[]) {
+function activitySchemaFinder(contribSchemas: ContributionSchema[]) {
   const schemaDictionary = fromPairs(contribSchemas.map(schema => [schema.ref, schema]));
-  return (task: Task): Partial<ActivitySchema> => {
+  return (task: BackendTask): Partial<ActivitySchema> => {
     if (isSubflowTask(task.type)) {
       return { ref: CONTRIB_REFS.SUBFLOW };
     }

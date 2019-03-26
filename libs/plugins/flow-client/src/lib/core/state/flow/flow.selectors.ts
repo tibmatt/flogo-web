@@ -1,15 +1,18 @@
 import { remove } from 'lodash';
 import { createSelector, createFeatureSelector, MemoizedSelector } from '@ngrx/store';
 import {
-  ContribSchema,
+  ContributionType,
+  ContributionSchema as ContribSchema,
+  FunctionsSchema,
+  CONTRIB_REFS,
+} from '@flogo-web/core';
+import {
   Dictionary,
-  FLOGO_CONTRIB_TYPE_VALUES,
   Item,
   ItemActivityTask,
   FLOGO_TASK_TYPE,
   FlowGraph,
   GraphNodeDictionary,
-  FunctionSchema,
 } from '@flogo-web/lib-client/core';
 import { DiagramSelectionType } from '@flogo-web/lib-client/diagram';
 
@@ -25,7 +28,6 @@ import {
 } from '../../models';
 import { Activity } from '../../../task-add';
 import { InstalledFunctionSchema } from '../../interfaces';
-import { CONTRIB_REFS } from '@flogo-web/core';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(
@@ -304,7 +306,7 @@ export const getInstalledActivities = createSelector(
   selectSchemas,
   (schemas: Dictionary<ContribSchema>): Activity[] => {
     const activities = Object.values(schemas)
-      .filter(schema => schema.type === FLOGO_CONTRIB_TYPE_VALUES.MICRO_SERVICE_ACTIVITY)
+      .filter(schema => schema.type === ContributionType.Activity)
       .map(schema => ({
         title: schema.title,
         ref: schema.ref,
@@ -321,9 +323,9 @@ export const getInstalledActivities = createSelector(
 );
 export const getInstalledFunctions = createSelector(
   selectSchemas,
-  (schemas: Dictionary<FunctionSchema>): InstalledFunctionSchema[] => {
+  (schemas: Dictionary<FunctionsSchema>): InstalledFunctionSchema[] => {
     return Object.values(schemas)
-      .filter(schema => schema.type === FLOGO_CONTRIB_TYPE_VALUES.MICRO_SERVICE_FUNCTION)
+      .filter(schema => schema.type === ContributionType.Function)
       .map(schema => ({
         functions: schema.functions,
         name: schema.name,

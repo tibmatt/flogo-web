@@ -1,5 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { SchemaAttribute, ValueType } from '@flogo-web/lib-client/core';
+import { SchemaAttributeDescriptor as SchemaAttribute, ValueType } from '@flogo-web/core';
 import { SettingValue } from '../settings-value';
 import { requiredValidator } from './required.validator';
 import { getAllowedValueValidator } from './allowed-value.validator';
@@ -9,11 +9,11 @@ import { isResolverExpression } from './is-resolver-expression';
 
 export * from './error-types';
 
-export function createValidatorsForSchema(schema: SchemaAttribute) {
+export function createValidatorsForSchema(attrSchema: SchemaAttribute) {
   const validators: ValidatorFn[] = [];
-  addRequiredValidation(schema.required, validators);
-  addIsAllowedValueValidation(schema.allowed, validators);
-  addTypeOrResolverValidation(schema.type, validators);
+  addRequiredValidation(attrSchema.required, validators);
+  addIsAllowedValueValidation(attrSchema.allowed, validators);
+  addTypeOrResolverValidation(attrSchema.type as ValueType, validators);
   return validators;
 }
 

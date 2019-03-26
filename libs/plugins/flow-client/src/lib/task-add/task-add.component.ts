@@ -1,11 +1,10 @@
 import { Component, Inject, InjectionToken, OnInit } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 
-import { ActivitySchema } from '@flogo-web/lib-client/core';
+import { ActivitySchema, Resource, CONTRIB_REFS } from '@flogo-web/core';
 
 import { filterActivitiesBy } from './core/filter-activities-by';
 import { Activity, TaskAddOptions } from './core/task-add-options';
-import { Resource, CONTRIB_REFS } from '@flogo-web/core';
 
 export const TASKADD_OPTIONS = new InjectionToken<TaskAddOptions>('flogo-flow-task-add');
 

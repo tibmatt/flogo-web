@@ -6,7 +6,7 @@ import {
   isNumber,
 } from 'lodash';
 import { ValidationErrors } from '@angular/forms';
-import { ValueType } from '@flogo-web/lib-client/core';
+import { ValueType } from '@flogo-web/core';
 import { ErrorTypeMismatch, ErrorTypes } from './error-types';
 
 export function getStrictTypeValidator(

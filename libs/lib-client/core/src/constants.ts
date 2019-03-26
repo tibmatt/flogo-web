@@ -8,11 +8,6 @@ export enum FLOGO_CONTRIB_TYPE {
   FUNCTION = 'function',
 }
 
-export enum FLOGO_CONTRIB_TYPE_VALUES {
-  MICRO_SERVICE_ACTIVITY = 'flogo:activity',
-  MICRO_SERVICE_FUNCTION = 'flogo:function',
-}
-
 export enum FLOGO_TASK_TYPE {
   TASK_ROOT, // this is the type for triggers
   TASK = 1,
@@ -39,38 +34,6 @@ export enum FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE {
   DEFAULT,
   BRANCH,
   LABELED,
-}
-
-export enum ValueType {
-  String = 'string',
-  Integer = 'integer',
-  Long = 'long',
-  Double = 'double',
-  Boolean = 'boolean',
-  Object = 'object',
-  Array = 'array',
-  Any = 'any',
-  Params = 'params',
-  Bytes = 'bytes',
-}
-
-const _allTypes: ReadonlyArray<ValueType> = Object.values(ValueType);
-const _defaultValuesForValueTypes: [ValueType, any][] = [
-  [ValueType.String, ''],
-  [ValueType.Integer, 0],
-  [ValueType.Long, 0],
-  [ValueType.Double, 0.0],
-  [ValueType.Boolean, false],
-  [ValueType.Object, null],
-  [ValueType.Array, []],
-  [ValueType.Params, null],
-  [ValueType.Any, null],
-  [ValueType.Bytes, ''],
-];
-
-export namespace ValueType {
-  export const allTypes = _allTypes;
-  export const defaultValueForType = new Map<ValueType, any>(_defaultValuesForValueTypes);
 }
 
 /**

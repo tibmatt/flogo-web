@@ -1,3 +1,5 @@
+import { ValueType } from '../../value-types';
+
 export interface BaseContributionSchema {
   name: string;
   type: string;
@@ -10,14 +12,13 @@ export interface BaseContributionSchema {
 
 export interface SchemaOutput {
   name: string;
-  // todo: use enum
-  type: string;
+  type: ValueType;
 }
 
 export interface SchemaAttributeDescriptor {
   name: string;
   // todo: use enum
-  type: string;
+  type: ValueType;
   required?: boolean;
   allowed?: any[];
   value?: any;

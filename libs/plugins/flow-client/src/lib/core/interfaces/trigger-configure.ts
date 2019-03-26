@@ -1,4 +1,4 @@
-import { TriggerSchema } from '@flogo-web/lib-client/core';
+import { TriggerSchema } from '@flogo-web/core';
 
 export interface TriggerConfigureSettings {
   groupId: 'settings';
