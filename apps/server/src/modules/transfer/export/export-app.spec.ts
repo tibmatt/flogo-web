@@ -1,5 +1,12 @@
 import { exportApp } from './export-app';
-import { FlogoAppModel, App, ContributionSchema, TriggerSchema } from '@flogo-web/core';
+import {
+  FlogoAppModel,
+  App,
+  ContributionSchema,
+  TriggerSchema,
+  ContributionType,
+  ValueType,
+} from '@flogo-web/core';
 
 test('it exports an app', () => {
   const exported = exportApp(
@@ -140,15 +147,16 @@ function getContributionSchemas(): Array<[string, ContributionSchema]> {
       'some_path_to_repo/trigger/rest',
       {
         name: 'flogo-rest',
-        type: 'flogo:trigger',
+        type: ContributionType.Trigger,
         version: '0.0.2',
+        ref: 'some_path_to_repo/trigger/rest',
         title: 'Receive HTTP Message',
         description: 'Simple REST Trigger',
         homepage: 'some_path_to_repo/tree/master/trigger/rest',
         settings: [
           {
             name: 'port',
-            type: 'int',
+            type: ValueType.Integer,
             required: true,
           },
         ],

@@ -1,4 +1,4 @@
-import { Resource, CONTRIB_REFS } from '@flogo-web/core';
+import { Resource, CONTRIB_REFS, ContributionType } from '@flogo-web/core';
 import { createActionImporter } from './create-action-importer';
 import { ImportsRefAgent } from '@flogo-web/lib-server/core';
 
@@ -245,7 +245,7 @@ function getContributions() {
       'some_path_to_repo/activity/log',
       {
         name: 'tibco-log',
-        type: 'flogo:activity',
+        type: ContributionType.Activity,
         ref: 'some_path_to_repo/activity/log',
         version: '0.0.1',
         title: 'Log Message',

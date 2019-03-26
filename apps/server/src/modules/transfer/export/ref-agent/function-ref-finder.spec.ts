@@ -1,4 +1,4 @@
-import { ContributionSchema, ContributionType } from '@flogo-web/core';
+import { ContributionSchema, ContributionType, ValueType } from '@flogo-web/core';
 import { FunctionRefFinder } from './function-ref-finder';
 
 test('It finds the functions by name', () => {
@@ -29,11 +29,11 @@ function getTestData(): ContributionSchema[] {
         settings: [
           {
             name: 'startDelay',
-            type: 'string',
+            type: ValueType.String,
           },
           {
             name: 'repeatInterval',
-            type: 'string',
+            type: ValueType.String,
           },
         ],
       },

@@ -4,6 +4,7 @@ import {
   FlogoAppModel,
   CONTRIB_REFS,
   ContributionType,
+  ValueType,
 } from '@flogo-web/core';
 import {
   FLOGO_TASK_TYPE,
@@ -158,19 +159,19 @@ function getContributions(): Array<[string, ContributionSchema]> {
         input: [
           {
             name: 'message',
-            type: 'string',
+            type: ValueType.Boolean,
             value: '',
           },
           {
             name: 'addDetails',
-            type: 'boolean',
+            type: ValueType.Boolean,
             value: false,
           },
         ],
         output: [
           {
             name: 'message',
-            type: 'string',
+            type: ValueType.String,
           },
         ],
       },
