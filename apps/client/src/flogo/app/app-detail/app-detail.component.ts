@@ -29,8 +29,8 @@ import {
   ERROR_CODE,
   LocalStorageService,
   SanitizeService,
-  ShimTriggerBuildApiService,
-  RESTAPIContributionsService,
+  ShimTriggerBuildService,
+  ContributionsService,
   SingleEmissionSubject,
 } from '@flogo-web/lib-client/core';
 import { LanguageService } from '@flogo-web/lib-client/language';
@@ -116,8 +116,8 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
     private appDetailService: AppDetailService,
     private confirmationModalService: ConfirmationModalService,
     private sanitizer: SanitizeService,
-    private contributionService: RESTAPIContributionsService,
-    private shimTriggersApiService: ShimTriggerBuildApiService,
+    private contributionService: ContributionsService,
+    private shimTriggersApiService: ShimTriggerBuildService,
     private notificationsService: NotificationsService,
     private modalService: ModalService,
     private localStorage: LocalStorageService

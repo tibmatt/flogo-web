@@ -9,7 +9,7 @@ import {
   Output,
 } from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
-import { TriggersApiService } from '@flogo-web/lib-client/core';
+import { TriggersService } from '@flogo-web/lib-client/core';
 import { FlogoProfileService } from '../../core';
 
 @Component({
@@ -32,7 +32,7 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
 
   constructor(
     private profileService: FlogoProfileService,
-    private triggersApiService: TriggersApiService
+    private triggersApiService: TriggersService
   ) {
     this.displayExisting = true;
   }

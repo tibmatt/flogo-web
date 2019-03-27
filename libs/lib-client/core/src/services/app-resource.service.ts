@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 
 import { Resource, TriggerSchema } from '@flogo-web/core';
 import {
-  TriggersApiService,
-  RESTAPIHandlersService as HandlersService,
+  TriggersService,
+  HandlersService,
   ResourceService,
-  RESTAPIContributionsService,
+  ContributionsService,
 } from './restapi';
 import { concat, EMPTY, Observable, defer } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
@@ -18,8 +18,8 @@ export class AppResourceService {
   constructor(
     private handlersService: HandlersService,
     private resourceService: ResourceService,
-    private triggersService: TriggersApiService,
-    private contribTriggerService: RESTAPIContributionsService
+    private triggersService: TriggersService,
+    private contribTriggerService: ContributionsService
   ) {}
 
   createResource(
@@ -100,7 +100,7 @@ export class AppResourceService {
 
 function removeTriggerIfUnreferenced(
   triggerId,
-  triggersService: TriggersApiService
+  triggersService: TriggersService
 ): Observable<never | { triggerDeleted?: boolean }> {
   // defer makes it a cold observable as triggerService.getTrigger is a promise
   return defer(() => triggersService.getTrigger(triggerId)).pipe(

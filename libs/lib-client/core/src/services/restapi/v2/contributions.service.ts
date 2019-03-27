@@ -12,7 +12,7 @@ interface InstallationData {
 }
 
 @Injectable()
-export class RESTAPIContributionsService {
+export class ContributionsService {
   constructor(private restApi: RestApiService) {}
 
   getContributionDetails<T extends ContributionSchema = ContributionSchema>(

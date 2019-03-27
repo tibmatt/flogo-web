@@ -4,12 +4,9 @@ import { throwError as _throw } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { RestApiOptions, RestApiService } from '../rest-api.service';
-// TriggersBackendService
-// TriggersApiService
-// TriggerStorage
-// TriggerRepository
+
 @Injectable()
-export class TriggersApiService {
+export class TriggersService {
   constructor(private restApi: RestApiService) {}
 
   listTriggersForApp(appId, filters?: { name?: string }) {

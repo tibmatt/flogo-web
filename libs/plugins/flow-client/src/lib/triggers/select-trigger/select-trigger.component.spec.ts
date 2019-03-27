@@ -3,8 +3,8 @@ import { By } from '@angular/platform-browser';
 import { DebugElement, Injectable } from '@angular/core';
 
 import {
-  TriggersApiService,
-  RESTAPIContributionsService,
+  TriggersService,
+  ContributionsService,
   HttpUtilsService,
 } from '@flogo-web/lib-client/core';
 import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
@@ -37,8 +37,8 @@ describe('FlogoSelectTrigger component', () => {
       imports: [FakeRootLanguageModule, TriggersModule],
       providers: [
         { provide: FlogoProfileService, useClass: FlogoProfileServiceMock },
-        { provide: TriggersApiService, useClass: TriggersApiServiceMock },
-        { provide: RESTAPIContributionsService },
+        { provide: TriggersService, useClass: TriggersApiServiceMock },
+        { provide: ContributionsService },
         HttpUtilsService,
       ],
     });

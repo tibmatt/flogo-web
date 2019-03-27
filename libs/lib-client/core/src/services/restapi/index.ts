@@ -6,10 +6,10 @@ export { HOSTNAME } from './hostname.token';
 export { RestApiOptions, RestApiService } from './rest-api.service';
 export { HttpUtilsService } from './http-utils.service';
 
-export { TriggersApiService } from './v2/triggers-api.service';
-export { AppsApiService } from './v2/apps-api.service';
-export { RESTAPIContributionsService } from './v2/contributions.service';
-export { RESTAPIHandlersService } from './v2/handlers-api.service';
-export { ShimTriggerBuildApiService } from './v2/shim-trigger-build-api.service';
+export { TriggersService } from './v2/triggers-api.service';
+export { AppsService } from './v2/apps-api.service';
+export { ContributionsService } from './v2/contributions.service';
+export { HandlersService } from './v2/handlers-api.service';
+export { ShimTriggerBuildService } from './v2/shim-trigger-build.service';
 export { ResourceService } from './v2/resource.service';
 export * from './run-api.service';

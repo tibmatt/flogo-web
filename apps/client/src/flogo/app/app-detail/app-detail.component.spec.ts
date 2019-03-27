@@ -14,7 +14,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { App } from '@flogo-web/core';
 import {
   CoreModule as FlogoCoreModule,
-  RESTAPIContributionsService,
+  ContributionsService,
 } from '@flogo-web/lib-client/core';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
 import { NotificationsServiceMock } from '@flogo-web/lib-client/notifications/testing';
@@ -86,7 +86,7 @@ describe('FlogoApplicationDetailComponent component', () => {
         AppResourcesStateService,
         { provide: AppDetailService, useClass: MockAppDetailService },
         {
-          provide: RESTAPIContributionsService,
+          provide: ContributionsService,
           useClass: MockRESTAPIContributionsService,
         },
         {

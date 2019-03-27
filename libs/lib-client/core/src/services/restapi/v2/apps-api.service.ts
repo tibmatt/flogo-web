@@ -11,7 +11,7 @@ import { RestApiService } from '../rest-api.service';
 const UNTITLED_APP = 'Untitled App';
 
 @Injectable()
-export class AppsApiService {
+export class AppsService {
   constructor(
     private httpUtils: HttpUtilsService,
     private httpClient: HttpClient,

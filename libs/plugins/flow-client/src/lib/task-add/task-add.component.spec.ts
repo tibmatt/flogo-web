@@ -3,7 +3,7 @@ import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
 import { CONTRIB_REFS } from '@flogo-web/core';
-import { RESTAPIContributionsService } from '@flogo-web/lib-client/core';
+import { ContributionsService } from '@flogo-web/lib-client/core';
 import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
 
 import { FlogoFlowService } from '../core';
@@ -58,7 +58,7 @@ describe('Component: TaskAddComponent', () => {
           useValue: mockFlowService,
         },
         {
-          provide: RESTAPIContributionsService,
+          provide: ContributionsService,
           useValue: mockContribsAPIService,
         },
       ],

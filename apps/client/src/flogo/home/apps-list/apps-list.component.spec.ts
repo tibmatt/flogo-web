@@ -3,11 +3,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import {
-  ErrorService,
-  AppsApiService,
-  HttpUtilsService,
-} from '@flogo-web/lib-client/core';
+import { ErrorService, AppsService, HttpUtilsService } from '@flogo-web/lib-client/core';
 import { NotificationsService } from '@flogo-web/lib-client/notifications';
 import { NotificationsServiceMock } from '@flogo-web/lib-client/notifications/testing';
 import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
@@ -70,7 +66,7 @@ describe('FlogoAppList component', () => {
       providers: [
         HttpUtilsService,
         { provide: ErrorService, useClass: ErrorService },
-        { provide: AppsApiService, useClass: AppsApiServiceMock },
+        { provide: AppsService, useClass: AppsApiServiceMock },
         {
           provide: NotificationsService,
           useValue: new NotificationsServiceMock(),

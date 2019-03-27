@@ -8,8 +8,8 @@ import { TriggerSchema } from '@flogo-web/core';
 import {
   Dictionary,
   SingleEmissionSubject,
-  TriggersApiService,
-  RESTAPIHandlersService,
+  TriggersService,
+  HandlersService,
 } from '@flogo-web/lib-client/core';
 import {
   ConfirmationModalService,
@@ -56,8 +56,8 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   private ngDestroy$ = SingleEmissionSubject.create();
 
   constructor(
-    private restAPITriggersService: TriggersApiService,
-    private _restAPIHandlerService: RESTAPIHandlersService,
+    private restAPITriggersService: TriggersService,
+    private _restAPIHandlerService: HandlersService,
     private converterService: MicroServiceModelConverter,
     private translate: LanguageService,
     private store: Store<AppState>,

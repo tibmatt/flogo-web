@@ -10,7 +10,7 @@ import {
 import { has } from 'lodash';
 import { BsModalComponent } from 'ng2-bs3-modal';
 import { FLOGO_CONTRIB_TYPE } from '@flogo-web/lib-client/core';
-import { RESTAPIContributionsService } from '@flogo-web/lib-client/core';
+import { ContributionsService } from '@flogo-web/lib-client/core';
 
 import {
   FLOGO_INSTALLER_STATUS_STANDBY,
@@ -54,7 +54,7 @@ export class FlogoInstallerComponent implements OnChanges {
 
   _status = FLOGO_INSTALLER_STATUS_IDLE;
 
-  constructor(private contributionsAPIs: RESTAPIContributionsService) {
+  constructor(private contributionsAPIs: ContributionsService) {
     this.init();
   }
 

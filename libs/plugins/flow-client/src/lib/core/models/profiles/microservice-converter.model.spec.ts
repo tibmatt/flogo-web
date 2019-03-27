@@ -3,7 +3,7 @@ import { cloneDeep } from 'lodash';
 import {
   Dictionary,
   ErrorService,
-  RESTAPIContributionsService,
+  ContributionsService,
 } from '@flogo-web/lib-client/core';
 
 import { mockTriggerDetails } from '../../ui-model-trigger.mock';
@@ -24,11 +24,11 @@ import { ApiFlowResource, FlowResource } from '../../interfaces';
 describe('Service: Microservice converter model', function(this: {
   service: MicroServiceModelConverter;
   errorService: ErrorService;
-  contribServiceMock: RESTAPIContributionsService;
+  contribServiceMock: ContributionsService;
   emptySchemaRegistry: Dictionary<ApiFlowResource>;
 }) {
   beforeEach(() => {
-    this.contribServiceMock = jasmine.createSpyObj<RESTAPIContributionsService>(
+    this.contribServiceMock = jasmine.createSpyObj<ContributionsService>(
       'contribService',
       ['getContributionDetails', 'listContribs']
     );

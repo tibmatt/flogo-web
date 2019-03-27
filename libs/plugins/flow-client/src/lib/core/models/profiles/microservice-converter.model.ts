@@ -10,7 +10,7 @@ import {
 import {
   Dictionary,
   ErrorService,
-  RESTAPIContributionsService,
+  ContributionsService,
   FLOGO_CONTRIB_TYPE,
 } from '@flogo-web/lib-client/core';
 import {
@@ -41,7 +41,7 @@ export class MicroServiceModelConverter {
   subflowSchemaRegistry: Dictionary<Resource>;
 
   constructor(
-    private contribService: RESTAPIContributionsService,
+    private contribService: ContributionsService,
     private errorService: ErrorService
   ) {}
 

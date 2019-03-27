@@ -3,12 +3,12 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { App } from '@flogo-web/core';
-import { HttpUtilsService, AppsApiService } from '@flogo-web/lib-client/core';
+import { HttpUtilsService, AppsService } from '@flogo-web/lib-client/core';
 
 const UNTITLED_APP = 'Untitled App';
 
 @Injectable()
-export class AppsApiServiceMock extends AppsApiService {
+export class AppsApiServiceMock extends AppsService {
   private mockApplications: Array<App> = [
     {
       id: '1',

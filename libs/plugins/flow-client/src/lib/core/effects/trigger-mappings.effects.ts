@@ -6,7 +6,7 @@ import { Effect, ofType, Actions } from '@ngrx/effects';
 import { Store, select, Action } from '@ngrx/store';
 
 import { Handler } from '@flogo-web/core';
-import { RESTAPIHandlersService, TriggerHandler } from '@flogo-web/lib-client/core';
+import { HandlersService, TriggerHandler } from '@flogo-web/lib-client/core';
 import { FlowActions, FlowState, FlowSelectors, TriggerActions } from '../state';
 const ActionType = FlowActions.ActionType;
 
@@ -38,7 +38,7 @@ export class TriggerMappingsEffects {
   private flowState$: Observable<FlowState>;
 
   constructor(
-    private handlersService: RESTAPIHandlersService,
+    private handlersService: HandlersService,
     private actions$: Actions,
     private store: Store<FlowState>
   ) {

@@ -4,7 +4,7 @@ import { HttpUtilsService } from '../http-utils.service';
 import { FileDownloaderService } from '../../file-downloader.service';
 
 @Injectable()
-export class ShimTriggerBuildApiService {
+export class ShimTriggerBuildService {
   constructor(
     private httpUtilsService: HttpUtilsService,
     private http: HttpClient,

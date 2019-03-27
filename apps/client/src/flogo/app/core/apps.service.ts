@@ -4,10 +4,10 @@ import { tap, shareReplay, switchMap, catchError, filter } from 'rxjs/operators'
 
 import { App } from '@flogo-web/core';
 import {
-  AppsApiService,
+  AppsService,
   ResourceService,
   ErrorService,
-  TriggersApiService,
+  TriggersService,
   AppResourceService,
 } from '@flogo-web/lib-client/core';
 import { NotificationsService } from '@flogo-web/lib-client/notifications';
@@ -30,9 +30,9 @@ export class AppDetailService {
 
   constructor(
     private resourcesState: AppResourcesStateService,
-    private appsApiService: AppsApiService,
+    private appsApiService: AppsService,
     private resourceService: ResourceService,
-    private triggersService: TriggersApiService,
+    private triggersService: TriggersService,
     private notificationsService: NotificationsService,
     private errorService: ErrorService,
     private appResourceApiService: AppResourceService

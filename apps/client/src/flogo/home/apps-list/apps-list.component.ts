@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { App } from '@flogo-web/core';
 import { NotificationsService } from '@flogo-web/lib-client/notifications';
-import { AppsApiService } from '@flogo-web/lib-client/core';
+import { AppsService } from '@flogo-web/lib-client/core';
 
 @Component({
   selector: 'flogo-home-apps-list',
@@ -26,7 +26,7 @@ export class FlogoAppsListComponent implements OnInit {
   public applications: Array<App> = [];
 
   constructor(
-    private apiApplications: AppsApiService,
+    private apiApplications: AppsService,
     private notifications: NotificationsService
   ) {}
 

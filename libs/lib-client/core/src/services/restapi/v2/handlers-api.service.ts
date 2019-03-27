@@ -3,7 +3,7 @@ import { RestApiService } from '../rest-api.service';
 import { TriggerHandler } from '../../../interfaces';
 
 @Injectable()
-export class RESTAPIHandlersService {
+export class HandlersService {
   constructor(private restApiService: RestApiService) {}
 
   updateHandler(triggerId, actionId, handlerSettings) {

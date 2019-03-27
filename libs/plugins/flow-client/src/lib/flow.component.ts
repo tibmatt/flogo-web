@@ -8,7 +8,7 @@ import {
   animateChild,
 } from '@angular/animations';
 
-import { SingleEmissionSubject, AppsApiService } from '@flogo-web/lib-client/core';
+import { SingleEmissionSubject, AppsService } from '@flogo-web/lib-client/core';
 import {
   ConfirmationResult,
   ConfirmationModalService,
@@ -77,7 +77,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   constructor(
     public translate: LanguageService,
     private _flowService: FlowsService,
-    private _restAPIAppsService: AppsApiService,
+    private _restAPIAppsService: AppsService,
     private _router: Router,
     private confirmationModalService: ConfirmationModalService,
     private _route: ActivatedRoute,

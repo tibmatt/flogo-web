@@ -6,8 +6,8 @@ import { mergeMap, take, tap } from 'rxjs/operators';
 
 import {
   TriggerHandler,
-  RESTAPIHandlersService,
-  TriggersApiService,
+  HandlersService,
+  TriggersService,
 } from '@flogo-web/lib-client/core';
 
 import { AppState } from '../../../core/state/app.state';
@@ -27,8 +27,8 @@ export class ConfiguratorService {
 
   constructor(
     private store: Store<AppState>,
-    private triggerService: TriggersApiService,
-    private handlersService: RESTAPIHandlersService
+    private triggerService: TriggersService,
+    private handlersService: HandlersService
   ) {}
 
   setParams(params: SaveParams) {

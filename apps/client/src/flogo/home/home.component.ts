@@ -3,7 +3,7 @@ import { bufferCount, exhaustMap } from 'rxjs/operators';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { App } from '@flogo-web/core';
-import { ResourceSummary, AppsApiService } from '@flogo-web/lib-client/core';
+import { ResourceSummary, AppsService } from '@flogo-web/lib-client/core';
 
 @Component({
   selector: 'flogo-home',
@@ -20,7 +20,7 @@ export class FlogoHomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    public applicationServiceAPI: AppsApiService,
+    public applicationServiceAPI: AppsService,
     private ngZone: NgZone
   ) {}
 

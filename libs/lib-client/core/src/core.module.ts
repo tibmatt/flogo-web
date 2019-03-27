@@ -8,18 +8,18 @@ import {
   DEFAULT_REST_HEADERS,
   HttpUtilsService,
   RestApiService,
-  TriggersApiService,
+  TriggersService,
 } from './services/restapi';
-import { RESTAPIHandlersService as RESTAPIHandlersServiceV2 } from './services/restapi/v2/handlers-api.service';
-import { AppsApiService } from './services/restapi/v2/apps-api.service';
+import { HandlersService as RESTAPIHandlersServiceV2 } from './services/restapi/v2/handlers-api.service';
+import { AppsService } from './services/restapi/v2/apps-api.service';
 import { ConfigurationService } from './services/configuration.service';
 import { ErrorService, WindowRef, SanitizeService, RunApiService } from './services';
 import { ChildWindowService } from './services/child-window.service';
 import { AppResourceService } from './services/app-resource.service';
-import { RESTAPIContributionsService } from './services/restapi/v2/contributions.service';
+import { ContributionsService } from './services/restapi/v2/contributions.service';
 import { SvgRefFixerService } from './services/svg-ref-fixer.service';
 import { LogService } from './services/log.service';
-import { ShimTriggerBuildApiService } from './services/restapi/v2/shim-trigger-build-api.service';
+import { ShimTriggerBuildService } from './services/restapi/v2/shim-trigger-build.service';
 import { FileDownloaderService } from './services/file-downloader.service';
 
 @NgModule({
@@ -32,12 +32,12 @@ import { FileDownloaderService } from './services/file-downloader.service';
     HttpUtilsService,
     RestApiService,
 
-    TriggersApiService,
-    ShimTriggerBuildApiService,
+    TriggersService,
+    ShimTriggerBuildService,
 
     RESTAPIHandlersServiceV2,
-    AppsApiService,
-    RESTAPIContributionsService,
+    AppsService,
+    ContributionsService,
 
     RunApiService,
     ChildWindowService,

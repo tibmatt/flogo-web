@@ -3,17 +3,17 @@ import { of, pipe } from 'rxjs';
 import { scan } from 'rxjs/operators';
 
 import { AppResourceService } from './app-resource.service';
-import { RESTAPIHandlersService } from './restapi/v2/handlers-api.service';
+import { HandlersService } from './restapi/v2/handlers-api.service';
 import { ResourceService } from './restapi/v2/resource.service';
-import { TriggersApiService } from './restapi';
-import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
+import { TriggersService } from './restapi';
+import { ContributionsService } from './restapi/v2/contributions.service';
 import Spy = jasmine.Spy;
 
 describe('Service: FlowsService', function(this: {
   testService: AppResourceService;
-  mockHandlersAPIService: RESTAPIHandlersService;
-  mockTriggersService: TriggersApiService;
-  mockContribTriggerAPIService: RESTAPIContributionsService;
+  mockHandlersAPIService: HandlersService;
+  mockTriggersService: TriggersService;
+  mockContribTriggerAPIService: ContributionsService;
   mockResourceAPIService: ResourceService;
 }) {
   const mockAppTriggerData = {
@@ -51,7 +51,7 @@ describe('Service: FlowsService', function(this: {
   let spyDelete;
   let spyDeleteTrigger;
   beforeAll(() => {
-    this.mockContribTriggerAPIService = jasmine.createSpyObj<RESTAPIContributionsService>(
+    this.mockContribTriggerAPIService = jasmine.createSpyObj<ContributionsService>(
       'contribTriggersService',
       ['getContributionDetails']
     );
@@ -63,7 +63,7 @@ describe('Service: FlowsService', function(this: {
       'getTrigger',
       'deleteTrigger',
     ]);
-    this.mockHandlersAPIService = jasmine.createSpyObj<RESTAPIHandlersService>(
+    this.mockHandlersAPIService = jasmine.createSpyObj<HandlersService>(
       'handlersAPIService',
       ['updateHandler']
     );

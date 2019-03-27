@@ -7,10 +7,10 @@ import { BsModalModule } from 'ng2-bs3-modal';
 
 import { App } from '@flogo-web/core';
 import {
-  TriggersApiService,
-  RESTAPIHandlersService,
+  TriggersService,
+  HandlersService,
   HttpUtilsService,
-  RESTAPIContributionsService,
+  ContributionsService,
 } from '@flogo-web/lib-client/core';
 import { ConfirmationModalService } from '@flogo-web/lib-client/confirmation';
 import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
@@ -187,11 +187,11 @@ describe('Component: TriggersComponent', () => {
       providers: [
         { provide: FlogoProfileService, useClass: FlogoProfileServiceMock },
         {
-          provide: RESTAPIContributionsService,
+          provide: ContributionsService,
           useClass: MockActivityContribService,
         },
-        { provide: TriggersApiService, useClass: MockTriggerServiceV2 },
-        { provide: RESTAPIHandlersService, useClass: MockHandlerService },
+        { provide: TriggersService, useClass: MockTriggerServiceV2 },
+        { provide: HandlersService, useClass: MockHandlerService },
         { provide: MicroServiceModelConverter, useClass: MockUIConverterService },
         { provide: ConfirmationModalService, useClass: MockConfirmationModal },
         HttpUtilsService,
