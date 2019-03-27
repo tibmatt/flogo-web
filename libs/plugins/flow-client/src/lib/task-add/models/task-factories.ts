@@ -1,6 +1,6 @@
 import { assign, cloneDeep, each, isUndefined, get } from 'lodash';
-import { FLOGO_TASK_TYPE } from '@flogo-web/lib-client/core';
 import { isMapperActivity } from '@flogo-web/plugins/flow-core';
+import { FLOGO_TASK_TYPE } from '../../core';
 import { portAttribute } from '../../core/utils';
 
 export function activitySchemaToTask(schema: any): any {

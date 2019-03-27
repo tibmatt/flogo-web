@@ -6,11 +6,7 @@ import { select, Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 import { Resource, ActivitySchema } from '@flogo-web/core';
-import {
-  FLOGO_TASK_TYPE,
-  SingleEmissionSubject,
-  Dictionary,
-} from '@flogo-web/lib-client/core';
+import { SingleEmissionSubject, Dictionary } from '@flogo-web/lib-client/core';
 import {
   isMapperActivity,
   isAcceptableIterateValue,
@@ -32,6 +28,7 @@ import {
   ItemSubflow,
   ItemTask,
   Task,
+  FLOGO_TASK_TYPE,
 } from '../core';
 import { FlowState, FlowActions, FlowSelectors } from '../core/state';
 import {

@@ -5,11 +5,7 @@ import { filter, takeUntil, mergeMap, reduce, switchMap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
 import { TriggerSchema } from '@flogo-web/core';
-import {
-  Dictionary,
-  SingleEmissionSubject,
-  TRIGGER_MENU_OPERATION,
-} from '@flogo-web/lib-client/core';
+import { Dictionary, SingleEmissionSubject } from '@flogo-web/lib-client/core';
 import {
   ConfirmationModalService,
   ConfirmationResult,
@@ -20,7 +16,12 @@ import {
   RESTAPIHandlersService,
 } from '@flogo-web/lib-client/core/services';
 
-import { Trigger, FlowMetadata, MicroServiceModelConverter } from '../core';
+import {
+  Trigger,
+  FlowMetadata,
+  MicroServiceModelConverter,
+  TRIGGER_MENU_OPERATION,
+} from '../core';
 import { AppState } from '../core/state/app.state';
 import { getTriggersState } from '../core/state/triggers/triggers.selectors';
 import * as TriggerActions from '../core/state/triggers/triggers.actions';

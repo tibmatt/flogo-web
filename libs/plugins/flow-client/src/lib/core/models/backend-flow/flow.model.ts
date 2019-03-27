@@ -12,13 +12,11 @@ import {
 
 import { ActivitySchema, ValueType } from '@flogo-web/core';
 import {
-  FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
   getDefaultValue,
   flowToJSON_Attribute,
   flowToJSON_Link,
   flowToJSON_Mapping,
   flowToJSON_Task,
-  FLOGO_TASK_TYPE,
   Dictionary,
   FlowGraph,
   GraphNode,
@@ -37,6 +35,7 @@ import {
   ItemBranch,
   ItemTask,
 } from '../../interfaces';
+import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE, FLOGO_TASK_TYPE } from '../../constants';
 import { isSubflowTask } from '../flow/is-subflow-task';
 import { mergeItemWithSchema } from '../merge-item-with-schema';
 

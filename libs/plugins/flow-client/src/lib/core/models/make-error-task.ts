@@ -1,6 +1,6 @@
 import { ValueType } from '@flogo-web/core';
-import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_TYPE } from '@flogo-web/lib-client/core';
 import { Task } from '../interfaces';
+import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_TYPE } from '../constants';
 
 export function makeErrorTask(): Task {
   return {

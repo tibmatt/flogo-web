@@ -1,16 +1,15 @@
 import { isString, isObject, isArray, fromPairs } from 'lodash';
 import { resolveExpressionType } from '@flogo-web/parser';
 import { EXPR_PREFIX, ValueType } from '@flogo-web/core';
+import { Dictionary } from '@flogo-web/lib-client/core';
+
+import { ROOT_TYPES } from '../constants';
 import {
+  Task,
   FLOGO_ERROR_ROOT_NAME,
   FLOGO_TASK_TYPE,
   MAPPING_TYPE,
-  Dictionary,
-} from '@flogo-web/lib-client/core';
-
-import { ROOT_TYPES } from '../constants';
-
-import { Task } from '../../../core';
+} from '../../../core';
 // todo: shared models should be moved to core
 import {
   FlowMetadata,

@@ -1,4 +1,5 @@
-import { Dictionary, FLOGO_TASK_TYPE } from '@flogo-web/lib-client/core';
+import { Dictionary } from '@flogo-web/lib-client/core';
+import { FLOGO_TASK_TYPE } from '../../constants';
 import { TaskAttributes } from './attribute';
 import { Link } from './link';
 

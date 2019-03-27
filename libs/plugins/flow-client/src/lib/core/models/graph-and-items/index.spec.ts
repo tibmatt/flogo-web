@@ -1,14 +1,9 @@
 import { ContributionSchema } from '@flogo-web/core';
-import {
-  Dictionary,
-  FLOGO_TASK_TYPE,
-  FlowGraph,
-  GraphNode,
-  NodeType,
-} from '@flogo-web/lib-client/core';
+import { Dictionary, FlowGraph, GraphNode, NodeType } from '@flogo-web/lib-client/core';
 import { ObjectSlice } from '@flogo-web/lib-client/core/testing';
 import { makeGraphAndItems } from '.';
-import { Item } from '../../interfaces/flow';
+import { Item } from '../../interfaces';
+import { FLOGO_TASK_TYPE } from '../../constants';
 
 describe('flow.core.models.graph-and-items', function() {
   const tasks = [

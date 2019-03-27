@@ -1,5 +1,6 @@
 import { get, assign, each, isUndefined } from 'lodash';
-import { FLOGO_TASK_TYPE, getDefaultValue } from '@flogo-web/lib-client/core';
+import { getDefaultValue } from '@flogo-web/lib-client/core';
+import { FLOGO_TASK_TYPE } from './constants';
 
 export function portAttribute(
   inAttr: {

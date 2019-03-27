@@ -1,5 +1,5 @@
-import { MAPPING_TYPE } from '@flogo-web/lib-client/core';
 import { MapperTranslator } from './mapper-translator';
+import { MAPPING_TYPE } from '../../../core';
 
 describe('MapperTranslator', function() {
   describe('#translateMappingsIn', function() {

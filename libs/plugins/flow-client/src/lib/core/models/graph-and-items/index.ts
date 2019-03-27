@@ -1,15 +1,11 @@
 import { fromPairs } from 'lodash';
 
 import { CONTRIB_REFS, ActivitySchema, ContributionSchema } from '@flogo-web/core';
-import {
-  FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
-  Dictionary,
-  FlowGraph,
-  GraphNode,
-} from '@flogo-web/lib-client/core';
+import { Dictionary, FlowGraph, GraphNode } from '@flogo-web/lib-client/core';
 import { Task as BackendTask, Link as BackendLink } from '@flogo-web/plugins/flow-core';
 
-import { Item } from '../../interfaces/flow';
+import { Item } from '../../interfaces';
+import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '../../constants';
 import { makeTaskNodes, makeBranchNode } from './graph-creator';
 import { makeBranchItem, makeTaskItems } from './items-creator';
 import { isSubflowTask } from '../flow/is-subflow-task';

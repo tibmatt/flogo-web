@@ -8,7 +8,6 @@ import {
   ValueType,
 } from '@flogo-web/core';
 import {
-  FLOGO_FLOW_DIAGRAM_NODE_TYPE,
   Dictionary,
   ErrorService,
   RESTAPIContributionsService,
@@ -22,6 +21,7 @@ import {
   ItemSubflow,
   UiFlow,
 } from '../../interfaces';
+import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../constants';
 import { makeGraphAndItems } from '../graph-and-items';
 import { ItemFactory } from '../graph-and-items/item-factory';
 import { flogoGenTriggerID, flogoGenNodeID } from './utils';

@@ -1,4 +1,5 @@
-import { FLOGO_TASK_TYPE, Dictionary } from '@flogo-web/lib-client/core';
+import { Dictionary } from '@flogo-web/lib-client/core';
+import { FLOGO_TASK_TYPE } from '../../constants';
 import { AttributeMapping } from './attribute-mapping';
 
 export type ItemTask = ItemActivityTask | ItemSubflow;
