@@ -1,5 +1,5 @@
 import { Injectable, ElementRef } from '@angular/core';
-import { WindowRef } from '@flogo-web/lib-client/core/services';
+import { WindowRef } from '@flogo-web/lib-client/core';
 
 @Injectable()
 export class TogglerRefService {

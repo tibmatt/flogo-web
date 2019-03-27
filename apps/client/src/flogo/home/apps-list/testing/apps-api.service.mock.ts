@@ -3,8 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { App } from '@flogo-web/core';
-import { HttpUtilsService } from '../http-utils.service';
-import { AppsApiService } from './apps-api.service';
+import { HttpUtilsService, AppsApiService } from '@flogo-web/lib-client/core';
 
 const UNTITLED_APP = 'Untitled App';
 

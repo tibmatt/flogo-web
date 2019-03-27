@@ -9,11 +9,13 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BsModalModule } from 'ng2-bs3-modal';
 
-import { CoreModule as FlogoLibCore, FLOGO_VERSION } from '@flogo-web/lib-client/core';
-import { LanguageService } from '@flogo-web/lib-client/language';
-import { HOSTNAME } from '@flogo-web/lib-client/core/services';
-import { createTranslateLoader } from '@flogo-web/lib-client/language';
-import { initializer } from '@flogo-web/lib-client/core/initializer';
+import {
+  CoreModule as FlogoLibCore,
+  FLOGO_VERSION,
+  HOSTNAME,
+  initializer,
+} from '@flogo-web/lib-client/core';
+import { LanguageService, createTranslateLoader } from '@flogo-web/lib-client/language';
 
 import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
 import { LogsModule as FlogoLogsModule } from '@flogo-web/lib-client/logs';

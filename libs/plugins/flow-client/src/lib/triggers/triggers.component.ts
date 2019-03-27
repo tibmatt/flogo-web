@@ -5,16 +5,17 @@ import { filter, takeUntil, mergeMap, reduce, switchMap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
 import { TriggerSchema } from '@flogo-web/core';
-import { Dictionary, SingleEmissionSubject } from '@flogo-web/lib-client/core';
+import {
+  Dictionary,
+  SingleEmissionSubject,
+  TriggersApiService,
+  RESTAPIHandlersService,
+} from '@flogo-web/lib-client/core';
 import {
   ConfirmationModalService,
   ConfirmationResult,
 } from '@flogo-web/lib-client/confirmation';
 import { LanguageService } from '@flogo-web/lib-client/language';
-import {
-  TriggersApiService,
-  RESTAPIHandlersService,
-} from '@flogo-web/lib-client/core/services';
 
 import {
   Trigger,

@@ -8,14 +8,13 @@ import {
   animateChild,
 } from '@angular/animations';
 
-import { SingleEmissionSubject } from '@flogo-web/lib-client/core';
+import { SingleEmissionSubject, AppsApiService } from '@flogo-web/lib-client/core';
 import {
   ConfirmationResult,
   ConfirmationModalService,
 } from '@flogo-web/lib-client/confirmation';
 import { LanguageService } from '@flogo-web/lib-client/language';
 import { NotificationsService } from '@flogo-web/lib-client/notifications';
-import { AppsApiService } from '@flogo-web/lib-client/core/services';
 
 import { TestRunnerService } from './core/test-runner/test-runner.service';
 import { MonacoEditorLoaderService } from './shared/monaco-editor';

@@ -4,11 +4,7 @@ import { isEqual, last } from 'lodash';
 import { finalize } from 'rxjs/operators';
 import Spy = jasmine.Spy;
 
-import {
-  RunApiService,
-  StatusResponse,
-  ErrorService,
-} from '@flogo-web/lib-client/core/services';
+import { RunApiService, StatusResponse, ErrorService } from '@flogo-web/lib-client/core';
 
 import {
   ERRORS,

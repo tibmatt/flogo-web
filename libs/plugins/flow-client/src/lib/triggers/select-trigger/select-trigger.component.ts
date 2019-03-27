@@ -9,7 +9,7 @@ import {
   Output,
 } from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
-import { TriggersApiService } from '@flogo-web/lib-client/core/services';
+import { TriggersApiService } from '@flogo-web/lib-client/core';
 import { FlogoProfileService } from '../../core';
 
 @Component({

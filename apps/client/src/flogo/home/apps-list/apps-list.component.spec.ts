@@ -7,11 +7,11 @@ import {
   ErrorService,
   AppsApiService,
   HttpUtilsService,
-} from '@flogo-web/lib-client/core/services';
+} from '@flogo-web/lib-client/core';
 import { NotificationsService } from '@flogo-web/lib-client/notifications';
 import { NotificationsServiceMock } from '@flogo-web/lib-client/notifications/testing';
 import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
-import { AppsApiServiceMock } from '@flogo-web/lib-client/core/services/restapi/v2/apps-api.service.mock';
+import { AppsApiServiceMock } from './testing/apps-api.service.mock';
 import { TimeFromNowPipe, FlogoDeletePopupComponent } from '@flogo-web/lib-client/common';
 
 import { FlogoAppImportComponent } from '../app-import/app-import.component';
