@@ -8,18 +8,14 @@ import {
 } from '@flogo-web/core';
 import {
   Dictionary,
-  Item,
-  ItemActivityTask,
   FLOGO_TASK_TYPE,
   FlowGraph,
   GraphNodeDictionary,
 } from '@flogo-web/lib-client/core';
 import { DiagramSelectionType } from '@flogo-web/lib-client/diagram';
 
-import { FlowState } from './flow.state';
 import { getGraphName, getItemsDictionaryName, nodesContainErrors } from '../utils';
 
-import { determineRunnableStatus } from './views/determine-runnable-status';
 import {
   InsertTaskSelection,
   HandlerType,
@@ -27,7 +23,10 @@ import {
   SelectionType,
 } from '../../models';
 import { Activity } from '../../../task-add';
-import { InstalledFunctionSchema } from '../../interfaces';
+import { InstalledFunctionSchema, Item, ItemActivityTask } from '../../interfaces';
+
+import { FlowState } from './flow.state';
+import { determineRunnableStatus } from './views/determine-runnable-status';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(

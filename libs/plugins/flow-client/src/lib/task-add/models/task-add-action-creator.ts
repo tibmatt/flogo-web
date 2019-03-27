@@ -4,13 +4,7 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
 import { CONTRIB_REFS } from '@flogo-web/core';
-import {
-  ItemActivityTask,
-  ItemSubflow,
-  NodeType,
-  Task,
-  ItemTask,
-} from '@flogo-web/lib-client/core';
+import { NodeType } from '@flogo-web/lib-client/core';
 
 import { HandlerType, InsertTaskSelection } from '../../core/models';
 import { uniqueTaskName } from '../../core/models/unique-task-name';
@@ -21,6 +15,7 @@ import { isSubflowTask } from '../../core/models/flow/is-subflow-task';
 
 import { activitySchemaToTask, createSubFlowTask } from './task-factories';
 import { taskIdGenerator } from './profile';
+import { ItemActivityTask, ItemSubflow, Task, ItemTask } from '../../core/interfaces';
 
 interface TaskAddData {
   ref: string;

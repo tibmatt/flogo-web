@@ -18,7 +18,6 @@ import {
 import { ActivitySchema } from '@flogo-web/core';
 import {
   Dictionary,
-  ItemActivityTask,
   StepAttribute,
   SingleEmissionSubject,
 } from '@flogo-web/lib-client/core';
@@ -27,8 +26,9 @@ import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 
 import { FlowActions, FlowSelectors, FlowState } from '../core/state';
 import { TestRunnerService } from '../core/test-runner/test-runner.service';
-import { FormBuilderService } from '../shared/dynamic-form';
+import { ItemActivityTask } from '../core/interfaces/flow';
 
+import { FormBuilderService } from '../shared/dynamic-form';
 import { createSaveChangesAction } from './save-changes-action.creator';
 import { debugPanelAnimations } from './debug-panel.animations';
 import { mergeFormWithOutputs } from './utils';

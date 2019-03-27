@@ -2,7 +2,6 @@ import { isString, isObject, isArray, fromPairs } from 'lodash';
 import { resolveExpressionType } from '@flogo-web/parser';
 import { EXPR_PREFIX, ValueType } from '@flogo-web/core';
 import {
-  Task as FlowTile,
   FLOGO_ERROR_ROOT_NAME,
   FLOGO_TASK_TYPE,
   MAPPING_TYPE,
@@ -11,6 +10,7 @@ import {
 
 import { ROOT_TYPES } from '../constants';
 
+import { Task } from '../../../core';
 // todo: shared models should be moved to core
 import {
   FlowMetadata,
@@ -42,7 +42,7 @@ function getEnumDescriptor(attr: AttributeDescriptor) {
 }
 
 export class MapperTranslator {
-  static createInputSchema(tile: FlowTile) {
+  static createInputSchema(tile: Task) {
     let attributes = [];
     if (tile.attributes && tile.attributes.inputs) {
       attributes = tile.attributes.inputs;
@@ -51,7 +51,7 @@ export class MapperTranslator {
   }
 
   static createOutputSchema(
-    tiles: Array<FlowTile | FlowMetadata>,
+    tiles: Array<Task | FlowMetadata>,
     additionalSchemas?: MapperSchemaProperties,
     includeEmptySchemas = false
   ): MapperSchema {
@@ -179,7 +179,7 @@ export class MapperTranslator {
     return { mappingType, value };
   }
 
-  static getRootType(tile: FlowTile | FlowMetadata) {
+  static getRootType(tile: Task | FlowMetadata) {
     if (tile.type === FLOGO_TASK_TYPE.TASK_ROOT) {
       return tile.triggerType === FLOGO_ERROR_ROOT_NAME
         ? ROOT_TYPES.ERROR

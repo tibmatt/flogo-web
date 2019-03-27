@@ -6,7 +6,6 @@ import { Store, select } from '@ngrx/store';
 
 import { TriggerSchema } from '@flogo-web/core';
 import {
-  FlowMetadata,
   Dictionary,
   SingleEmissionSubject,
   TRIGGER_MENU_OPERATION,
@@ -21,8 +20,7 @@ import {
   RESTAPIHandlersService,
 } from '@flogo-web/lib-client/core/services';
 
-import { Trigger } from '../core';
-import { MicroServiceModelConverter } from '../core/models/profiles/microservice-converter.model';
+import { Trigger, FlowMetadata, MicroServiceModelConverter } from '../core';
 import { AppState } from '../core/state/app.state';
 import { getTriggersState } from '../core/state/triggers/triggers.selectors';
 import * as TriggerActions from '../core/state/triggers/triggers.actions';

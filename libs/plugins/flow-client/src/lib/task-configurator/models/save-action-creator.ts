@@ -4,17 +4,17 @@ import { map, take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 
 import { Resource } from '@flogo-web/core';
+import { Dictionary } from '@flogo-web/lib-client/core';
+import { AppState } from '../../core/state/app.state';
+import { FlowState, FlowSelectors, FlowActions } from '../../core/state';
+import { HandlerType } from '../../core/models';
+import { uniqueTaskName } from '../../core/models/unique-task-name';
 import {
   ItemActivityTask,
   ItemBranch,
   ItemSubflow,
   ItemTask,
-  Dictionary,
-} from '@flogo-web/lib-client/core';
-import { AppState } from '../../core/state/app.state';
-import { FlowState, FlowSelectors, FlowActions } from '../../core/state';
-import { HandlerType } from '../../core/models';
-import { uniqueTaskName } from '../../core/models/unique-task-name';
+} from '../../core/interfaces/flow';
 
 export interface SaveTaskConfigEventData {
   tileId: string;

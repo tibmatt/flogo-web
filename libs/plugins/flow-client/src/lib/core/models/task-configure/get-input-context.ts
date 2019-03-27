@@ -1,13 +1,7 @@
 import { defaultsDeep, get } from 'lodash';
 import { ActivitySchema } from '@flogo-web/core';
-import {
-  Dictionary,
-  GraphNode,
-  Item,
-  ItemSubflow,
-  ItemTask,
-  NodeType,
-} from '@flogo-web/lib-client/core';
+import { Dictionary, GraphNode, NodeType } from '@flogo-web/lib-client/core';
+import { Item, ItemSubflow, ItemTask } from '../../interfaces/flow';
 import { FlowState } from '../../state';
 import { makeErrorTask } from '../make-error-task';
 import { FlowMetadata } from '../../../task-configurator/models';

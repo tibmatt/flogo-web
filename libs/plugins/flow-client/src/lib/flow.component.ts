@@ -8,12 +8,7 @@ import {
   animateChild,
 } from '@angular/animations';
 
-import {
-  MetadataAttribute,
-  Item,
-  FLOGO_TASK_TYPE,
-  SingleEmissionSubject,
-} from '@flogo-web/lib-client/core';
+import { FLOGO_TASK_TYPE, SingleEmissionSubject } from '@flogo-web/lib-client/core';
 import {
   ConfirmationResult,
   ConfirmationModalService,
@@ -25,7 +20,7 @@ import { AppsApiService } from '@flogo-web/lib-client/core/services';
 import { TestRunnerService } from './core/test-runner/test-runner.service';
 import { MonacoEditorLoaderService } from './shared/monaco-editor';
 
-import { FlowData } from './core';
+import { FlowData, Item, MetadataAttribute } from './core';
 import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { HandlerType, SelectionType, mergeItemWithSchema } from './core/models';
 import { FlowState } from './core/state';

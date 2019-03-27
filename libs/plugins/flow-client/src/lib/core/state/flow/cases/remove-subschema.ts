@@ -1,4 +1,4 @@
-import { ItemSubflow } from '@flogo-web/lib-client/core';
+import { ItemSubflow } from '../../../interfaces/flow';
 import { getLinkedSubflow } from './get-linked-subflow';
 import { FlowState } from '../flow.state';
 

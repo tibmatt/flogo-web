@@ -1,13 +1,7 @@
 import { Action } from '@ngrx/store';
 import { Resource, ActivitySchema } from '@flogo-web/core';
-import {
-  Dictionary,
-  GraphNode,
-  Item,
-  ItemTask,
-  StepAttribute,
-  FlowMetadata,
-} from '@flogo-web/lib-client/core';
+import { Dictionary, GraphNode, StepAttribute } from '@flogo-web/lib-client/core';
+import { FlowMetadata, Item, ItemTask } from '../../interfaces/flow';
 import { HandlerType } from '../../models';
 import { FlowState } from './flow.state';
 

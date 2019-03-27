@@ -6,10 +6,10 @@ import {
   Dictionary,
   FlowGraph,
   GraphNode,
-  Item,
 } from '@flogo-web/lib-client/core';
 import { Task as BackendTask, Link as BackendLink } from '@flogo-web/plugins/flow-core';
 
+import { Item } from '../../interfaces/flow';
 import { makeTaskNodes, makeBranchNode } from './graph-creator';
 import { makeBranchItem, makeTaskItems } from './items-creator';
 import { isSubflowTask } from '../flow/is-subflow-task';

@@ -8,20 +8,22 @@ import {
   ValueType,
 } from '@flogo-web/core';
 import {
-  FlowMetadata,
-  MetadataAttribute,
   FLOGO_FLOW_DIAGRAM_NODE_TYPE,
   Dictionary,
   ErrorService,
   RESTAPIContributionsService,
-  UiFlow,
   FLOGO_CONTRIB_TYPE,
+} from '@flogo-web/lib-client/core';
+import {
+  ApiFlowResource,
+  FlowMetadata,
+  MetadataAttribute,
   Item,
   ItemSubflow,
-} from '@flogo-web/lib-client/core';
+  UiFlow,
+} from '../../interfaces';
 import { makeGraphAndItems } from '../graph-and-items';
 import { ItemFactory } from '../graph-and-items/item-factory';
-import { ApiFlowResource } from '../../interfaces';
 import { flogoGenTriggerID, flogoGenNodeID } from './utils';
 import { isSubflowTask } from '../flow/is-subflow-task';
 

@@ -8,11 +8,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { Resource, ActivitySchema } from '@flogo-web/core';
 import {
   FLOGO_TASK_TYPE,
-  Item,
-  ItemActivityTask,
-  ItemSubflow,
-  ItemTask,
-  Task,
   SingleEmissionSubject,
   Dictionary,
 } from '@flogo-web/lib-client/core';
@@ -29,7 +24,15 @@ import {
   MapperController,
 } from '../shared/mapper';
 import { Tabs } from '../shared/tabs/models/tabs.model';
-import { FlogoFlowService as FlowsService, InstalledFunctionSchema } from '../core';
+import {
+  FlogoFlowService as FlowsService,
+  InstalledFunctionSchema,
+  Item,
+  ItemActivityTask,
+  ItemSubflow,
+  ItemTask,
+  Task,
+} from '../core';
 import { FlowState, FlowActions, FlowSelectors } from '../core/state';
 import {
   createIteratorMappingContext,

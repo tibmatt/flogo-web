@@ -1,8 +1,9 @@
 import { isEmpty, pick, fromPairs } from 'lodash';
 import { ContributionSchema } from '@flogo-web/core';
-import { Task, Dictionary, Item, ItemTask } from '@flogo-web/lib-client/core';
+import { Dictionary } from '@flogo-web/lib-client/core';
 import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 import { FlowState } from '../flow.state';
+import { Item, Task, ItemTask } from '../../../interfaces';
 
 /**
  * When flow schema's output change we need to remove the task mappings that were referencing them

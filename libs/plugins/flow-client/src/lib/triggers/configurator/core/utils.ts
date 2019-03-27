@@ -1,8 +1,7 @@
 import { isString } from 'lodash';
 
-import { FlowMetadata } from '@flogo-web/lib-client/core';
-
 import { Tabs } from '../../../shared/tabs/models/tabs.model';
+import { FlowMetadata } from '../../../core/interfaces/flow';
 import { TRIGGER_TABS } from './constants';
 
 const defaultTabsInfo: { name: string; labelKey: string }[] = [

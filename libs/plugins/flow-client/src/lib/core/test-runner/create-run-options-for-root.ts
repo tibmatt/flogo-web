@@ -1,6 +1,7 @@
 import { chain, cloneDeep, get, isEmpty, isNil } from 'lodash';
-import { MetadataAttribute } from '@flogo-web/lib-client/core';
+
 import { FlowState } from '../state';
+import { MetadataAttribute } from '../interfaces';
 import { RunOptions } from './run-orchestrator.service';
 
 export function createRunOptionsForRoot(flowState: FlowState) {

@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { of as observableOfValue, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { UiFlow, ResourceService, AppResourceService } from '@flogo-web/lib-client/core';
+import { ResourceService, AppResourceService } from '@flogo-web/lib-client/core';
 
 import { savableFlow } from './models/backend-flow/flow.model';
 import { MicroServiceModelConverter } from './models/profiles/microservice-converter.model';
@@ -13,7 +13,7 @@ import { loadFlow } from './models/load-flow';
 import { FlowData } from './flow-data';
 import { AppState } from './state/app.state';
 import { FlowState, Init } from './state';
-import { FlowResource, ApiFlowResource } from './interfaces';
+import { FlowResource, ApiFlowResource, UiFlow } from './interfaces';
 
 @Injectable()
 export class FlogoFlowService {

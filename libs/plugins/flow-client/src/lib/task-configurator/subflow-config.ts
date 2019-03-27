@@ -1,4 +1,5 @@
-import { FlowMetadata } from '@flogo-web/lib-client/core';
+import { FlowMetadata } from '../core/interfaces/flow';
+
 export interface SubFlowConfig {
   name: string;
   description: string;

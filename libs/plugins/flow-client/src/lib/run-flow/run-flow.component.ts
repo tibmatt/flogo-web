@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MetadataAttribute } from '@flogo-web/lib-client/core';
+import { MetadataAttribute } from '../core/interfaces';
 
 @Component({
   selector: 'flogo-run-flow',

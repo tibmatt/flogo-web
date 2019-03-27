@@ -1,11 +1,6 @@
 import { fromPairs, partition } from 'lodash';
-import {
-  Dictionary,
-  FlowGraph,
-  GraphNode,
-  Item,
-  NodeType,
-} from '@flogo-web/lib-client/core';
+import { Dictionary, FlowGraph, GraphNode, NodeType } from '@flogo-web/lib-client/core';
+import { Item } from '../../interfaces/flow';
 
 interface Collections {
   flowGraph: FlowGraph;

@@ -1,4 +1,4 @@
-import { UiFlow } from '@flogo-web/lib-client/core';
+import { UiFlow } from './interfaces';
 
 export interface FlowData {
   flow: UiFlow;

@@ -1,11 +1,9 @@
 import {
   GraphNode,
-  Item,
   NodeFeatures,
   NodeStatus,
   NodeType,
   Dictionary,
-  ItemActivityTask,
 } from '@flogo-web/lib-client/core';
 import {
   isIterableTask,
@@ -14,6 +12,7 @@ import {
 } from '@flogo-web/plugins/flow-core';
 import { isSubflowTask } from '../flow/is-subflow-task';
 import { isBranchConfigured } from '../flow/is-branch-configured';
+import { Item, ItemActivityTask } from '../../interfaces/flow';
 
 const defaultFeatures: NodeFeatures = {
   selectable: true,

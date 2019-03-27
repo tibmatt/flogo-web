@@ -1,7 +1,6 @@
-import { FLOGO_TASK_TYPE } from '../../constants';
+import { Dictionary, FLOGO_TASK_TYPE } from '@flogo-web/lib-client/core';
 import { TaskAttributes } from './attribute';
 import { Link } from './link';
-import { Dictionary } from '../common';
 
 export interface Task {
   id: string;

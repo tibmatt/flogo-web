@@ -4,11 +4,11 @@ import {
   FLOGO_TASK_TYPE,
   FlowGraph,
   GraphNode,
-  Item,
   NodeType,
 } from '@flogo-web/lib-client/core';
 import { ObjectSlice } from '@flogo-web/lib-client/core/testing';
 import { makeGraphAndItems } from '.';
+import { Item } from '../../interfaces/flow';
 
 describe('flow.core.models.graph-and-items', function() {
   const tasks = [

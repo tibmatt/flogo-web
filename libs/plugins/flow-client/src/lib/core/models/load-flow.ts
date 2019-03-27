@@ -3,9 +3,15 @@ import { SubscribableOrPromise, Observable, from, of } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 
 import { Resource, ApiResource } from '@flogo-web/core';
-import { Dictionary, UiFlow, TriggerHandler } from '@flogo-web/lib-client/core';
+import { Dictionary, TriggerHandler } from '@flogo-web/lib-client/core';
 
-import { FlowResource, Trigger, ResourceFlowData, ApiFlowResource } from '../interfaces';
+import {
+  FlowResource,
+  Trigger,
+  ResourceFlowData,
+  ApiFlowResource,
+  UiFlow,
+} from '../interfaces';
 import { isSubflowTask } from './flow/is-subflow-task';
 
 export const loadFlow = (

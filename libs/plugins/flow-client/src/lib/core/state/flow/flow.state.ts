@@ -1,12 +1,7 @@
 import { Resource } from '@flogo-web/core';
-import {
-  Dictionary,
-  StepAttribute,
-  UiFlow,
-  TriggerHandler,
-} from '@flogo-web/lib-client/core';
+import { Dictionary, StepAttribute, TriggerHandler } from '@flogo-web/lib-client/core';
 import { CurrentSelection } from '../../models';
-import { Trigger, TriggerConfigureState } from '../../interfaces';
+import { Trigger, TriggerConfigureState, UiFlow } from '../../interfaces';
 
 export interface FlowState extends UiFlow {
   isErrorPanelOpen: boolean;

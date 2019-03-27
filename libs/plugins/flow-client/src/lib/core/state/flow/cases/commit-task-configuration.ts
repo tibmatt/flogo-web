@@ -1,5 +1,5 @@
-import { ItemSubflow } from '@flogo-web/lib-client/core';
 import { PayloadOf, getItem } from '../../utils';
+import { ItemSubflow } from '../../../interfaces/flow';
 import { FlowState } from '../flow.state';
 import { CommitItemConfiguration } from '../flow.actions';
 import { subflowSchemaUpdate } from './subflow-schema-update';

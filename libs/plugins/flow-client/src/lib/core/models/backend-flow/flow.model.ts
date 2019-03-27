@@ -12,28 +12,31 @@ import {
 
 import { ActivitySchema, ValueType } from '@flogo-web/core';
 import {
-  FlowMetadata,
-  MetadataAttribute,
   FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
   getDefaultValue,
-  AttributeMapping as DiagramTaskAttributeMapping,
-  TaskAttribute as DiagramTaskAttribute,
   flowToJSON_Attribute,
-  UiFlow,
   flowToJSON_Link,
   flowToJSON_Mapping,
   flowToJSON_Task,
   FLOGO_TASK_TYPE,
   Dictionary,
-  Item,
-  ItemActivityTask,
-  ItemBranch,
-  ItemTask,
   FlowGraph,
   GraphNode,
   NodeType,
 } from '@flogo-web/lib-client/core';
-import { FlowResource, ResourceFlowData } from '../../interfaces';
+import {
+  FlowResource,
+  ResourceFlowData,
+  TaskAttribute as DiagramTaskAttribute,
+  AttributeMapping as DiagramTaskAttributeMapping,
+  FlowMetadata,
+  Item,
+  MetadataAttribute,
+  UiFlow,
+  ItemActivityTask,
+  ItemBranch,
+  ItemTask,
+} from '../../interfaces';
 import { isSubflowTask } from '../flow/is-subflow-task';
 import { mergeItemWithSchema } from '../merge-item-with-schema';
 

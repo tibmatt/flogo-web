@@ -1,4 +1,4 @@
-import { FlowMetadata, MetadataAttribute } from '@flogo-web/lib-client/core';
+import { FlowMetadata, MetadataAttribute } from '../../../interfaces/flow';
 import { FlowState } from '../flow.state';
 
 export function updateMetadata(state: FlowState, newMetadata: FlowMetadata): FlowState {

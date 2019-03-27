@@ -7,13 +7,16 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import {
   FLOGO_TASK_TYPE,
   GraphNode,
-  ItemBranch,
   SingleEmissionSubject,
 } from '@flogo-web/lib-client/core';
 import { LanguageService } from '@flogo-web/lib-client/language';
 import { FlowState } from '../core/state';
 import { AppState } from '../core/state/app.state';
-import { FlogoFlowService as FlowsService, InstalledFunctionSchema } from '../core';
+import {
+  FlogoFlowService as FlowsService,
+  InstalledFunctionSchema,
+  ItemBranch,
+} from '../core';
 import { MapperController, MapperControllerFactory } from '../shared/mapper';
 import { getStateWhenConfigureChanges } from '../shared/configurator/configurator.selector';
 import { getInputContext } from '../core/models/task-configure/get-input-context';
