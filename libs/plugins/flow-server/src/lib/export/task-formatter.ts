@@ -6,7 +6,7 @@ import {
   MapperUtils,
   ContributionType,
 } from '@flogo-web/core';
-import { TASK_TYPE, AppImportsAgent } from '@flogo-web/lib-server/core';
+import { TASK_TYPE, ExportRefAgent } from '@flogo-web/lib-server/core';
 import { Task, isSubflowTask, isIterableTask } from '@flogo-web/plugins/flow-core';
 
 interface Mappings {
@@ -27,10 +27,10 @@ export class TaskFormatter {
 
   constructor(
     private resourceIdReconciler: Map<string, Resource>,
-    private importsAgent: AppImportsAgent
+    private refAgent: ExportRefAgent
   ) {
     this.accumulateFunctions = createFnAccumulator(
-      importsAgent.registerFunctionName.bind(importsAgent)
+      refAgent.registerFunctionName.bind(refAgent)
     );
   }
 
@@ -54,7 +54,7 @@ export class TaskFormatter {
       description: !isEmpty(description) ? description : undefined,
       settings: !isEmpty(taskSettings) ? taskSettings : undefined,
       activity: {
-        ref: this.importsAgent.getAliasRef(ContributionType.Activity, activityRef),
+        ref: this.refAgent.getAliasRef(ContributionType.Activity, activityRef),
         input: !isEmpty(input) ? input : undefined,
         settings: !isEmpty(activitySettings) ? activitySettings : undefined,
       },

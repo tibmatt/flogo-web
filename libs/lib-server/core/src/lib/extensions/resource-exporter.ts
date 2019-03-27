@@ -1,17 +1,22 @@
-import { Resource, FlogoAppModel, Handler, ContributionSchema } from '@flogo-web/core';
-import { AppImportsAgent } from './app-imports-agent';
+import {
+  Resource,
+  FlogoAppModel,
+  Handler,
+  ContributionSchema,
+  ContributionType,
+} from '@flogo-web/core';
 
 export interface ResourceExportContext {
   contributions: Map<string, ContributionSchema>;
   resourceIdReconciler: Map<string, Resource>;
-  importsAgent: AppImportsAgent;
+  refAgent: ExportRefAgent;
 }
 
 export interface HandlerExportContext {
   triggerSchema: ContributionSchema;
   resource: FlogoAppModel.Resource;
   internalHandler: Handler;
-  importsAgent: AppImportsAgent;
+  refAgent: ExportRefAgent;
 }
 
 export interface ResourceExporter<TResourceData = unknown> {
@@ -23,4 +28,9 @@ export interface ResourceExporter<TResourceData = unknown> {
     handler: FlogoAppModel.NewHandler,
     context: HandlerExportContext
   ): FlogoAppModel.NewHandler;
+}
+
+export interface ExportRefAgent {
+  getAliasRef(contribType: ContributionType, packageRef: string): string | undefined;
+  registerFunctionName(functionName: string): void;
 }

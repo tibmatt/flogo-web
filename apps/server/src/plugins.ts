@@ -1,6 +1,6 @@
 import { flowPlugin } from '@flogo-web/plugins/flow-server';
-import { ServerPluginRegistrar } from './extension';
+import { ExtensionsServer } from './extension';
 
-export function loadPlugins(registrar: ServerPluginRegistrar) {
-  registrar.use(flowPlugin);
+export function loadPlugins(flogoServer: ExtensionsServer) {
+  flogoServer.use(flowPlugin);
 }

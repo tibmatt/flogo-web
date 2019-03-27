@@ -2,7 +2,7 @@ import { isEmpty, pick } from 'lodash';
 import {
   ResourceExportContext,
   Resource,
-  AppImportsAgent,
+  ExportRefAgent,
 } from '@flogo-web/lib-server/core';
 import {
   App,
@@ -39,11 +39,11 @@ export class AppFormatter {
   ) {}
 
   format(app: App, resourceIdReconciler: Map<string, Resource>): FlogoAppModel.App {
-    const importsAgent: RefAgent = createRefAgent(this.contributionSchemas, app.imports);
+    const refAgent: RefAgent = createRefAgent(this.contributionSchemas, app.imports);
     const exportContext: ResourceExportContext = {
       contributions: this.contributionSchemas,
       resourceIdReconciler,
-      importsAgent,
+      refAgent,
     };
 
     const { resources, resourceInfoLookup } = this.formatResources(
@@ -53,11 +53,11 @@ export class AppFormatter {
 
     const formattedTriggers = this.formatTriggers(
       app.triggers,
-      importsAgent,
-      this.makeHandlerFormatter(resourceIdReconciler, resourceInfoLookup, importsAgent)
+      refAgent,
+      this.makeHandlerFormatter(resourceIdReconciler, resourceInfoLookup, refAgent)
     );
 
-    const allImports = importsAgent.formatImports();
+    const allImports = refAgent.formatImports();
 
     return {
       name: app.name,
@@ -89,7 +89,7 @@ export class AppFormatter {
 
   formatTriggers(
     triggers: Trigger[],
-    importsAgent: AppImportsAgent,
+    refAgent: ExportRefAgent,
     handlerFormatter: (trigger: Trigger) => (handler: Handler) => FlogoAppModel.Handler
   ): FlogoAppModel.Trigger[] {
     return triggers
@@ -99,7 +99,7 @@ export class AppFormatter {
           {
             ...trigger,
             handlers: trigger.handlers.map(handlerFormatter(trigger)),
-            ref: importsAgent.getAliasRef(ContributionType.Trigger, trigger.ref),
+            ref: refAgent.getAliasRef(ContributionType.Trigger, trigger.ref),
           },
           TRIGGER_KEYS
         ) as FlogoAppModel.Trigger;
@@ -109,12 +109,12 @@ export class AppFormatter {
   private makeHandlerFormatter(
     resourceIdReconciler: Map<string, Resource>,
     resourceInfoLookup: Map<string, ExportedResourceInfo>,
-    importsAgent: AppImportsAgent
+    refAgent: ExportRefAgent
   ) {
     return makeHandlerFormatter({
       exportHandler: this.exporter.handler,
       contributionSchemas: this.contributionSchemas,
-      importsAgent,
+      refAgent: refAgent,
       getResourceInfo: oldResourceId =>
         resourceInfoLookup.get(resourceIdReconciler.get(oldResourceId).id),
     });

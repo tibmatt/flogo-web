@@ -19,7 +19,7 @@ test('it exports a flow', () => {
     resourceIdReconciler: new Map<string, Resource>([
       ['4ut01d', { id: 'flow:humanized_subflow_ref' } as Resource],
     ]),
-    importsAgent: {
+    refAgent: {
       getAliasRef: (type, ref): string => ref,
       registerFunctionName: () => {},
     },

@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { ResourcePluginRegistry, ServerPluginRegistrar } from './extension';
+import { ResourcePluginRegistry, ExtensionsServer } from './extension';
 import { createRootContainer } from './injector';
 import { loadPlugins } from './plugins';
 import { setDefaultResourceTypes } from './modules/engine';
@@ -11,6 +11,6 @@ export { rootContainer };
 
 function initPlugins() {
   const pluginRegistry = rootContainer.get(ResourcePluginRegistry);
-  loadPlugins(new ServerPluginRegistrar(pluginRegistry));
+  loadPlugins(new ExtensionsServer(pluginRegistry));
   setDefaultResourceTypes(pluginRegistry.resourceTypes.allRefs());
 }

@@ -7,32 +7,32 @@ import {
   ContributionType,
   MapperUtils,
 } from '@flogo-web/core';
-import { AppImportsAgent } from '@flogo-web/lib-server/core';
+import { ExportRefAgent } from '@flogo-web/lib-server/core';
 import { HandlerExporterFn } from '../resource-exporter-fn';
 import { ExportedResourceInfo } from './exported-resource-info';
 
 interface HandlerFormatterParams {
   exportHandler: HandlerExporterFn;
   contributionSchemas: Map<string, ContributionSchema>;
-  importsAgent: AppImportsAgent;
+  refAgent: ExportRefAgent;
   getResourceInfo(oldResourceId): ExportedResourceInfo;
 }
 
 export function makeHandlerFormatter({
   exportHandler,
   contributionSchemas,
-  importsAgent,
+  refAgent,
   getResourceInfo,
 }: HandlerFormatterParams) {
   return (trigger: Trigger) => {
     const triggerSchema = contributionSchemas.get(trigger.ref);
     return (handler: Handler) => {
       const resourceInfo = getResourceInfo(handler.resourceId);
-      const formattedHandler = preFormatHandler(handler, resourceInfo.ref, importsAgent);
+      const formattedHandler = preFormatHandler(handler, resourceInfo.ref, refAgent);
       return exportHandler(resourceInfo.type, formattedHandler, {
         triggerSchema,
         resource: resourceInfo.resource,
-        importsAgent,
+        refAgent,
         internalHandler: {
           ...handler,
           resourceId: resourceInfo.resource.id,
@@ -45,7 +45,7 @@ export function makeHandlerFormatter({
 function preFormatHandler(
   handler: Handler,
   ref: string,
-  refAgent: AppImportsAgent
+  refAgent: ExportRefAgent
 ): FlogoAppModel.NewHandler {
   const { settings, actionMappings } = handler;
   const registerFunctions = (fn: string) => refAgent.registerFunctionName(fn);

@@ -6,11 +6,8 @@ export interface FlogoPlugin {
   register(server: PluginServer);
 }
 
-export interface ResourceType<TResourceData = unknown> {
-  type: string;
-  ref: string;
-  import: ResourceImporter<TResourceData>;
-  export: ResourceExporter<TResourceData>;
+export interface PluginServer {
+  resources: ResourceExtensionRegistrar;
 }
 
 export interface ResourceExtensionRegistrar {
@@ -18,6 +15,9 @@ export interface ResourceExtensionRegistrar {
   useHooks(resourceHooks: ResourceHooks);
 }
 
-export interface PluginServer {
-  resources: ResourceExtensionRegistrar;
+export interface ResourceType<TResourceData = unknown> {
+  type: string;
+  ref: string;
+  import: ResourceImporter<TResourceData>;
+  export: ResourceExporter<TResourceData>;
 }

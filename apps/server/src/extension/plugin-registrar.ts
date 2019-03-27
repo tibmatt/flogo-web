@@ -1,7 +1,7 @@
 import { FlogoPlugin, PluginServer } from '@flogo-web/lib-server/core';
 import { ResourcePluginRegistry } from './plugin-registry';
 
-export class ServerPluginRegistrar {
+export class ExtensionsServer {
   private readonly pluginServer: PluginServer;
 
   constructor(resourcePluginRegistry: ResourcePluginRegistry) {

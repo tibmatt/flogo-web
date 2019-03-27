@@ -1,5 +1,5 @@
 import { ContributionType } from '@flogo-web/core';
-import { AppImportsAgent } from '@flogo-web/lib-server/core';
+import { ExportRefAgent } from '@flogo-web/lib-server/core';
 import { ParsedImport } from '../../common/parsed-import';
 import { FunctionRefFinder } from './function-ref-finder';
 
@@ -13,7 +13,7 @@ interface ImportInfo {
   alias: string;
 }
 
-export class RefAgent implements AppImportsAgent {
+export class RefAgent implements ExportRefAgent {
   private contribCategories = new Map<ContributionType, ContribCategory>();
 
   constructor(
