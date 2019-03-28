@@ -24,15 +24,22 @@
       "@flogo-web/lib-client/confirmation": ["libs/lib-client/confirmation/src/index.ts"],
       "@flogo-web/lib-client/modal": ["libs/lib-client/modal/src/index.ts"],
       "@flogo-web/lib-client/language": ["libs/lib-client/language/src/index.ts"],
-      "@flogo-web/lib-client/language/testing": ["libs/lib-client/language/testing/index.ts"],
-      "@flogo-web/lib-client/notifications": ["libs/lib-client/notifications/src/index.ts"],
-      "@flogo-web/lib-client/notifications/testing": ["libs/lib-client/notifications/testing/index.ts"],
-      "@flogo-web/lib-client/core": ["libs/lib-client/core/src/index.ts"],
+      "@flogo-web/lib-client/language/testing": [
+        "libs/lib-client/language/testing/index.ts"
+      ],
+      "@flogo-web/lib-client/notifications": [
+        "libs/lib-client/notifications/src/index.ts"
+      ],
+      "@flogo-web/lib-client/notifications/testing": [
+        "libs/lib-client/notifications/testing/index.ts"
+      ],
       "@flogo-web/lib-client/diagram": ["libs/lib-client/diagram/src/index.ts"],
       "@flogo-web/lib-client/logs": ["libs/lib-client/logs/src/index.ts"],
       "@flogo-web/plugins/flow-core": ["libs/plugins/flow-core/src/index.ts"],
       "@flogo-web/plugins/flow-server": ["libs/plugins/flow-server/src/index.ts"],
-      "@flogo-web/plugins/flow-client": ["libs/plugins/flow-client/src/index.ts"]
+      "@flogo-web/plugins/flow-client": ["libs/plugins/flow-client/src/index.ts"],
+      "@flogo-web/plugins/stream-server": ["libs/plugins/stream-server/src/index.ts"],
+      "@flogo-web/plugins/stream-client": ["libs/plugins/stream-client/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp", "dist", "coverage"]

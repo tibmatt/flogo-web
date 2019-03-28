@@ -463,6 +463,7 @@
         "test": {
           "builder": "@nrwl/builders:jest",
           "options": {
+            "passWithNoTests": true,
             "jestConfig": "libs/plugins/stream-server/jest.config.js",
             "tsConfig": "libs/plugins/stream-server/tsconfig.spec.json",
             "setupFile": "libs/plugins/stream-server/src/test-setup.ts"

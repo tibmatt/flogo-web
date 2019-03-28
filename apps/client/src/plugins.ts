@@ -8,12 +8,11 @@ export const resourcePlugins: ResourcePluginManifest[] = [
     loadChildren: '@flogo-web/plugins/flow-client#FlowModule',
     color: '#96a7f8',
   },
-  // sample data
-  // {
-  //   label: 'Other',
-  //   type: 'other',
-  //   path: 'other',
-  //   loadChildren: '@flogo-web/plugins/flow-client#FlowModule',
-  //   color: '#33c6d8',
-  // },
+  {
+    label: 'Stream',
+    type: 'stream',
+    path: 'stream',
+    loadChildren: '@flogo-web/plugins/stream-client#StreamClientModule',
+    color: '#33c6d8',
+  },
 ];
