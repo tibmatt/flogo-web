@@ -443,6 +443,64 @@
           }
         }
       }
+    },
+    "plugins-stream-server": {
+      "root": "libs/plugins/stream-server",
+      "sourceRoot": "libs/plugins/stream-server/src",
+      "projectType": "library",
+      "prefix": "flogo-web",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/stream-server/tsconfig.lib.json",
+              "libs/plugins/stream-server/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "libs/plugins/stream-server/jest.config.js",
+            "tsConfig": "libs/plugins/stream-server/tsconfig.spec.json",
+            "setupFile": "libs/plugins/stream-server/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {}
+    },
+    "plugins-stream-client": {
+      "root": "libs/plugins/stream-client",
+      "sourceRoot": "libs/plugins/stream-client/src",
+      "projectType": "library",
+      "prefix": "flogo-web",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/stream-client/tsconfig.lib.json",
+              "libs/plugins/stream-client/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "libs/plugins/stream-client/jest.config.js",
+            "tsConfig": "libs/plugins/stream-client/tsconfig.spec.json",
+            "setupFile": "libs/plugins/stream-client/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/schematics:component": {
+          "styleext": "less"
+        }
+      }
     }
   },
   "cli": {

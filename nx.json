@@ -37,6 +37,12 @@
     },
     "client": {
       "tags": ["client"]
+    },
+    "plugins-stream-server": {
+      "tags": []
+    },
+    "plugins-stream-client": {
+      "tags": []
     }
   }
 }
