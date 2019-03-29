@@ -17,8 +17,8 @@ import { ResourceExporterFn, HandlerExporterFn } from '../resource-exporter-fn';
 import { makeHandlerFormatter } from './handler-format';
 import { ExportedResourceInfo } from './exported-resource-info';
 import { createRefAgent, RefAgent } from '../ref-agent';
+import { APP_MODEL_VERSION } from '../../../../common/constants';
 
-const APP_MODEL_VERSION = '1.0.0';
 const TRIGGER_KEYS: Array<keyof FlogoAppModel.Trigger> = [
   'id',
   'ref',

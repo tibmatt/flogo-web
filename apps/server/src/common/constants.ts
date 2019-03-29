@@ -4,6 +4,8 @@ export const EXPORT_MODE = {
   FORMAT_FLOWS: 'flows',
 };
 
+export const APP_MODEL_VERSION = '1.1.0';
+
 export const FLOGO_TASK_ATTRIBUTE_TYPE = {
   STRING: 'string',
   INTEGER: 'integer',
