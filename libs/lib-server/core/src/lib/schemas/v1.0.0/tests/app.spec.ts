@@ -27,7 +27,7 @@ describe('JSONSchema: App', () => {
       name: 'my app',
       type: 'flogo:app',
       version: '0.5.3',
-      appModel: '1.0.0',
+      appModel: '1.1.0',
       description: 'app description',
       triggers: [{ ...validSchemas.trigger }],
       resources: [{ ...validSchemas.resource }],

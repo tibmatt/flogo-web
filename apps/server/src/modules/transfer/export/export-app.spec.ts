@@ -11,7 +11,7 @@ import {
 test('it exports an app', () => {
   const exported = exportApp(
     getAppToExport(),
-    type => {
+    () => {
       return {
         resource: resource => ({
           id: resource.id,
@@ -95,7 +95,7 @@ function getExpectedApp(): FlogoAppModel.App {
     name: 'my cool app',
     type: 'flogo:app',
     version: '0.0.1',
-    appModel: '1.0.0',
+    appModel: '1.1.0',
     description: 'with a description',
     imports: ['github.com/project-flogo/flow', 'some_path_to_repo/trigger/rest'],
     triggers: [
