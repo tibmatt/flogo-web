@@ -1,14 +1,12 @@
-import { rootContainer } from './init-dependencies';
+import { rootContainer, installDefaults } from './init';
 import { config } from './config/app-config';
 import { TOKENS } from './core';
 import { Database } from './common/database.service';
 import { getInitializedEngine } from './modules/engine';
-import { installDefaults, ensureDefaultDirs } from './modules/init';
 import { syncTasks } from './modules/contrib-install-controller/sync-tasks';
 import { AppsService } from './modules/apps';
 
-ensureDefaultDirs()
-  .then(() => getInitializedEngine(config.defaultEngine.path, { forceCreate: false }))
+getInitializedEngine(config.defaultEngine.path, { forceCreate: false })
   .then(engine => syncTasks(engine))
   .then(() => {
     console.log('[log] init test engine done');

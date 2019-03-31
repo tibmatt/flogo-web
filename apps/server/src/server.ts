@@ -1,15 +1,12 @@
-import { rootContainer } from './init-dependencies';
+import { rootContainer, createApp as createServerApp } from './init';
 
 import { logger } from './common/logging';
 import { config } from './config/app-config';
 import { init as initWebsocketApi } from './api/ws';
 import { getInitializedEngine } from './modules/engine';
-import { ensureDefaultDirs } from './modules/init';
-import { createApp as createServerApp } from './modules/init/app';
 import { syncTasks } from './modules/contrib-install-controller/sync-tasks';
 
-export default ensureDefaultDirs()
-  .then(() => initEngine(config.defaultEngine.path))
+initEngine(config.defaultEngine.path)
   .then(() =>
     createServerApp({
       port: config.app.port as string,

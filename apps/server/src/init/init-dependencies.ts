@@ -1,8 +1,8 @@
 import 'reflect-metadata';
-import { ResourcePluginRegistry, ExtensionsServer } from './extension';
-import { createRootContainer } from './injector';
-import { loadPlugins } from './plugins';
-import { setDefaultResourceTypes } from './modules/engine';
+import { ResourcePluginRegistry, ExtensionsServer } from '../extension';
+import { createRootContainer } from '../injector';
+import { loadPlugins } from '../plugins';
+import { setDefaultResourceTypes } from '../modules/engine';
 
 const rootContainer = createRootContainer();
 initPlugins();
