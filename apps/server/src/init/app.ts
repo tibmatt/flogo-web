@@ -10,9 +10,9 @@ const bodyParser = require('koa-body');
 const compress = require('koa-compress');
 const send = require('koa-send');
 
-import { logger } from '../../common/logging';
-import { ERROR_TYPES, ErrorManager } from '../../common/errors';
-import { mountRestApi } from '../../api';
+import { logger } from '../common/logging';
+import { ERROR_TYPES, ErrorManager } from '../common/errors';
+import { mountRestApi } from '../api';
 
 export interface ServerConfig {
   port: string;
