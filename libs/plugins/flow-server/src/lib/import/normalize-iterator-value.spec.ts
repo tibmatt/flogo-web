@@ -10,5 +10,8 @@ describe('import.normalizeIteratorValue', () => {
     expect(normalizeIteratorValue('$testing')).toEqual('=$testing');
     expect(normalizeIteratorValue('number.random(20)')).toEqual('=number.random(20)');
     expect(normalizeIteratorValue({ test: 'ing' })).toEqual('={\n  "test": "ing"\n}');
+    expect(normalizeIteratorValue({ mapping: [10, 20, 30, 40] })).toEqual({
+      mapping: [10, 20, 30, 40],
+    });
   });
 });
