@@ -169,12 +169,7 @@
         "settings": {
           "type": "object",
           "properties": {
-            "iterate": {
-              "type": [
-                "string",
-                "integer"
-              ]
-            },
+            "iterate": true,
             "flowPath": {
               "type": "string"
             }
