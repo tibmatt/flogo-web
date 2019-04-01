@@ -12,7 +12,6 @@ This document describes how to set up your development environment to build, run
   - [Setup](#setup)
     - [Prerequisite Software](#prerequisite-software)
     - [Getting the Sources](#getting-the-sources)
-    - [Getting the Service Images](#getting-the-service-images)
   - [Running the application locally](#running-the-application-locally)
     - [Start the services](#start-the-services)
     - [Before running the application](#before-running-the-application)
@@ -36,92 +35,19 @@ This document describes how to set up your development environment to build, run
 - git
 - [Docker and docker-compose](https://www.docker.com) for Mac or Windows or Linux (https://www.docker.com) 17.12.0 or later
 - [NodeJS 10.14 or greater](https://nodejs.org/en/download/releases/)
-- [yarn v1.9.4 or grater](https://yarnpkg.com)
+- [yarn v1.9.4 or greater](https://yarnpkg.com)
 - [Latest Flogo CLI (flogo-cli)](https://github.com/project-flogo/cli)
-  - The following will be necessary and they should be installed as part of installing the flogo-cli tool:
+  - The following will be necessary and it should be installed as part of installing the flogo-cli tool:
     - GO Lang v1.11 or greater - Follow the instructions here https://golang.org/doc/install
     - Make sure you add $GOPATH/bin to your $PATH variable. Instructions related to the \$GOPATH variable are found in the above link in the ["Test your installation" section](https://golang.org/doc/install#testing)
 
 ### Getting the Sources
 
-Make sure you have git access to the [flogo-web repository](https://github.com/TIBCOSoftware/flogo-web.git) and clone it.
-
 ```sh
 git clone https://github.com/TIBCOSoftware/flogo-web.git
 ```
 
-### Getting the Service Images
-
-The development environment depends on flogo services images (flow-service and state-service), if you have access to
-TIBCO's reldocker or flogo's private dockerhub you can pull the images from them, otherwise you will need to build the images locally.
-
-Chose and follow **one** of these methods to get the images:
-
-1. Pull from dockerhub
-1. Pull from TIBCO reldocker
-1. Build the images locally
-
-**METHOD 1: Pull from dockerhub**
-
-In your terminal log into docker hub
-
-```
-docker login
-```
-
-After you authenticated in a terminal make sure you're in flogo-web's project root and run:
-
-```sh
-yarn run services:pull
-```
-
-**METHOD 2: Pull from TIBCO reldocker**
-
-In your terminal login to reldocker using you LDAP credentials
-
-```sh
-docker login reldocker.tibco.com
-```
-
-After you authenticated, pull the images:
-
-Pull and rename the state service image
-
-```sh
-docker pull reldocker.tibco.com/flogo/state-service:latest
-docker tag reldocker.tibco.com/flogo/state-service:latest flogo/state-service:latest
-```
-
-Pull and rename the flow service image
-
-```sh
-docker pull reldocker.tibco.com/flogo/flow-service:latest
-docker tag reldocker.tibco.com/flogo/flow-service:latest flogo/flow-service:latest
-```
-
-**METHOD 3: Build the images locally**
-
-For this method you will need access to the [flogo-cicd repository](https://github.com/TIBCOSoftware/flogo-cicd).
-Once you have access follow the instructions in flogo-cicd's readme using the private registry method
-and build _only_ the following images (in the specified order, do not use the "build-all.sh" script):
-
-1. flogo/go-builder
-1. flogo/state-service
-1. flogo/flow-service
-
-Run `docker images` to make sure they were correctly built.
-
 ## Running the application locally
-
-### Start the services
-
-flow-services and state-service must be running in order to the test run a flow from the UI.
-
-To start the services from the project root run:
-
-```sh
-yarn run services:start
-```
 
 ### Before running the application
 
@@ -129,7 +55,6 @@ Make sure your local dependencies are up to date by running the following comman
 
 ```sh
 yarn install
-yarn install:submodules
 ```
 
 ### Running the Application in Development Mode
@@ -171,7 +96,8 @@ In a second terminal flogo-web project root and run:
 yarn start client
 ```
 
-Client application will start processing, once the processing progress reaches 100% you should see `ℹ ｢wdm｣: Compiled successfully` in the terminal and the app will be ready to be accessed in your browser.
+Client application will start processing, once the processing progress reaches 100% you should see `ℹ ｢wdm｣: Compiled successfully`
+in the terminal and the app will be ready to be accessed in your browser.
 
 ## Running Tests Locally
 
@@ -226,7 +152,7 @@ docker build -f tools/docker/dev.Dockerfile -t flogo/flogo-web:dev-build .
 The building process will start, it might take several minutes depending on your machine resources. Once the build is finished
 then you should be able to see the docker image listed when running `docker images`.
 
-To start the container, run and navigate to `http://localhost:5033` once the container starts, note that you can change
+To start the container, run and navigate to `http://localhost:5033` once the container starts. Note that you can change
 the port `5033` in the command to a different port if needed:
 
 ```bash
@@ -241,15 +167,6 @@ the root of the project as:
 ```sh
 yarn run <command>
 ```
-
-For example: `yarn run services:status`
-
-### Managing the services:
-
-- `services:status`: Check services status (running, stopped, etc.)
-- `services:pull`: Try to pull (download) newer versions of the services (Only availabe for dockerhub)
-- `services:stop`: Stop the services
-- `services:clear`: Warning: destructive. Remove all the service instances and cleanup all services database.
 
 ### Managing engine/local data
 
@@ -267,7 +184,7 @@ The Flogo Web project follows a monorepo approach and it is composed of multiple
 - `/libs`: Independent and reusable modules.
 - `/apps`: Deployable apps which integrate and compose the modules and libs. Currently there are only two apps; backend (server) and client (frontend).
 
-> :books: You might want to look at [some pros of conse of monorepos](https://github.com/babel/babel/blob/master/doc/design/monorepo.md).
+> :books: You might want to look at [some pros and cons of monorepos](https://github.com/babel/babel/blob/master/doc/design/monorepo.md).
 
 For this the project leverages [@angular/cli](https://cli.angular.io/) and [Nx](https://nrwl.io/nx/overview). It is advised for contributors of this project to become familiar with these tools so they can take advantage of their features such as code generation and dependency inspection.
 

@@ -1,6 +1,4 @@
 {
   "name": "@flogo-web/assets",
-  "version": "1.0.0",
-  "peerDependencies": {
-  }
+  "version": "0.9.0"
 }
