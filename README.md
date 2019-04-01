@@ -12,4 +12,4 @@ See [DEVELOPER.md](DEVELOPER.md)
 Available in [/docs](./docs)
 
 ## License
-[TIBCO Samples Internal End User License](./TIBCO%20Samples%20Internal%20End%20User%20License.txt)
+The flogo-web repo is licensed under a BSD-style license. Refer to [LICENSE](./LICENSE) for license text.
