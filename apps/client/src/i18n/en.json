@@ -185,6 +185,7 @@
   "LIST-VIEW-ITEM:CREATED-BY": "Created by {{value}}",
   "MODAL:CONFIRM-DELETION": "Confirm deletion",
   "MODAL:DELETE": "DELETE",
+  "MODAL:CANCEL": "CANCEL",
   "MODAL:NEXT": "Next",
   "MODAL:OKAY": "Okay",
   "MODAL:INSTALL": "Install",
