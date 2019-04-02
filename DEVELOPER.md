@@ -49,6 +49,19 @@ git clone https://github.com/TIBCOSoftware/flogo-web.git
 
 ## Running the application locally
 
+TLDR:
+
+```bash
+yarn install
+
+# terminal 1
+yarn start server
+
+# terminal 2
+yarn start client
+
+```
+
 ### Before running the application
 
 Make sure your local dependencies are up to date by running the following commands from the project root:
@@ -117,7 +130,7 @@ From the project root:
 yarn test
 ```
 
-This will run the unit test for all the sub packages i.e. server, client and parser.
+This will run the unit test for all the sub packages.
 
 ### Running tests for a single subpackage
 
@@ -138,7 +151,7 @@ yarn test server
 Before starting the server copy and rename the [`.env.example`](/.env.example) to `.env`. Add or modify/uncomment
 the environment variables defined in created `.env` file.
 
-You can alternatively set regular environment variables.
+You can alternatively set regular environment variables the way your OS supports them.
 
 ## Build the docker image for development
 
