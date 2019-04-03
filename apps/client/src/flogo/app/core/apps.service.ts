@@ -151,6 +151,10 @@ export class AppDetailService {
     return this.appsApiService.buildAndDownload(appId, opts);
   }
 
+  public getResources() {
+    return this.resourcesState.resources;
+  }
+
   private setApp(app: App) {
     this.appSource.next(app);
     this.resourcesState.triggers = app.triggers;

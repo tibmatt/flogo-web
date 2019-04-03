@@ -248,9 +248,8 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
   }
 
   openExportFlow() {
-    const flows = this.application.resources;
     return this.modalService.openModal<ExportFlowsData>(FlogoExportFlowsComponent, {
-      flows,
+      flows: this.appDetailService.getResources(),
     });
   }
 
