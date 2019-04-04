@@ -1,6 +1,8 @@
 # Flogo Web UI
 
-<img src="https://img.shields.io/badge/license-BSD%20style-blue.svg"/> <a href="https://gitter.im/project-flogo/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link"><img src="https://badges.gitter.im/Join%20Chat.svg"/></a>
+[![DockerHub](https://images.microbadger.com/badges/version/flogo/flogo-docker.svg)](https://hub.docker.com/r/flogo/flogo-docker/)
+[![Github License](https://img.shields.io/badge/license-BSD%20style-blue.svg)](./LICENSE)
+[![Gitter | Join Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/project-flogo/Lobby)
 
 Web-based design tool for the [Project Flogo](https://github.com/TIBCOSoftware/flogo) open source framework.
 
@@ -23,30 +25,10 @@ If you have any questions, feel free to post an issue and tag it as a question, 
 - The [project-flogo/Lobby](https://gitter.im/project-flogo/Lobby) Gitter channel should be used for general discussions, start here for all things Flogo!
 - The [project-flogo/developers](https://gitter.im/project-flogo/developers) Gitter channel should be used for developer/contributor focused conversations.
 
-## Getting Started
+## Development
 
-### Building and running the development docker image
-
-Before starting make sure you have Docker installed and then from a terminal run:
-
-```bash
-# Get the Flogo Web UI source from GitHub
-git clone https://github.com/project-flogo/webui.git
-
-# Go to the directory
-cd webui
-
-# Build the docker image
-# Note that depending on your machine resources this might take several minutes
-docker build -f tools/docker/dev.Dockerfile -t flogo/flogo-web:dev-build .
-
-# Start the container
-docker run -it -p 5033:3303 flogo/flogo-web:dev-build
-
-```
-
-You can navigate to `http://localhost:5033` once the container starts. Note that you can change
-the port `5033` in the command to a different port if needed.
+The recommended method is to [run the app locally](#run-locally) which is going to be easier for debugging as well as it is
+going to watch for code changes and reload automatically, alternatively you can [build your own docker image](#building-and-running-the-development-docker-image).
 
 ### Run locally
 
@@ -122,9 +104,34 @@ chunk {home-home-module} home-home-module.j
 
 </details>
 
+### Building and running the development docker image
+
+Before starting make sure you have Docker installed and then from a terminal run:
+
+```bash
+# Get the Flogo Web UI source from GitHub
+git clone https://github.com/project-flogo/webui.git
+
+# Go to the directory
+cd webui
+
+# Build the docker image
+# Note that depending on your machine resources this might take several minutes
+docker build -f tools/docker/dev.Dockerfile -t flogo/flogo-web:dev-build .
+
+# Start the container
+docker run -it -p 5033:3303 flogo/flogo-web:dev-build
+
+```
+
+You can navigate to `http://localhost:5033` once the container starts. Note that you can change
+the port `5033` in the command to a different port if needed.
+
 ## More docs?
 
 [Available in /docs](./docs)
+
+<!-- ## Contributing -->
 
 ## License
 
