@@ -25,6 +25,10 @@ const isLegacyMappings = (activity: FlowResourceModel.LegacyActivity) => {
   return activity.input && activity.input.mappings && isArray(activity.input.mappings);
 };
 
+const isLegacySubFlow = (activity: FlowResourceModel.LegacyActivity) => {
+  return !!activity.mappings;
+};
+
 const normalizeMappingValue = (value: any, mappingType?: string) => {
   if (isUndefined(value)) {
     return value;
@@ -92,6 +96,8 @@ export class TaskConverter {
   prepareInputMappings() {
     if (isMapperActivity(this.activitySchema)) {
       return this.getInputMappingsForMapperContribs();
+    } else if (this.isSubflowTask()) {
+      return this.getInputMappingsForSubFlowContrib();
     } else {
       return this.getInputMappingsForNormalContribs();
     }
@@ -112,14 +118,7 @@ export class TaskConverter {
 
   private getInputMappingsForNormalContribs() {
     const inputMappings = this.convertAttributes();
-    return this.safeGetMappings().reduce((inputs, mapping) => {
-      const value = normalizeMappingValue(mapping.value, mapping.type);
-      if (isUndefined(value)) {
-        return inputs;
-      }
-      inputs[mapping.mapTo] = value;
-      return inputs;
-    }, inputMappings);
+    return this.getInputMappings(inputMappings);
   }
 
   private safeGetMappings() {
@@ -159,5 +158,24 @@ export class TaskConverter {
       }, {});
     }
     return inputMappings;
+  }
+
+  private getInputMappingsForSubFlowContrib() {
+    if (isLegacySubFlow(this.resourceTask.activity)) {
+      return this.getInputMappings();
+    } else {
+      return this.resourceTask.activity.input || {};
+    }
+  }
+
+  private getInputMappings(inputMappings = {}) {
+    return this.safeGetMappings().reduce((inputs, mapping) => {
+      const value = normalizeMappingValue(mapping.value, mapping.type);
+      if (isUndefined(value)) {
+        return inputs;
+      }
+      inputs[mapping.mapTo] = value;
+      return inputs;
+    }, inputMappings);
   }
 }
