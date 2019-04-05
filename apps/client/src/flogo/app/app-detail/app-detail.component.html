@@ -137,11 +137,10 @@
         class="flogo-app-header__description--edit"
       >
       </textarea>
-
       <label
         class="flogo-app-header__description is-editable qa-description-label"
         *ngIf="!descriptionUiState.inEditMode && !!descriptionUiState.value"
-        (click)="onClickLabelDescription($event)"
+        (click)="onClickLabelDescription()"
         >{{ descriptionUiState.value }}</label
       >
     </div>
@@ -172,6 +171,7 @@
               ><span>{{ 'DETAILS:EXPORT-APP' | translate }} </span></a
             >
           </li>
+
           <li class="dropdown-list__item" (click)="openExportFlow()">
             <a class="dropdown-list__item-link"
               ><span>{{ 'DETAILS:EXPORT-FLOW' | translate }}</span></a

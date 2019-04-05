@@ -135,6 +135,10 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
       .pipe(shareReplay(1));
     this.appDetailService.app$.subscribe(app => {
       this.application = app;
+      this.descriptionUiState = {
+        ...this.descriptionUiState,
+        value: this.application.description,
+      };
     });
     const takeUntilDestroyed = takeUntil(this.destroyed$);
 
@@ -283,7 +287,7 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
   }
 
   onDescriptionCancel() {
-    this.descriptionUiState = { inEditMode: false };
+    this.descriptionUiState = { inEditMode: false, value: this.application.description };
   }
 
   onClickLabelDescription() {
