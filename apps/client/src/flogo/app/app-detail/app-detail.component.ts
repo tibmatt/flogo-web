@@ -11,26 +11,24 @@ import {
   SimpleChanges,
   OnInit,
 } from '@angular/core';
-import { Observable, of as observableOf, combineLatest } from 'rxjs';
+import { Observable, of as observableOf } from 'rxjs';
 import {
   switchMap,
   map,
   take,
   tap,
   filter,
-  shareReplay,
   distinctUntilKeyChanged,
   takeUntil,
 } from 'rxjs/operators';
 
-import { App, Trigger, ContributionSchema, CONTRIB_REFS } from '@flogo-web/core';
+import { App, Trigger, CONTRIB_REFS } from '@flogo-web/core';
 import {
   ResourceSummary,
   ERROR_CODE,
   LocalStorageService,
   SanitizeService,
   ShimTriggerBuildService,
-  ContributionsService,
   SingleEmissionSubject,
 } from '@flogo-web/lib-client/core';
 import { LanguageService } from '@flogo-web/lib-client/language';
@@ -43,8 +41,7 @@ import { NotificationsService } from '@flogo-web/lib-client/notifications';
 import {
   AppDetailService,
   SETTING_DONT_WARN_MISSING_TRIGGERS,
-  FlowGroup,
-  AppResourcesStateService,
+  ShimBuildOptions,
 } from '../core';
 import {
   NewResourceComponent,
@@ -105,18 +102,15 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
   isBuildBoxShown = false;
   isBuilding: boolean;
 
-  shimmableTriggerSchema$: Observable<ContributionSchema[]>;
   shimTriggerOptions = [];
 
   private destroyed$ = SingleEmissionSubject.create();
 
   constructor(
-    public resourcesState: AppResourcesStateService,
     private translate: LanguageService,
     private appDetailService: AppDetailService,
     private confirmationModalService: ConfirmationModalService,
     private sanitizer: SanitizeService,
-    private contributionService: ContributionsService,
     private shimTriggersApiService: ShimTriggerBuildService,
     private notificationsService: NotificationsService,
     private modalService: ModalService,
@@ -130,9 +124,6 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
   }
 
   ngOnInit() {
-    this.shimmableTriggerSchema$ = this.contributionService
-      .getShimContributionDetails()
-      .pipe(shareReplay(1));
     this.appDetailService.app$.subscribe(app => {
       this.application = app;
       this.descriptionUiState = {
@@ -142,9 +133,12 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
     });
     const takeUntilDestroyed = takeUntil(this.destroyed$);
 
-    this.resourcesState.triggers$.pipe(takeUntilDestroyed).subscribe(() => {
-      this.loadShimTriggerBuildOptions();
-    });
+    this.appDetailService
+      .getAvailableShimBuildOptions$()
+      .pipe(takeUntilDestroyed)
+      .subscribe((options: ShimBuildOptions[]) => {
+        this.shimTriggerOptions = options;
+      });
 
     this.appDetailService.app$
       .pipe(
@@ -339,16 +333,11 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
     this.isBuildBoxShown = false;
   }
 
-  showShimTriggerList(ref) {
-    const isLambdaTrigger = ref === CONTRIB_REFS.LAMBDA;
-    this.resourcesState.groupsByTrigger$
+  openShimmableActionsFor(triggerRef: string) {
+    const isLambdaTrigger = triggerRef === CONTRIB_REFS.LAMBDA;
+    this.appDetailService
+      .getShimTriggersListFor$(triggerRef)
       .pipe(
-        take(1),
-        map((flowGroups: FlowGroup[]) =>
-          flowGroups.filter(
-            flowGroup => flowGroup.trigger && flowGroup.trigger.ref === ref
-          )
-        ),
         switchMap(shimTriggersList => {
           if (isLambdaTrigger && shimTriggersList.length === 1) {
             return observableOf({ triggerId: shimTriggersList[0].trigger.id });
@@ -398,14 +387,11 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
       return observableOf(true);
     }
 
-    return this.resourcesState.triggers$.pipe(
+    return this.appDetailService.hasTriggers().pipe(
       take(1),
-      switchMap(triggers => {
-        const appHasTriggers = triggers && triggers.length > 0;
-        return !appHasTriggers
-          ? this.showTriggerConfirmation(exportType)
-          : observableOf(true);
-      })
+      switchMap(hasTriggers =>
+        !hasTriggers ? this.showTriggerConfirmation(exportType) : observableOf(true)
+      )
     );
   }
 
@@ -449,55 +435,5 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
     );
     const isNewApp = secondsSinceCreation <= MAX_SECONDS_TO_ASK_APP_NAME;
     this.nameUiState = { inEditMode: isNewApp, value: this.application.name };
-  }
-
-  private getUniqueTriggerRefs(): Observable<Set<string>> {
-    return this.resourcesState.groupsByTrigger$.pipe(
-      map(flowGroups => {
-        return new Set(
-          flowGroups.reduce((triggerRefs, group) => {
-            return group.trigger ? [...triggerRefs, group.trigger.ref] : triggerRefs;
-          }, [])
-        );
-      })
-    );
-  }
-
-  private loadShimTriggerBuildOptions() {
-    this.shimTriggerOptions = [];
-    combineLatest(this.getUniqueTriggerRefs(), this.shimmableTriggerSchema$)
-      .pipe(
-        take(1),
-        map(([triggerRefs, shimmableTriggersDetails]) => {
-          return shimmableTriggersDetails
-            .filter(shimmableTriggerDetail => triggerRefs.has(shimmableTriggerDetail.ref))
-            .map(shimmableTriggerDetail =>
-              getShimmableTriggerBuildOption(shimmableTriggerDetail)
-            );
-        })
-      )
-      .subscribe(shimTriggerOptions => {
-        this.shimTriggerOptions = shimTriggerOptions;
-      });
-  }
-}
-
-function getShimmableTriggerBuildOption(shimmableTriggerDetail: ContributionSchema) {
-  switch (shimmableTriggerDetail.ref) {
-    case CONTRIB_REFS.LAMBDA:
-      return {
-        labelKey: 'TRIGGER-SHIM:SERVERLESS-APP',
-        ref: shimmableTriggerDetail.ref,
-      };
-    case CONTRIB_REFS.CLI:
-      return {
-        labelKey: 'TRIGGER-SHIM:CLI-APP',
-        ref: shimmableTriggerDetail.ref,
-      };
-    default:
-      return {
-        labelKey: shimmableTriggerDetail.name,
-        ref: shimmableTriggerDetail.ref,
-      };
   }
 }

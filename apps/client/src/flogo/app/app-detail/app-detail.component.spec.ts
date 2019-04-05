@@ -12,10 +12,7 @@ import { By } from '@angular/platform-browser';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 import { App } from '@flogo-web/core';
-import {
-  CoreModule as FlogoCoreModule,
-  ContributionsService,
-} from '@flogo-web/lib-client/core';
+import { CoreModule as FlogoCoreModule } from '@flogo-web/lib-client/core';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
 import { NotificationsServiceMock } from '@flogo-web/lib-client/notifications/testing';
 import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
@@ -23,7 +20,7 @@ import { ModalModule as FlogoModalModule } from '@flogo-web/lib-client/modal';
 import { NotificationsService } from '@flogo-web/lib-client/notifications';
 
 import { RESOURCE_PLUGINS_CONFIG } from '../../core';
-import { AppDetailService, AppResourcesStateService } from '../core';
+import { AppDetailService } from '../core';
 import { FlogoApplicationDetailComponent } from './app-detail.component';
 import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
 import {
@@ -41,6 +38,7 @@ interface IMockDetailService {
   app$: AppDetailService['app$'];
   load: AppDetailService['load'];
   updateProperty: AppDetailService['updateProperty'];
+  getAvailableShimBuildOptions$: AppDetailService['getAvailableShimBuildOptions$'];
 }
 
 class MockAppDetailService implements IMockDetailService {
@@ -48,12 +46,7 @@ class MockAppDetailService implements IMockDetailService {
   app$ = this.appSource.pipe(filter(Boolean));
   load = (appId: string) => {};
   updateProperty = (prop: 'name' | 'description', value: any) => EMPTY;
-}
-
-class MockRESTAPIContributionsService {
-  getShimContributionDetails() {
-    return of([]);
-  }
+  getAvailableShimBuildOptions$ = () => of([]);
 }
 
 describe('FlogoApplicationDetailComponent component', () => {
@@ -83,12 +76,7 @@ describe('FlogoApplicationDetailComponent component', () => {
         ResourceViewsSelectorComponent,
       ],
       providers: [
-        AppResourcesStateService,
         { provide: AppDetailService, useClass: MockAppDetailService },
-        {
-          provide: ContributionsService,
-          useClass: MockRESTAPIContributionsService,
-        },
         {
           provide: NotificationsService,
           useValue: new NotificationsServiceMock(),
