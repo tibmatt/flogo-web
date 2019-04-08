@@ -134,7 +134,7 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
     const takeUntilDestroyed = takeUntil(this.destroyed$);
 
     this.appDetailService
-      .getAvailableShimBuildOptions$()
+      .getAvailableShimBuildOptions()
       .pipe(takeUntilDestroyed)
       .subscribe((options: ShimBuildOptions[]) => {
         this.shimTriggerOptions = options;
@@ -336,7 +336,7 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
   openShimmableActionsFor(triggerRef: string) {
     const isLambdaTrigger = triggerRef === CONTRIB_REFS.LAMBDA;
     this.appDetailService
-      .getShimTriggersListFor$(triggerRef)
+      .getShimTriggersListFor(triggerRef)
       .pipe(
         switchMap(shimTriggersList => {
           if (isLambdaTrigger && shimTriggersList.length === 1) {

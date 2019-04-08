@@ -55,10 +55,9 @@ export class AppDetailService {
     private appResourceApiService: AppResourceService,
     private contributionService: ContributionsService
   ) {
-    const triggersAndResources$ = combineLatest(
-      this.triggersState$,
-      this.resourcesState$
-    ).pipe(shareReplay(1));
+    const triggersAndResources$ = combineLatest(this.triggers$, this.resources$).pipe(
+      shareReplay(1)
+    );
 
     this.groupsByTrigger$ = triggersAndResources$.pipe(
       map(([triggers, resources]) => groupByTrigger(triggers, resources))
@@ -68,17 +67,17 @@ export class AppDetailService {
       map(([triggers, resources]) => groupByResource(triggers, resources))
     );
 
-    this.isEmpty$ = this.resourcesState$.pipe(
+    this.isEmpty$ = this.resources$.pipe(
       map(resources => !resources || resources.length <= 0),
       shareReplay(1)
     );
   }
 
-  private get triggersState$() {
+  private get triggers$() {
     return this.resourcesState.triggers$;
   }
 
-  private get resourcesState$() {
+  private get resources$() {
     return this.resourcesState.resources$;
   }
 
@@ -184,7 +183,7 @@ export class AppDetailService {
   }
 
   public hasTriggers() {
-    return this.triggersState$.pipe(
+    return this.triggers$.pipe(
       take(1),
       map(triggers => {
         const appHasTriggers = triggers && triggers.length > 0;
@@ -193,14 +192,12 @@ export class AppDetailService {
     );
   }
 
-  public getAvailableShimBuildOptions$(): Observable<ShimBuildOptions[]> {
+  public getAvailableShimBuildOptions(): Observable<ShimBuildOptions[]> {
     const triggersUsed$: Observable<Set<string>> = this.groupsByTrigger$.pipe(
       map(flowGroups => {
-        return new Set(
-          flowGroups.reduce((refs, group) => {
-            return group.trigger ? [...refs, group.trigger.ref] : refs;
-          }, [])
-        );
+        return flowGroups.reduce((refsSet, group) => {
+          return group.trigger ? refsSet.add(group.trigger.ref) : refsSet;
+        }, new Set());
       })
     );
     const shimmableTriggers$: Observable<
@@ -215,7 +212,7 @@ export class AppDetailService {
     );
   }
 
-  public getShimTriggersListFor$(triggerRef: string) {
+  public getShimTriggersListFor(triggerRef: string) {
     return this.groupsByTrigger$.pipe(
       take(1),
       map((flowGroups: FlowGroup[]) =>

@@ -38,7 +38,7 @@ interface IMockDetailService {
   app$: AppDetailService['app$'];
   load: AppDetailService['load'];
   updateProperty: AppDetailService['updateProperty'];
-  getAvailableShimBuildOptions$: AppDetailService['getAvailableShimBuildOptions$'];
+  getAvailableShimBuildOptions: AppDetailService['getAvailableShimBuildOptions'];
 }
 
 class MockAppDetailService implements IMockDetailService {
@@ -46,7 +46,7 @@ class MockAppDetailService implements IMockDetailService {
   app$ = this.appSource.pipe(filter(Boolean));
   load = (appId: string) => {};
   updateProperty = (prop: 'name' | 'description', value: any) => EMPTY;
-  getAvailableShimBuildOptions$ = () => of([]);
+  getAvailableShimBuildOptions = () => of([]);
 }
 
 describe('FlogoApplicationDetailComponent component', () => {
