@@ -107,8 +107,8 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
   private destroyed$ = SingleEmissionSubject.create();
 
   constructor(
+    public appDetailService: AppDetailService,
     private translate: LanguageService,
-    private appDetailService: AppDetailService,
     private confirmationModalService: ConfirmationModalService,
     private sanitizer: SanitizeService,
     private shimTriggersApiService: ShimTriggerBuildService,
