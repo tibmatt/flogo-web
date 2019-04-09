@@ -1,14 +1,16 @@
 import { cold, getTestScheduler } from 'jasmine-marbles';
+import { of } from 'rxjs';
 import { AppDetailService } from './apps.service';
 import { AppResourcesStateService } from './app-resources-state.service';
 import { AppResourceService } from '@flogo-web/lib-client/core';
-import { Trigger, Resource } from '@flogo-web/core';
+import { Trigger } from '@flogo-web/core';
 
 describe('AppsService', () => {
   let resourceStateStub: Partial<AppResourcesStateService>;
 
   beforeEach(() => {
     resourceStateStub = {
+      resources$: of([]),
       resources: [
         { id: 'resourceA', name: 'resource a', type: 'flow', data: null },
         { id: 'resourceB', name: 'resource b', type: 'flow', data: null },
@@ -31,7 +33,8 @@ describe('AppsService', () => {
       null,
       null,
       null,
-      appResourceService
+      appResourceService,
+      null
     );
   }
 
