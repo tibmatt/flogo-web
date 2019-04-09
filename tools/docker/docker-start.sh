@@ -9,7 +9,7 @@ if [[ "$1" != "eula-accept" ]]; then
 |    read and accepted the End User License Agreement at      |
 |          http://flogo.io/flogo-docker_eula.pdf :            |
 |                                                             |
-| docker run -it -p 3303:3303 flogo/flogo-docker eula-accept  |
+| docker run -it -p 3303:3303 flogo/flogo-web eula-accept  |
 |                                                             |
 +-------------------------------------------------------------+
 EulaMessage
