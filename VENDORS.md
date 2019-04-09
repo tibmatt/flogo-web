@@ -1,5 +1,86 @@
 # Third party dependencies change log
+
 All notable changes to this project's dependencies will be documented in this file.
+
+## v0.9.0
+
+- **New**
+  - [@angular/platform-browser-dynamic@~7.2.106.0.7](https://github.com/angular/angular) [MIT]
+  - [@nrwl/builders@~7.7.2](https://github.com/nrwl/nx) [MIT]
+  - [@nrwl/nx@^7.7.2](https://github.com/nrwl/nx) [MIT]
+  - [@nrwl/schematics@^7.7.2](https://github.com/nrwl/nx) [MIT]
+  - [@types/jest@24.0.9](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
+  - [@types/koa-router@^7.0.32](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
+  - [@types/socket.io-client@~1.4.29](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
+  - [inversify@^5.0.1](https://github.com/inversify/InversifyJS) [MIT]
+  - [jasmine-marbles@0.4.0](https://www.npmjs.com/package/jasmine-marbles) [MIT]
+  - [jest@24.1.0](https://github.com/facebook/jest) [MIT]
+  - [jest-preset-angular@7.0.0](https://github.com/thymikee/jest-preset-angular) [MIT]
+  - [ngrx-store-freeze@0.2.4](https://github.com/brandonroberts/ngrx-store-freeze) [MIT]
+  - [nodemon@^1.18.4](https://github.com/remy/nodemon) [MIT]
+  - [prettier@~1.15.3](https://github.com/prettier/prettier) [MIT]
+  - [read-pkg@^4.0.1](https://github.com/sindresorhus/read-pkg) [MIT]
+  - [reflect-metadata@^0.1.12](https://github.com/rbuckton/reflect-metadata) [Apache-2.0]
+  - [ts-node-dev@^1.0.0-pre.31](https://github.com/whitecolor/ts-node-dev) [MIT]
+  - [tsconfig-paths@^3.7.0](https://github.com/dividab/tsconfig-paths) [MIT]
+  - [tslib@^1.9.0](https://github.com/Microsoft/tslib) [Apache-2.0]
+  - [write-pkg@^3.2.0](https://github.com/sindresorhus/write-pkg) [MIT]
+- **Upgraded**
+  - [@angular-devkit/build-angular@~0.13.0](https://github.com/angular/angular-cli) [MIT] - Was ~0.6.8
+  - [@angular/animations@~7.2.10](https://github.com/angular/angular) [MIT] - Was 6.0.7
+  - [@angular/cdk@~7.3.5](https://github.com/angular/material2) [MIT] - Was 6.3.2
+  - [@angular/cli@7.3.6](https://github.com/angular/angular-cli) [MIT] - Was ^6.0.8
+  - [@angular/compiler@~7.2.10](https://github.com/angular/angular) [MIT] - Was 6.0.7
+  - [@angular/compiler-cli@~7.2.10](https://github.com/angular/angular) [MIT] - Was 6.0.7
+  - [@angular/common@7.2.10](https://github.com/angular/angular) [MIT] - Was 6.0.7
+  - [@angular/core@~7.2.10](https://github.com/angular/angular) [MIT] - Was 6.0.7
+  - [@angular/forms@~7.2.10](https://github.com/angular/angular) [MIT] - Was 6.0.7
+  - [@angular/platform-browser@~7.2.10](https://github.com/angular/angular) [MIT] - Was 6.0.7
+  - [@angular/router@~7.2.10](https://github.com/angular/angular) [MIT] - Was 6.0.7
+  - [@ngrx/effects@7.3.0](https://github.com/ngrx/platform) [MIT] - Was ^6.0.1
+  - [@ngrx/store@7.3.0](https://github.com/ngrx/platform) [MIT] - Was ^6.0.1
+  - [@ngrx/store-devtools@7.3.0](https://github.com/ngrx/platform) [MIT] - Was ^6.0.1
+  - [@ngx-translate/core@11.0.1](https://github.com/ngx-translate/core) [MIT] - Was ^10.0.2
+  - [@types/jasmine@~2.8.8](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT] - Was ~2.8.3
+  - [@types/node@10.12.10](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT] - Was 8.9.3
+  - [chevrotain@^4.1.0](https://github.com/SAP/chevrotain) [Apache2.0] - Was ^3.0.0
+  - [codelyzer@~4.5.0](https://github.com/mgechev/codelyzer) [MIT] - Was ^4.0.1
+  - [concurrently@^4.1.0](https://github.com/kimmobrunfeldt/concurrently) [MIT] - Was ^3.5.1
+  - [cross-spawn@^6.0.5](https://github.com/moxystudio/node-cross-spawn) [MIT] - Was ^5.1.0
+  - [dotenv@^6.2.0](https://github.com/motdotla/dotenv) [BSD-2-Clause] - Was ^6.0.0
+  - [fs-extra@7.0.1](https://github.com/jprichardson/node-fs-extra) [MIT] - Was 4.0.2
+  - [jasmine-core@~2.99.1](https://github.com/jasmine/jasmine) [MIT] - Was ~2.8.0
+  - [karma@~3.1.1](https://github.com/karma-runner/karma) [MIT] - Was ~2.0.0
+  - [karma-coverage-istanbul-reporter@~2.0.1](https://github.com/mattlewis92/karma-coverage-istanbul-reporter) [MIT] - Was ^1.2.1
+  - [karma-jasmine@~1.1.2](https://github.com/karma-runner/karma-jasmine) [MIT] - Was ~1.1.0
+  - [koa@2.6.2](https://github.com/koajs/koa) [MIT] - Was 2.5.3
+  - [monaco-editor@^0.15.6](https://github.com/Microsoft/monaco-editor) [MIT] - Was ^0.13.1
+  - [ngx-perfect-scrollbar@^7.0.0](https://github.com/zefoy/ngx-perfect-scrollbar) [MIT] - Was ^6.2.0
+  - [perfect-scrollbar@^1.4.0](https://github.com/utatti/perfect-scrollbar) [MIT] - Was ^1.3.0
+  - [primeng@^7.0.0](https://github.com/primefaces/primeng) [MIT] - Was ^6.0.0
+  - [rxjs@^6.3.3](https://github.com/reactivex/rxjs) [Apache-2.0] - Was ^6.2.1
+  - [socket.io@2.2.0](https://github.com/socketio/socket.io) [MIT] - Was 2.0.4
+  - [socket.io-client@2.2.0](https://github.com/Automattic/socket.io-client) [MIT] - Was 2.0.4
+  - [ts-node@~7.0.1](https://github.com/TypeStrong/ts-node) [MIT] - Was ~4.1.0
+  - [tslint@~5.11.0](https://github.com/palantir/tslint) [Apache-2.0] - Was ~5.9.1
+  - [typescript@~3.2.4](https://github.com/Microsoft/TypeScript) [Apache-2.0] - Was ^3.0.3
+  - [winston@^3.2.1](https://github.com/winstonjs/winston) [MIT] - Was 2.4.0
+  - [zone.js@^0.8.29](https://github.com/angular/zone.js) [MIT] - Was ^0.8.26
+- **Removed**
+  - @babel/cli
+  - @babel/core
+  - @babel/node
+  - @babel/plugin-proposal-class-properties
+  - @babel/plugin-syntax-object-rest-spread
+  - @babel/preset-env
+  - @babel/preset-typescript
+  - chai
+  - chai-http
+  - co-request
+  - hosted-git-info
+  - mocha
+  - npm
+  - require-dir
 
 ## v0.5.8
 
@@ -32,45 +113,44 @@ All notable changes to this project's dependencies will be documented in this fi
   - postal
 
 ### Development Dependencies
-  
-  - ** New **
-    - [@babel/cli@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-cli) [MIT]
-    - [@babel/core@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-core) [MIT]
-    - [@babel/node@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-node) [MIT]
-    - [@babel/plugin-syntax-object-rest-spread@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-object-rest-spread) [MIT]
-    - [@babel/preset-env@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-preset-env) [MIT]
-    - [@babel/preset-typescript@^7.1.0](https://github.com/babel/babel/tree/master/packages/babel-preset-typescript) [MIT]
-    - [@babel/plugin-proposal-class-properties@^7.1.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-class-properties) [MIT]
-    - [@types/chai@^4.1.2](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
-    - [@types/koa@^2.0.46](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
-    - [@types/koa-router@^7.0.32](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
-    - [@types/mocha@^5.0.0](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
-    - [@types/node@8.9.3](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
-    - [cpy@^7.0.1](https://github.com/sindresorhus/cpy) [MIT]
-    - [del-cli@^1.1.0](https://github.com/sindresorhus/del-cli) [MIT]
-    - [esm@^3.0.84](https://github.com/standard-things/esm) [MIT]
-    - [npm-run-all@^4.1.3](https://github.com/mysticatea/npm-run-all) [MIT]
-    - [nodemon@^1.18.4](https://github.com/remy/nodemon) [MIT]
-  - ** Removed **
-    - @types/postal
-    - babel-cli
-    - babel-core
-    - babel-plugin-syntax-object-rest-spread
-    - babel-preset-env
-    - gulp
-    - gulp-babel
-    - gulp-changed
-    - gulp-concat
-    - gulp-filter
-    - gulp-help
-    - gulp-nodemon
-    - gulp-plumber
-    - gulp-rename
-    - gulp-sourcemaps
-    - gulp-uglify
-    - run-sequence
-    - vinyl-fs
 
+- ** New **
+  - [@babel/cli@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-cli) [MIT]
+  - [@babel/core@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-core) [MIT]
+  - [@babel/node@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-node) [MIT]
+  - [@babel/plugin-syntax-object-rest-spread@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-object-rest-spread) [MIT]
+  - [@babel/preset-env@^7.0.0](https://github.com/babel/babel/tree/master/packages/babel-preset-env) [MIT]
+  - [@babel/preset-typescript@^7.1.0](https://github.com/babel/babel/tree/master/packages/babel-preset-typescript) [MIT]
+  - [@babel/plugin-proposal-class-properties@^7.1.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-class-properties) [MIT]
+  - [@types/chai@^4.1.2](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
+  - [@types/koa@^2.0.46](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
+  - [@types/koa-router@^7.0.32](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
+  - [@types/mocha@^5.0.0](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
+  - [@types/node@8.9.3](https://github.com/DefinitelyTyped/DefinitelyTyped) [MIT]
+  - [cpy@^7.0.1](https://github.com/sindresorhus/cpy) [MIT]
+  - [del-cli@^1.1.0](https://github.com/sindresorhus/del-cli) [MIT]
+  - [esm@^3.0.84](https://github.com/standard-things/esm) [MIT]
+  - [npm-run-all@^4.1.3](https://github.com/mysticatea/npm-run-all) [MIT]
+  - [nodemon@^1.18.4](https://github.com/remy/nodemon) [MIT]
+- ** Removed **
+  - @types/postal
+  - babel-cli
+  - babel-core
+  - babel-plugin-syntax-object-rest-spread
+  - babel-preset-env
+  - gulp
+  - gulp-babel
+  - gulp-changed
+  - gulp-concat
+  - gulp-filter
+  - gulp-help
+  - gulp-nodemon
+  - gulp-plumber
+  - gulp-rename
+  - gulp-sourcemaps
+  - gulp-uglify
+  - run-sequence
+  - vinyl-fs
 
 ## v0.5.6
 
@@ -126,7 +206,6 @@ All notable changes to this project's dependencies will be documented in this fi
 
 [No changes]
 
-
 ## v0.5.3
 
 ### Production Dependencies
@@ -145,15 +224,16 @@ All notable changes to this project's dependencies will be documented in this fi
   - [jquery@2.2.4](https://github.com/jquery/jquery) (MIT) - Was 2.2.2
   - [lodash@4.17.5](https://github.com/lodash/lodash) (MIT) - Was 4.6.1
   - [ng2-bs3-modal@0.13.0](https://github.com/dougludlow/ng2-bs3-modal) (ISC) - Was 0.10.4
-  - [ngx-perfect-scrollbar@5.3.5](https://github.com/zefoy/ngx-perfect-scrollbar) (MIT) - Was 5.3.5 
+  - [ngx-perfect-scrollbar@5.3.5](https://github.com/zefoy/ngx-perfect-scrollbar) (MIT) - Was 5.3.5
   - [primeng@5.2.3](https://github.com/primefaces/primeng) (MIT) - Was 2.0.6
   - [rxjs@5.5.7](https://github.com/ReactiveX/RxJS) (Apache-2.0) - Was 5.2.0
   - [zone.js@0.8.20](https://github.com/angular/zone.js) (MIT) - Was 0.7.4
 - **Removed:**
+
   - ng2-translate
   - reflect-metadata
   - system.js
-  
+
 ### Development Dependencies
 
 - **Added:**
@@ -182,6 +262,7 @@ All notable changes to this project's dependencies will be documented in this fi
 ## v0.5.2
 
 ### Production Dependencies
+
 - **Upgraded:**
   - [ajv@6.1.1](https://github.com/epoberezkin/ajv) ([MIT](https://github.com/epoberezkin/ajv/raw/master/LICENSE)) - Was 4.11.8
 
@@ -196,14 +277,13 @@ All notable changes to this project's dependencies will be documented in this fi
   - [koa@1.4.1](https://github.com/koajs/koa) ([MIT](https://github.com/koajs/koa/raw/master/LICENSE)) - Was 1.2.0
   - [fs-extra@4.0.2](https://github.com/jprichardson/node-fs-extra) ([MIT](https://github.com/jprichardson/node-fs-extra/raw/master/LICENSE)) - Was 0.30.0
   - [npm@5.5.1](https://github.com/npm/npm) ([Artistic2.0](https://github.com/npm/npm/raw/master/LICENSE)) - Was 3.8.5
-  - [performance-now@2.1.0](https://github.com/braveg1rl/performance-now) ([MIT](https://github.com/braveg1rl/performance-now/raw/master/license.txt)) -  Was 0.2.0
+  - [performance-now@2.1.0](https://github.com/braveg1rl/performance-now) ([MIT](https://github.com/braveg1rl/performance-now/raw/master/license.txt)) - Was 0.2.0
   - [semver@5.4.1](https://github.com/npm/node-semver) ([ISC](https://github.com/npm/node-semver/raw/master/LICENSE)) - Was 5.2.0
   - [socket.io@2.0.4](https://github.com/socketio/socket.io) ([MIT](https://github.com/socketio/socket.io/raw/master/LICENSE)) - Was 1.5.1
   - [socket.io-client@2.0.4](https://github.com/socketio/socket.io) ([MIT](https://github.com/Automattic/socket.io-client/raw/master/LICENSE)) - Was 1.5.1 (client)
   - [winston@2.4.0](https://github.com/winstonjs/winston) ([MIT](https://github.com/winstonjs/winston/raw/master/LICENSE)) - Was 2.3.0
 - **Removed:**
   - none
-
 
 ### Development Dependencies
 
@@ -235,13 +315,13 @@ All notable changes to this project's dependencies will be documented in this fi
 
 ### Production dependencies
 
-- *Added:*
-  - [monaco-editor@0.10.0](https://github.com/Microsoft/monaco-editor) (MIT) 
+- _Added:_
+  - [monaco-editor@0.10.0](https://github.com/Microsoft/monaco-editor) (MIT)
   - [ngx-perfect-scrollbar@2.5.2](https://github.com/zefoy/ngx-perfect-scrollbar) (MIT)
   - [primeng@2.0.6](https://github.com/primefaces/primeng) (MIT)
-- *Upgraded:*
+- _Upgraded:_
   - none
-- *Removed:*
+- _Removed:_
   - none
 
 ### Development dependencies
@@ -256,7 +336,9 @@ All notable changes to this project's dependencies will be documented in this fi
 ## v0.4.0
 
 ### Root Development Dependencies
+
 - Removed:
+
   - browser-sync
   - gulp-inject
   - gulp-inline-ng2-template
@@ -269,11 +351,11 @@ All notable changes to this project's dependencies will be documented in this fi
   - swagger-jsdoc
   - tslint (still referenced in client dependencies)
   - typescript (still referenced in client dependencies)
-  
-  
+
 ### Client Dependencies
 
 #### Production
+
 [No changes]
 
 #### Development
@@ -320,6 +402,7 @@ All notable changes to this project's dependencies will be documented in this fi
 ## v0.3.3
 
 ### Root Development Dependencies
+
 - Added:
   - [gulp-plumber@1.1.0](https://github.com/floatdrop/gulp-plumber/tree/v1.1.0) (MIT)
 
