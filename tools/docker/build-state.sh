@@ -12,15 +12,12 @@ cd ${GOPATH}/src/github.com/TIBCOSoftware/
 	#Build flogo state
 	pushd flogo-services/flow-store
 		go install ./...
-				ls -ls ${GOPATH}/bin/
 
 	popd
 	#Build flogo flow
 	pushd flogo-services/flow-state
 		go install ./...
-		ls -ls
 	popd
-
 
 cp ${GOPATH}/bin/* ${BUILD_DIR}/
 
