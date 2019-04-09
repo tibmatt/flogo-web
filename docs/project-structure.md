@@ -26,10 +26,49 @@ or depend on platform specific APIs (like browser DOM APIs or Node APIs).
 This is a summary of the current packages:
 
 - `/libs`
-  - `assets`: universal lib, contains application assets like images and fonts (`@flogo-web/assets`)
-  - `core`: universal lib, core logic and interfaces to be reused across the whole platform (`@flogo-web/core`)
-  - `lib-client`: contains client specific packages, usually angular modules (`@flogo-web/lib-client/<subcomponent>`)
-  - `lib-server`: contains server specific packages (`@flogo-web/lib-server/<subcomponent>`)
+  - `assets`: universal lib, contains application assets like images and fonts
+    - usage:
+    ```typescript
+    // typescript files
+    import { Foo } from '@flogo-web/assets';
+    ```
+    ```less
+    // .less files
+    @import '~@flogo-web/assets/styles';
+    ```
+  - `core`: universal lib, core logic and interfaces to be reused across the whole platform
+    - use:
+    ```typescript
+    // in typescript files
+    import { Foo } from '@flogo-web/core';
+    ```
+  - `lib-client`: contains client specific packages, mostly angular modules
+    - use:
+    ```typescript
+    // in typescript files
+    // import { Something } from '@flogo-web/lib-client/<subpackage>';
+    // For example:
+    import { DiagramComponent } from '@flogo-web/lib-client/diagram';
+    ```
+  - `lib-server`: contains server specific packages
+    - use:
+    ```typescript
+    // in typescript files
+    // import { Something } from '@flogo-web/lib-server/<subpackage>';
+    // For example:
+    import { Resource } from '@flogo-web/lib-server/core';
+    ```
     <!-- TODO: link to mapping docs when available: https://github.com/project-flogo/core/blob/master/docs/mapping.md -->
-  - `parser`: universal lib, can parse Flogo expressions used by the mapper module `@flogo-web/parser`
+  - `parser`: universal lib, can parse Flogo expressions used by the mapper module
+    - use:
+    ```typescript
+    // in typescript files
+    import { Resource } from '@flogo-web/parser';
+    ```
   - `plugins`: packages to extend the Flogo Web UI functionality and support different types of Flogo Actions
+    - use:
+    ```typescript
+    // in typescript files
+    // import { Example } from '@flogo-web/plugin-<type>-<server|client>';
+    import { Flow } from '@flogo-web/plugin-flow-server';
+    ```
