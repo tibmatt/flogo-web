@@ -98,6 +98,7 @@ export class AppFormatter {
         return pick(
           {
             ...trigger,
+            settings: !isEmpty(trigger.settings) ? trigger.settings : undefined,
             handlers: trigger.handlers.map(handlerFormatter(trigger)),
             ref: refAgent.getAliasRef(ContributionType.Trigger, trigger.ref),
           },
