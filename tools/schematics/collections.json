@@ -1,0 +1,13 @@
+{
+  "name": "flogo-web-schematics",
+  "version": "0.0.1",
+  "extends": "@nrwl/schematics",
+  "schematics": {
+    "flogo-plugin": {
+      "factory": "./flogo-plugin",
+      "schema": "./flogo-plugin/schema.json",
+      "aliases": ["flogo-plugin"],
+      "description": "Create a Flogo Plugin"
+    }
+  }
+}
