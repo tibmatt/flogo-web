@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-readonly RELEASE_VERSION="v0.9.0-beta.3"
+readonly RELEASE_VERSION="v0.9.0-rc.1"
 
 readonly CLI_VERSION="master"
 readonly CORE_VERSION=${RELEASE_VERSION:master}

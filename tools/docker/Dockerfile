@@ -1,14 +1,31 @@
-FROM node:10.14 as base
+FROM node:10.14-alpine as base
 ARG GOLANG_VERSION=1.12.1
-ARG GOLANG_SRC_URL=https://dl.google.com/go/go${GOLANG_VERSION}.linux-amd64.tar.gz
-ARG GOLANG_SRC_SHA256=2a3fdabf665496a0db5f41ec6af7a9b15a49fbe71a85a50ca38b1f13a103aeec
+ARG GOLANG_SRC_URL=https://dl.google.com/go/go${GOLANG_VERSION}.src.tar.gz
+ARG GOLANG_SRC_SHA256=0be127684df4b842a64e58093154f9d15422f1405f1fcff4b2c36ffc6a15818a
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
-RUN curl -fsSL "$GOLANG_SRC_URL" -o golang.tar.gz && \
-  echo "$GOLANG_SRC_SHA256 golang.tar.gz" | sha256sum -c - && \
-  tar -C /usr/local -xzf golang.tar.gz && \
-  rm golang.tar.gz && \
-  mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH" && \
+
+RUN set -ex \
+  && apk add --no-cache --virtual .build-deps \
+    bash \
+    gcc \
+    musl-dev \
+    openssl \
+    go \
+  \
+  && export GOROOT_BOOTSTRAP="$(go env GOROOT)" \
+  \
+  && wget -q "$GOLANG_SRC_URL" -O golang.tar.gz \
+  && echo "$GOLANG_SRC_SHA256  golang.tar.gz" | sha256sum -c - \
+  && tar -C /usr/local -xzf golang.tar.gz \
+  && rm golang.tar.gz \
+  && cd /usr/local/go/src \
+  && ./make.bash \
+  \
+  && apk del .build-deps
+
+RUN apk --no-cache add curl git bash
+RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH" && \
   npm install -g yarn
 
 
