@@ -1,11 +1,11 @@
 {
   "name": "flogo-web",
   "version": "0.9.0",
-  "description": "Wonderful web application for Flogo",
+  "description": "Web-based design tool for the Project Flogo open source framework",
   "license": "BSD-3-Clause",
   "private": true,
   "repository": {
-    "url": "https://github.com/TIBCOSoftware/flogo-web.git"
+    "url": "https://github.com/project-flogo/webui.git"
   },
   "scripts": {
     "ng": "ng",
@@ -88,7 +88,7 @@
     "@angular/animations": "~7.2.10",
     "@angular/cdk": "~7.3.5",
     "@angular/cli": "7.3.6",
-    "@angular/common": "",
+    "@angular/common": "~7.2.10",
     "@angular/compiler": "~7.2.10",
     "@angular/compiler-cli": "~7.2.10",
     "@angular/core": "~7.2.10",

@@ -56,8 +56,15 @@ function preFormatHandler(
     action: {
       ref: refAgent.getAliasRef(ContributionType.Action, ref),
       settings: null,
-      ...actionMappings,
+      ...effectiveActionMappings(actionMappings),
     },
+  };
+}
+
+function effectiveActionMappings({ input, output }) {
+  return {
+    input: !isEmpty(input) ? input : undefined,
+    output: !isEmpty(output) ? output : undefined,
   };
 }
 
