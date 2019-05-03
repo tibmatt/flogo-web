@@ -21,10 +21,6 @@ export function normalizeContribSchema(schema) {
     schema.outputs = schema.output;
     delete schema.output;
   }
-  if (schema.setting) {
-    schema.settings = schema.setting;
-    delete schema.setting;
-  }
   const propertiesWithValueTypes = [
     'inputs',
     'outputs',
