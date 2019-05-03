@@ -42,7 +42,7 @@ export function makeHandlerFormatter({
   };
 }
 
-function preFormatHandler(
+export function preFormatHandler(
   handler: Handler,
   ref: string,
   refAgent: ExportRefAgent
@@ -56,7 +56,7 @@ function preFormatHandler(
     action: {
       ref: refAgent.getAliasRef(ContributionType.Action, ref),
       settings: null,
-      ...effectiveActionMappings(actionMappings),
+      ...(actionMappings ? effectiveActionMappings(actionMappings) : {}),
     },
   };
 }

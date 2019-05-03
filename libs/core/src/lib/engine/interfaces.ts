@@ -52,11 +52,11 @@ export namespace FlogoAppModel {
     settings: Settings;
     action: {
       ref: string;
-      settings: Settings;
-      input: {
+      settings?: Settings;
+      input?: {
         [inputName: string]: any;
       };
-      output: {
+      output?: {
         [outputName: string]: any;
       };
     };
