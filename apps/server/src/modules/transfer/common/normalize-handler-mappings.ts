@@ -45,7 +45,7 @@ export function normalizeHandlerMappings(
     input = input && input.reduce(normalizeAndAccumulateMapping, {});
     output = output && output.reduce(normalizeAndAccumulateMapping, {});
     handler = { ...rawHandler, actionMappings: { input, output } };
-    delete handler.action.mappings;
+    delete (handler as FlogoAppModel.LegacyHandler).action.mappings;
   }
   return handler;
 }
