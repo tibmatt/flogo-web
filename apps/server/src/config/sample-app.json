@@ -81,10 +81,8 @@
             "description": "Simple Global Counter Activity",
             "activity": {
               "ref": "github.com/project-flogo/contrib/activity/counter",
-              "input": {
-                "counterName": "number",
-                "increment": "true",
-                "reset": "false"
+              "settings": {
+                "counterName": "myCounter"
               }
             }
           },
