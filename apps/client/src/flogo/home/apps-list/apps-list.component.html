@@ -13,12 +13,6 @@
   <button class="flogo-button--default" (click)="addNewApp()">
     {{ 'APP-LIST:NEW' | translate }}
   </button>
-  <flogo-home-app-import
-    *ngIf="showValidationErrors"
-    [importValidationErrors]="importValidationErrors"
-    (modalClose)="resetValidationErrors()"
-  >
-  </flogo-home-app-import>
 </div>
 <div class="content">
   <article
