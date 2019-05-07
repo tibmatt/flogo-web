@@ -47,9 +47,6 @@ export class ImportErrorFormatterService {
       case 'improper-import':
         messageHeader = this._translate.instant('IMPORT-ERROR:IMPROPER_IMPORT');
         break;
-      case 'contrib-not-installed':
-        messageHeader = this._translate.instant('IMPORT-ERROR:CONTRIB_NOT_INSTALLED');
-        break;
       default:
         messageHeader = this._translate.instant('APP-LIST:BROKEN_RULE_UNKNOWN');
         break;
@@ -124,11 +121,6 @@ export class ImportErrorFormatterService {
         break;
       case 'improper-import':
         errorMessage = this._translate.instant('IMPORT-ERROR:IMPROPER_IMPORT_CONTENT', {
-          ref: detail.params.ref,
-        });
-        break;
-      case 'contrib-not-installed':
-        errorMessage = this._translate.instant('IMPORT-ERROR:CONTRIB_NOT_INSTALLED_CONTENT', {
           ref: detail.params.ref,
         });
         break;

@@ -44,7 +44,7 @@ export function importApp(
 ): App {
   const now = new Date().toISOString();
   if (rawApp.imports) {
-    validateImports(rawApp.imports, contributions);
+    validateImports(rawApp.imports);
   }
   const importsRefAgent = createFromImports(rawApp.imports, contributions);
   const newApp = cleanAndValidateApp(
@@ -94,11 +94,10 @@ export function importApp(
   return newApp;
 }
 
-function validateImports(imports, contributions) {
+function validateImports(imports) {
   const improperImports = imports.filter(
     eachImport => !IMPORT_SYNTAX.exec(eachImport.trim())
   );
-
   const importsErrors = improperImports.map(importsError => ({
     keyword: 'improper-import',
     dataPath: '.imports',
@@ -107,28 +106,8 @@ function validateImports(imports, contributions) {
       ref: importsError,
     },
   }));
-
-  const contribsNotInstalled = imports.filter(
-    eachImport => {
-      const validateImport = IMPORT_SYNTAX.exec(eachImport.trim());
-      if(validateImport) {
-        return !contributions.has(validateImport[2]);
-      }
-    });
-
-  const contribsNotInstalledErrors = contribsNotInstalled.map(
-    contribRef => ({
-      keyword: "contrib-not-installed",
-      message: `contribution "${contribRef}" is not installed`,
-      params: {
-        ref: contribRef,
-      },
-    }));
-
-  const allErrors = [...importsErrors, ...contribsNotInstalledErrors];
-
-  if (allErrors.length) {
-    throw new ValidationError('Validation error in imports', allErrors);
+  if (importsErrors.length) {
+    throw new ValidationError('Validation error in imports', importsErrors);
   }
 }
 
