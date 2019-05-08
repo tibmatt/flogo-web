@@ -94,6 +94,8 @@ export function importApp(
   return newApp;
 }
 
+const IMPORT_WHITELIST = ['github.com/project-flogo/legacybridge'];
+
 function validateImports(imports, contributions) {
   const improperImports = imports.filter(
     eachImport => !IMPORT_SYNTAX.exec(eachImport.trim())
@@ -108,22 +110,21 @@ function validateImports(imports, contributions) {
     },
   }));
 
-  const contribsNotInstalled = imports.filter(
-    eachImport => {
-      const validateImport = IMPORT_SYNTAX.exec(eachImport.trim());
-      if(validateImport) {
-        return !contributions.has(validateImport[2]);
-      }
-    });
+  const contribsNotInstalled = imports.filter(eachImport => {
+    const validateImport = IMPORT_SYNTAX.exec(eachImport.trim());
+    const ref = validateImport[2];
+    if (validateImport) {
+      return IMPORT_WHITELIST.includes(ref) || !contributions.has(ref);
+    }
+  });
 
-  const contribsNotInstalledErrors = contribsNotInstalled.map(
-    contribRef => ({
-      keyword: "contrib-not-installed",
-      message: `contribution "${contribRef}" is not installed`,
-      params: {
-        ref: contribRef,
-      },
-    }));
+  const contribsNotInstalledErrors = contribsNotInstalled.map(contribRef => ({
+    keyword: 'contrib-not-installed',
+    message: `contribution "${contribRef}" is not installed`,
+    params: {
+      ref: contribRef,
+    },
+  }));
 
   const allErrors = [...importsErrors, ...contribsNotInstalledErrors];
 
