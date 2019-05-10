@@ -139,9 +139,12 @@ export class ImportErrorFormatterService {
         );
         break;
       case 'contrib-not-installed':
-        errorMessage = this._translate.instant('IMPORT-ERROR:CONTRIB_NOT_INSTALLED_CONTENT', {
-          ref: detail.params.ref,
-        });
+        errorMessage = this._translate.instant(
+          'IMPORT-ERROR:CONTRIB_NOT_INSTALLED_CONTENT',
+          {
+            ref: detail.params.ref,
+          }
+        );
         break;
       default:
         errorMessage =

@@ -108,22 +108,20 @@ function validateImports(imports, contributions) {
     },
   }));
 
-  const contribsNotInstalled = imports.filter(
-    eachImport => {
-      const validateImport = IMPORT_SYNTAX.exec(eachImport.trim());
-      if(validateImport) {
-        return !contributions.has(validateImport[2]);
-      }
-    });
+  const contribsNotInstalled = imports.filter(eachImport => {
+    const validateImport = IMPORT_SYNTAX.exec(eachImport.trim());
+    if (validateImport) {
+      return !contributions.has(validateImport[2]);
+    }
+  });
 
-  const contribsNotInstalledErrors = contribsNotInstalled.map(
-    contribRef => ({
-      keyword: "contrib-not-installed",
-      message: `contribution "${contribRef}" is not installed`,
-      params: {
-        ref: contribRef,
-      },
-    }));
+  const contribsNotInstalledErrors = contribsNotInstalled.map(contribRef => ({
+    keyword: 'contrib-not-installed',
+    message: `contribution "${contribRef}" is not installed`,
+    params: {
+      ref: contribRef,
+    },
+  }));
 
   const allErrors = [...importsErrors, ...contribsNotInstalledErrors];
 
