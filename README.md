@@ -1,6 +1,7 @@
 # Flogo Web UI
 
 [![DockerHub](https://images.microbadger.com/badges/version/flogo/flogo-docker.svg)](https://hub.docker.com/r/flogo/flogo-docker/)
+[![Build Status](https://travis-ci.com/project-flogo/flogo-web.svg?branch=master)](https://travis-ci.com/project-flogo/flogo-web)
 [![Github License](https://img.shields.io/badge/license-BSD%20style-blue.svg)](./LICENSE)
 [![Gitter | Join Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/project-flogo/Lobby)
 
