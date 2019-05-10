@@ -32,7 +32,7 @@ export const loader = {
     const activitiesToRead = groupedByType['flogo:activity'] || [];
     const functionsToRead = groupedByType['flogo:function'] || [];
 
-    const refToPath = el => ({ path: el.path, ref: el.ref });
+    const refToPath = ({ path, ref, isLegacy }) => ({ path, ref, isLegacy });
     return Promise.all([
       _readTasksNew(triggersToRead.map(refToPath)).then(triggers =>
         triggers.map(trigger => {

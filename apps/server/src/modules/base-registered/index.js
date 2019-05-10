@@ -44,6 +44,7 @@ export class BaseRegistered {
       keywords: opts.keywords || [],
       author: opts.author || 'Anonymous',
       schema: opts.schema,
+      isLegacy: !!opts.isLegacy,
     };
   }
 
@@ -87,6 +88,7 @@ export class BaseRegistered {
         keywords: item.keywords || [],
         author: info.author,
         schema: info,
+        isLegacy: item.isLegacy,
       });
     });
 

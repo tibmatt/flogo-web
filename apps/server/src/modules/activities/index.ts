@@ -37,7 +37,11 @@ function prepareForOutput(activity) {
   // this is a legacy
   return Object.assign(
     { id: activity.id || activity._id },
-    { ref: activity.ref, homepage: get(activity, 'schema.homepage', '') },
+    {
+      ref: activity.ref,
+      homepage: get(activity, 'schema.homepage', ''),
+      isLegacy: activity.isLegacy,
+    },
     activity.schema
   );
 }

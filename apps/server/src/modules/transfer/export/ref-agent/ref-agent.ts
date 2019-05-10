@@ -3,11 +3,6 @@ import { ExportRefAgent } from '@flogo-web/lib-server/core';
 import { ParsedImport } from '../../common/parsed-import';
 import { FunctionRefFinder } from './function-ref-finder';
 
-const formatImport = ([ref, { alias, isAliased }]) =>
-  isAliased ? `${alias} ${ref}` : ref;
-const formatEntries = (map: Map<string, any>) =>
-  Array.from(map.entries()).map(formatImport);
-
 interface ImportInfo {
   isAliased: boolean;
   alias: string;
@@ -48,13 +43,14 @@ export class RefAgent implements ExportRefAgent {
     }
   }
 
-  formatImports(): string[] {
-    return Array.from(this.contribCategories.values())
-      .reduce(
-        (all, category: ContribCategory) => all.concat(category.formatImports()),
-        []
-      )
-      .sort();
+  dumpImports(): Array<ParsedImport> {
+    return Array.from(this.contribCategories.values()).reduce(
+      (all, category: ContribCategory) => {
+        all.push(...category.dumpImports());
+        return all;
+      },
+      []
+    );
   }
 
   private ensureContribCategory(contribType: ContributionType) {
@@ -96,8 +92,12 @@ class ContribCategory {
     this.imports.set(ref, importInfo);
   }
 
-  formatImports(): string[] {
-    return formatEntries(this.imports);
+  dumpImports(): Array<ParsedImport> {
+    return Array.from(this.imports.entries()).map(([ref, { alias, isAliased }]) => ({
+      ref,
+      isAliased,
+      type: alias,
+    }));
   }
 
   private createImportInfo(ref: string): ImportInfo {

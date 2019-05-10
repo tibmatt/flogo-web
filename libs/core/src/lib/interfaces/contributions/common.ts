@@ -8,6 +8,7 @@ export interface BaseContributionSchema {
   title?: string;
   description?: string;
   homepage?: string;
+  isLegacy?: boolean;
 }
 
 export interface SchemaOutput {

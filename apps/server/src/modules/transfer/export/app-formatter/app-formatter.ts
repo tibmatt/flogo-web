@@ -18,6 +18,8 @@ import { makeHandlerFormatter } from './handler-format';
 import { ExportedResourceInfo } from './exported-resource-info';
 import { createRefAgent, RefAgent } from '../ref-agent';
 import { APP_MODEL_VERSION } from '../../../../common/constants';
+import { ParsedImport } from '../../common/parsed-import';
+import { formatImports } from '../utils/format-imports';
 
 const TRIGGER_KEYS: Array<keyof FlogoAppModel.Trigger> = [
   'id',
@@ -57,7 +59,7 @@ export class AppFormatter {
       this.makeHandlerFormatter(resourceIdReconciler, resourceInfoLookup, refAgent)
     );
 
-    const allImports = refAgent.formatImports();
+    const allImports = this.formatImports(refAgent.dumpImports());
 
     return {
       name: app.name,
@@ -105,6 +107,22 @@ export class AppFormatter {
           TRIGGER_KEYS
         ) as FlogoAppModel.Trigger;
       });
+  }
+
+  formatImports(parsedImports: Array<ParsedImport>): string[] {
+    const hasLegacyImports = !!parsedImports.find(parsedImport => {
+      const schema = this.contributionSchemas.get(parsedImport.ref);
+      return schema && schema.isLegacy;
+    });
+
+    if (hasLegacyImports) {
+      parsedImports = [
+        ...parsedImports,
+        { ref: 'github.com/project-flogo/legacybridge', isAliased: false, type: null },
+      ];
+    }
+
+    return formatImports(parsedImports);
   }
 
   private makeHandlerFormatter(

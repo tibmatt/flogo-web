@@ -1,6 +1,6 @@
+import { ContributionType } from '@flogo-web/core';
 import { RefAgent } from './ref-agent';
 import { FunctionRefFinder } from './function-ref-finder';
-import { ContributionType } from '@flogo-web/core';
 import { ParsedImport } from '../../common/parsed-import';
 
 describe('ref agent', () => {
@@ -67,37 +67,6 @@ describe('ref agent', () => {
     ).toEqual('#rest_1_1');
   });
 
-  test('it formats into the flogo.json imports syntax', () => {
-    refAgent.getAliasRef(ContributionType.Action, 'github.com/project-flogo/flow');
-    refAgent.getAliasRef(
-      ContributionType.Activity,
-      'github.com/project-flogo/contrib/activity/rest'
-    );
-    refAgent.getAliasRef(
-      ContributionType.Activity,
-      'github.com/different-repo/activity/rest'
-    );
-    refAgent.getAliasRef(
-      ContributionType.Trigger,
-      'github.com/project-flogo/contrib/trigger/rest'
-    );
-    refAgent.getAliasRef(
-      ContributionType.Activity,
-      'github.com/project-flogo/contrib/activity/log'
-    );
-    refAgent.registerFunctionName('used.function');
-    expect(refAgent.formatImports()).toEqual(
-      [
-        'github.com/project-flogo/contrib/activity/log',
-        'github.com/project-flogo/contrib/activity/rest',
-        'rest_1 github.com/different-repo/activity/rest',
-        'github.com/project-flogo/contrib/trigger/rest',
-        'github.com/project-flogo/flow',
-        'github.com/some-package-with-functions/ref',
-      ].sort()
-    );
-  });
-
   describe('with predetermined imports', () => {
     beforeEach(() => {
       refAgent = new RefAgent(
@@ -137,7 +106,7 @@ describe('ref agent', () => {
       ).toEqual('#log_1');
     });
 
-    test('it should format only the used the imports', () => {
+    test('it should dump only the used the imports', () => {
       refAgent.getAliasRef(
         ContributionType.Trigger,
         'github.com/project-flogo/contrib/trigger/rest'
@@ -154,11 +123,16 @@ describe('ref agent', () => {
         ContributionType.Activity,
         'github.com/external/repo/cloned/with-yet-another/rest'
       );
-      expect(refAgent.formatImports()).toEqual(
+      expect(
+        refAgent
+          .dumpImports()
+          .map(i => i.ref)
+          .sort()
+      ).toEqual(
         [
-          'rest_1 github.com/external/repo/cloned/with-yet-another/rest',
+          'github.com/external/repo/cloned/with-yet-another/rest',
           'github.com/external/repo/with-yet-another/rest',
-          'myCoolRestAlias github.com/project-flogo/contrib/activity/rest',
+          'github.com/project-flogo/contrib/activity/rest',
           'github.com/project-flogo/contrib/trigger/rest',
         ].sort()
       );
