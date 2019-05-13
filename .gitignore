@@ -44,5 +44,3 @@ Thumbs.db
 .env
 .build-cache
 submodules/
-Dockerfile
-docker-start.sh
