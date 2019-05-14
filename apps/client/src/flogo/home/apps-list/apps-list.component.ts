@@ -1,5 +1,12 @@
 import { sortBy } from 'lodash';
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { App } from '@flogo-web/core';
 import { NotificationsService } from '@flogo-web/lib-client/notifications';
 import { AppsService } from '@flogo-web/lib-client/core';
