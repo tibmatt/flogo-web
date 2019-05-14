@@ -1,15 +1,10 @@
 import { sortBy } from 'lodash';
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output } from '@angular/core';
 import { App } from '@flogo-web/core';
 import { NotificationsService } from '@flogo-web/lib-client/notifications';
 import { AppsService } from '@flogo-web/lib-client/core';
+import { ModalService } from '@flogo-web/lib-client/modal';
+import { ImportErrorsComponent } from '../import-errors/import-errors.component';
 
 @Component({
   selector: 'flogo-home-apps-list',
@@ -17,17 +12,14 @@ import { AppsService } from '@flogo-web/lib-client/core';
   styleUrls: ['apps-list.component.less'],
 })
 export class FlogoAppsListComponent implements OnInit {
-  @ViewChild('importInput') importInput: ElementRef;
   @Output() appSelected: EventEmitter<App> = new EventEmitter<App>();
 
-  showValidationErrors: boolean;
-  importValidationErrors: any;
-
-  public applications: Array<App> = [];
+  applications: Array<App> = [];
 
   constructor(
     private apiApplications: AppsService,
-    private notifications: NotificationsService
+    private notifications: NotificationsService,
+    private modalService: ModalService
   ) {}
 
   ngOnInit() {
@@ -68,7 +60,6 @@ export class FlogoAppsListComponent implements OnInit {
     } catch (error) {
       this.notifyUser(false, error);
     }
-    this.importInput.nativeElement.value = '';
   }
 
   notifyUser(isImported: boolean, errorDetails?: Error) {
@@ -90,8 +81,10 @@ export class FlogoAppsListComponent implements OnInit {
     } else {
       if (error[0].status === 400) {
         if (error[0].meta && error[0].meta.details) {
-          this.importValidationErrors = error[0].meta.details;
-          this.showValidationErrors = true;
+          this.modalService.openModal<any[]>(
+            ImportErrorsComponent,
+            error[0].meta.details
+          );
           key = 'APP-LIST:VALIDATION_ERROR';
         }
       } else if (error.status === 500) {
@@ -99,11 +92,6 @@ export class FlogoAppsListComponent implements OnInit {
       }
     }
     this.notifications.error({ key });
-  }
-
-  resetValidationErrors() {
-    this.showValidationErrors = false;
-    this.importValidationErrors = [];
   }
 
   addNewApp() {

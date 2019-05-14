@@ -1,8 +1,18 @@
 @import '~@flogo-web/assets/styles/_mixins';
 @import '~@flogo-web/assets/styles/_variables';
+@import (reference) '~@flogo-web/assets/styles/uxpl/modal';
+
 @error-header-color: #ee3342;
+
+:host {
+  .uxpl-modal-confirmation;
+  display: inline-block;
+  min-width: 500px;
+  /* position: relative; */
+}
 .flogo-error__close {
-  .modal__close;
+  .uxpl-modal__close;
+  //color:transparent;
 }
 
 .flogo-error__head {
@@ -12,9 +22,6 @@
 
   .flogo-error__warning {
     transform: scaleY(-1);
-    -moz-transform: scaleY(-1);
-    -webkit-transform: scaleY(-1);
-    -ms-transform: scaleY(-1);
     position: absolute;
     width: 20px;
     height: 20px;
@@ -23,7 +30,7 @@
 
   .flogo-error_head-text {
     margin-left: 28px;
-    line-spacing: 0.5px;
+    letter-spacing: 0.5px;
   }
 }
 
@@ -48,15 +55,18 @@
 }
 
 .flogo-error__list-container {
-  max-height: 320px;
+  max-height: 294px;
   overflow-y: auto;
   border: 1px solid @link-water;
   border-radius: 4px 4px 0 0;
   margin-bottom: 18px;
+  list-style-type: none;
+  padding: 0px;
 
   .flogo-error__list {
     border-bottom: 1px solid @lighter-gray;
     padding: 12px;
+    display: block;
 
     .flogo-error__list-head {
       margin: 0;
@@ -64,6 +74,7 @@
       line-height: 1.43;
       letter-spacing: 0.3px;
       color: @error-header-color;
+      display: block;
     }
   }
 }

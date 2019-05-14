@@ -1,4 +1,4 @@
-import { BsModalComponent } from 'ng2-bs3-modal';
+import { ModalService } from '@flogo-web/lib-client/modal';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -10,7 +10,6 @@ import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
 import { AppsApiServiceMock } from './testing/apps-api.service.mock';
 import { TimeFromNowPipe, FlogoDeletePopupComponent } from '@flogo-web/lib-client/common';
 
-import { FlogoAppImportComponent } from '../app-import/app-import.component';
 import { FlogoAppsListComponent } from './apps-list.component';
 
 describe('FlogoAppList component', () => {
@@ -56,13 +55,7 @@ describe('FlogoAppList component', () => {
         // NoDependenciesFakeLanguageModule,
         FakeRootLanguageModule,
       ],
-      declarations: [
-        FlogoAppsListComponent,
-        FlogoDeletePopupComponent,
-        TimeFromNowPipe,
-        FlogoAppImportComponent,
-        BsModalComponent,
-      ], // declare the test component
+      declarations: [FlogoAppsListComponent, FlogoDeletePopupComponent, TimeFromNowPipe], // declare the test component
       providers: [
         HttpUtilsService,
         { provide: ErrorService, useClass: ErrorService },
@@ -71,6 +64,7 @@ describe('FlogoAppList component', () => {
           provide: NotificationsService,
           useValue: new NotificationsServiceMock(),
         },
+        { provide: ModalService, useValue: { openModal() {} } },
       ],
     });
     return TestBed.compileComponents();
