@@ -7,5 +7,6 @@
   "exclude": ["test.ts", "**/*.spec.ts", "**/*.mock.ts", "**/testing/*"],
   "include": [
      "**/*.ts", "../../libs/plugins/flow-client/src/index.ts"
-  ]
+  , "../../libs/plugins/stream-client/src/index.ts"
+]
 }

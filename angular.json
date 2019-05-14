@@ -443,6 +443,91 @@
           }
         }
       }
+    },
+    "plugins-stream-core": {
+      "root": "libs/plugins/stream-core",
+      "sourceRoot": "libs/plugins/stream-core/src",
+      "projectType": "library",
+      "prefix": "flogo-web",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/stream-core/tsconfig.lib.json",
+              "libs/plugins/stream-core/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "passWithNoTests": true,
+            "jestConfig": "libs/plugins/stream-core/jest.config.js",
+            "tsConfig": "libs/plugins/stream-core/tsconfig.spec.json"
+          }
+        }
+      },
+      "schematics": {}
+    },
+    "plugins-stream-client": {
+      "root": "libs/plugins/stream-client",
+      "sourceRoot": "libs/plugins/stream-client/src",
+      "projectType": "library",
+      "prefix": "flogo-web",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/stream-client/tsconfig.lib.json",
+              "libs/plugins/stream-client/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/plugins/stream-client/src/test.ts",
+            "tsConfig": "libs/plugins/stream-client/tsconfig.spec.json",
+            "karmaConfig": "libs/plugins/stream-client/karma.conf.js"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/schematics:component": {
+          "styleext": "less"
+        }
+      }
+    },
+    "plugins-stream-server": {
+      "root": "libs/plugins/stream-server",
+      "sourceRoot": "libs/plugins/stream-server/src",
+      "projectType": "library",
+      "prefix": "flogo-web",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/stream-server/tsconfig.lib.json",
+              "libs/plugins/stream-server/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "passWithNoTests": true,
+            "jestConfig": "libs/plugins/stream-server/jest.config.js",
+            "tsConfig": "libs/plugins/stream-server/tsconfig.spec.json"
+          }
+        }
+      },
+      "schematics": {}
     }
   },
   "cli": {
