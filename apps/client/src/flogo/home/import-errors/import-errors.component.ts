@@ -1,4 +1,4 @@
-import { Component, HostBinding, Inject, Input, HostListener } from '@angular/core';
+import { Component, HostBinding, Inject, HostListener } from '@angular/core';
 
 import { MODAL_TOKEN, modalAnimate, ModalControl } from '@flogo-web/lib-client/modal';
 

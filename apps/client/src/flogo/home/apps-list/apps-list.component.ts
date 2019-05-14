@@ -1,5 +1,12 @@
 import { sortBy } from 'lodash';
-import { Component, ElementRef, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { App } from '@flogo-web/core';
 import { NotificationsService } from '@flogo-web/lib-client/notifications';
 import { AppsService } from '@flogo-web/lib-client/core';
@@ -12,6 +19,7 @@ import { ImportErrorsComponent } from '../import-errors/import-errors.component'
   styleUrls: ['apps-list.component.less'],
 })
 export class FlogoAppsListComponent implements OnInit {
+  @ViewChild('importInput') importInput: ElementRef;
   @Output() appSelected: EventEmitter<App> = new EventEmitter<App>();
 
   applications: Array<App> = [];
@@ -60,6 +68,7 @@ export class FlogoAppsListComponent implements OnInit {
     } catch (error) {
       this.notifyUser(false, error);
     }
+    this.importInput.nativeElement.value = '';
   }
 
   notifyUser(isImported: boolean, errorDetails?: Error) {
