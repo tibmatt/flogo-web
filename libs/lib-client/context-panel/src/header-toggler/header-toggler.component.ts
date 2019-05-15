@@ -9,13 +9,14 @@ import {
 } from '@angular/core';
 
 @Component({
-  selector: 'flogo-flow-debug-panel-header-toggler',
+  selector: 'flogo-context-panel-header-toggler',
   templateUrl: './header-toggler.component.html',
   styleUrls: ['./header-toggler.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderTogglerComponent {
   @Input() isOpen: boolean;
+  @Input() title: string;
   @Output() open = new EventEmitter();
   @Output() close = new EventEmitter();
 

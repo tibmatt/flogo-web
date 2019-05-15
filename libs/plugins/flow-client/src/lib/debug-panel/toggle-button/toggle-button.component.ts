@@ -9,12 +9,13 @@ import {
 import { Subscription, interval, of } from 'rxjs';
 import { delayWhen } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
+import {
+  TogglerRefService,
+  MINIMIZED_WIDTH,
+  CLOSE_WRAPPER_ANIMATION_DURATION,
+} from '@flogo-web/lib-client/context-panel';
 
 import { FlowState, FlowActions, FlowSelectors } from '../../core/state';
-
-import { MINIMIZED_WIDTH, CLOSE_WRAPPER_ANIMATION_DURATION } from '../variables';
-import { TogglerRefService } from '../toggler-ref.service';
-
 @Component({
   selector: 'flogo-debug-panel-toggle-button',
   templateUrl: './toggle-button.component.html',

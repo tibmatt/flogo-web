@@ -1,43 +1,12 @@
-<div
-  class="content"
-  #content
-  [@wrappedContentState]="panelStatus"
-  (@wrappedContentState.done)="onAnimationEnd($event)"
->
-  <ng-content></ng-content>
-</div>
-<div
-  class="debug-panel-container"
-  [class.is-open]="isOpen"
-  [@debugPanelContainerState]="panelStatus"
->
-  <div
-    class="debug-panel-container__content"
-    *ngIf="isOpen"
-    [class.is-open]="isOpen"
-    [@debugPanelState]="{
-      value: panelStatus,
-      params: toggleButtonAnimationParams
-    }"
-  >
-    <flogo-flow-debug-panel-header-toggler
-      [isOpen]="isOpen"
-      (open)="openPanel()"
-      (close)="closePanel()"
-    >
-    </flogo-flow-debug-panel-header-toggler>
-    <flogo-flow-debug-panel-content
-      *ngIf="isOpen"
-      class="js-debug-panel-content debug-panel__content"
-      [activity]="activity$ | async"
-      [fields]="fields$ | async"
-      [executionErrors]="executionErrrors$ | async"
-      [activityHasRun]="activityHasRun$ | async"
-      [flowHasRun]="flowHasRun$ | async"
-      [canRestart]="isRestartableTask$ | async"
-      [runDisabled]="isRunDisabled$ | async"
-      [isEndOfFlow]="isEndOfFlow$ | async"
-      (runFromHere)="run()"
-    ></flogo-flow-debug-panel-content>
-  </div>
-</div>
+<flogo-flow-debug-panel-content
+  class="debug-panel-content"
+  [activity]="activity$ | async"
+  [fields]="fields$ | async"
+  [executionErrors]="executionErrrors$ | async"
+  [activityHasRun]="activityHasRun$ | async"
+  [flowHasRun]="flowHasRun$ | async"
+  [canRestart]="isRestartableTask$ | async"
+  [runDisabled]="isRunDisabled$ | async"
+  [isEndOfFlow]="isEndOfFlow$ | async"
+  (runFromHere)="run()"
+></flogo-flow-debug-panel-content>

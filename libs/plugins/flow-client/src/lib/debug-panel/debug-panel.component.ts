@@ -1,6 +1,5 @@
 import { isEmpty, fromPairs } from 'lodash';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AnimationEvent } from '@angular/animations';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, pipe } from 'rxjs';
@@ -24,22 +23,15 @@ import {
 
 import { isMapperActivity } from '@flogo-web/plugins/flow-core';
 
-import { FlowActions, FlowSelectors, FlowState } from '../core/state';
+import { FlowSelectors, FlowState } from '../core/state';
 import { TestRunnerService } from '../core/test-runner/test-runner.service';
 import { ItemActivityTask } from '../core/interfaces/flow';
 
 import { FormBuilderService } from '../shared/dynamic-form';
 import { createSaveChangesAction } from './save-changes-action.creator';
-import { debugPanelAnimations } from './debug-panel.animations';
 import { mergeFormWithOutputs } from './utils';
 import { FieldsInfo } from './fields-info';
 import { DebugActivityTask, combineToDebugActivity } from './debug-activity-task';
-import { TogglerRefService } from './toggler-ref.service';
-import { DEFAULT_MINIMIZED_HEIGHT } from './variables';
-
-const SELECTOR_FOR_CURRENT_ELEMENT = 'flogo-diagram-tile-task.is-selected';
-const STATUS_OPEN = 'open';
-const STATUS_CLOSED = 'closed';
 
 const mapFormInputChangesToSaveAction = (
   store,
@@ -62,15 +54,8 @@ const mapFormInputChangesToSaveAction = (
   selector: 'flogo-flow-debug-panel',
   templateUrl: './debug-panel.component.html',
   styleUrls: ['./debug-panel.component.less'],
-  animations: [
-    debugPanelAnimations.panelContainer,
-    debugPanelAnimations.panel,
-    debugPanelAnimations.wrappedContent,
-  ],
 })
 export class DebugPanelComponent implements OnInit, OnDestroy {
-  @ViewChild('content') content: ElementRef;
-  panelStatus: 'open' | 'closed' = STATUS_CLOSED;
   activity$: Observable<DebugActivityTask>;
   fields$: Observable<FieldsInfo>;
   isRunDisabled$: Observable<boolean>;
@@ -79,7 +64,6 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
   executionErrrors$: Observable<Array<string>>;
   isEndOfFlow$: Observable<boolean>;
   isRestartableTask$: Observable<boolean>;
-  toggleButtonAnimationParams = { minimizedHeight: DEFAULT_MINIMIZED_HEIGHT };
 
   private destroy$ = SingleEmissionSubject.create();
 
@@ -87,8 +71,7 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
     private store: Store<FlowState>,
     private formBuilder: FormBuilder,
     private attributeFormBuilder: FormBuilderService,
-    private testRunner: TestRunnerService,
-    private togglerRef: TogglerRefService
+    private testRunner: TestRunnerService
   ) {}
 
   ngOnInit() {
@@ -132,43 +115,10 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe(action => this.store.dispatch(action));
-
-    this.store
-      .pipe(
-        select(FlowSelectors.selectDebugPanelOpen),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(isOpen => {
-        this.panelStatus = isOpen ? STATUS_OPEN : STATUS_CLOSED;
-        this.adjustPositionForAnimation();
-      });
-  }
-
-  private adjustPositionForAnimation() {
-    const minimizedHeight = this.togglerRef.getBottomDistance();
-    this.toggleButtonAnimationParams = { minimizedHeight };
   }
 
   ngOnDestroy() {
     this.destroy$.emitAndComplete();
-  }
-
-  openPanel() {
-    if (!this.isOpen) {
-      this.changePanelState(true);
-    }
-  }
-
-  closePanel() {
-    if (this.isOpen) {
-      this.changePanelState(false);
-    }
-  }
-
-  onAnimationEnd(event: AnimationEvent) {
-    if (event.toState === STATUS_OPEN) {
-      this.scrollContextElementIntoView();
-    }
   }
 
   run() {
@@ -180,14 +130,6 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe();
-  }
-
-  get isOpen(): boolean {
-    return this.panelStatus === STATUS_OPEN;
-  }
-
-  private changePanelState(isOpen: boolean) {
-    this.store.dispatch(new FlowActions.DebugPanelStatusChange({ isOpen }));
   }
 
   private mapStateToForm() {
@@ -254,13 +196,5 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
         output: outputs && outputs.fieldsWithControlType,
       },
     };
-  }
-
-  private scrollContextElementIntoView() {
-    const contentElement: Element = this.content.nativeElement;
-    const selection = contentElement.querySelector(SELECTOR_FOR_CURRENT_ELEMENT);
-    if (selection) {
-      selection.scrollIntoView({ behavior: 'smooth' });
-    }
   }
 }

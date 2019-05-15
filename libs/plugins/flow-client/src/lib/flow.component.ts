@@ -27,10 +27,12 @@ import {
   FlogoFlowService as FlowsService,
 } from './core';
 import { HandlerType, SelectionType, mergeItemWithSchema } from './core/models';
-import { FlowState } from './core/state';
+import { FlowState, FlowSelectors, FlowActions } from './core/state';
 import { FlowMetadata } from './task-configurator/models';
 import { ParamsSchemaComponent } from './params-schema';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { AppState } from './core/state/app.state';
 
 interface TaskContext {
   isTrigger: boolean;
@@ -72,6 +74,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   public app: any;
   public isflowMenuOpen = false;
 
+  public panelOpen$: Observable<boolean>;
   private ngOnDestroy$ = SingleEmissionSubject.create();
 
   constructor(
@@ -83,7 +86,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     private _route: ActivatedRoute,
     private testRunner: TestRunnerService,
     private notifications: NotificationsService,
-    private monacoLoaderService: MonacoEditorLoaderService
+    private monacoLoaderService: MonacoEditorLoaderService,
+    private store: Store<AppState>
   ) {
     this._isDiagramEdited = false;
     this.loading = true;
@@ -96,6 +100,9 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     const flowData: FlowData = this._route.snapshot.data['flowData'];
+
+    this.panelOpen$ = this.store.pipe(select(FlowSelectors.selectDebugPanelOpen));
+
     this._flowService.currentFlowDetails.flowState$
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(flowState => this.onFlowStateUpdate(flowState));
@@ -122,6 +129,10 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   closeFlowMenu() {
     this.isflowMenuOpen = false;
+  }
+
+  onPanelStatusChange(isOpen: boolean) {
+    this.store.dispatch(new FlowActions.DebugPanelStatusChange({ isOpen }));
   }
 
   private onFlowStateUpdate(nextState: FlowState) {

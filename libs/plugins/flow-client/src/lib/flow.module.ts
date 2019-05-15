@@ -7,6 +7,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { DiagramModule } from '@flogo-web/lib-client/diagram';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
 import { LogsModule as FlogoLogsModule } from '@flogo-web/lib-client/logs';
+import { ContextPanelModule } from '@flogo-web/lib-client/context-panel';
 
 import { MonacoEditorModule } from './shared/monaco-editor';
 import { FormBuilderModule as FlogoCommonFormBuilderModule } from './shared/dynamic-form';
@@ -40,6 +41,7 @@ import { TaskAddModule } from './task-add';
     FlogoSharedModule,
     FlogoLogsModule,
     DiagramModule,
+    ContextPanelModule,
     MonacoEditorModule.forRoot(),
 
     FlowCoreModule,

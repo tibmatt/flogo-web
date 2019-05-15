@@ -335,6 +335,11 @@
             "exclude": ["**/node_modules/**"]
           }
         }
+      },
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "less"
+        }
       }
     },
     "plugins-flow-server": {

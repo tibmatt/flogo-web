@@ -19,7 +19,7 @@ import {
   CLOSE_WRAPPER_ANIMATION_DURATION,
 } from './variables';
 
-export const debugPanelAnimations: {
+export const contextPanelAnimations: {
   readonly panelContainer: AnimationTriggerMetadata;
   readonly panel: AnimationTriggerMetadata;
   readonly wrappedContent: AnimationTriggerMetadata;
@@ -33,7 +33,7 @@ export const debugPanelAnimations: {
     ),
     transition('closed => open', animate(`300ms 100ms cubic-bezier(0.25, 0.8, 0.25, 1)`)),
   ]),
-  panelContainer: trigger('debugPanelContainerState', [
+  panelContainer: trigger('contextPanelContainerState', [
     state(
       'open',
       style({
@@ -54,7 +54,7 @@ export const debugPanelAnimations: {
           `${OPEN_DELAY} cubic-bezier(0.25, 0.8, 0.25, 1)`,
           style({ transform: 'translate3d(0, 0, 0)' })
         ),
-        query('@debugPanelState', animateChild()),
+        query('@contextPanelState', animateChild()),
       ]),
       animate(
         `${OPEN_DELAY} cubic-bezier(0.25, 0.8, 0.25, 1)`,
@@ -67,11 +67,11 @@ export const debugPanelAnimations: {
           `300ms 100ms cubic-bezier(0.25, 0.8, 0.25, 1)`,
           style({ transform: `translate3d(${MINIMIZED_LEFT_DISTANCE}, 0, 0)` })
         ),
-        query('@debugPanelState', animateChild()),
+        query('@contextPanelState', animateChild()),
       ]),
     ]),
   ]),
-  panel: trigger('debugPanelState', [
+  panel: trigger('contextPanelState', [
     state(
       'open',
       style({
@@ -82,7 +82,7 @@ export const debugPanelAnimations: {
     ),
     transition('* => open', [
       style({ overflow: 'hidden', height: OPENED_HEIGHT, width: '*' }),
-      query('.js-debug-panel-content', style({ opacity: 0 })),
+      query('.js-context-panel-content', style({ opacity: 0 })),
       animate(
         `${OPEN_DELAY} cubic-bezier(0.25, 0.8, 0.25, 1)`,
         keyframes([
@@ -91,7 +91,7 @@ export const debugPanelAnimations: {
           style({ transform: 'translate3d(0, -100%, 0)' }),
         ])
       ),
-      query('.js-debug-panel-content', animate('100ms', style({ opacity: 1 }))),
+      query('.js-context-panel-content', animate('100ms', style({ opacity: 1 }))),
     ]),
     transition('open => *', [
       style({
@@ -101,7 +101,7 @@ export const debugPanelAnimations: {
         transform: '*',
         opacity: 1,
       }),
-      query('.js-debug-panel-content', animate('100ms', style({ opacity: 0 }))),
+      query('.js-context-panel-content', animate('100ms', style({ opacity: 0 }))),
       group([
         animate(
           '350ms cubic-bezier(0.25, 0.8, 0.25, 1)',

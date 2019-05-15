@@ -77,9 +77,19 @@
     <flogo-flow-tabs class="tabs"></flogo-flow-tabs>
   </div>
 
-  <flogo-flow-debug-panel class="debug-panel-container">
-    <ng-container *ngTemplateOutlet="flowContent"></ng-container>
-  </flogo-flow-debug-panel>
+  <flogo-context-panel-area
+    class="debug-panel-container"
+    [isOpen]="panelOpen$ | async"
+    contextElementSelector="flogo-diagram-tile-task.is-selected"
+    panelTitle="{{ 'DEBUGGER:TITLE-ACTIVITY' | translate }}"
+    (open)="onPanelStatusChange(true)"
+    (close)="onPanelStatusChange(false)"
+  >
+    <div context-panel-role="primary-area">
+      <ng-container *ngTemplateOutlet="flowContent"></ng-container>
+    </div>
+    <flogo-flow-debug-panel context-panel-role="panel-content"></flogo-flow-debug-panel>
+  </flogo-context-panel-area>
 
   <ng-template #flowContent>
     <flogo-flow-triggers></flogo-flow-triggers>
@@ -93,9 +103,9 @@
         class="diagram"
         (deleteTask)="onDeleteTask($event)"
       ></flogo-flow-diagram>
-      <!--      <flogo-debug-panel-toggle-button
+      <flogo-debug-panel-toggle-button
         class="debug-panel-toggler"
-      ></flogo-debug-panel-toggle-button>-->
+      ></flogo-debug-panel-toggle-button>
     </div>
   </ng-template>
 
