@@ -1,0 +1,15 @@
+<flogo-context-panel-area
+  [isOpen]="isPanelOpen"
+  panelTitle="Toggle Panel ({{ isPanelOpen }})"
+  (open)="togglePanel()"
+  (close)="togglePanel()"
+>
+  <div class="main" context-panel-role="primary-area">
+    <h1>Primary Area</h1>
+    <flogo-context-panel-trigger
+      (open)="togglePanel()"
+      title="Toggle Panel ({{ isPanelOpen }})"
+    ></flogo-context-panel-trigger>
+  </div>
+  <div context-panel-role="panel-content">Secondary</div>
+</flogo-context-panel-area>

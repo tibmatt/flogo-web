@@ -1,0 +1,21 @@
+@import (reference) '~@flogo-web/assets/styles/_variables';
+
+:host {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
+// TODO: improve selectors after laying out the main content
+.main > :not(flogo-context-panel-trigger) {
+  flex: 1;
+}
+
+flogo-context-panel-area {
+  flex: 1;
+}
