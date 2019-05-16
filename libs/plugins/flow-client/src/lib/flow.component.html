@@ -103,9 +103,11 @@
         class="diagram"
         (deleteTask)="onDeleteTask($event)"
       ></flogo-flow-diagram>
-      <flogo-debug-panel-toggle-button
+      <flogo-context-panel-trigger
         class="debug-panel-toggler"
-      ></flogo-debug-panel-toggle-button>
+        (open)="onPanelStatusChange(true)"
+        title="{{ 'DEBUGGER:TITLE-ACTIVITY' | translate }}"
+      ></flogo-context-panel-trigger>
     </div>
   </ng-template>
 

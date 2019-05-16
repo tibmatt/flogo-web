@@ -9,7 +9,10 @@
 <div
   class="context-panel-container"
   [class.is-open]="isOpen"
-  [@contextPanelContainerState]="panelStatus"
+  [@contextPanelContainerState]="{
+    value: panelStatus,
+    params: toggleButtonAnimationParams
+  }"
 >
   <div
     class="context-panel-container__content"

@@ -1,4 +1,3 @@
-export const MINIMIZED_LEFT_DISTANCE = '182px';
 export const DEFAULT_MINIMIZED_HEIGHT = 47;
 export const MINIMIZED_WIDTH = '272px';
 export const OPENED_HEIGHT = '40vh';

@@ -10,7 +10,6 @@ import { FieldsComponent } from './fields/fields.component';
 import { ErrorComponent } from './error/error.component';
 
 import { DebugPanelComponent } from './debug-panel.component';
-import { ToggleButtonComponent } from './toggle-button/toggle-button.component';
 
 @NgModule({
   imports: [NgCommonModule, SharedModule, DynamicFormModule, ContextPanelModule],
@@ -19,9 +18,8 @@ import { ToggleButtonComponent } from './toggle-button/toggle-button.component';
     FieldsComponent,
     ErrorComponent,
     DebugPanelComponent,
-    ToggleButtonComponent,
   ],
   providers: [],
-  exports: [DebugPanelComponent, ToggleButtonComponent],
+  exports: [DebugPanelComponent],
 })
 export class DebugPanelModule {}

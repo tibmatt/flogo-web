@@ -15,7 +15,6 @@ import {
   OPEN_DELAY,
   OPENED_HEIGHT,
   MINIMIZED_WIDTH,
-  MINIMIZED_LEFT_DISTANCE,
   CLOSE_WRAPPER_ANIMATION_DURATION,
 } from './variables';
 
@@ -44,9 +43,14 @@ export const contextPanelAnimations: {
     state(
       'closed',
       style({
-        transform: `translate3d(${MINIMIZED_LEFT_DISTANCE}, 0, 0)`,
+        transform: `translate3d({{minimizedLeftDistance}}px, 0, 0)`,
         zIndex: 3,
-      })
+      }),
+      {
+        params: {
+          minimizedLeftDistance: 0,
+        },
+      }
     ),
     transition('closed => open', [
       group([
@@ -65,7 +69,7 @@ export const contextPanelAnimations: {
       group([
         animate(
           `300ms 100ms cubic-bezier(0.25, 0.8, 0.25, 1)`,
-          style({ transform: `translate3d(${MINIMIZED_LEFT_DISTANCE}, 0, 0)` })
+          style({ transform: `translate3d({{minimizedLeftDistance}}px, 0, 0)` })
         ),
         query('@contextPanelState', animateChild()),
       ]),

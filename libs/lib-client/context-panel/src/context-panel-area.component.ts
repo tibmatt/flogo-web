@@ -31,8 +31,6 @@ const STATUS_CLOSED = 'closed';
  *    <div context-panel-role="panel-content"></div>
  * </flogo-context-panel-area>
  *
- *
- *
  */
 @Component({
   selector: 'flogo-context-panel-area',
@@ -68,7 +66,10 @@ export class ContextPanelAreaComponent implements OnChanges {
 
   @ViewChild('content') content: ElementRef;
   panelStatus: 'open' | 'closed' = STATUS_CLOSED;
-  toggleButtonAnimationParams = { minimizedHeight: DEFAULT_MINIMIZED_HEIGHT };
+  toggleButtonAnimationParams = {
+    minimizedLeftDistance: 1,
+    minimizedHeight: DEFAULT_MINIMIZED_HEIGHT,
+  };
 
   constructor(private togglerRef: TogglerRefService) {}
 
@@ -80,6 +81,7 @@ export class ContextPanelAreaComponent implements OnChanges {
 
   onStatusChange() {
     this.panelStatus = this.isOpen ? STATUS_OPEN : STATUS_CLOSED;
+    this.togglerRef.publishPanelStatus(this.isOpen);
     this.adjustPositionForAnimation();
   }
 
@@ -113,7 +115,10 @@ export class ContextPanelAreaComponent implements OnChanges {
   }
 
   private adjustPositionForAnimation() {
-    const minimizedHeight = this.togglerRef.getBottomDistance();
-    this.toggleButtonAnimationParams = { minimizedHeight };
+    const animationParams = this.togglerRef.calculatePlacement() || {
+      minimizedHeight: 0,
+      minimizedLeftDistance: 0,
+    };
+    this.toggleButtonAnimationParams = animationParams;
   }
 }
