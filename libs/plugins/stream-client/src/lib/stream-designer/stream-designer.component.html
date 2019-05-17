@@ -11,5 +11,12 @@
       title="Toggle Panel ({{ isPanelOpen }})"
     ></flogo-context-panel-trigger>
   </div>
-  <div context-panel-role="panel-content">Secondary</div>
+  <div context-panel-role="panel-content">
+    <!-- need to use ngTemplateOutlet for the component to be initialized/destroyed when the panel toggles its visibility -->
+    <ng-container *ngTemplateOutlet="simulator"></ng-container>
+  </div>
+
+  <ng-template #simulator>
+    <flogo-stream-simulator [items]="simulationData$ | async"></flogo-stream-simulator>
+  </ng-template>
 </flogo-context-panel-area>
