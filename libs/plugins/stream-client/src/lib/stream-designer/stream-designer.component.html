@@ -1,6 +1,6 @@
 <flogo-context-panel-area
   [isOpen]="isPanelOpen"
-  panelTitle="Toggle Panel ({{ isPanelOpen }})"
+  panelTitle="Stream Simulator"
   (open)="togglePanel()"
   (close)="togglePanel()"
 >
@@ -8,7 +8,7 @@
     <h1>Primary Area</h1>
     <flogo-context-panel-trigger
       (open)="togglePanel()"
-      title="Toggle Panel ({{ isPanelOpen }})"
+      title="Stream Simulator"
     ></flogo-context-panel-trigger>
   </div>
   <div context-panel-role="panel-content">
@@ -17,6 +17,9 @@
   </div>
 
   <ng-template #simulator>
-    <flogo-stream-simulator [items]="simulationData$ | async"></flogo-stream-simulator>
+    <flogo-stream-simulator
+      *ngIf="isPanelOpen"
+      [items]="simulationData$ | async"
+    ></flogo-stream-simulator>
   </ng-template>
 </flogo-context-panel-area>

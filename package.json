@@ -53,6 +53,9 @@
   },
   "author": "TIBCO Software Inc.",
   "dependencies": {
+    "@finos/perspective": "^0.3.0-rc.1",
+    "@finos/perspective-viewer": "^0.3.0-rc.1",
+    "@finos/perspective-viewer-hypergrid": "^0.3.0-rc.1",
     "@koa/cors": "2",
     "@nrwl/nx": "^7.7.2",
     "ajv": "^6.1.1",
@@ -85,6 +88,8 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "^7.4.3",
+    "@angular-builders/dev-server": "^7.3.1",
     "@angular-devkit/build-angular": "~0.13.0",
     "@angular/animations": "~7.2.10",
     "@angular/cdk": "~7.3.5",
@@ -97,6 +102,8 @@
     "@angular/platform-browser": "~7.2.10",
     "@angular/platform-browser-dynamic": "~7.2.10",
     "@angular/router": "~7.2.10",
+    "@finos/perspective-viewer-d3fc": "^0.3.0-rc.1",
+    "@finos/perspective-webpack-plugin": "^0.3.0-rc.1",
     "@ngrx/effects": "7.3.0",
     "@ngrx/store": "7.3.0",
     "@ngrx/store-devtools": "7.3.0",

@@ -1,1 +1,18 @@
-<div *ngFor="let item of items">{{ item | json }}</div>
+<div class="column">
+  <div class="section-title">Stream Input</div>
+  <perspective-viewer
+    class="viewer"
+    id="perspectiveInput"
+    #inputView
+  ></perspective-viewer>
+</div>
+
+<div class="column">
+  <div class="section-title">Stream Output</div>
+  <perspective-viewer
+    class="viewer"
+    id="perspectiveOutput"
+    #outputView
+    view="y_line"
+  ></perspective-viewer>
+</div>
