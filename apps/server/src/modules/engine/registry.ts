@@ -123,7 +123,7 @@ export function initEngine(engine, options) {
       return engine.load().then(installedContribs => {
         const mapContribs = collection => collection.map(c => ({ ref: c.ref }));
         logger.info('installedContributions', {
-          installedContributions: mapContribs(installedContribs)
+          installedContributions: mapContribs(installedContribs),
         });
       });
     });

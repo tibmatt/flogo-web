@@ -94,8 +94,7 @@ async function installContribution(ctx, next) {
   logger.info(`[log] Install ${contribType.installerOpts.type}: '${url}'`);
   const installController = await getInstallationController(
     config.defaultEngine.path,
-    (contribRef, engine) =>
-      installContributionToEngine(contribRef, engine)
+    (contribRef, engine) => installContributionToEngine(contribRef, engine)
   );
 
   const result = await installController.install(url);

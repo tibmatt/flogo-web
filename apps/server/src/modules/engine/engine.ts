@@ -11,7 +11,7 @@ import { buildPlugin } from './build/plugin';
 import { loader } from './loader';
 import { commander } from './commander';
 import { execController as exec } from './exec-controller';
-import { logger } from "../../common/logging";
+import { logger } from '../../common/logging';
 
 const DIR_TEST_BIN = 'bin-test';
 const DIR_BUILD_BIN = 'bin-build';

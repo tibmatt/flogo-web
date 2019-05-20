@@ -25,7 +25,6 @@ export const loader = {
    * @param {string} contributions[].ref - ref to the contribution
    */
   loadMetadata(contributions) {
-
     const refToPath = el => ({ path: el.path, ref: el.ref });
 
     return Promise.resolve(
@@ -35,7 +34,8 @@ export const loader = {
           contrib.rt = normalizeContribSchema(contrib.rt);
           return contrib;
         })
-      ));
+      )
+    );
   },
 };
 
