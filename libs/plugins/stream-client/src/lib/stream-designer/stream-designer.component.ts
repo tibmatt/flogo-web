@@ -14,6 +14,7 @@ import { SimulatorService } from '../simulator.service';
 export class StreamDesignerComponent implements OnInit {
   isPanelOpen = false;
   simulationData$: Observable<any[]>;
+  isMenuOpen = false;
 
   constructor(private simulationService: SimulatorService) {}
 
@@ -37,5 +38,17 @@ export class StreamDesignerComponent implements OnInit {
     } else {
       this.simulationService.stopSimulation();
     }
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu() {
+    this.isMenuOpen = false;
+  }
+
+  deleteStream() {
+    this.closeMenu();
   }
 }

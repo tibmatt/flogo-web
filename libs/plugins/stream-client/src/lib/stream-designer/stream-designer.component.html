@@ -1,3 +1,18 @@
+<div class="header">
+  <div class="stream-details"></div>
+  <div class="menu-container" (fgClickOutside)="closeMenu()">
+    <i class="flogo-icon-kebabmenu kebabmenu-icon menu-dropdown-kebab-menu"
+       [class.active]="isMenuOpen"
+       (click)="toggleMenu()"></i>
+    <div class="menu-dropdown" [class.active]="isMenuOpen">
+      <ul class="menu-dropdown__list">
+        <li class="menu-dropdown__item" (click)="deleteStream()">
+          <i class="flogo-icon flogo-icon-delete"></i>{{ 'CANVAS:DELETE' | translate }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
 <flogo-context-panel-area
   [isOpen]="isPanelOpen"
   panelTitle="Stream Simulator"
