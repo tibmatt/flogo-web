@@ -22,6 +22,7 @@
   display: flex;
   flex: 2;
   align-items: center;
+  overflow: hidden;
 
   &.--hover {
     .details-app-name {
@@ -106,6 +107,8 @@ flogo-context-panel-area {
 }
 
 .details-content {
+  display: flex;
+  flex-wrap: wrap;
   padding: 0 10px;
   overflow: hidden;
   letter-spacing: 0.3px;
@@ -114,6 +117,7 @@ flogo-context-panel-area {
 .details-name {
   .secondary-header();
   display: inline-block;
+  max-width: 80%;
   color: @color-ink;
   font-weight: 600;
   line-height: 1.5;
@@ -145,4 +149,5 @@ flogo-context-panel-area {
   text-overflow: ellipsis;
   font-size: 12px;
   min-width: 2rem;
+  width: 100%;
 }
