@@ -47,7 +47,12 @@
   (close)="togglePanel()"
 >
   <div class="main" context-panel-role="primary-area">
-    <h1>Primary Area</h1>
+    <flogo-diagram
+      diagramId="stream"
+      [flow]="graph"
+      [selection]="currentSelection"
+      (action)="onDiagramAction($event)"
+    ></flogo-diagram>
     <flogo-context-panel-trigger
       (open)="togglePanel()"
       title="Stream Simulator"

@@ -9,6 +9,34 @@
   overflow: hidden;
 }
 
+/****
+ layout
+***/
+
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: #eaeaea;
+}
+
+flogo-context-panel-area {
+  flex: 1;
+}
+
+[context-panel-role='primary-area'] {
+  flex: 1;
+}
+
+flogo-diagram {
+  display: block;
+  flex: 1;
+}
+
+/****
+ header (should probably be its own component)
+***/
+
 .header {
   display: flex;
   padding: 24px;
@@ -73,20 +101,6 @@
   .uxpl-dropdown__item();
   font-size: 16px;
   letter-spacing: 0.3px;
-}
-
-.main {
-  display: flex;
-  flex-direction: column;
-}
-
-// TODO: improve selectors after laying out the main content
-.main > :not(flogo-context-panel-trigger) {
-  flex: 1;
-}
-
-flogo-context-panel-area {
-  flex: 1;
 }
 
 .back-to-app {
