@@ -16,31 +16,13 @@ export function syncTasks(engine) {
   const contributionsRegistrator = new BaseRegistered(contributionsDBService);
   return contributionsRegistrator
     .clean()
-    .then(() => contributionsRegistrator.syncDb(engine.getActivities()))
+    .then(() => contributionsRegistrator.syncDb(engine.getContributions()))
     .then(() => {
-      logger.verbose('registerActivities success');
+      logger.verbose('registerContributions success');
       return true;
     })
     .catch(err => {
-      logger.error('registerActivities error');
-      return Promise.reject(err);
-    })
-    .then(() => contributionsRegistrator.syncDb(engine.getTriggers()))
-    .then(() => {
-      logger.verbose('registerTriggers success');
-      return true;
-    })
-    .catch(err => {
-      logger.error('registerTriggers error');
-      return Promise.reject(err);
-    })
-    .then(() => contributionsRegistrator.syncDb(engine.getFunctions()))
-    .then(() => {
-      logger.verbose('registerFunctions success');
-      return true;
-    })
-    .catch(err => {
-      logger.error('registerFunctions error');
+      logger.error('registerContributions error');
       return Promise.reject(err);
     });
 }

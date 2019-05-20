@@ -72,7 +72,7 @@ async function listContributions(ctx) {
 /**
  * Install new Trigger or Activity to the engine. The POST request need to have the following properties in the body:
  * url {string} Url to the contribution to be installed
- * type {string} Type of contribution to be installed. Should contain either 'activity' / 'trigger'
+ * type {string} Type of contribution to be installed.
  *
  */
 async function installContribution(ctx, next) {
@@ -95,7 +95,7 @@ async function installContribution(ctx, next) {
   const installController = await getInstallationController(
     config.defaultEngine.path,
     (contribRef, engine) =>
-      installContributionToEngine(contribRef, contribType.installerOpts.type, engine)
+      installContributionToEngine(contribRef, engine)
   );
 
   const result = await installController.install(url);

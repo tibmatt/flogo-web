@@ -48,8 +48,7 @@ export const commander = {
       options = Object.assign({}, options, { isContribBundle: true });
       return install(enginePath, contribBundlePath, options);
     },
-    trigger: install,
-    activity: install,
+    contribution: install,
   },
   install,
   update,

@@ -1,7 +1,5 @@
 import * as fs from 'fs';
 
-import groupBy from 'lodash/groupBy';
-
 import { readJSONFile } from '../../common/utils/file';
 import { normalizeContribSchema } from '../../common/contrib-schema-normalize';
 
@@ -27,35 +25,17 @@ export const loader = {
    * @param {string} contributions[].ref - ref to the contribution
    */
   loadMetadata(contributions) {
-    const groupedByType = groupBy(contributions, 'type');
-    const triggersToRead = groupedByType['flogo:trigger'] || [];
-    const activitiesToRead = groupedByType['flogo:activity'] || [];
-    const functionsToRead = groupedByType['flogo:function'] || [];
 
     const refToPath = el => ({ path: el.path, ref: el.ref });
-    return Promise.all([
-      _readTasksNew(triggersToRead.map(refToPath)).then(triggers =>
-        triggers.map(trigger => {
+
+    return Promise.resolve(
+      _readTasksNew(contributions.map(refToPath)).then(contribs =>
+        contribs.map(contrib => {
           // rt === schema of the trigger
-          trigger.rt = normalizeContribSchema(trigger.rt);
-          return trigger;
+          contrib.rt = normalizeContribSchema(contrib.rt);
+          return contrib;
         })
-      ),
-      _readTasksNew(activitiesToRead.map(refToPath)).then(activities =>
-        activities.map(activity => {
-          // rt === schema of the activity
-          activity.rt = normalizeContribSchema(activity.rt);
-          return activity;
-        })
-      ),
-      _readTasksNew(functionsToRead.map(refToPath)).then(functions =>
-        functions.map(eachFunction => {
-          // rt === schema of the activity
-          eachFunction.rt = normalizeContribSchema(eachFunction.rt);
-          return eachFunction;
-        })
-      ),
-    ]).then(([triggers, activities, functions]) => ({ triggers, activities, functions }));
+      ));
   },
 };
 
