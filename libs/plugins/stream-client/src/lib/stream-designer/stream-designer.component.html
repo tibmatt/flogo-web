@@ -46,17 +46,25 @@
   (open)="togglePanel()"
   (close)="togglePanel()"
 >
-  <div class="main" context-panel-role="primary-area">
-    <flogo-diagram
-      diagramId="stream"
-      [flow]="graph"
-      [selection]="currentSelection"
-      (action)="onDiagramAction($event)"
-    ></flogo-diagram>
-    <flogo-context-panel-trigger
-      (open)="togglePanel()"
-      title="Stream Simulator"
-    ></flogo-context-panel-trigger>
+  <div class="main content-layout" context-panel-role="primary-area">
+    <div class="content-layout__side">
+      <flogo-stream-params-schema-button
+        [flowMetadata]="resourceMetadata"
+        (click)="openMetadataModal()"
+      ></flogo-stream-params-schema-button>
+    </div>
+    <div class="content-layout__main">
+      <flogo-diagram
+        diagramId="stream"
+        [flow]="graph"
+        [selection]="currentSelection"
+        (action)="onDiagramAction($event)"
+      ></flogo-diagram>
+      <flogo-context-panel-trigger
+        (open)="togglePanel()"
+        title="Stream Simulator"
+      ></flogo-context-panel-trigger>
+    </div>
   </div>
   <div context-panel-role="panel-content">
     <!-- need to use ngTemplateOutlet for the component to be initialized/destroyed when the panel toggles its visibility -->
@@ -70,3 +78,9 @@
     ></flogo-stream-simulator>
   </ng-template>
 </flogo-context-panel-area>
+
+<flogo-stream-params-schema
+  #metadataModal
+  [metadata]="resourceMetadata"
+  (save)="onResourceMetadataSave($event)"
+></flogo-stream-params-schema>

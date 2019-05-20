@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { scan } from 'rxjs/operators';
-import { Component, OnInit } from '@angular/core';
-import { ValueType } from '@flogo-web/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ValueType, Metadata as ResourceMetadata } from '@flogo-web/core';
 import {
   DiagramSelection,
   DiagramAction,
@@ -11,6 +11,7 @@ import {
 } from '@flogo-web/lib-client/diagram';
 
 import { SimulatorService } from '../simulator.service';
+import { ParamsSchemaComponent } from '../params-schema';
 
 @Component({
   selector: 'flogo-stream-designer',
@@ -27,6 +28,9 @@ export class StreamDesignerComponent implements OnInit {
   testingData1 = 'Some description';
   graph;
   currentSelection: DiagramSelection;
+  resourceMetadata: ResourceMetadata;
+
+  @ViewChild('metadataModal') metadataModal: ParamsSchemaComponent;
 
   constructor(private simulationService: SimulatorService) {
     const { mainGraph, mainItems } = mockResource();
@@ -85,6 +89,14 @@ export class StreamDesignerComponent implements OnInit {
 
   onMouseOutBackControl() {
     this.backToAppHover = false;
+  }
+
+  openMetadataModal() {
+    this.metadataModal.openInputSchemaModel();
+  }
+
+  onResourceMetadataSave(metadata) {
+    this.resourceMetadata = metadata;
   }
 }
 

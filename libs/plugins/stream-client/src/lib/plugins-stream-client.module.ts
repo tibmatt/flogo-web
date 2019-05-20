@@ -8,6 +8,7 @@ import { DiagramModule } from '@flogo-web/lib-client/diagram';
 
 import { StreamDesignerComponent } from './stream-designer/stream-designer.component';
 import { SimulatorComponent } from './simulator/simulator.component';
+import { ParamsSchemaModule } from './params-schema';
 
 @NgModule({
   imports: [
@@ -18,6 +19,8 @@ import { SimulatorComponent } from './simulator/simulator.component';
     RouterModule.forChild([
       { path: '', pathMatch: 'full', component: StreamDesignerComponent },
     ]),
+
+    ParamsSchemaModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [StreamDesignerComponent, SimulatorComponent],

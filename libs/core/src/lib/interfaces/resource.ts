@@ -9,6 +9,7 @@ export interface Resource<TResourceData = unknown> {
   data: TResourceData;
 }
 
+// todo: check if input/output should be optional as per core schema
 export interface Metadata {
   input: MetadataAttribute[];
   output: MetadataAttribute[];
