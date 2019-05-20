@@ -1,4 +1,5 @@
 @import (reference) '~@flogo-web/assets/styles/_variables';
+@import (reference) '~@flogo-web/assets/styles/_typography';
 @import (reference) '~@flogo-web/assets/styles/uxpl/dropdown';
 
 :host {
@@ -14,13 +15,27 @@
   background: url(/assets/svg/bg-microservice.svg) no-repeat -61px -53px;
   background-size: 260px 255px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  align-items: center;
 }
 
 .stream-details {
+  display: flex;
   flex: 2;
+  align-items: center;
+
+  &.--hover {
+    .details-app-name {
+      color: @color-link-hover;
+      text-decoration: underline;
+    }
+
+    .back-to-app {
+      color: @color-link-hover;
+    }
+  }
 }
 
-.menu-container {
+.menu-content {
   position: relative;
 }
 
@@ -71,4 +86,63 @@
 
 flogo-context-panel-area {
   flex: 1;
+}
+
+.back-to-app {
+  cursor: pointer;
+  color: @warm-grey;
+  font-size: 19px;
+  font-weight: bold;
+  margin-right: 36px;
+  padding: 3px;
+}
+
+.profile__thumb {
+  width: 35px;
+  height: 35px;
+  border-radius: 3px;
+  background-size: contain;
+  margin: 0;
+}
+
+.details-content {
+  padding: 0 10px;
+  overflow: hidden;
+  letter-spacing: 0.3px;
+}
+
+.details-name {
+  .secondary-header();
+  display: inline-block;
+  color: @color-ink;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+  margin: 0 0 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.details-app-name {
+  color: @warm-grey;
+  font-style: italic;
+  cursor: pointer;
+  margin-left: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  // avoid last character is cut because italics + hidden overflow
+  padding-right: 0.2em;
+}
+
+.details-description {
+  color: @warm-grey;
+  padding: 0 10px;
+  margin: 0 0 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  min-width: 2rem;
 }

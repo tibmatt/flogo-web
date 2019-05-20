@@ -1,9 +1,36 @@
 <div class="header">
-  <div class="stream-details"></div>
-  <div class="menu-container" (fgClickOutside)="closeMenu()">
-    <i class="flogo-icon-kebabmenu kebabmenu-icon menu-dropdown-kebab-menu"
-       [class.active]="isMenuOpen"
-       (click)="toggleMenu()"></i>
+  <div class="stream-details" [ngClass]="{ '--hover': backToAppHover }">
+    <i
+      class="flogo-icon flogo-icon-back back-to-app"
+      (click)="navigateToApp()"
+      (mouseover)="onMouseOverBackControl()"
+      (mouseout)="onMouseOutBackControl()"
+    ></i>
+    <div class="flogo-profile__tile profile__thumb flogo-profile__microservice"></div>
+    <div class="details-content">
+      <div class="details-name" [(fgContentEditable)]="testingData"></div>
+      <span>in</span>
+      <span
+        class="details-app-name"
+        (click)="navigateToApp()"
+        (mouseover)="onMouseOverBackControl()"
+        (mouseout)="onMouseOutBackControl()"
+        >Anand's Application</span
+      >
+      <p
+        class="details-description"
+        [(fgContentEditable)]="testingData1"
+        [allowNewLines]="true"
+        placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
+      ></p>
+    </div>
+  </div>
+  <div class="menu-content" (fgClickOutside)="closeMenu()">
+    <i
+      class="flogo-icon-kebabmenu kebabmenu-icon menu-dropdown-kebab-menu"
+      [class.active]="isMenuOpen"
+      (click)="toggleMenu()"
+    ></i>
     <div class="menu-dropdown" [class.active]="isMenuOpen">
       <ul class="menu-dropdown__list">
         <li class="menu-dropdown__item" (click)="deleteStream()">

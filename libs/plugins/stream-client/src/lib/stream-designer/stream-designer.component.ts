@@ -15,6 +15,9 @@ export class StreamDesignerComponent implements OnInit {
   isPanelOpen = false;
   simulationData$: Observable<any[]>;
   isMenuOpen = false;
+  backToAppHover = false;
+  testingData = 'Anand';
+  testingData1 = 'Some description';
 
   constructor(private simulationService: SimulatorService) {}
 
@@ -50,5 +53,15 @@ export class StreamDesignerComponent implements OnInit {
 
   deleteStream() {
     this.closeMenu();
+  }
+
+  navigateToApp() {}
+
+  onMouseOverBackControl() {
+    this.backToAppHover = true;
+  }
+
+  onMouseOutBackControl() {
+    this.backToAppHover = false;
   }
 }
