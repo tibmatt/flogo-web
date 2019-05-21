@@ -13,7 +13,6 @@ import {
 import {
   MINIMIZED_TRANSFORM,
   OPEN_DELAY,
-  OPENED_HEIGHT,
   MINIMIZED_WIDTH,
   CLOSE_WRAPPER_ANIMATION_DURATION,
 } from './variables';
@@ -69,7 +68,7 @@ export const contextPanelAnimations: {
       group([
         animate(
           `300ms 100ms cubic-bezier(0.25, 0.8, 0.25, 1)`,
-          style({ transform: `translate3d({{minimizedLeftDistance}}px, 0, 0)` })
+          style({ transform: 'translate3d({{minimizedLeftDistance}}px, 0, 0)' })
         ),
         query('@contextPanelState', animateChild()),
       ]),
@@ -81,11 +80,16 @@ export const contextPanelAnimations: {
       style({
         width: '100%',
         transform: 'translate3d(0, -100%, 0)',
-        height: OPENED_HEIGHT,
-      })
+        height: '{{maximizedHeight}}',
+      }),
+      {
+        params: {
+          maximizedHeight: 0,
+        },
+      }
     ),
     transition('* => open', [
-      style({ overflow: 'hidden', height: OPENED_HEIGHT, width: '*' }),
+      style({ overflow: 'hidden', height: '{{maximizedHeight}}', width: '*' }),
       query('.js-context-panel-content', style({ opacity: 0 })),
       animate(
         `${OPEN_DELAY} cubic-bezier(0.25, 0.8, 0.25, 1)`,
@@ -100,7 +104,7 @@ export const contextPanelAnimations: {
     transition('open => *', [
       style({
         overflow: 'hidden',
-        height: OPENED_HEIGHT,
+        height: '{{maximizedHeight}}',
         width: '*',
         transform: '*',
         opacity: 1,

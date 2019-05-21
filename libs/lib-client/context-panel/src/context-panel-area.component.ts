@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { AnimationEvent } from '@angular/animations';
 import { contextPanelAnimations } from './context-panel.animations';
-import { DEFAULT_MINIMIZED_HEIGHT } from './variables';
+import { DEFAULT_MINIMIZED_HEIGHT, DEFAULT_MAXIMIZED_HEIGHT } from './variables';
 import { TogglerRefService } from './toggler-ref.service';
 
 const STATUS_OPEN = 'open';
@@ -60,6 +60,11 @@ export class ContextPanelAreaComponent implements OnChanges {
    * @example '.my-element.is-selected'
    */
   @Input() contextElementSelector?: string;
+  /**
+   * Height of the panel when on open/maximized state
+   * @example '40vh'
+   */
+  @Input() openHeight?: string;
 
   @Output() open = new EventEmitter<void>();
   @Output() close = new EventEmitter<void>();
@@ -69,13 +74,21 @@ export class ContextPanelAreaComponent implements OnChanges {
   toggleButtonAnimationParams = {
     minimizedLeftDistance: 1,
     minimizedHeight: DEFAULT_MINIMIZED_HEIGHT,
+    maximizedHeight: this.getMaximizedHeight(),
   };
 
   constructor(private togglerRef: TogglerRefService) {}
 
-  ngOnChanges({ isOpen: isOpenChange }: SimpleChanges) {
+  ngOnChanges({ isOpen: isOpenChange, openHeight: openHeightChange }: SimpleChanges) {
     if (isOpenChange && isOpenChange.previousValue !== this.isOpen) {
       this.onStatusChange();
+    }
+
+    if (openHeightChange && openHeightChange.previousValue !== this.openHeight) {
+      this.toggleButtonAnimationParams = {
+        ...this.toggleButtonAnimationParams,
+        maximizedHeight: this.getMaximizedHeight(),
+      };
     }
   }
 
@@ -103,6 +116,10 @@ export class ContextPanelAreaComponent implements OnChanges {
     }
   }
 
+  private getMaximizedHeight() {
+    return this.openHeight || DEFAULT_MAXIMIZED_HEIGHT;
+  }
+
   private scrollContextElementIntoView() {
     if (!this.contextElementSelector) {
       return;
@@ -119,6 +136,9 @@ export class ContextPanelAreaComponent implements OnChanges {
       minimizedHeight: 0,
       minimizedLeftDistance: 0,
     };
-    this.toggleButtonAnimationParams = animationParams;
+    this.toggleButtonAnimationParams = {
+      ...this.toggleButtonAnimationParams,
+      ...animationParams,
+    };
   }
 }
