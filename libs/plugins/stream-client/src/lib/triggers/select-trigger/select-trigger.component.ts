@@ -19,7 +19,7 @@ import { InstalledTriggersService } from '../installed-triggers.service';
 })
 export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   @ViewChild('addTriggerModal') modal: BsModalComponent;
-  @Input() appDetails: any;
+  @Input() appId: string;
   @Input() isAddTriggerActivated: boolean;
   @Output() addTriggerToAction: EventEmitter<any> = new EventEmitter<any>();
   @Output() installDialog = new EventEmitter();
@@ -53,7 +53,7 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   }
 
   getExistingTriggers() {
-    return this.triggersApiService.listTriggersForApp(this.appDetails.appId);
+    return this.triggersApiService.listTriggersForApp(this.appId);
   }
 
   loadInstalledTriggers() {

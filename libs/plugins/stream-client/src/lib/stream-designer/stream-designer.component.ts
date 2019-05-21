@@ -1,7 +1,10 @@
 import { Observable } from 'rxjs';
 import { scan } from 'rxjs/operators';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+
 import { ValueType, Metadata as ResourceMetadata } from '@flogo-web/core';
+import { ActivatedResourceRoute } from '@flogo-web/lib-client/core';
 import {
   DiagramSelection,
   DiagramAction,
@@ -26,15 +29,21 @@ export class StreamDesignerComponent implements OnInit {
   backToAppHover = false;
   testingData = 'Anand';
   testingData1 = 'Some description';
+  appId: string;
   graph;
   currentSelection: DiagramSelection;
   resourceMetadata: ResourceMetadata;
 
   @ViewChild('metadataModal') metadataModal: ParamsSchemaComponent;
 
-  constructor(private simulationService: SimulatorService) {
+  constructor(
+    private activatedResource: ActivatedResourceRoute,
+    private simulationService: SimulatorService,
+    private router: Router
+  ) {
     const { mainGraph, mainItems } = mockResource();
     this.graph = mainGraph;
+    this.appId = activatedResource.resource.app.id;
   }
 
   ngOnInit() {
@@ -81,7 +90,11 @@ export class StreamDesignerComponent implements OnInit {
     this.closeMenu();
   }
 
-  navigateToApp() {}
+  navigateToApp() {
+    // todo: nice to have: this.activatedResource.navigateToApp()
+    // or: this.router.navigate(this.activatedResource.getAppUrl());
+    this.router.navigate(['/apps', this.appId]);
+  }
 
   onMouseOverBackControl() {
     this.backToAppHover = true;

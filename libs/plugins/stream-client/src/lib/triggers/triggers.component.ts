@@ -1,5 +1,5 @@
 import { pick, uniq, fromPairs, isArray } from 'lodash';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input } from '@angular/core';
 import { from } from 'rxjs';
 import { filter, takeUntil, mergeMap, reduce, switchMap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
@@ -42,10 +42,12 @@ function settingsToObject(
 })
 export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   actionId: string;
-  appDetails: {
-    appId: string;
-    metadata?: Metadata;
-  };
+  @Input() appId: string;
+  @Input() metadata: Metadata;
+  // appDetails: {
+  //   appId: string;
+  //   metadata?: Metadata;
+  // };
   triggersList: RenderableTrigger[] = [];
   currentTrigger: RenderableTrigger;
   showAddTrigger = false;
@@ -120,7 +122,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   private persistNewTriggerAndHandler(data, settings, outputs) {
     let registerTrigger;
     if (data.installType === 'installed') {
-      const appId = this.appDetails.appId;
+      const appId = this.appId;
       const triggerInfo: any = pick(data.triggerData, ['name', 'ref', 'description']);
       triggerInfo.settings = settingsToObject(data.triggerData.settings, _ => null);
       registerTrigger = this.restAPITriggersService
