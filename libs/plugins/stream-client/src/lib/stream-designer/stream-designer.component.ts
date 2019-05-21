@@ -1,10 +1,9 @@
 import { Observable } from 'rxjs';
 import { scan } from 'rxjs/operators';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { ValueType, Metadata as ResourceMetadata } from '@flogo-web/core';
-import { ActivatedResourceRoute } from '@flogo-web/lib-client/core';
 import {
   DiagramSelection,
   DiagramAction,
@@ -27,23 +26,25 @@ export class StreamDesignerComponent implements OnInit {
   simulationData$: Observable<any[]>;
   isMenuOpen = false;
   backToAppHover = false;
-  testingData = 'Anand';
-  testingData1 = 'Some description';
-  appId: string;
+  name: string;
+  description: string;
   graph;
+  streamData;
   currentSelection: DiagramSelection;
   resourceMetadata: ResourceMetadata;
 
   @ViewChild('metadataModal') metadataModal: ParamsSchemaComponent;
 
   constructor(
-    private activatedResource: ActivatedResourceRoute,
     private simulationService: SimulatorService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     const { mainGraph, mainItems } = mockResource();
     this.graph = mainGraph;
-    this.appId = activatedResource.resource.app.id;
+    this.streamData = this.route.snapshot.data.streamData;
+    this.name = this.streamData.stream.name;
+    this.description = this.streamData.stream.description;
   }
 
   ngOnInit() {
@@ -53,6 +54,10 @@ export class StreamDesignerComponent implements OnInit {
         return acc.slice(0, 5);
       }, [])
     );
+  }
+
+  get applicationId() {
+    return this.streamData && this.streamData.stream && this.streamData.stream.app.id;
   }
 
   togglePanel() {
@@ -93,7 +98,7 @@ export class StreamDesignerComponent implements OnInit {
   navigateToApp() {
     // todo: nice to have: this.activatedResource.navigateToApp()
     // or: this.router.navigate(this.activatedResource.getAppUrl());
-    this.router.navigate(['/apps', this.appId]);
+    this.router.navigate(['/apps', this.applicationId]);
   }
 
   onMouseOverBackControl() {

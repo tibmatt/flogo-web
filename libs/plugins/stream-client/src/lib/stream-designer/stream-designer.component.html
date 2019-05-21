@@ -8,18 +8,18 @@
     ></i>
     <div class="flogo-profile__tile profile__thumb flogo-profile__microservice"></div>
     <div class="details-content">
-      <div class="details-name" [(fgContentEditable)]="testingData"></div>
+      <div class="details-name" [(fgContentEditable)]="name"></div>
       <span>in</span>
       <span
         class="details-app-name"
         (click)="navigateToApp()"
         (mouseover)="onMouseOverBackControl()"
         (mouseout)="onMouseOutBackControl()"
-        >Anand's Application</span
+        >{{ streamData?.stream?.app?.name }}</span
       >
       <p
         class="details-description"
-        [(fgContentEditable)]="testingData1"
+        [(fgContentEditable)]="description"
         [allowNewLines]="true"
         placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
       ></p>
