@@ -3,26 +3,7 @@ import { getContribInstallationController as getInstallationController } from '.
 import { config } from '../../../../config/app-config';
 import { logger } from '../../../../common/logging';
 import { install as installContributionToEngine } from '../../../../modules/contrib-installer/microservice';
-import { TYPE_ACTIVITY, TYPE_TRIGGER, TYPE_FUNCTION } from '../../../../common/constants';
 import { ERROR_TYPES, ErrorManager } from '../../../../common/errors';
-
-const contributionTypes = {
-  activity: {
-    installerOpts: {
-      type: TYPE_ACTIVITY,
-    },
-  },
-  trigger: {
-    installerOpts: {
-      type: TYPE_TRIGGER,
-    },
-  },
-  function: {
-    installerOpts: {
-      type: TYPE_FUNCTION,
-    },
-  },
-};
 
 const CONTRIBUTION_TYPE = new Map([
   ['activity', 'flogo:activity'],
@@ -78,9 +59,8 @@ async function listContributions(ctx) {
 async function installContribution(ctx, next) {
   ctx.req.setTimeout(0);
   const url = ctx.request.body.url;
-  const contribType = contributionTypes[ctx.request.body.type];
 
-  if (!contribType) {
+  if (!url) {
     throw ErrorManager.createRestError('Unknown type of contribution', {
       type: ERROR_TYPES.ENGINE.INSTALL,
       message: 'Unknown type of contribution',
@@ -91,7 +71,7 @@ async function installContribution(ctx, next) {
     });
   }
 
-  logger.info(`[log] Install ${contribType.installerOpts.type}: '${url}'`);
+  logger.info(`[log] Install : '${url}'`);
   const installController = await getInstallationController(
     config.defaultEngine.path,
     (contribRef, engine) => installContributionToEngine(contribRef, engine)

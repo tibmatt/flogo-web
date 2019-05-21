@@ -181,16 +181,6 @@ class Engine {
   }
 
   /**
-   * Add/install a contribution
-   * @param contribPath Remote url or use local://path for local items
-   * @param options
-   * @param options.version {string} contrib versions
-   */
-  addContribution(contribPath: string, options: Options) {
-    return this._installItem('contribution', contribPath, options);
-  }
-
-  /**
    * Install a contribution
    * @param {string} nameOrPath Contribution name or path (remote url or local://path)
    */
@@ -199,7 +189,7 @@ class Engine {
       logger.warn(`'${nameOrPath}' already exists. Updating it in the engine.`);
       return this.updateContribution(nameOrPath);
     } else {
-      return this.addContribution(nameOrPath, { version: 'latest' });
+      return this._installItem('contribution', nameOrPath, { version: 'latest' });
     }
   }
 

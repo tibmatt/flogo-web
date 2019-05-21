@@ -2,6 +2,7 @@ import * as fs from 'fs';
 
 import { readJSONFile } from '../../common/utils/file';
 import { normalizeContribSchema } from '../../common/contrib-schema-normalize';
+import { ContributionType } from '@flogo-web/core';
 
 export const loader = {
   exists(enginePath) {
@@ -25,10 +26,13 @@ export const loader = {
    * @param {string} contributions[].ref - ref to the contribution
    */
   loadMetadata(contributions) {
+    const contributionsToRead = contributions.filter(
+      contrib => contrib.type !== ContributionType.Action
+    );
     const refToPath = el => ({ path: el.path, ref: el.ref });
 
     return Promise.resolve(
-      _readTasksNew(contributions.map(refToPath)).then(contribs =>
+      _readTasks(contributionsToRead.map(refToPath)).then(contribs =>
         contribs.map(contrib => {
           // rt === schema of the trigger
           contrib.rt = normalizeContribSchema(contrib.rt);
@@ -39,7 +43,7 @@ export const loader = {
   },
 };
 
-function _readTasksNew(data) {
+function _readTasks(data) {
   if (!data) {
     return Promise.resolve([]);
   }

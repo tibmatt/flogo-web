@@ -5,6 +5,7 @@ import { logger, engineLogger } from '../../common/logging';
 import { config } from '../../config/app-config';
 import { ContribInstallController } from '../contrib-install-controller';
 import { installResourceTypes } from './install-resource-types';
+import { ContributionType } from '@flogo-web/core';
 
 const CONTRIB_INSTALLER = 'contribInstaller';
 const engineRegistry: { [key: string]: any } = {};
@@ -123,7 +124,21 @@ export function initEngine(engine, options) {
       return engine.load().then(installedContribs => {
         const mapContribs = collection => collection.map(c => ({ ref: c.ref }));
         logger.info('installedContributions', {
-          installedContributions: mapContribs(installedContribs),
+          triggers: mapContribs(
+            installedContribs.filter(
+              contrib => contrib.rt.type === ContributionType.Trigger
+            )
+          ),
+          activities: mapContribs(
+            installedContribs.filter(
+              contrib => contrib.rt.type === ContributionType.Activity
+            )
+          ),
+          functions: mapContribs(
+            installedContribs.filter(
+              contrib => contrib.rt.type === ContributionType.Function
+            )
+          ),
         });
       });
     });
