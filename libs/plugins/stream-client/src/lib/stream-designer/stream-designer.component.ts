@@ -1,6 +1,4 @@
-import { Observable } from 'rxjs';
-import { scan } from 'rxjs/operators';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { ValueType, Metadata as ResourceMetadata } from '@flogo-web/core';
@@ -21,9 +19,8 @@ import { ParamsSchemaComponent } from '../params-schema';
   styleUrls: ['./stream-designer.component.less'],
   providers: [SimulatorService],
 })
-export class StreamDesignerComponent implements OnInit {
+export class StreamDesignerComponent {
   isPanelOpen = false;
-  simulationData$: Observable<any[]>;
   isMenuOpen = false;
   backToAppHover = false;
   name: string;
@@ -45,15 +42,6 @@ export class StreamDesignerComponent implements OnInit {
     this.streamData = this.route.snapshot.data.streamData;
     this.name = this.streamData.stream.name;
     this.description = this.streamData.stream.description;
-  }
-
-  ngOnInit() {
-    this.simulationData$ = this.simulationService.data$.pipe(
-      scan((acc: any[], val) => {
-        acc.unshift(val);
-        return acc.slice(0, 5);
-      }, [])
-    );
   }
 
   get applicationId() {
