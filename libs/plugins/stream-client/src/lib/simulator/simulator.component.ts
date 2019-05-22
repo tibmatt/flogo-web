@@ -8,21 +8,13 @@ import {
   OnInit,
   OnDestroy,
 } from '@angular/core';
-import perspective, { PerspectiveWorker, Table } from '@finos/perspective';
-import { fromEvent, Observable, ReplaySubject, Subscription } from 'rxjs';
-import {
-  take,
-  filter,
-  scan,
-  switchMap,
-  withLatestFrom,
-  shareReplay,
-  tap,
-  takeUntil,
-} from 'rxjs/operators';
+import { PerspectiveWorker, Table } from '@finos/perspective';
+import { Observable, combineLatest } from 'rxjs';
+import { take, filter, scan, tap, takeUntil } from 'rxjs/operators';
 
 import { SingleEmissionSubject } from '@flogo-web/lib-client/core';
 import { SimulatorService } from '../simulator.service';
+import { PerspectiveService } from '../perspective.service';
 
 @Component({
   selector: 'flogo-stream-simulator',
@@ -33,19 +25,22 @@ import { SimulatorService } from '../simulator.service';
 export class SimulatorComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('inputView') inputView: ElementRef;
   @ViewChild('outputView') outputView: ElementRef;
-  private worker: PerspectiveWorker;
   private table: Table;
   private values$: Observable<any>;
   private destroy$ = SingleEmissionSubject.create();
 
-  constructor(private zone: NgZone, private simulationService: SimulatorService) {}
+  constructor(
+    private zone: NgZone,
+    private perspectiveService: PerspectiveService,
+    private simulationService: SimulatorService
+  ) {}
 
   ngOnInit() {
     this.zone.runOutsideAngular(() => {
       this.values$ = this.simulationService.data$.pipe(
-        scan((acc: any[], val) => {
-          acc.unshift(val);
-          return acc.slice(0, 5);
+        scan((all: any[], val) => {
+          all.unshift(val);
+          return all;
         }, []),
         filter(values => values && values.length > 0)
       );
@@ -57,17 +52,19 @@ export class SimulatorComponent implements AfterViewInit, OnInit, OnDestroy {
       return;
     }
     this.zone.runOutsideAngular(() => {
-      this.worker = perspective.worker();
-      fromEvent(window, 'perspective-ready')
+      combineLatest(
+        this.perspectiveService.getWorker().pipe(tap(v => console.log('getWorker', v))),
+        this.values$.pipe(tap(() => console.log('v')))
+      )
         .pipe(
-          withLatestFrom(this.values$),
           takeUntil(this.destroy$),
           take(1)
         )
-        .subscribe(([, values]) => {
-          this.table = this.worker.table(values, {
+        .subscribe(([worker, values]: [PerspectiveWorker, any[]]) => {
+          console.log('init');
+          this.table = worker.table(values, {
             index: null,
-            limit: 100,
+            limit: 25,
           });
           this.inputView.nativeElement.load(this.table);
           this.outputView.nativeElement.load(this.table);

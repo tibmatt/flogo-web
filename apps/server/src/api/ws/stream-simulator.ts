@@ -4,6 +4,8 @@ import { random } from 'lodash';
 
 import { ValueType } from '@flogo-web/core';
 
+const INITIAL_SET_LENGTH = 10;
+
 export class StreamSimulator {
   constructor(private server: socketio.Server) {
     server.of('/stream-simulator').on('connection', clientSocket => {
@@ -15,7 +17,7 @@ export class StreamSimulator {
   }
 }
 
-const getRandomInterval = random.bind(null, 1000);
+const getRandomInterval = random.bind(null, 800, 3000);
 class Simulation {
   private currentTimeout;
 
@@ -27,6 +29,9 @@ class Simulation {
     props = props || [];
     const fields = props.map(propToFieldGenerator).filter(Boolean);
     const getNextValue = () => fields.reduce(fieldReducer, {});
+    for (let i = 0; i < INITIAL_SET_LENGTH; i++) {
+      this.emitValue(getNextValue());
+    }
     this.scheduleNext(getNextValue);
   }
 
@@ -40,12 +45,14 @@ class Simulation {
   private scheduleNext(getNextValue: () => any) {
     this.currentTimeout = setTimeout(() => {
       const nextValue = getNextValue();
-      console.log('[SIM]: sending data to ' + this.getClientId(), nextValue);
-
-      this.clientSocket.emit('data', nextValue);
-
+      this.emitValue(nextValue);
       this.scheduleNext(getNextValue);
     }, getRandomInterval());
+  }
+
+  private emitValue(nextValue) {
+    console.log('[SIM]: sending data to ' + this.getClientId(), nextValue);
+    this.clientSocket.emit('data', nextValue);
   }
 
   private getClientId() {
