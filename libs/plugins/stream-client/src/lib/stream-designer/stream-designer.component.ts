@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
+import { isEmpty } from 'lodash';
 
 import { ValueType, Metadata as ResourceMetadata } from '@flogo-web/core';
 
@@ -16,6 +17,9 @@ import { ParamsSchemaComponent } from '../params-schema';
 import { FlogoFlowService } from '../core';
 import { FlowState } from '../core/state';
 import { SingleEmissionSubject } from '@flogo-web/lib-client/core';
+import { FlogoFlowService as FlowsService } from '../core/flow.service';
+import { FlowData } from '../../../../flow-client/src/lib/core';
+import { NotificationsService } from '@flogo-web/lib-client/notifications';
 
 @Component({
   selector: 'flogo-stream-designer',
@@ -31,6 +35,7 @@ export class StreamDesignerComponent implements OnDestroy {
   graph;
   currentSelection: DiagramSelection;
   resourceMetadata: ResourceMetadata;
+  flowName: string;
   private ngOnDestroy$ = SingleEmissionSubject.create();
 
   @ViewChild('metadataModal') metadataModal: ParamsSchemaComponent;
@@ -39,15 +44,23 @@ export class StreamDesignerComponent implements OnDestroy {
     private simulationService: SimulatorService,
     private streamService: FlogoFlowService,
     private router: Router,
-    private route: ActivatedRoute
+    private _route: ActivatedRoute,
+    private _flowService: FlowsService,
+    private notifications: NotificationsService
   ) {
     const { mainGraph, mainItems } = mockResource();
     this.graph = mainGraph;
+    const flowData: FlowData = this._route.snapshot.data['streamData'];
     this.streamService.currentFlowDetails.flowState$
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(flowState => {
         this.flowState = flowState;
       });
+    this.initFlowData(flowData);
+  }
+
+  get flowId() {
+    return this.flowState && this.flowState.id;
   }
 
   ngOnDestroy() {
@@ -113,6 +126,84 @@ export class StreamDesignerComponent implements OnDestroy {
 
   onResourceMetadataSave(metadata) {
     this.resourceMetadata = metadata;
+  }
+
+  private initFlowData(flowData: FlowData) {
+    this.flowName = flowData.flow.name;
+  }
+
+  public changeFlowDetailName(name, property) {
+    if (name === this.flowName) {
+      return Promise.resolve(true);
+    } else if (!name || !name.trim()) {
+      this.flowState.name = this.flowName;
+      return Promise.resolve(true);
+    }
+
+    return this._flowService
+      .listFlowsByName(this.flowState.appId, name)
+      .then(flows => {
+        const results = flows || [];
+        if (!isEmpty(results)) {
+          if (results[0].id === this.flowId) {
+            return;
+          }
+          this.flowState.name = this.flowName;
+          this.notifications.error({
+            key: 'CANVAS:FLOW-NAME-EXISTS',
+            params: { value: name },
+          });
+          return results;
+        } else {
+          this.flowState.name = name;
+          this._updateFlow()
+            .then((response: any) => {
+              this.notifications.success({
+                key: 'CANVAS:SUCCESS-MESSAGE-UPDATE-STREAM',
+                params: { value: property },
+              });
+              this.flowName = this.flowState.name;
+              return response;
+            })
+            .catch(err => {
+              this.notifications.error({
+                key: 'CANVAS:ERROR-MESSAGE-UPDATE-STREAM',
+                params: { value: property },
+              });
+              return Promise.reject(err);
+            });
+        }
+      })
+      .catch(err => {
+        this.notifications.error({
+          key: 'CANVAS:ERROR-MESSAGE-UPDATE-STREAM',
+          params: { value: property },
+        });
+        return Promise.reject(err);
+      });
+  }
+
+  private _updateFlow() {
+    return this._flowService.saveFlowIfChanged(this.flowId, this.flowState).toPromise();
+  }
+
+  public changeFlowDetail($event, property) {
+    return this._updateFlow()
+      .then(wasSaved => {
+        if (wasSaved) {
+          this.notifications.success({
+            key: 'CANVAS:SUCCESS-MESSAGE-UPDATE-STREAM',
+            params: { value: property },
+          });
+        }
+        return wasSaved;
+      })
+      .catch(() =>
+        this.notifications.error({
+          key: 'CANVAS:ERROR-MESSAGE-UPDATE-STREAM',
+          params: { value: property },
+        })
+      );
   }
 }
 

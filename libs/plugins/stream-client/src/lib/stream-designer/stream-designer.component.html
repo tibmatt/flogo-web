@@ -8,7 +8,11 @@
     ></i>
     <div class="flogo-profile__tile profile__thumb flogo-profile__microservice"></div>
     <div class="details-content" *ngIf="flowState">
-      <div class="details-name" [(fgContentEditable)]="flowState.name"></div>
+      <div
+        class="details-name"
+        [(fgContentEditable)]="flowState.name"
+        (fgContentEditableChange)="changeFlowDetailName($event, 'name')"
+      ></div>
       <span>in</span>
       <span
         class="details-app-name"
@@ -22,6 +26,7 @@
         [(fgContentEditable)]="flowState.description"
         [allowNewLines]="true"
         placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
+        (fgContentEditableChange)="changeFlowDetail($event, 'description')"
       ></p>
     </div>
   </div>
