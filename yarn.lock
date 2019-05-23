@@ -554,12 +554,12 @@
     "@d3fc/d3fc-rebind" "^5.0.6"
     d3-array "^1.0.0"
 
-"@finos/perspective-viewer-d3fc@^0.3.0-rc.1":
-  version "0.3.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@finos/perspective-viewer-d3fc/-/perspective-viewer-d3fc-0.3.0-rc.1.tgz#98e43d4985a25c1b263af729ad29edff8b06fa57"
+"@finos/perspective-viewer-d3fc@^0.3.0-rc.2":
+  version "0.3.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@finos/perspective-viewer-d3fc/-/perspective-viewer-d3fc-0.3.0-rc.2.tgz#703043d954b4c47f9c502909c24378d069ee9ef9"
   dependencies:
-    "@finos/perspective" "^0.3.0-rc.1"
-    "@finos/perspective-viewer" "^0.3.0-rc.1"
+    "@finos/perspective" "^0.3.0-rc.2"
+    "@finos/perspective-viewer" "^0.3.0-rc.2"
     babel-runtime "^6.26.0"
     chroma-js "^1.3.4"
     d3 "^5.7.0"
@@ -567,13 +567,13 @@
     d3fc "^14.0.34"
     gradient-parser "0.1.5"
 
-"@finos/perspective-viewer-hypergrid@^0.3.0-rc.1":
-  version "0.3.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@finos/perspective-viewer-hypergrid/-/perspective-viewer-hypergrid-0.3.0-rc.1.tgz#71633d80f100e6f23e63542a93c5f2917aa1f102"
+"@finos/perspective-viewer-hypergrid@^0.3.0-rc.2":
+  version "0.3.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@finos/perspective-viewer-hypergrid/-/perspective-viewer-hypergrid-0.3.0-rc.2.tgz#de50d8c5db91e23fea9dd781b1503bea93fb4175"
   dependencies:
     "@babel/runtime" "^7.3.4"
-    "@finos/perspective" "^0.3.0-rc.1"
-    "@finos/perspective-viewer" "^0.3.0-rc.1"
+    "@finos/perspective" "^0.3.0-rc.2"
+    "@finos/perspective-viewer" "^0.3.0-rc.2"
     datasaur-local "3.0.0"
     fin-hypergrid "3.2.0"
     fin-hypergrid-grouped-header-plugin "^1.2.4"
@@ -581,12 +581,12 @@
     rectangular "1.0.1"
     superscript-number "^1.0.0"
 
-"@finos/perspective-viewer@^0.3.0-rc.1":
-  version "0.3.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@finos/perspective-viewer/-/perspective-viewer-0.3.0-rc.1.tgz#e076093d7e80cd58f6adc34bf9086619859ff83d"
+"@finos/perspective-viewer@^0.3.0-rc.2":
+  version "0.3.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@finos/perspective-viewer/-/perspective-viewer-0.3.0-rc.2.tgz#9ea120f50c3b0c72f1e20650fb82d571aef8abc1"
   dependencies:
     "@babel/runtime" "^7.3.4"
-    "@finos/perspective" "^0.3.0-rc.1"
+    "@finos/perspective" "^0.3.0-rc.2"
     "@webcomponents/shadycss" "^1.5.2"
     "@webcomponents/webcomponentsjs" "~2.0.4"
     awesomplete "^1.1.2"
@@ -595,9 +595,9 @@
     lodash "^4.17.4"
     mobile-drag-drop "^2.2.0"
 
-"@finos/perspective-webpack-plugin@^0.3.0-rc.1":
-  version "0.3.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@finos/perspective-webpack-plugin/-/perspective-webpack-plugin-0.3.0-rc.1.tgz#929b2074086b795323d17df6e2dab99ffc0bb7a0"
+"@finos/perspective-webpack-plugin@^0.3.0-rc.2":
+  version "0.3.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@finos/perspective-webpack-plugin/-/perspective-webpack-plugin-0.3.0-rc.2.tgz#ee64f1434d7bcf30da8929c9c4ae603ef8955bda"
   dependencies:
     "@webpack-contrib/schema-utils" "^1.0.0-beta.0"
     arraybuffer-loader "^1.0.2"
@@ -618,9 +618,9 @@
     tslib "^1.9.3"
     worker-loader "^2.0.0"
 
-"@finos/perspective@^0.3.0-rc.1":
-  version "0.3.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@finos/perspective/-/perspective-0.3.0-rc.1.tgz#e4c6cf8d68de524d044b85a4bd8d6056619e9bb9"
+"@finos/perspective@^0.3.0-rc.2":
+  version "0.3.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@finos/perspective/-/perspective-0.3.0-rc.2.tgz#43c9976f404db3a9169f6360e85c7d066f9f5832"
   dependencies:
     "@babel/runtime" "^7.3.4"
     bufferutil "~3.0.0"
