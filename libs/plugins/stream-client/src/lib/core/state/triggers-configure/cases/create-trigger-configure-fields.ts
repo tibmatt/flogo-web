@@ -3,7 +3,13 @@ import {
   TriggerSchema,
 } from '@flogo-web/core';
 import { Dictionary, TriggerHandler } from '@flogo-web/lib-client/core';
-import { Trigger, TriggerConfigureTab, TriggerConfigureTabType, TriggerConfigureFields, TriggerConfigureField } from '../../../interfaces';
+import {
+  Trigger,
+  TriggerConfigureTab,
+  TriggerConfigureTabType,
+  TriggerConfigureFields,
+  TriggerConfigureField,
+} from '../../../interfaces';
 
 interface ConfigureTriggerDetails {
   tabs: TriggerConfigureTab[];
