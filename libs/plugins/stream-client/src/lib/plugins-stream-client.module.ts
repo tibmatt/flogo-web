@@ -22,7 +22,7 @@ import { featureReducer } from './core/state';
     ContextPanelModule,
     DiagramModule,
     CoreModule,
-    StoreModule.forFeature('flow', featureReducer),
+    StoreModule.forFeature('stream', featureReducer),
     RouterModule.forChild([
       {
         path: '',

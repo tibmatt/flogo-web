@@ -28,7 +28,7 @@ interface Activity {
   ref: string;
 }
 
-export const selectFlowState = createFeatureSelector<FlowState>('flow');
+export const selectFlowState = createFeatureSelector<FlowState>('stream');
 export const selectCurrentSelection = createSelector(
   selectFlowState,
   (flowState: FlowState) => flowState.currentSelection
