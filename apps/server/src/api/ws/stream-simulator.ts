@@ -5,6 +5,10 @@ import { random } from 'lodash';
 import { ValueType } from '@flogo-web/core';
 
 const INITIAL_SET_LENGTH = 10;
+enum Transport {
+  Input = 'input',
+  Output = 'output',
+}
 
 export class StreamSimulator {
   constructor(private server: socketio.Server) {
@@ -30,7 +34,8 @@ class Simulation {
     const fields = props.map(propToFieldGenerator).filter(Boolean);
     const getNextValue = () => fields.reduce(fieldReducer, {});
     for (let i = 0; i < INITIAL_SET_LENGTH; i++) {
-      this.emitValue(getNextValue());
+      this.emitValue(getNextValue(), Transport.Input);
+      this.emitValue(getNextValue(), Transport.Output);
     }
     this.scheduleNext(getNextValue);
   }
@@ -44,15 +49,20 @@ class Simulation {
 
   private scheduleNext(getNextValue: () => any) {
     this.currentTimeout = setTimeout(() => {
-      const nextValue = getNextValue();
-      this.emitValue(nextValue);
+      const nextValueIn = getNextValue();
+      this.emitValue(nextValueIn, Transport.Input);
+      const nextValueOut = getNextValue();
+      this.emitValue(nextValueOut, Transport.Output);
       this.scheduleNext(getNextValue);
-    }, getRandomInterval());
+    }, 800); //getRandomInterval());
   }
 
-  private emitValue(nextValue) {
-    console.log('[SIM]: sending data to ' + this.getClientId(), nextValue);
-    this.clientSocket.emit('data', nextValue);
+  private emitValue(value, transport: Transport) {
+    console.log('[SIM]: sending data to ' + this.getClientId(), value);
+    this.clientSocket.emit('data', {
+      transport,
+      value,
+    });
   }
 
   private getClientId() {
@@ -68,6 +78,7 @@ function fieldReducer(
   return all;
 }
 
+const randomNumber = faker.random.number.bind(null, { min: 0, max: 115 });
 function propToFieldGenerator(prop: { name: string; type: ValueType }) {
   if (!prop || !prop.name || !prop.type) {
     return null;
@@ -77,7 +88,7 @@ function propToFieldGenerator(prop: { name: string; type: ValueType }) {
     case ValueType.Double:
     case ValueType.Integer:
     case ValueType.Long:
-      generate = faker.random.number;
+      generate = randomNumber;
       break;
     case ValueType.Boolean:
       generate = faker.random.boolean;

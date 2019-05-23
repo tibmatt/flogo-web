@@ -8,9 +8,12 @@ import {
   OnInit,
   OnDestroy,
 } from '@angular/core';
-import { PerspectiveWorker, Table } from '@finos/perspective';
-import { Observable, combineLatest } from 'rxjs';
-import { take, filter, scan, tap, takeUntil } from 'rxjs/operators';
+
+import { PerspectiveWorker } from '@finos/perspective';
+import PerspectiveViewer from '@finos/perspective-viewer';
+
+import { Observable, combineLatest, pipe } from 'rxjs';
+import { take, filter, scan, tap, takeUntil, shareReplay, map } from 'rxjs/operators';
 
 import { SingleEmissionSubject } from '@flogo-web/lib-client/core';
 import { SimulatorService } from '../simulator.service';
@@ -25,10 +28,9 @@ import { PerspectiveService } from '../perspective.service';
 export class SimulatorComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('inputView') inputView: ElementRef;
   @ViewChild('outputView') outputView: ElementRef;
-  private table: Table;
-  private values$: Observable<any>;
   private destroy$ = SingleEmissionSubject.create();
-
+  private input$: Observable<any>;
+  private output$: Observable<any>;
   constructor(
     private zone: NgZone,
     private perspectiveService: PerspectiveService,
@@ -37,13 +39,16 @@ export class SimulatorComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngOnInit() {
     this.zone.runOutsideAngular(() => {
-      this.values$ = this.simulationService.data$.pipe(
-        scan((all: any[], val) => {
-          all.unshift(val);
-          return all;
-        }, []),
-        filter(values => values && values.length > 0)
-      );
+      const values$ = this.simulationService.data$.pipe(shareReplay());
+
+      const accumulate = transportType =>
+        pipe(
+          filter((event: any) => event && event.transport === transportType),
+          map(event => event.value)
+        );
+
+      this.input$ = values$.pipe(accumulate('input'));
+      this.output$ = values$.pipe(accumulate('output'));
     });
   }
 
@@ -52,24 +57,8 @@ export class SimulatorComponent implements AfterViewInit, OnInit, OnDestroy {
       return;
     }
     this.zone.runOutsideAngular(() => {
-      combineLatest(
-        this.perspectiveService.getWorker().pipe(tap(v => console.log('getWorker', v))),
-        this.values$.pipe(tap(() => console.log('v')))
-      )
-        .pipe(
-          takeUntil(this.destroy$),
-          take(1)
-        )
-        .subscribe(([worker, values]: [PerspectiveWorker, any[]]) => {
-          console.log('init');
-          this.table = worker.table(values, {
-            index: null,
-            limit: 25,
-          });
-          this.inputView.nativeElement.load(this.table);
-          this.outputView.nativeElement.load(this.table);
-          this.listenForUpdates();
-        });
+      this.listen(this.input$, this.inputView.nativeElement);
+      this.listen(this.output$, this.outputView.nativeElement);
     });
   }
 
@@ -77,9 +66,34 @@ export class SimulatorComponent implements AfterViewInit, OnInit, OnDestroy {
     this.destroy$.emitAndComplete();
   }
 
-  private listenForUpdates() {
-    this.values$.pipe(takeUntil(this.destroy$)).subscribe(values => {
-      this.table.update(values);
+  private listen(values$: Observable<any[]>, viewer: PerspectiveViewer) {
+    this.zone.runOutsideAngular(() => {
+      combineLatest(
+        this.perspectiveService.getWorker().pipe(tap(w => console.log('getWorker', w))),
+        values$.pipe(
+          scan((all: any[], value) => {
+            all.unshift(value);
+            return all;
+          }, []),
+          filter(values => values && values.length > 0),
+          tap(() => console.log('v'))
+        )
+      )
+        .pipe(
+          takeUntil(this.destroy$),
+          take(1)
+        )
+        .subscribe(([, values]: [PerspectiveWorker, any[]]) => {
+          console.log('init');
+          viewer.load(values);
+          this.listenForUpdates(values$, viewer);
+        });
+    });
+  }
+
+  private listenForUpdates(values$: Observable<any[]>, viewer: PerspectiveViewer) {
+    values$.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      viewer.update([value]);
     });
   }
 }
