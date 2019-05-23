@@ -18,7 +18,6 @@ import { FlogoFlowService } from '../core';
 import { FlowState } from '../core/state';
 import { SingleEmissionSubject } from '@flogo-web/lib-client/core';
 import { FlogoFlowService as FlowsService } from '../core/flow.service';
-import { FlowData } from '../../../../flow-client/src/lib/core';
 import { NotificationsService } from '@flogo-web/lib-client/notifications';
 
 @Component({
@@ -44,19 +43,17 @@ export class StreamDesignerComponent implements OnDestroy {
     private simulationService: SimulatorService,
     private streamService: FlogoFlowService,
     private router: Router,
-    private _route: ActivatedRoute,
     private _flowService: FlowsService,
     private notifications: NotificationsService
   ) {
     const { mainGraph, mainItems } = mockResource();
     this.graph = mainGraph;
-    const flowData: FlowData = this._route.snapshot.data['streamData'];
     this.streamService.currentFlowDetails.flowState$
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(flowState => {
         this.flowState = flowState;
+        this.flowName = flowState.name;
       });
-    this.initFlowData(flowData);
   }
 
   get flowId() {
@@ -126,10 +123,6 @@ export class StreamDesignerComponent implements OnDestroy {
 
   onResourceMetadataSave(metadata) {
     this.resourceMetadata = metadata;
-  }
-
-  private initFlowData(flowData: FlowData) {
-    this.flowName = flowData.flow.name;
   }
 
   public changeFlowDetailName(name, property) {
