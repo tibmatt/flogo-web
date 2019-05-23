@@ -7,19 +7,19 @@
       (mouseout)="onMouseOutBackControl()"
     ></i>
     <div class="flogo-profile__tile profile__thumb flogo-profile__microservice"></div>
-    <div class="details-content">
-      <div class="details-name" [(fgContentEditable)]="name"></div>
+    <div class="details-content" *ngIf="flowState">
+      <div class="details-name" [(fgContentEditable)]="flowState.name"></div>
       <span>in</span>
       <span
         class="details-app-name"
         (click)="navigateToApp()"
         (mouseover)="onMouseOverBackControl()"
         (mouseout)="onMouseOutBackControl()"
-        >{{ streamData?.flow?.app?.name }}</span
+        >{{ flowState.app?.name }}</span
       >
       <p
         class="details-description"
-        [(fgContentEditable)]="description"
+        [(fgContentEditable)]="flowState.description"
         [allowNewLines]="true"
         placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
       ></p>

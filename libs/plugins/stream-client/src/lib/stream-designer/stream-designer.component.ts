@@ -1,7 +1,9 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 
 import { ValueType, Metadata as ResourceMetadata } from '@flogo-web/core';
+
 import {
   DiagramSelection,
   DiagramAction,
@@ -9,9 +11,11 @@ import {
   DiagramActionSelf,
   DiagramSelectionType,
 } from '@flogo-web/lib-client/diagram';
-
 import { SimulatorService } from '../simulator.service';
 import { ParamsSchemaComponent } from '../params-schema';
+import { FlogoFlowService } from '../core';
+import { FlowState } from '../core/state';
+import { SingleEmissionSubject } from '@flogo-web/lib-client/core';
 
 @Component({
   selector: 'flogo-stream-designer',
@@ -19,33 +23,39 @@ import { ParamsSchemaComponent } from '../params-schema';
   styleUrls: ['./stream-designer.component.less'],
   providers: [SimulatorService],
 })
-export class StreamDesignerComponent {
+export class StreamDesignerComponent implements OnDestroy {
+  flowState: FlowState;
   isPanelOpen = false;
   isMenuOpen = false;
   backToAppHover = false;
-  name: string;
-  description: string;
   graph;
-  streamData;
   currentSelection: DiagramSelection;
   resourceMetadata: ResourceMetadata;
+  private ngOnDestroy$ = SingleEmissionSubject.create();
 
   @ViewChild('metadataModal') metadataModal: ParamsSchemaComponent;
 
   constructor(
     private simulationService: SimulatorService,
+    private streamService: FlogoFlowService,
     private router: Router,
     private route: ActivatedRoute
   ) {
     const { mainGraph, mainItems } = mockResource();
     this.graph = mainGraph;
-    this.streamData = this.route.snapshot.data.streamData;
-    this.name = this.streamData.flow.name;
-    this.description = this.streamData.flow.description;
+    this.streamService.currentFlowDetails.flowState$
+      .pipe(takeUntil(this.ngOnDestroy$))
+      .subscribe(flowState => {
+        this.flowState = flowState;
+      });
+  }
+
+  ngOnDestroy() {
+    this.ngOnDestroy$.emitAndComplete();
   }
 
   get applicationId() {
-    return this.streamData && this.streamData.flow && this.streamData.flow.app.id;
+    return this.flowState && this.flowState.appId;
   }
 
   togglePanel() {
