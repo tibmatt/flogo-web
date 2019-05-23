@@ -40,12 +40,12 @@ export class StreamDesignerComponent {
     const { mainGraph, mainItems } = mockResource();
     this.graph = mainGraph;
     this.streamData = this.route.snapshot.data.streamData;
-    this.name = this.streamData.stream.name;
-    this.description = this.streamData.stream.description;
+    this.name = this.streamData.flow.name;
+    this.description = this.streamData.flow.description;
   }
 
   get applicationId() {
-    return this.streamData && this.streamData.stream && this.streamData.stream.app.id;
+    return this.streamData && this.streamData.flow && this.streamData.flow.app.id;
   }
 
   togglePanel() {

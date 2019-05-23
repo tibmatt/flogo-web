@@ -2,18 +2,22 @@ import { fromPairs } from 'lodash';
 
 import { CONTRIB_REFS, ActivitySchema, ContributionSchema } from '@flogo-web/core';
 import { Dictionary, FlowGraph, GraphNode } from '@flogo-web/lib-client/core';
+import { Task as BackendTask, Link as BackendLink } from '@flogo-web/plugins/flow-core';
 
+import { Item } from '../../interfaces';
+import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '../../constants';
 import { makeTaskNodes, makeBranchNode } from './graph-creator';
 import { makeBranchItem, makeTaskItems } from './items-creator';
+import { isSubflowTask } from '../flow/is-subflow-task';
 
 export type BranchIdGenerator = () => string;
 
 export function makeGraphAndItems(
-  tasks,
-  links,
+  tasks: BackendTask[],
+  links: BackendLink[],
   contribSchemas: ContributionSchema[],
   getNewBranchId: BranchIdGenerator
-): { items: Dictionary<any>; graph: FlowGraph } {
+): { items: Dictionary<Item>; graph: FlowGraph } {
   const getActivitySchema = activitySchemaFinder(contribSchemas);
   const taskItems = makeTaskItems(tasks, getActivitySchema);
   const taskNodes = makeTaskNodes(tasks, taskItems);
@@ -35,9 +39,9 @@ export function makeGraphAndItems(
 }
 
 function createAndAppendBranches(
-  links,
+  links: BackendLink[],
   getNewBranchId: BranchIdGenerator,
-  items: Dictionary<any>,
+  items: Dictionary<Item>,
   nodes: Dictionary<GraphNode>
 ) {
   links.forEach(link => {
@@ -46,7 +50,7 @@ function createAndAppendBranches(
     if (!parentNode || !childNode) {
       return;
     }
-    const hasCondition = link.type === 1;
+    const hasCondition = link.type === FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH;
     if (hasCondition) {
       const branchId = getNewBranchId();
       items[branchId] = makeBranchItem(branchId, link);
@@ -63,8 +67,8 @@ function createAndAppendBranches(
 
 function activitySchemaFinder(contribSchemas: ContributionSchema[]) {
   const schemaDictionary = fromPairs(contribSchemas.map(schema => [schema.ref, schema]));
-  return (task): Partial<ActivitySchema> => {
-    if (task.type === 4) {
+  return (task: BackendTask): Partial<ActivitySchema> => {
+    if (isSubflowTask(task.type)) {
       return { ref: CONTRIB_REFS.SUBFLOW };
     }
     return schemaDictionary[task.activityRef] as ActivitySchema;

@@ -11,8 +11,9 @@ import { StreamDesignerComponent } from './stream-designer/stream-designer.compo
 import { SimulatorComponent } from './simulator/simulator.component';
 import { ParamsSchemaModule } from './params-schema';
 import { TriggersModule } from './triggers';
-import { StreamConverterModel } from './core/models/stream-converter.model';
-import { StreamService } from './core/stream.service';
+import { CoreModule } from './core';
+import { StoreModule } from '@ngrx/store';
+import { featureReducer } from './core/state';
 
 @NgModule({
   imports: [
@@ -20,6 +21,8 @@ import { StreamService } from './core/stream.service';
     FlogoSharedModule,
     ContextPanelModule,
     DiagramModule,
+    CoreModule,
+    StoreModule.forFeature('flow', featureReducer),
     RouterModule.forChild([
       {
         path: '',
@@ -34,6 +37,6 @@ import { StreamService } from './core/stream.service';
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [StreamDesignerComponent, SimulatorComponent],
-  providers: [StreamDataResolver, StreamConverterModel, StreamService],
+  providers: [StreamDataResolver],
 })
 export class PluginsStreamClientModule {}

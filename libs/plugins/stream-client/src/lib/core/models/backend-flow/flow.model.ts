@@ -1,41 +1,58 @@
 import {
-  isEmpty,
-  isUndefined,
-  includes,
   difference,
-  each,
   cloneDeep,
-  isNumber,
   get,
+  each,
+  includes,
+  isEmpty,
+  isNumber,
   isString,
+  isUndefined,
 } from 'lodash';
-import { ValueType, Metadata, MetadataAttribute, ActivitySchema } from '@flogo-web/core';
+
+import { ActivitySchema, ValueType } from '@flogo-web/core';
 import {
-  FlowGraph as StreamGraph,
+  getDefaultValue,
+  flowToJSON_Attribute,
+  flowToJSON_Link,
+  flowToJSON_Mapping,
+  flowToJSON_Task,
   Dictionary,
-  flowToJSON_Task as streamToJSON_Task,
-  flowToJSON_Link as streamToJSON_Link,
+  FlowGraph,
   GraphNode,
   NodeType,
-  flowToJSON_Attribute as streamToJSON_Attribute,
-  getDefaultValue,
-  flowToJSON_Mapping as streamToJSON_Mapping,
 } from '@flogo-web/lib-client/core';
+import {
+  FlowResource,
+  ResourceFlowData,
+  TaskAttribute as DiagramTaskAttribute,
+  AttributeMapping as DiagramTaskAttributeMapping,
+  FlowMetadata,
+  Item,
+  MetadataAttribute,
+  UiFlow,
+  ItemActivityTask,
+  ItemBranch,
+  ItemTask,
+} from '../../interfaces';
+import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE, FLOGO_TASK_TYPE } from '../../constants';
+import { isSubflowTask } from '../flow/is-subflow-task';
+import { mergeItemWithSchema } from '../merge-item-with-schema';
 
 const DEBUG = false;
 const INFO = true;
 
 const generateDiagramTraverser = schemas => {
   const visited: string[] = [];
-  const tasksDest: streamToJSON_Task[] = [];
-  const linksDest: streamToJSON_Link[] = [];
+  const tasksDest: flowToJSON_Task[] = [];
+  const linksDest: flowToJSON_Link[] = [];
   let idCounter = 0;
   const _genLinkId = () => ++idCounter;
 
   function _traversalDiagramChildren(
     node: GraphNode,
     nodes: Dictionary<GraphNode>,
-    tasks
+    tasks: Dictionary<Item>
   ) {
     // if haven't visited
     if (!includes(visited, node.id)) {
@@ -70,7 +87,7 @@ const generateDiagramTraverser = schemas => {
          * add task
          */
 
-        const taskInfo = _prepareTaskInfo(tasks[childNode.id]);
+        const taskInfo = _prepareTaskInfo(<ItemActivityTask>tasks[childNode.id]);
         if (!isEmpty(taskInfo)) {
           tasksDest.push(taskInfo);
         }
@@ -84,17 +101,17 @@ const generateDiagramTraverser = schemas => {
             id: _genLinkId(),
             from: node.id,
             to: childNode.id,
-            type: 0,
+            type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.DEFAULT,
           });
         } else if (node.type === NodeType.Branch && node.parents.length === 1) {
           const parentNode = nodes[node.parents[0]];
-          const branch = tasks[node.id];
+          const branch = tasks[node.id] as ItemBranch;
 
           linksDest.push({
             id: _genLinkId(),
             from: parentNode.id,
             to: childNode.id,
-            type: 1,
+            type: FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH,
             value: branch.condition,
           });
         }
@@ -104,22 +121,24 @@ const generateDiagramTraverser = schemas => {
     }
   }
 
-  function _prepareTaskInfo(item) {
+  function _prepareTaskInfo(item: ItemTask) {
     // todo: remove schema === {} for subflow case
     const schema = <ActivitySchema>schemas[item.ref] || <any>{};
-    const task: any = mergeItemWithSchema(item, schema);
-    const taskInfo = <streamToJSON_Task>{};
+    const task = mergeItemWithSchema(item, schema);
+    const taskInfo = <flowToJSON_Task>{};
     if (_isValidInternalTaskInfo(task)) {
       taskInfo.id = task.id;
       taskInfo.name = get(task, 'name', '');
       taskInfo.description = get(task, 'description', '');
       taskInfo.type = task.type;
       taskInfo.activityType = task.activityType || '';
-      if (task.type === 4) {
+      if (!isSubflowTask(task.type)) {
         taskInfo.activityRef = task.ref;
       }
 
-      taskInfo.attributes = _parseStreamAttributes(get(task, 'attributes.inputs'));
+      taskInfo.attributes = _parseFlowAttributes(<DiagramTaskAttribute[]>(
+        get(task, 'attributes.inputs')
+      ));
 
       /* add inputMappings */
 
@@ -134,7 +153,9 @@ const generateDiagramTraverser = schemas => {
       }
       /* add outputMappings */
 
-      const outputMappings = parseStreamMappings(get(task, 'outputMappings'));
+      const outputMappings = parseFlowMappings(<DiagramTaskAttributeMapping[]>(
+        get(task, 'outputMappings')
+      ));
 
       if (!isEmpty(outputMappings)) {
         taskInfo.ouputMappings = outputMappings;
@@ -152,8 +173,8 @@ const generateDiagramTraverser = schemas => {
     return taskInfo;
   }
 
-  return (rootNode: GraphNode, nodes: Dictionary<GraphNode>, tasks) => {
-    const rootTaskInfo = _prepareTaskInfo(tasks[rootNode.id]);
+  return (rootNode: GraphNode, nodes: Dictionary<GraphNode>, tasks: Dictionary<Item>) => {
+    const rootTaskInfo = _prepareTaskInfo(<ItemActivityTask>tasks[rootNode.id]);
     if (!isEmpty(rootTaskInfo)) {
       tasksDest.push(rootTaskInfo);
     }
@@ -162,114 +183,9 @@ const generateDiagramTraverser = schemas => {
   };
 };
 
-export function savableStream(inStream) {
-  if (!inStream || isEmpty(inStream.id)) {
-    /* tslint:disable-next-line:no-unused-expression */
-    DEBUG && console.error('No id in the given stream');
-    /* tslint:disable-next-line:no-unused-expression */
-    DEBUG && console.log(inStream);
-    return {};
-  }
-
-  const resource: any = {
-    id: inStream.id,
-    type: 'stream',
-    name: inStream.name || '',
-    description: inStream.description || '',
-    metadata: _parseMetadata(
-      inStream.metadata || {
-        input: [],
-        output: [],
-      }
-    ),
-    data: {},
-  };
-
-  const mainHandler = buildHandler(inStream.mainGraph, inStream.mainItems, inStream);
-  if (mainHandler) {
-    resource.data.tasks = mainHandler.tasks;
-    resource.data.links = mainHandler.links;
-  }
-
-  const errorHandler = buildHandler(inStream.errorGraph, inStream.errorItems, inStream);
-  if (errorHandler) {
-    resource.data.errorHandler = {
-      tasks: errorHandler.tasks,
-      links: errorHandler.links,
-    };
-  }
-
-  return resource;
-}
-
-function _parseMetadata(metadata: Metadata): Metadata {
-  const streamMetadata: Metadata = {
-    input: [],
-    output: [],
-  };
-  streamMetadata.input = metadata.input.map(input => {
-    const inputMetadata: MetadataAttribute = {
-      name: input.name,
-      type: input.type || ValueType.String,
-    };
-    if (!isUndefined(input.value)) {
-      inputMetadata.value = input.value;
-    }
-    return inputMetadata;
-  });
-  streamMetadata.output = metadata.output.map(output => ({
-    name: output.name,
-    type: output.type || ValueType.String,
-  }));
-  return streamMetadata;
-}
-
-function buildHandler(graph: StreamGraph, streamItems, inStream) {
-  const streamPathRoot = graph.rootId;
-  const streamPathNodes = graph.nodes;
-  const isHandlerEmpty = isEmpty(graph) || !streamPathRoot || isEmpty(streamPathNodes);
-  if (!isHandlerEmpty && !isEmpty(streamItems)) {
-    const rootNode = streamPathNodes[streamPathRoot];
-    if (!isEmpty(rootNode)) {
-      const _traversalDiagram = generateDiagramTraverser(inStream.schemas);
-      return _traversalDiagram(rootNode, streamPathNodes, streamItems);
-    }
-  }
-  return null;
-}
-
-function mergeItemWithSchema(item, schema) {
-  item = cloneDeep(item);
-  schema = cloneDeep(schema);
-  const itemInput = item.input || {};
-  const schemaInputs = schema.inputs || [];
-  const inputs = schemaInputs.map(input => {
-    const value = itemInput[input.name];
-    return { ...input, value };
-  });
-  return {
-    id: item.id,
-    type: item.type,
-    version: schema.version,
-    name: item.name,
-    activityRef: item.ref,
-    ref: item.ref,
-    description: item.description,
-    attributes: {
-      inputs,
-      outputs: schema.outputs,
-    },
-    activitySettings: item.activitySettings,
-    inputMappings: item.inputMappings,
-    settings: item.settings,
-    __props: {},
-    __status: {},
-  };
-}
-
 function _isValidInternalTaskInfo(task: {
   id: string;
-  type;
+  type: FLOGO_TASK_TYPE;
   activityType?: string;
   ref?: string;
   [key: string]: any;
@@ -307,11 +223,11 @@ function _isValidInternalTaskInfo(task: {
   return true;
 }
 
-function _parseStreamAttributes(inAttrs: any[]): streamToJSON_Attribute[] {
-  const attributes = <streamToJSON_Attribute[]>[];
+function _parseFlowAttributes(inAttrs: any[]): flowToJSON_Attribute[] {
+  const attributes = <flowToJSON_Attribute[]>[];
 
   each(inAttrs, (inAttr: any) => {
-    const attr = <streamToJSON_Attribute>{};
+    const attr = <flowToJSON_Attribute>{};
 
     /* simple validation */
     attr.name = <string>get(inAttr, 'name');
@@ -335,12 +251,91 @@ function _parseStreamAttributes(inAttrs: any[]): streamToJSON_Attribute[] {
   return attributes;
 }
 
-function parseStreamMappings(inMappings: any[] = []): streamToJSON_Mapping[] {
-  return inMappings.reduce((parsedMappings: streamToJSON_Mapping[], inMapping: any) => {
+/**
+ * Convert the action to server model
+ */
+export function savableFlow(inFlow: UiFlow): FlowResource {
+  if (!inFlow || isEmpty(inFlow.id)) {
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.error('No id in the given flow');
+    /* tslint:disable-next-line:no-unused-expression */
+    DEBUG && console.log(inFlow);
+    return {} as FlowResource;
+  }
+
+  const resource: FlowResource = {
+    id: inFlow.id,
+    type: 'flow',
+    name: inFlow.name || '',
+    description: inFlow.description || '',
+    metadata: _parseMetadata(
+      inFlow.metadata || {
+        input: [],
+        output: [],
+      }
+    ),
+    data: {} as ResourceFlowData,
+  };
+
+  const mainHandler = buildHandler(inFlow.mainGraph, inFlow.mainItems, inFlow);
+  if (mainHandler) {
+    resource.data.tasks = mainHandler.tasks as ResourceFlowData['tasks'];
+    resource.data.links = mainHandler.links;
+  }
+
+  const errorHandler = buildHandler(inFlow.errorGraph, inFlow.errorItems, inFlow);
+  if (errorHandler) {
+    resource.data.errorHandler = {
+      tasks: errorHandler.tasks as ResourceFlowData['errorHandler']['tasks'],
+      links: errorHandler.links,
+    };
+  }
+
+  return resource;
+}
+
+function buildHandler(graph: FlowGraph, flowItems: Dictionary<Item>, inFlow: UiFlow) {
+  const flowPathRoot = graph.rootId;
+  const flowPathNodes = graph.nodes;
+  const isHandlerEmpty = isEmpty(graph) || !flowPathRoot || isEmpty(flowPathNodes);
+  if (!isHandlerEmpty && !isEmpty(flowItems)) {
+    const rootNode = flowPathNodes[flowPathRoot];
+    if (!isEmpty(rootNode)) {
+      const _traversalDiagram = generateDiagramTraverser(inFlow.schemas);
+      return _traversalDiagram(rootNode, flowPathNodes, flowItems);
+    }
+  }
+  return null;
+}
+
+function _parseMetadata(metadata: FlowMetadata): FlowMetadata {
+  const flowMetadata: FlowMetadata = {
+    input: [],
+    output: [],
+  };
+  flowMetadata.input = metadata.input.map(input => {
+    const inputMetadata: MetadataAttribute = {
+      name: input.name,
+      type: input.type || ValueType.String,
+    };
+    if (!isUndefined(input.value)) {
+      inputMetadata.value = input.value;
+    }
+    return inputMetadata;
+  });
+  flowMetadata.output = metadata.output.map(output => ({
+    name: output.name,
+    type: output.type || ValueType.String,
+  }));
+  return flowMetadata;
+}
+
+export function parseFlowMappings(inMappings: any[] = []): flowToJSON_Mapping[] {
+  return inMappings.reduce((parsedMappings: flowToJSON_Mapping[], inMapping: any) => {
     if (!isValidMapping(inMapping)) {
       return parsedMappings;
     }
-    const parsedMapping: streamToJSON_Mapping = {
+    const parsedMapping: flowToJSON_Mapping = {
       type: inMapping.type,
       value: inMapping.value,
       mapTo: inMapping.mapTo,

@@ -6,6 +6,14 @@ import {
   NodeType,
   Dictionary,
 } from '@flogo-web/lib-client/core';
+import {
+  isIterableTask,
+  Task as BackendTask,
+  Link as BackendLink,
+} from '@flogo-web/plugins/flow-core';
+import { isSubflowTask } from '../flow/is-subflow-task';
+import { isBranchConfigured } from '../flow/is-branch-configured';
+import { Item, ItemActivityTask } from '../../interfaces/flow';
 
 const defaultFeatures: NodeFeatures = {
   selectable: true,
@@ -23,7 +31,10 @@ const defaultStatus: NodeStatus = {
   iterable: false,
 };
 
-export function makeTaskNodes(tasks, items: Dictionary<any>): Dictionary<GraphNode> {
+export function makeTaskNodes(
+  tasks: BackendTask[],
+  items: Dictionary<Item>
+): Dictionary<GraphNode> {
   return tasks.reduce(
     (nodes, task) => {
       const node = makeTask(task, items[task.id]);
@@ -34,8 +45,8 @@ export function makeTaskNodes(tasks, items: Dictionary<any>): Dictionary<GraphNo
   );
 }
 
-function makeTask(task, item): GraphNode {
-  const isFinal = item.return;
+function makeTask(task: BackendTask, item: Item): GraphNode {
+  const isFinal = (<ItemActivityTask>item).return;
   return makeNode({
     type: NodeType.Task,
     id: task.id,
@@ -45,7 +56,7 @@ function makeTask(task, item): GraphNode {
       selectable: true,
       deletable: true,
       canHaveChildren: !isFinal,
-      subflow: item.type === 4,
+      subflow: isSubflowTask(item.type),
       final: isFinal,
     },
     status: {
@@ -54,13 +65,13 @@ function makeTask(task, item): GraphNode {
   });
 }
 
-export function makeBranchNode(id: string, link): GraphNode {
+export function makeBranchNode(id: string, link: BackendLink): GraphNode {
   return makeNode({
     id,
     type: NodeType.Branch,
     parents: [link.from],
     children: [link.to],
-    status: { isBranchConfigured: link.value && link.value !== 'true' },
+    status: { isBranchConfigured: isBranchConfigured(link.value) },
   });
 }
 
@@ -74,12 +85,4 @@ export function makeNode(
     features: { ...defaultFeatures, ...from.features },
     status: { ...defaultStatus, ...from.status },
   };
-}
-
-function isIterableTask(task): boolean {
-  return isAcceptableIterateValue(get(task, 'settings.iterate'));
-}
-
-function isAcceptableIterateValue(value: any) {
-  return !isNil(value) && value !== '';
 }

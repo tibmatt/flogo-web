@@ -1,18 +1,8 @@
 import { get, cloneDeep, fromPairs, isArray, pick } from 'lodash';
 import { ValueType } from '@flogo-web/core';
 
-const TASK_TYPE = {
-  0: 'TASK_ROOT',
-  1: 'TASK',
-  2: 'TASK_ITERATOR',
-  3: 'TASK_BRANCH',
-  4: 'TASK_SUB_PROC',
-  TASK_ROOT: 0,
-  TASK: 1,
-  TASK_ITERATOR: 2,
-  TASK_BRANCH: 3,
-  TASK_SUB_PROC: 4,
-};
+import { ItemActivityTask, ItemBranch, ItemTask } from '../../interfaces/flow';
+import { FLOGO_TASK_TYPE } from '../../constants';
 
 export class ItemFactory {
   static getDefaultTaskProperties(installed) {
@@ -62,7 +52,7 @@ export class ItemFactory {
       { id: trigger.node.taskID },
       {
         nodeId: trigger.node.taskID,
-        type: 0,
+        type: FLOGO_TASK_TYPE.TASK_ROOT,
         triggerType: installed.name,
         settings: [],
       }
@@ -93,20 +83,20 @@ export class ItemFactory {
     return item;
   }
 
-  static makeItem(activitySource: { activitySchema; taskInstance }) {
+  static makeItem(activitySource: { activitySchema; taskInstance }): ItemTask {
     const { activitySchema, taskInstance } = activitySource;
 
     const attributes = taskInstance.attributes || [];
 
-    const item = {
+    const item: ItemActivityTask = {
       ...this.getDefaultTaskProperties(activitySchema),
       id: taskInstance.id,
       name: taskInstance.name,
       description: taskInstance.description,
       inputMappings: taskInstance.inputMappings || {},
-      type: TASK_TYPE[taskInstance.type]
-        ? TASK_TYPE[TASK_TYPE[taskInstance.type]]
-        : TASK_TYPE.TASK,
+      type: FLOGO_TASK_TYPE[taskInstance.type]
+        ? FLOGO_TASK_TYPE[FLOGO_TASK_TYPE[taskInstance.type]]
+        : FLOGO_TASK_TYPE.TASK,
       settings: taskInstance.settings || {},
       return: !!activitySchema.return,
       activitySettings: taskInstance.activitySettings || {},
@@ -115,10 +105,10 @@ export class ItemFactory {
     return item;
   }
 
-  static makeBranch(branch) {
+  static makeBranch(branch): ItemBranch {
     return {
       id: branch.taskID,
-      type: TASK_TYPE.TASK_BRANCH,
+      type: FLOGO_TASK_TYPE.TASK_BRANCH,
       condition: branch.condition,
     };
   }

@@ -1,35 +1,43 @@
-import { isUndefined, uniqueId, fromPairs, pick } from 'lodash';
 import { Injectable } from '@angular/core';
-
+import { fromPairs, isUndefined, uniqueId, pick } from 'lodash';
+import {
+  Resource,
+  FunctionsSchema,
+  ActivitySchema,
+  TriggerSchema,
+  ValueType,
+} from '@flogo-web/core';
 import {
   Dictionary,
-  ContributionsService,
   ErrorService,
+  ContributionsService,
   FLOGO_CONTRIB_TYPE,
 } from '@flogo-web/lib-client/core';
 import {
-  Resource,
-  ValueType,
-  TriggerSchema,
-  ActivitySchema,
-  FunctionsSchema,
-  Metadata,
+  ApiFlowResource,
+  FlowMetadata,
   MetadataAttribute,
-} from '@flogo-web/core';
-import { makeGraphAndItems } from './graph-and-items';
-import { ItemFactory } from './graph-and-items/item-factory';
+  Item,
+  ItemSubflow,
+  UiFlow,
+} from '../../interfaces';
+import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../constants';
+import { makeGraphAndItems } from '../graph-and-items';
+import { ItemFactory } from '../graph-and-items/item-factory';
+import { flogoGenTriggerID, flogoGenNodeID } from './utils';
+import { isSubflowTask } from '../flow/is-subflow-task';
 
-interface FlowInfo {
+export interface FlowInfo {
   id: string;
   appId: string;
   name: string;
   description: string;
   app: any;
-  metadata?: Metadata;
+  metadata?: FlowMetadata;
 }
 
 @Injectable()
-export class StreamConverterModel {
+export class MicroServiceModelConverter {
   subflowSchemaRegistry: Dictionary<Resource>;
 
   constructor(
@@ -37,10 +45,10 @@ export class StreamConverterModel {
     private errorService: ErrorService
   ) {}
 
-  getFlowInformation(resource): FlowInfo {
+  getFlowInformation(resource: ApiFlowResource): FlowInfo {
     const flowInputs = (resource.metadata && resource.metadata.input) || [];
     const flowOutputs = (resource.metadata && resource.metadata.output) || [];
-    const metadata: Metadata = {
+    const metadata: FlowMetadata = {
       input: [],
       output: [],
     };
@@ -90,7 +98,7 @@ export class StreamConverterModel {
     }
   }
 
-  convertToWebFlowModel(resource, subflowSchema: Dictionary<Resource>) {
+  convertToWebFlowModel(resource: ApiFlowResource, subflowSchema: Dictionary<Resource>) {
     this.subflowSchemaRegistry = subflowSchema;
     this.verifyHasProperTasks(resource);
     return Promise.all([this.getAllActivitySchemas(), this.getAllFunctionSchemas()]).then(
@@ -103,7 +111,7 @@ export class StreamConverterModel {
     );
   }
 
-  verifyHasProperTasks(flow) {
+  verifyHasProperTasks(flow: ApiFlowResource) {
     const flowData = flow && flow.data;
     let tasks = (flowData && flowData.tasks) || [];
     // add tiles from error diagram
@@ -111,7 +119,7 @@ export class StreamConverterModel {
       (flowData && flowData.errorHandler && flowData.errorHandler.tasks) || []
     );
     // filter only tasks of type activity and ignore subflows
-    tasks = tasks.filter(t => t.type !== 4);
+    tasks = tasks.filter(t => !isSubflowTask(t.type));
 
     tasks.forEach(task => {
       const ref = task.activityRef;
@@ -131,7 +139,7 @@ export class StreamConverterModel {
     });
   }
 
-  processFlowObj(resource, installedContribs) {
+  processFlowObj(resource: ApiFlowResource, installedContribs) {
     const flowInfo = this.getFlowInformation(resource);
 
     const resourceData = resource && resource.data;
@@ -164,10 +172,10 @@ export class StreamConverterModel {
     };
   }
 
-  makeFlow(flowInfo: FlowInfo, schemas = []) {
+  makeFlow(flowInfo: FlowInfo, schemas = []): UiFlow {
     const { id, name, description, appId, app, metadata } = flowInfo;
 
-    const flow: any = {
+    const flow: UiFlow = {
       id,
       name,
       description,
@@ -213,7 +221,7 @@ export class StreamConverterModel {
     return this.contribService.listContribs<FunctionsSchema>(FLOGO_CONTRIB_TYPE.FUNCTION);
   }
 
-  private cleanDanglingSubflowMappings(items: Dictionary<any>) {
+  private cleanDanglingSubflowMappings(items: Dictionary<Item>) {
     const subflowInputExists = (subflowInputs, propName) =>
       !!subflowInputs.find(i => i.name === propName);
     Object.values(items).forEach(item => {
@@ -233,8 +241,8 @@ export class StreamConverterModel {
     return items;
   }
 
-  private isSubflowItem(item) {
-    return item.type === 4;
+  private isSubflowItem(item: Item): item is ItemSubflow {
+    return isSubflowTask(item.type);
   }
 
   private normalizeTriggerSchema(schema: TriggerSchema): TriggerSchema {
@@ -250,14 +258,14 @@ export class StreamConverterModel {
 class NodeFactory {
   static makeTrigger() {
     return Object.assign({}, this.getSharedProperties(), {
-      type: 3,
-      taskID: `Flogo::Trigger::${Date.now()}`,
+      type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT,
+      taskID: flogoGenTriggerID(),
     });
   }
 
   static makeItem(item) {
     return Object.assign({}, this.getSharedProperties(), {
-      type: 5,
+      type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
       taskID: item.taskID,
     });
   }
@@ -266,18 +274,13 @@ class NodeFactory {
     const status = { isSelected: false };
     return Object.assign(
       {},
-      {
-        id: uniqueId(`FlogoFlowDiagramNode::${Date.now()}::`),
-        __status: status,
-        children: [],
-        parents: [],
-      }
+      { id: flogoGenNodeID(), __status: status, children: [], parents: [] }
     );
   }
 
   static makeBranch() {
     return Object.assign({}, this.getSharedProperties(), {
-      type: 6,
+      type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH,
       taskID: NodeFactory.flogoGenBranchID(),
     });
   }

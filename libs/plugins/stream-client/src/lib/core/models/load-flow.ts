@@ -5,10 +5,22 @@ import { switchMap, map } from 'rxjs/operators';
 import { Resource, ApiResource } from '@flogo-web/core';
 import { Dictionary, TriggerHandler } from '@flogo-web/lib-client/core';
 
+import {
+  FlowResource,
+  Trigger,
+  ResourceFlowData,
+  ApiFlowResource,
+  UiFlow,
+} from '../interfaces';
+import { isSubflowTask } from './flow/is-subflow-task';
+
 export const loadFlow = (
   fetchSubflows: (ids: string[]) => Observable<ApiResource[]>,
-  convertToWebFlowModel,
-  resource
+  convertToWebFlowModel: (
+    flowObj: FlowResource,
+    subflowSchema: Dictionary<Resource>
+  ) => SubscribableOrPromise<UiFlow>,
+  resource: ApiFlowResource
 ) => {
   return getSubflows(fetchSubflows, resource).pipe(
     switchMap(linkedSubflows => {
@@ -36,8 +48,11 @@ export const loadFlow = (
   );
 };
 
-function normalizeTriggersAndHandlersForAction(actionId: string, originalTriggers) {
-  const triggers: Dictionary<any> = {};
+function normalizeTriggersAndHandlersForAction(
+  actionId: string,
+  originalTriggers: Trigger[]
+) {
+  const triggers: Dictionary<Trigger> = {};
   const handlers: Dictionary<TriggerHandler> = {};
   const findHandlerForAction = (handler: TriggerHandler) =>
     handler.resourceId === actionId;
@@ -49,19 +64,19 @@ function normalizeTriggersAndHandlersForAction(actionId: string, originalTrigger
   return { triggers, handlers };
 }
 
-function getSubflowIds(flowData): string[] {
+function getSubflowIds(flowData: ResourceFlowData): string[] {
   const allTasks = ((flowData && flowData.tasks) || []).concat(
     flowData.errorHandler && flowData.errorHandler.tasks
       ? flowData.errorHandler.tasks
       : []
   );
-  const subFlowTasks = allTasks.filter(t => t.type === 4);
+  const subFlowTasks = allTasks.filter(t => isSubflowTask(t.type));
   return uniq<string>(subFlowTasks.map(t => (t.settings || {}).flowPath));
 }
 
 function getSubflows(
   fetchSubflows: (ids: string[]) => SubscribableOrPromise<Resource[]>,
-  fromResource
+  fromResource: FlowResource
 ): Observable<{ [subflowId: string]: Resource }> {
   const subflowIds = getSubflowIds(fromResource.data);
   const source = subflowIds.length > 0 ? from(fetchSubflows(subflowIds)) : of([]);
