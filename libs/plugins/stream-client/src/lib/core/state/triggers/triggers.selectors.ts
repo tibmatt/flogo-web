@@ -10,12 +10,13 @@ import {
 import { TriggersState } from '../../../triggers/interfaces/triggers-state';
 import { triggersToRenderableTriggers } from '../../../triggers/models/triggers-to-renderable-triggers';
 import { SelectionType } from '../../models';
+import { RenderableTrigger } from '../../../triggers/interfaces/renderable-trigger';
 
-/*export const getRenderableTriggers = createSelector(
+export const getRenderableTriggers = createSelector(
   selectHandlers,
   selectTriggers,
   (handlers, triggers) => triggersToRenderableTriggers(handlers, triggers)
-);*/
+);
 
 export const selectCurrentTrigger = createSelector(
   selectCurrentSelection,
@@ -33,13 +34,19 @@ export const selectCurrentTrigger = createSelector(
   }
 );
 
-/*export const getTriggersState = createSelector(
+export const getTriggersState = createSelector(
   selectAppInfo,
   selectActionId,
   getRenderableTriggers,
   selectFlowMetadata,
   selectCurrentTrigger,
-  (appInfo, actionId, triggers, flowMetadata, currentTrigger): TriggersState => {
+  (
+    appInfo,
+    actionId,
+    triggers,
+    flowMetadata,
+    currentTrigger: RenderableTrigger
+  ): TriggersState => {
     return {
       appId: appInfo.appId,
       actionId,
@@ -48,4 +55,4 @@ export const selectCurrentTrigger = createSelector(
       currentTrigger,
     };
   }
-);*/
+);

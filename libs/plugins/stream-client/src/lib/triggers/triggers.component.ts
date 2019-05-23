@@ -18,11 +18,11 @@ import {
 } from '@flogo-web/lib-client/confirmation';
 import { LanguageService } from '@flogo-web/lib-client/language';
 
-// import { MicroServiceModelConverter } from '../core';
-// import { AppState } from '../core/state/app.state';
-// import { getTriggersState } from '../core/state/triggers/triggers.selectors';
-// import * as TriggerActions from '../core/state/triggers/triggers.actions';
-// import * as TriggerConfigureActions from '../core/state/triggers-configure/trigger-configure.actions';
+import { MicroServiceModelConverter } from '../core';
+import { AppState } from '../core/state/app.state';
+import { getTriggersState } from '../core/state/triggers/triggers.selectors';
+import * as TriggerActions from '../core/state/triggers/triggers.actions';
+import * as TriggerConfigureActions from '../core/state/triggers-configure/trigger-configure.actions';
 import { TriggerMenuSelectionEvent } from './trigger-block/models';
 import { RenderableTrigger } from './interfaces/renderable-trigger';
 import { TRIGGER_MENU_OPERATION } from './constants';
@@ -42,12 +42,10 @@ function settingsToObject(
 })
 export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   actionId: string;
-  @Input() appId: string;
-  @Input() metadata: Metadata;
-  // appDetails: {
-  //   appId: string;
-  //   metadata?: Metadata;
-  // };
+  appDetails: {
+    appId: string;
+    metadata?: Metadata;
+  };
   triggersList: RenderableTrigger[] = [];
   currentTrigger: RenderableTrigger;
   showAddTrigger = false;
@@ -60,26 +58,26 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
     private _restAPIHandlerService: HandlersService,
     private installedTriggerService: InstalledTriggersService,
     private translate: LanguageService,
-    // private store: Store<AppState>,
+    private store: Store<AppState>,
     private confirmationService: ConfirmationModalService
   ) {}
 
   ngOnInit() {
-    // this.store
-    //   .pipe(
-    //     select(getTriggersState),
-    //     takeUntil(this.ngDestroy$)
-    //   )
-    //   .subscribe(triggerState => {
-    //     this.currentTrigger = triggerState.currentTrigger;
-    //     this.actionId = triggerState.actionId;
-    //     this.triggersList = triggerState.triggers;
-    //     // todo: possibly flatten this structure out but some sub components depend on it right now
-    //     this.appDetails = {
-    //       appId: triggerState.appId,
-    //       metadata: triggerState.flowMetadata,
-    //     };
-    //   });
+    this.store
+      .pipe(
+        select(getTriggersState),
+        takeUntil(this.ngDestroy$)
+      )
+      .subscribe(triggerState => {
+        this.currentTrigger = triggerState.currentTrigger;
+        this.actionId = triggerState.actionId;
+        this.triggersList = triggerState.triggers;
+        // todo: possibly flatten this structure out but some sub components depend on it right now
+        this.appDetails = {
+          appId: triggerState.appId,
+          metadata: triggerState.flowMetadata,
+        };
+      });
   }
 
   ngOnDestroy() {
@@ -115,14 +113,14 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
       .then(triggerId => this.restAPITriggersService.getTrigger(triggerId))
       .then(trigger => {
         const handler = trigger.handlers.find(h => h.actionId === this.actionId);
-        // this.store.dispatch(new TriggerActions.AddTrigger({ trigger, handler }));
+        this.store.dispatch(new TriggerActions.AddTrigger({ trigger, handler }));
       });
   }
 
   private persistNewTriggerAndHandler(data, settings, outputs) {
     let registerTrigger;
     if (data.installType === 'installed') {
-      const appId = this.appId;
+      const appId = this.appDetails.appId;
       const triggerInfo: any = pick(data.triggerData, ['name', 'ref', 'description']);
       triggerInfo.settings = settingsToObject(data.triggerData.settings, _ => null);
       registerTrigger = this.restAPITriggersService
@@ -148,12 +146,12 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
         }, {})
       )
       .subscribe(triggerSchemas => {
-        // this.store.dispatch(
-        //   new TriggerConfigureActions.OpenConfigureWithSelection({
-        //     triggerId: selectedTrigger.id,
-        //     triggerSchemas,
-        //   })
-        // );
+        this.store.dispatch(
+          new TriggerConfigureActions.OpenConfigureWithSelection({
+            triggerId: selectedTrigger.id,
+            triggerSchemas,
+          })
+        );
       });
   }
 

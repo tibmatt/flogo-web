@@ -43,7 +43,7 @@
   </div>
   <flogo-stream-select-trigger
     [(isAddTriggerActivated)]="showAddTrigger"
-    [appId]="appId"
+    [appId]="appDetails?.appId"
     (addTriggerToAction)="addTriggerToAction($event)"
     (installDialog)="openInstallTriggerWindow()"
   >
