@@ -20,6 +20,9 @@
     "github.com/project-flogo/contrib/function/string",
     "github.com/project-flogo/contrib/function/number",
     "github.com/project-flogo/contrib/function/json",
-    "github.com/project-flogo/contrib/function/coerce"
+    "github.com/project-flogo/contrib/function/coerce",
+    "github.com/project-flogo/stream/activity/filter",
+    "github.com/project-flogo/stream/activity/aggregate",
+    "github.com/project-flogo/edge-contrib/activity/mqtt"
   ]
 }
