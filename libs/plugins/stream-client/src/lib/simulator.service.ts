@@ -2,6 +2,7 @@ import * as io from 'socket.io-client';
 import { Observable, fromEvent } from 'rxjs';
 import { Injectable, OnDestroy, Inject } from '@angular/core';
 
+import { Metadata } from '@flogo-web/core';
 import { HOSTNAME } from '@flogo-web/lib-client/core';
 
 @Injectable()
@@ -19,8 +20,8 @@ export class SimulatorService implements OnDestroy {
     this.socket.disconnect();
   }
 
-  startSimulation(props) {
-    this.socket.emit('simulate-start', props);
+  startSimulation(metadata: Partial<Metadata>) {
+    this.socket.emit('simulate-start', metadata);
   }
 
   stopSimulation() {

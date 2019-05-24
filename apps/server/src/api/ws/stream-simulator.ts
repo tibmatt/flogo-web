@@ -2,7 +2,7 @@ import * as socketio from 'socket.io';
 import * as faker from 'faker';
 import { random } from 'lodash';
 
-import { ValueType } from '@flogo-web/core';
+import { ValueType, Metadata, MetadataAttribute } from '@flogo-web/core';
 
 const INITIAL_SET_LENGTH = 10;
 enum Transport {
@@ -22,6 +22,16 @@ export class StreamSimulator {
 }
 
 const getRandomInterval = random.bind(null, 800, 3000);
+
+interface ValueGenerators {
+  nextInput: () => any;
+  nextOutput: () => any;
+}
+function makeValueGenerator(fromAttrs: MetadataAttribute[]) {
+  const fields = (fromAttrs || []).map(propToFieldGenerator).filter(Boolean);
+  return () => fields.reduce(fieldReducer, {});
+}
+
 class Simulation {
   private currentTimeout;
 
@@ -29,15 +39,17 @@ class Simulation {
     console.log(`Created simulator instance for ${this.getClientId()}`);
   }
 
-  start(props: { name: string; type: string }[]) {
-    props = props || [];
-    const fields = props.map(propToFieldGenerator).filter(Boolean);
-    const getNextValue = () => fields.reduce(fieldReducer, {});
+  start(metadata: Partial<Metadata>) {
+    metadata = metadata || {};
+    const valueGenerators: ValueGenerators = {
+      nextInput: makeValueGenerator(metadata.input),
+      nextOutput: makeValueGenerator(metadata.output),
+    };
     for (let i = 0; i < INITIAL_SET_LENGTH; i++) {
-      this.emitValue(getNextValue(), Transport.Input);
-      this.emitValue(getNextValue(), Transport.Output);
+      this.emitValue(valueGenerators.nextInput(), Transport.Input);
+      this.emitValue(valueGenerators.nextOutput(), Transport.Output);
     }
-    this.scheduleNext(getNextValue);
+    this.scheduleNext(valueGenerators);
   }
 
   stop() {
@@ -47,13 +59,13 @@ class Simulation {
     }
   }
 
-  private scheduleNext(getNextValue: () => any) {
+  private scheduleNext(valueGenerators: ValueGenerators) {
     this.currentTimeout = setTimeout(() => {
-      const nextValueIn = getNextValue();
+      const nextValueIn = valueGenerators.nextInput();
       this.emitValue(nextValueIn, Transport.Input);
-      const nextValueOut = getNextValue();
+      const nextValueOut = valueGenerators.nextOutput();
       this.emitValue(nextValueOut, Transport.Output);
-      this.scheduleNext(getNextValue);
+      this.scheduleNext(valueGenerators);
     }, 800); //getRandomInterval());
   }
 

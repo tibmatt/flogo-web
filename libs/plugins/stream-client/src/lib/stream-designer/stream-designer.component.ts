@@ -72,10 +72,12 @@ export class StreamDesignerComponent implements OnDestroy {
     this.isPanelOpen = !this.isPanelOpen;
 
     if (this.isPanelOpen) {
-      this.simulationService.startSimulation([
-        { name: 'field1', type: ValueType.Integer },
-        { name: 'field2', type: ValueType.String },
-      ]);
+      this.simulationService.startSimulation({
+        input: [{ name: 'field1', type: ValueType.Integer }],
+        output: [{ name: 'field2', type: ValueType.String }],
+      });
+
+      // this.simulationService.startSimulation(this.resourceMetadata || {});
     } else {
       this.simulationService.stopSimulation();
     }

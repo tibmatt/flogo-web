@@ -80,7 +80,10 @@
   </div>
 
   <ng-template #simulator>
-    <flogo-stream-simulator *ngIf="isPanelOpen"></flogo-stream-simulator>
+    <flogo-stream-simulator
+      *ngIf="isPanelOpen"
+      [metadata]="resourceMetadata"
+    ></flogo-stream-simulator>
   </ng-template>
 </flogo-context-panel-area>
 

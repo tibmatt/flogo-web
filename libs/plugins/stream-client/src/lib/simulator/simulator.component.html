@@ -1,20 +1,23 @@
 <div class="column">
   <div class="section-title">Stream Input</div>
-  <perspective-viewer
+  <flogo-stream-simulator-viz
+    *ngIf="metadata?.input?.length > 0; else noInput"
     class="viewer"
-    id="perspectiveInput"
-    #inputView
-    limit="25"
-  ></perspective-viewer>
+    [values$]="input$"
+  ></flogo-stream-simulator-viz>
+  <ng-template #noInput
+    ><div class="section-empty">No inputs defined yet for this stream</div></ng-template
+  >
 </div>
 
 <div class="column">
   <div class="section-title">Stream Output</div>
-  <perspective-viewer
+  <flogo-stream-simulator-viz
+    *ngIf="metadata?.output?.length > 0; else noOutput"
     class="viewer"
-    id="perspectiveOutput"
-    #outputView
-    limit="25"
-    view="x_bar"
-  ></perspective-viewer>
+    [values$]="output$"
+  ></flogo-stream-simulator-viz>
+  <ng-template #noOutput
+    ><div class="section-empty">No outputs defined yet for this stream</div></ng-template
+  >
 </div>

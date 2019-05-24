@@ -14,6 +14,7 @@ import { TriggersModule } from './triggers';
 import { CoreModule } from './core';
 import { StoreModule } from '@ngrx/store';
 import { featureReducer } from './core/state';
+import { SimulatorVizComponent } from './simulator/simulator-viz.component';
 
 @NgModule({
   imports: [
@@ -36,7 +37,7 @@ import { featureReducer } from './core/state';
     TriggersModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  declarations: [StreamDesignerComponent, SimulatorComponent],
+  declarations: [StreamDesignerComponent, SimulatorComponent, SimulatorVizComponent],
   providers: [StreamDataResolver],
 })
 export class PluginsStreamClientModule {}

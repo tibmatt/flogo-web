@@ -7,14 +7,16 @@ import {
   NgZone,
   OnInit,
   OnDestroy,
+  Input,
 } from '@angular/core';
 
 import { PerspectiveWorker } from '@finos/perspective';
 import PerspectiveViewer from '@finos/perspective-viewer';
 
 import { Observable, combineLatest, pipe } from 'rxjs';
-import { take, filter, scan, tap, takeUntil, shareReplay, map } from 'rxjs/operators';
+import { take, filter, scan, takeUntil, shareReplay, map } from 'rxjs/operators';
 
+import { Metadata } from '@flogo-web/core';
 import { SingleEmissionSubject } from '@flogo-web/lib-client/core';
 import { SimulatorService } from '../simulator.service';
 import { PerspectiveService } from '../perspective.service';
@@ -25,9 +27,8 @@ import { PerspectiveService } from '../perspective.service';
   styleUrls: ['./simulator.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SimulatorComponent implements AfterViewInit, OnInit, OnDestroy {
-  @ViewChild('inputView') inputView: ElementRef;
-  @ViewChild('outputView') outputView: ElementRef;
+export class SimulatorComponent implements OnInit, OnDestroy {
+  @Input() metadata?: Metadata;
   private destroy$ = SingleEmissionSubject.create();
   private input$: Observable<any>;
   private output$: Observable<any>;
@@ -52,48 +53,7 @@ export class SimulatorComponent implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
-  ngAfterViewInit() {
-    if (!this.inputView || !this.inputView.nativeElement) {
-      return;
-    }
-    this.zone.runOutsideAngular(() => {
-      this.listen(this.input$, this.inputView.nativeElement);
-      this.listen(this.output$, this.outputView.nativeElement);
-    });
-  }
-
   ngOnDestroy() {
     this.destroy$.emitAndComplete();
-  }
-
-  private listen(values$: Observable<any[]>, viewer: PerspectiveViewer) {
-    this.zone.runOutsideAngular(() => {
-      combineLatest(
-        this.perspectiveService.getWorker().pipe(tap(w => console.log('getWorker', w))),
-        values$.pipe(
-          scan((all: any[], value) => {
-            all.unshift(value);
-            return all;
-          }, []),
-          filter(values => values && values.length > 0),
-          tap(() => console.log('v'))
-        )
-      )
-        .pipe(
-          takeUntil(this.destroy$),
-          take(1)
-        )
-        .subscribe(([, values]: [PerspectiveWorker, any[]]) => {
-          console.log('init');
-          viewer.load(values);
-          this.listenForUpdates(values$, viewer);
-        });
-    });
-  }
-
-  private listenForUpdates(values$: Observable<any[]>, viewer: PerspectiveViewer) {
-    values$.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      viewer.update([value]);
-    });
   }
 }
