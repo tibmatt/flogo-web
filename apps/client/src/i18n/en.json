@@ -269,6 +269,8 @@
   "SELECT-TRIGGER:MY-EXISTING-TRIGGERS": "My existing triggers",
   "SUBFLOW:REFERENCE-ERROR-TEXT": "Reference is not available for this subflow",
   "SUBFLOW:SELECT-DIFFERENT-FLOW": "Select a different flow",
+  "INPUT-OUTPUT:STREAM-INTERFACE": "Stream interface",
+  "INPUT-OUTPUT:GROUP-BY": "Group By",
   "INPUT-PARAMS:ADD": "+",
   "INPUT-PARAMS:DEFINE": "Define Params",
   "INPUT-PARAMS:SAVE": "Save",

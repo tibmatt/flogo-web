@@ -2,14 +2,15 @@
 
 @bg-color-default: #dedede;
 @bg-color-default--hover: #f0f0f0;
-@bg-color-configured: #eef6fa;
-@bg-color-configured--hover: #c9e3f1;
+@bg-color-configured: #eaedfe;
+@bg-color-configured--hover: #d5dcfc;
 
 .schema-button {
   width: 70px;
   height: 100%;
   padding: 0 10px 10px;
   position: relative;
+  color: @color-ink;
 
   display: flex;
   align-items: center;
@@ -19,7 +20,7 @@
   font-weight: bold;
   text-align: center;
   font-size: 0.75em;
-  box-shadow: 2px 0px 1px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 1px 0 rgba(0, 0, 0, 0.1);
   transition: all 0.15s ease-in-out;
 
   // arrow
@@ -61,11 +62,24 @@
   }
 
   &__icon {
-    color: @color-secondary;
+    color: #96a7f8;
     font-size: 20px;
     line-height: 1;
     height: 24px;
     width: 24px;
     margin: 33px 0 7px;
   }
+}
+
+.shcema-label {
+  color: @color-dark-gray;
+  font-size: 10px;
+  margin: 2rem 0 0;
+}
+
+.shcema-grouped {
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }

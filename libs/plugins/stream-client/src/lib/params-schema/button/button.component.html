@@ -5,5 +5,15 @@
   "
 >
   <i class="flogo-icon flogo-icon-input-output schema-button__icon"></i>
-  <span>{{ 'CANVAS:FLOW-PARAMS-INPUT-OUTPUT' | translate }}</span>
+  <span>{{ 'INPUT-OUTPUT:STREAM-INTERFACE' | translate }}</span>
+  <!--<label
+    class="shcema-label"
+    *ngIf="flowMetadata?.input?.length > 0 || flowMetadata?.output?.length > 0"
+    >{{ 'INPUT-OUTPUT:GROUP-BY' | translate }}</label
+  >
+  <span
+    class="shcema-grouped"
+    *ngIf="flowMetadata?.input?.length > 0 || flowMetadata?.output?.length > 0"
+    >Cutomer Id</span
+  >-->
 </div>
