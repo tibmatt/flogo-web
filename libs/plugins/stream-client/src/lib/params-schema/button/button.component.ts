@@ -9,4 +9,6 @@ import { Metadata } from '@flogo-web/core';
 export class ButtonComponent {
   @Input()
   flowMetadata: Metadata;
+  @Input()
+  groupBy: string;
 }

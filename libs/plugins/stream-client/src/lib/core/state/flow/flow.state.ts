@@ -19,6 +19,7 @@ export interface FlowState extends UiFlow {
     instanceId: string;
   };
   lastExecutionResult: { [taskId: string]: Dictionary<StepAttribute> };
+  groupBy?: string;
 }
 
 export interface State {
@@ -46,5 +47,5 @@ export const INITIAL_STATE: FlowState = {
   },
   configChangedSinceLastExecution: false,
   structureChangedSinceLastFullExecution: false,
-  lastExecutionResult: {},
+  lastExecutionResult: {}
 };
