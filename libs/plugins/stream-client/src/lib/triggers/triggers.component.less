@@ -2,6 +2,25 @@
 
 :host {
   background-color: #fff;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+
+  // arrow
+  &:after {
+    position: absolute;
+    left: 74px;
+    top: 51px;
+    z-index: 1;
+    content: '';
+    display: block;
+    width: 28px;
+    height: 16px;
+    transform: rotate(71deg) skewX(50deg);
+    background: #fff;
+    box-shadow: 2px -1px 2px -1px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s ease-in-out;
+  }
 }
 
 .main {
