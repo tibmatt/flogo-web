@@ -1,4 +1,4 @@
-<div class="header">
+<div class="stream-header">
   <div class="stream-details" [ngClass]="{ '--hover': backToAppHover }">
     <i
       class="flogo-icon flogo-icon-back back-to-app"
@@ -6,7 +6,7 @@
       (mouseover)="onMouseOverBackControl()"
       (mouseout)="onMouseOutBackControl()"
     ></i>
-    <div class="flogo-profile__tile profile__thumb flogo-profile__microservice"></div>
+    <div class="flogo-profile__tile profile__thumb flogo-profile__microservice-stream"></div>
     <div class="details-content" *ngIf="flowState">
       <div
         class="details-name"
