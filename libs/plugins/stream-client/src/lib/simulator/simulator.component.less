@@ -1,3 +1,5 @@
+@import '~@flogo-web/assets/styles/_variables';
+
 :host {
   display: flex;
   width: 100%;
@@ -6,16 +8,25 @@
 
 .column {
   flex: 1;
-  margin: 1em;
+  padding: 10px 20px;
+  margin: 10px 0 20px;
 
   display: flex;
   flex-direction: column;
 }
 
-.section-title,
-.section-empty {
-  padding-left: 24px;
-  font-size: 14px;
+.section-title {
+  display: flex;
+  flex-direction: row;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.section-title__icon {
+  width: 20px;
+  height: 20px;
+  color: @color-dark-gray;
+  margin-right: 10px;
 }
 
 .section-empty {

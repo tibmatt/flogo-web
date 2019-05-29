@@ -1,3 +1,5 @@
+@import '~@flogo-web/assets/styles/_variables';
+
 :host {
   display: flex;
   flex-direction: column;
@@ -17,4 +19,22 @@ perspective-viewer {
 
 .header__title {
   flex: 1;
+}
+
+.view-selector {
+  background: transparent;
+  border: none;
+  padding: 0;
+  height: 24px;
+  color: @color-dark-gray;
+  transition: color 0.15s ease-in-out;
+
+  &:hover,
+  &.is-selected {
+    color: #062e79;
+  }
+}
+
+.view-selector + .view-selector {
+  margin-left: 10px;
 }

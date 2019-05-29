@@ -2,12 +2,34 @@
 <div class="header">
   <div class="header__title"><ng-content></ng-content></div>
   <div *ngIf="!isStarting">
-    <!--  TODO: button icons-->
-    <button [disabled]="!view || view == 'hypergrid'" (click)="setView('hypergrid')">
-      G
+    <button
+      class="view-selector"
+      [class.is-selected]="!view || view == 'hypergrid'"
+      [disabled]="!view || view == 'hypergrid'"
+      (click)="setView('hypergrid')"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          fill-rule="nonzero"
+          d="M2 5h5v2H2V5zm7 0h6v2H9V5zm8 0h5v2h-5V5zM2 9h5v2H2V9zm7 0h6v2H9V9zm8 0h5v2h-5V9zM2 13h5v2H2v-2zm7 0h6v2H9v-2zm8 0h5v2h-5v-2zM2 17h5v2H2v-2zm7 0h6v2H9v-2zm8 0h5v2h-5v-2z"
+        />
+      </svg>
     </button>
-    <button [disabled]="!!view && view != 'hypergrid'" (click)="setView('d3_y_line')">
-      C
+
+    <button
+      class="view-selector"
+      [class.is-selected]="!!view && view != 'hypergrid'"
+      [disabled]="!!view && view != 'hypergrid'"
+      (click)="setView('d3_y_line')"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          fill-rule="nonzero"
+          d="M22 21H2V3h2v16h2v-9h4v9h2V6h4v13h2v-5h4z"
+        />
+      </svg>
     </button>
   </div>
 </div>

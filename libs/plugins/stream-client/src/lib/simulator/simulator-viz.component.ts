@@ -11,7 +11,7 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable, combineLatest, pipe } from 'rxjs';
 import { SingleEmissionSubject } from '@flogo-web/lib-client/core';
 import { scan, filter, takeUntil, take } from 'rxjs/operators';
 import { PerspectiveWorker } from '@finos/perspective';
@@ -59,13 +59,7 @@ export class SimulatorVizComponent implements OnDestroy, AfterViewInit, OnChange
     this.zone.runOutsideAngular(() => {
       combineLatest(
         this.perspectiveService.getWorker(),
-        this.values$.pipe(
-          scan((all: any[], value) => {
-            all.unshift(value);
-            return all.slice(0, VIZ_LIMIT);
-          }, []),
-          filter(values => values && values.length > 0)
-        )
+        this.values$.pipe(valueAccumulator())
       )
         .pipe(
           takeUntil(this.destroy$),
@@ -108,13 +102,26 @@ export class SimulatorVizComponent implements OnDestroy, AfterViewInit, OnChange
     this.values$
       .pipe(
         takeUntil(this.destroy$),
-        scan((values, value) => {
-          values.unshift(value);
-          return values.slice(0, VIZ_LIMIT);
-        }, [])
+        valueAccumulator()
       )
       .subscribe(values => {
         this.getViewer().update(values);
       });
   }
+}
+
+function accumulateValues(values, value) {
+  values.unshift(value);
+  return values.slice(0, VIZ_LIMIT);
+}
+
+function isNotEmpty(values) {
+  return values && values.length > 0;
+}
+
+function valueAccumulator() {
+  return pipe(
+    scan(accumulateValues, []),
+    filter(isNotEmpty)
+  );
 }
