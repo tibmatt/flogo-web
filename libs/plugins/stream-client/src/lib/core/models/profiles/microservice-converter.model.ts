@@ -6,6 +6,8 @@ import {
   ActivitySchema,
   TriggerSchema,
   ValueType,
+  Metadata,
+  MetadataAttribute,
 } from '@flogo-web/core';
 import {
   Dictionary,
@@ -13,14 +15,7 @@ import {
   ContributionsService,
   FLOGO_CONTRIB_TYPE,
 } from '@flogo-web/lib-client/core';
-import {
-  ApiFlowResource,
-  FlowMetadata,
-  MetadataAttribute,
-  Item,
-  ItemSubflow,
-  UiFlow,
-} from '../../interfaces';
+import { ApiFlowResource, Item, ItemSubflow, UiFlow } from '../../interfaces';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../constants';
 import { makeGraphAndItems } from '../graph-and-items';
 import { ItemFactory } from '../graph-and-items/item-factory';
@@ -33,7 +28,7 @@ export interface FlowInfo {
   name: string;
   description: string;
   app: any;
-  metadata?: FlowMetadata;
+  metadata?: Metadata;
 }
 
 @Injectable()
@@ -48,7 +43,7 @@ export class MicroServiceModelConverter {
   getFlowInformation(resource: ApiFlowResource): FlowInfo {
     const flowInputs = (resource.metadata && resource.metadata.input) || [];
     const flowOutputs = (resource.metadata && resource.metadata.output) || [];
-    const metadata: FlowMetadata = {
+    const metadata: Metadata = {
       input: [],
       output: [],
     };

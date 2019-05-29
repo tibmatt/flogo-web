@@ -6,14 +6,8 @@
 >
   <i class="flogo-icon flogo-icon-input-output schema-button__icon"></i>
   <span>{{ 'INPUT-OUTPUT:STREAM-INTERFACE' | translate }}</span>
-  <label
-    class="shcema-label"
-    *ngIf="groupBy"
-    >{{ 'INPUT-OUTPUT:GROUP-BY' | translate }}</label
-  >
-  <span
-    class="shcema-grouped"
-    *ngIf="groupBy"
-    >{{ groupBy }}</span
-  >
+  <label class="shcema-label" *ngIf="groupBy">{{
+    'INPUT-OUTPUT:GROUP-BY' | translate
+  }}</label>
+  <span class="shcema-grouped" *ngIf="groupBy">{{ groupBy }}</span>
 </div>

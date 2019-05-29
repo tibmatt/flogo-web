@@ -3,7 +3,7 @@ import { Store, select } from '@ngrx/store';
 import { FlowActions, FlowSelectors } from '../state';
 import { AppState } from '../state/app.state';
 import { HandlerType } from './handler-type';
-import { FlowMetadata } from '../interfaces/flow';
+import { StreamParams } from '../interfaces/flow';
 
 export class FlogoFlowDetails {
   id: string;
@@ -27,7 +27,7 @@ export class FlogoFlowDetails {
     );
   }
 
-  updateMetadata(metadata: FlowMetadata) {
-    this.store.dispatch(new FlowActions.UpdateMetadata(metadata));
+  updateMetadata(params: StreamParams) {
+    this.store.dispatch(new FlowActions.UpdateMetadata(params));
   }
 }

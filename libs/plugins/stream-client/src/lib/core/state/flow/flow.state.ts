@@ -47,5 +47,5 @@ export const INITIAL_STATE: FlowState = {
   },
   configChangedSinceLastExecution: false,
   structureChangedSinceLastFullExecution: false,
-  lastExecutionResult: {}
+  lastExecutionResult: {},
 };

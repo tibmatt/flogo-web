@@ -14,9 +14,9 @@ import {
 import { FlowState } from '../flow/flow.state';
 import { createTriggerConfigureFields } from './cases/create-trigger-configure-fields';
 import { normalizeSettings } from './cases/normalize-settings';
-import { TriggerSchema, FlogoAppModel } from '@flogo-web/core';
+import { TriggerSchema, FlogoAppModel, Metadata } from '@flogo-web/core';
 import { TriggerHandler, Trigger } from '@flogo-web/lib-client/core';
-import { InstalledFunctionSchema, FlowMetadata } from '../../interfaces';
+import { InstalledFunctionSchema } from '../../interfaces';
 
 interface TriggerStatus {
   id?: string;
@@ -27,7 +27,7 @@ interface TriggerStatus {
 
 interface CurrentTriggerState {
   appId: string;
-  flowMetadata: FlowMetadata;
+  flowMetadata: Metadata;
   schema: TriggerSchema;
   handler: TriggerHandler;
   trigger: Trigger;

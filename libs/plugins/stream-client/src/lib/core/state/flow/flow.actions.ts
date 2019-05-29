@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import { Resource, ActivitySchema } from '@flogo-web/core';
 import { Dictionary, GraphNode, StepAttribute } from '@flogo-web/lib-client/core';
-import { FlowMetadata, Item, ItemTask } from '../../interfaces/flow';
+import { Item, ItemTask, StreamParams } from '../../interfaces/flow';
 import { HandlerType } from '../../models';
 import { FlowState } from './flow.state';
 
@@ -17,7 +17,7 @@ export enum ActionType {
   ItemUpdated = '[Flow] Item updated',
   CommitItemConfiguration = '[Flow] Commit item configuration',
   CancelItemConfiguration = '[Flow] Cancel item configuration',
-  UpdateMetadata = '[Flow] Update Metadata',
+  UpdateMetadata = '[Stream] Update Metadata',
   ClearSelection = '[Flow] Clear selection',
   RunFromStart = '[Run Flow] Run from start',
   RunFromTask = '[Run Flow] Run from tile',
@@ -31,31 +31,31 @@ export enum ActionType {
   ActivityInstalled = '[Flow] Activity installed',
 }
 
-interface BaseFlowAction extends Action {
+interface BaseStreamAction extends Action {
   readonly type: ActionType;
 }
 
-export class Init implements BaseFlowAction {
+export class Init implements BaseStreamAction {
   readonly type = ActionType.Init;
   constructor(public payload: FlowState) {}
 }
 
-export class SelectItem implements BaseFlowAction {
+export class SelectItem implements BaseStreamAction {
   readonly type = ActionType.SelectItem;
   constructor(public payload: { handlerType: HandlerType; itemId: string } | null) {}
 }
 
-export class SelectCreateItem implements BaseFlowAction {
+export class SelectCreateItem implements BaseStreamAction {
   readonly type = ActionType.SelectCreateItem;
   constructor(public payload: { handlerType: HandlerType; parentItemId: string }) {}
 }
 
-export class ClearSelection implements BaseFlowAction {
+export class ClearSelection implements BaseStreamAction {
   readonly type = ActionType.ClearSelection;
   constructor() {}
 }
 
-export class CreateBranch implements BaseFlowAction {
+export class CreateBranch implements BaseStreamAction {
   readonly type = ActionType.CreateBranch;
   constructor(
     public payload: {
@@ -66,7 +66,7 @@ export class CreateBranch implements BaseFlowAction {
   ) {}
 }
 
-export class TaskItemCreated implements BaseFlowAction {
+export class TaskItemCreated implements BaseStreamAction {
   readonly type = ActionType.TaskItemCreated;
   constructor(
     public payload: {
@@ -78,12 +78,12 @@ export class TaskItemCreated implements BaseFlowAction {
   ) {}
 }
 
-export class RemoveItem implements BaseFlowAction {
+export class RemoveItem implements BaseStreamAction {
   readonly type = ActionType.RemoveItem;
   constructor(public payload: { handlerType: HandlerType; itemId: string }) {}
 }
 
-export class ItemUpdated implements BaseFlowAction {
+export class ItemUpdated implements BaseStreamAction {
   readonly type = ActionType.ItemUpdated;
   constructor(
     public payload: {
@@ -94,12 +94,12 @@ export class ItemUpdated implements BaseFlowAction {
   ) {}
 }
 
-export class ConfigureItem implements BaseFlowAction {
+export class ConfigureItem implements BaseStreamAction {
   readonly type = ActionType.ConfigureItem;
   constructor(public payload: { itemId: string }) {}
 }
 
-export class CommitItemConfiguration implements BaseFlowAction {
+export class CommitItemConfiguration implements BaseStreamAction {
   readonly type = ActionType.CommitItemConfiguration;
   constructor(
     public payload: {
@@ -110,33 +110,33 @@ export class CommitItemConfiguration implements BaseFlowAction {
   ) {}
 }
 
-export class CancelItemConfiguration implements BaseFlowAction {
+export class CancelItemConfiguration implements BaseStreamAction {
   readonly type = ActionType.CancelItemConfiguration;
 }
 
-export class UpdateMetadata implements BaseFlowAction {
+export class UpdateMetadata implements BaseStreamAction {
   readonly type = ActionType.UpdateMetadata;
-  constructor(public payload: FlowMetadata) {}
+  constructor(public payload: StreamParams) {}
 }
 
-export class RunFromStart implements BaseFlowAction {
+export class RunFromStart implements BaseStreamAction {
   readonly type = ActionType.RunFromStart;
 }
 
-export class RunFromTask implements BaseFlowAction {
+export class RunFromTask implements BaseStreamAction {
   readonly type = ActionType.RunFromTask;
 }
 
-export class NewExecutionRegistered implements BaseFlowAction {
+export class NewExecutionRegistered implements BaseStreamAction {
   readonly type = ActionType.NewExecutionRegistered;
 }
 
-export class NewRunFromStartProcess implements BaseFlowAction {
+export class NewRunFromStartProcess implements BaseStreamAction {
   readonly type = ActionType.NewProcessRanFromStart;
   constructor(public payload: { processId: string; instanceId: string }) {}
 }
 
-export class ExecutionStateUpdated implements BaseFlowAction {
+export class ExecutionStateUpdated implements BaseStreamAction {
   readonly type = ActionType.ExecutionUpdated;
   constructor(
     public payload: {
@@ -148,31 +148,31 @@ export class ExecutionStateUpdated implements BaseFlowAction {
   ) {}
 }
 
-export class ExecutionStepsUpdated implements BaseFlowAction {
+export class ExecutionStepsUpdated implements BaseStreamAction {
   readonly type = ActionType.ExecutionStepsUpdate;
   constructor(public payload: { steps: Dictionary<Dictionary<StepAttribute>> }) {}
 }
 
-export class ErrorPanelStatusChange implements BaseFlowAction {
+export class ErrorPanelStatusChange implements BaseStreamAction {
   readonly type = ActionType.ErrorPanelStatusChange;
   constructor(public payload: { isOpen: boolean }) {}
 }
 
-export class DebugPanelStatusChange implements BaseFlowAction {
+export class DebugPanelStatusChange implements BaseStreamAction {
   readonly type = ActionType.DebugPanelStatusChange;
   constructor(public payload: { isOpen: boolean }) {}
 }
 
-export class FlowSaveSuccess implements BaseFlowAction {
+export class FlowSaveSuccess implements BaseStreamAction {
   readonly type = ActionType.FlowSaveSuccess;
 }
 
-export class ActivityInstalled implements BaseFlowAction {
+export class ActivityInstalled implements BaseStreamAction {
   readonly type = ActionType.ActivityInstalled;
   constructor(public payload: ActivitySchema) {}
 }
 
-export class CancelCreateItem implements BaseFlowAction {
+export class CancelCreateItem implements BaseStreamAction {
   readonly type = ActionType.CancelCreateItem;
   constructor(public payload: { parentId: string }) {}
 }

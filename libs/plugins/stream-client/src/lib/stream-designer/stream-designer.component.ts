@@ -14,7 +14,7 @@ import {
 } from '@flogo-web/lib-client/diagram';
 import { SimulatorService } from '../simulator.service';
 import { ParamsSchemaComponent } from '../params-schema';
-import { FlogoFlowService } from '../core';
+import { FlogoFlowService, StreamParams } from '../core';
 import { FlowState } from '../core/state';
 import { SingleEmissionSubject } from '@flogo-web/lib-client/core';
 import { FlogoFlowService as FlowsService } from '../core/flow.service';
@@ -134,11 +134,12 @@ export class StreamDesignerComponent implements OnDestroy {
     this.metadataModal.openInputSchemaModel();
   }
 
-  onResourceMetadataSave(metadata) {
-    this.resourceMetadata = { ...metadata };
+  onResourceMetadataSave(params: StreamParams) {
+    this.resourceMetadata = { ...params.metadata };
     if (this.isPanelOpen) {
       this.simulationService.startSimulation(this.resourceMetadata);
     }
+    this.streamService.currentFlowDetails.updateMetadata(params);
   }
 
   public changeFlowDetailName(name, property) {

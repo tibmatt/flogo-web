@@ -10,7 +10,7 @@ import {
   isUndefined,
 } from 'lodash';
 
-import { ActivitySchema, ValueType } from '@flogo-web/core';
+import { ActivitySchema, ValueType, Metadata, MetadataAttribute } from '@flogo-web/core';
 import {
   getDefaultValue,
   flowToJSON_Attribute,
@@ -27,9 +27,7 @@ import {
   ResourceFlowData,
   TaskAttribute as DiagramTaskAttribute,
   AttributeMapping as DiagramTaskAttributeMapping,
-  FlowMetadata,
   Item,
-  MetadataAttribute,
   UiFlow,
   ItemActivityTask,
   ItemBranch,
@@ -308,8 +306,8 @@ function buildHandler(graph: FlowGraph, flowItems: Dictionary<Item>, inFlow: UiF
   return null;
 }
 
-function _parseMetadata(metadata: FlowMetadata): FlowMetadata {
-  const flowMetadata: FlowMetadata = {
+function _parseMetadata(metadata: Metadata): Metadata {
+  const flowMetadata: Metadata = {
     input: [],
     output: [],
   };

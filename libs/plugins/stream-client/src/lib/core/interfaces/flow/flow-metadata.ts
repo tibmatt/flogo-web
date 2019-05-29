@@ -1,6 +1,6 @@
-import { MetadataAttribute } from './flow-metadata-attribute';
+import { Metadata } from '@flogo-web/core';
 
-export interface FlowMetadata {
-  input: MetadataAttribute[];
-  output: MetadataAttribute[];
+export interface StreamParams {
+  metadata: Metadata;
+  groupBy?: string;
 }

@@ -1,7 +1,7 @@
 import { defaultsDeep, get } from 'lodash';
-import { ActivitySchema } from '@flogo-web/core';
+import { ActivitySchema, Metadata } from '@flogo-web/core';
 import { Dictionary, GraphNode, NodeType } from '@flogo-web/lib-client/core';
-import { Item, ItemSubflow, ItemTask, FlowMetadata } from '../../interfaces/flow';
+import { Item, ItemSubflow, ItemTask } from '../../interfaces/flow';
 import { FlowState } from '../../state';
 import { makeErrorTask } from '../make-error-task';
 import { isSubflowTask } from '../flow/is-subflow-task';
@@ -17,7 +17,7 @@ export function getInputContext(taskId: string, state: FlowState): any[] {
   return scope;
 }
 
-export function getFlowMetadata(flowState: FlowState): FlowMetadata {
+export function getFlowMetadata(flowState: FlowState): Metadata {
   return defaultsDeep({ type: 'metadata' }, flowState.metadata, {
     input: [],
     output: [],

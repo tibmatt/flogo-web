@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash';
 import { BsModalComponent } from 'ng2-bs3-modal';
 
 import { ValueType, Metadata } from '@flogo-web/core';
+import { StreamParams } from '../core/interfaces/flow';
 
 @Component({
   selector: 'flogo-stream-params-schema',
@@ -17,7 +18,7 @@ export class ParamsSchemaComponent implements OnInit {
   @Input()
   paramsForm: FormGroup;
   @Input() metadata: Metadata;
-  @Output() save = new EventEmitter<{ input: any[]; output: any[] }>();
+  @Output() save = new EventEmitter<StreamParams>();
   selectTypes: ValueType[] = [];
   displayInputParams: boolean;
 
@@ -70,7 +71,8 @@ export class ParamsSchemaComponent implements OnInit {
     const updatedParams = this.paramsForm.value;
     const input = mapParamsToFlow(updatedParams.input);
     const output = mapParamsToFlow(updatedParams.output);
-    this.save.next({ input, output });
+    const metadata = { input, output };
+    this.save.next({ metadata, groupBy: 'test' });
     this.closeInputSchemaModel();
   }
 

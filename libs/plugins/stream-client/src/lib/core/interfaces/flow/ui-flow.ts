@@ -1,6 +1,5 @@
-import { App, ContributionSchema } from '@flogo-web/core';
+import { App, ContributionSchema, Metadata } from '@flogo-web/core';
 import { Dictionary, FlowGraph } from '@flogo-web/lib-client/core';
-import { FlowMetadata } from './flow-metadata';
 import { Item } from './items';
 
 export interface UiFlow {
@@ -9,7 +8,7 @@ export interface UiFlow {
   description?: string;
   appId?: string;
   app: App;
-  metadata?: FlowMetadata;
+  metadata?: Metadata;
   attributes?: any[];
   mainItems: Dictionary<Item>;
   errorItems: Dictionary<Item>;
