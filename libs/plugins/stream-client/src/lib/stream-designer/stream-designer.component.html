@@ -27,7 +27,7 @@
         class="details-description"
         [(fgContentEditable)]="flowState.description"
         [allowNewLines]="true"
-        placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
+        placeholder="{{ 'CANVAS:ADD-STREAM-DESCRIPTION' | translate }}"
         (fgContentEditableChange)="changeFlowDetail($event, 'description')"
       ></p>
     </div>
@@ -92,5 +92,6 @@
 <flogo-stream-params-schema
   #metadataModal
   [metadata]="resourceMetadata"
+  [groupBy]="flowState.groupBy"
   (save)="onResourceMetadataSave($event)"
 ></flogo-stream-params-schema>

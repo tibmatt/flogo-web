@@ -6,6 +6,7 @@ import { BsModalComponent } from 'ng2-bs3-modal';
 
 import { ValueType, Metadata } from '@flogo-web/core';
 import { StreamParams } from '../core/interfaces/flow';
+import { GroupByParamService } from './param-row/group-by-param.service';
 
 @Component({
   selector: 'flogo-stream-params-schema',
@@ -18,11 +19,15 @@ export class ParamsSchemaComponent implements OnInit {
   @Input()
   paramsForm: FormGroup;
   @Input() metadata: Metadata;
+  @Input() groupBy: string;
   @Output() save = new EventEmitter<StreamParams>();
   selectTypes: ValueType[] = [];
   displayInputParams: boolean;
 
-  constructor(private _fb: FormBuilder) {
+  constructor(
+    private _fb: FormBuilder,
+    private groupByParamService: GroupByParamService
+  ) {
     this.selectTypes = Array.from(ValueType.allTypes);
   }
 
@@ -72,12 +77,20 @@ export class ParamsSchemaComponent implements OnInit {
     const input = mapParamsToFlow(updatedParams.input);
     const output = mapParamsToFlow(updatedParams.output);
     const metadata = { input, output };
-    this.save.next({ metadata, groupBy: 'test' });
+    this.save.next({ metadata, groupBy: this.groupByParamService.selectedGroupByParam });
     this.closeInputSchemaModel();
   }
 
   removeParam(index: number, fromParams: string) {
     const control = <FormArray>this.paramsForm.controls[fromParams];
+    const removeParam =
+      control.controls[index].value && control.controls[index].value.name;
+    if (
+      fromParams === 'input' &&
+      removeParam === this.groupByParamService.selectedGroupByParam
+    ) {
+      this.groupByParamService.updateGroupBy('');
+    }
     control.removeAt(index);
   }
 

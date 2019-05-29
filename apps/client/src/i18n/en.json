@@ -68,6 +68,7 @@
   "APP-DETAIL:EMPTY-TRIGGER": "No trigger",
   "APP-DETAIL-POPUP:CONFIRM-MESSAGE-DELETE":"Delete flow?",
   "CANVAS:ADD-FLOW-DESCRIPTION": "Add flow's description",
+  "CANVAS:ADD-STREAM-DESCRIPTION": "Add stream's description",
   "CANVAS:COPIED-TRIGGER": "Successfully copied",
   "CANVAS:BUILD": "Build",
   "CANVAS:COPY": "Make a copy",
