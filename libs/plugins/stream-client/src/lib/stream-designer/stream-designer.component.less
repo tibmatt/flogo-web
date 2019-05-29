@@ -2,6 +2,15 @@
 @import (reference) '~@flogo-web/assets/styles/_typography';
 @import (reference) '~@flogo-web/assets/styles/uxpl/dropdown';
 
+::ng-deep {
+  perspective-viewer {
+    --hypergrid--padding: 0 0 0 24px;
+    --button--font-family: 'flogo-icon';
+    // kebab menu from flogo-icon font
+    --config_button--before: '\e908';
+  }
+}
+
 :host {
   display: flex;
   flex-direction: column;
@@ -38,6 +47,10 @@
 
 flogo-context-panel-area {
   flex: 1;
+}
+
+flogo-context-panel-trigger {
+  left: 200px;
 }
 
 [context-panel-role='primary-area'] {

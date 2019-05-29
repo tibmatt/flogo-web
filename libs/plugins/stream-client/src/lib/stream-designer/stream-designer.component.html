@@ -6,7 +6,9 @@
       (mouseover)="onMouseOverBackControl()"
       (mouseout)="onMouseOutBackControl()"
     ></i>
-    <div class="flogo-profile__tile profile__thumb flogo-profile__microservice-stream"></div>
+    <div
+      class="flogo-profile__tile profile__thumb flogo-profile__microservice-stream"
+    ></div>
     <div class="details-content" *ngIf="flowState">
       <div
         class="details-name"
@@ -70,7 +72,7 @@
       ></flogo-diagram>
       <flogo-context-panel-trigger
         (open)="togglePanel()"
-        title="Stream Simulator"
+        title="Stream Simulation"
       ></flogo-context-panel-trigger>
     </div>
   </div>

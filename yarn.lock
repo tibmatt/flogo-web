@@ -554,12 +554,12 @@
     "@d3fc/d3fc-rebind" "^5.0.6"
     d3-array "^1.0.0"
 
-"@finos/perspective-viewer-d3fc@^0.3.0-rc.2":
-  version "0.3.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@finos/perspective-viewer-d3fc/-/perspective-viewer-d3fc-0.3.0-rc.2.tgz#703043d954b4c47f9c502909c24378d069ee9ef9"
+"@finos/perspective-viewer-d3fc@^0.3.0-rc.3":
+  version "0.3.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@finos/perspective-viewer-d3fc/-/perspective-viewer-d3fc-0.3.0-rc.3.tgz#d332c0460962a151806dec6a7e0f7439cca15242"
   dependencies:
-    "@finos/perspective" "^0.3.0-rc.2"
-    "@finos/perspective-viewer" "^0.3.0-rc.2"
+    "@finos/perspective" "^0.3.0-rc.3"
+    "@finos/perspective-viewer" "^0.3.0-rc.3"
     babel-runtime "^6.26.0"
     chroma-js "^1.3.4"
     d3 "^5.7.0"
@@ -567,13 +567,13 @@
     d3fc "^14.0.34"
     gradient-parser "0.1.5"
 
-"@finos/perspective-viewer-hypergrid@^0.3.0-rc.2":
-  version "0.3.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@finos/perspective-viewer-hypergrid/-/perspective-viewer-hypergrid-0.3.0-rc.2.tgz#de50d8c5db91e23fea9dd781b1503bea93fb4175"
+"@finos/perspective-viewer-hypergrid@^0.3.0-rc.3":
+  version "0.3.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@finos/perspective-viewer-hypergrid/-/perspective-viewer-hypergrid-0.3.0-rc.3.tgz#3d2e92a7cab5b88c7ea89afc8de9109210d64d6c"
   dependencies:
     "@babel/runtime" "^7.3.4"
-    "@finos/perspective" "^0.3.0-rc.2"
-    "@finos/perspective-viewer" "^0.3.0-rc.2"
+    "@finos/perspective" "^0.3.0-rc.3"
+    "@finos/perspective-viewer" "^0.3.0-rc.3"
     datasaur-local "3.0.0"
     fin-hypergrid "3.2.0"
     fin-hypergrid-grouped-header-plugin "^1.2.4"
@@ -581,12 +581,12 @@
     rectangular "1.0.1"
     superscript-number "^1.0.0"
 
-"@finos/perspective-viewer@^0.3.0-rc.2":
-  version "0.3.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@finos/perspective-viewer/-/perspective-viewer-0.3.0-rc.2.tgz#9ea120f50c3b0c72f1e20650fb82d571aef8abc1"
+"@finos/perspective-viewer@^0.3.0-rc.3":
+  version "0.3.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@finos/perspective-viewer/-/perspective-viewer-0.3.0-rc.3.tgz#46a0b96e37a3974229a24778d20fbeffe06fa287"
   dependencies:
     "@babel/runtime" "^7.3.4"
-    "@finos/perspective" "^0.3.0-rc.2"
+    "@finos/perspective" "^0.3.0-rc.3"
     "@webcomponents/shadycss" "^1.5.2"
     "@webcomponents/webcomponentsjs" "~2.0.4"
     awesomplete "^1.1.2"
@@ -595,9 +595,9 @@
     lodash "^4.17.4"
     mobile-drag-drop "^2.2.0"
 
-"@finos/perspective-webpack-plugin@^0.3.0-rc.2":
-  version "0.3.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@finos/perspective-webpack-plugin/-/perspective-webpack-plugin-0.3.0-rc.2.tgz#ee64f1434d7bcf30da8929c9c4ae603ef8955bda"
+"@finos/perspective-webpack-plugin@^0.3.0-rc.3":
+  version "0.3.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@finos/perspective-webpack-plugin/-/perspective-webpack-plugin-0.3.0-rc.3.tgz#44d87a4f558e5cba6e3b6f8079e3a32936b80012"
   dependencies:
     "@webpack-contrib/schema-utils" "^1.0.0-beta.0"
     arraybuffer-loader "^1.0.2"
@@ -618,9 +618,9 @@
     tslib "^1.9.3"
     worker-loader "^2.0.0"
 
-"@finos/perspective@^0.3.0-rc.2":
-  version "0.3.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@finos/perspective/-/perspective-0.3.0-rc.2.tgz#43c9976f404db3a9169f6360e85c7d066f9f5832"
+"@finos/perspective@^0.3.0-rc.3":
+  version "0.3.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@finos/perspective/-/perspective-0.3.0-rc.3.tgz#ffdbd6600a8e63479de82083d69b29c92a315f31"
   dependencies:
     "@babel/runtime" "^7.3.4"
     bufferutil "~3.0.0"
@@ -632,7 +632,6 @@
     papaparse "^4.3.6"
     text-encoding-utf-8 "^1.0.2"
     tslib "^1.9.3"
-    websocket-heartbeat-js "^1.0.7"
     ws "^6.1.2"
 
 "@jest/console@^24.3.0":
@@ -11151,10 +11150,6 @@ websocket-driver@>=0.5.1:
 websocket-extensions@>=0.1.1:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
-
-websocket-heartbeat-js@^1.0.7:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/websocket-heartbeat-js/-/websocket-heartbeat-js-1.0.8.tgz#b262f31bec0ff5988fdbd0bae3dba037c38d79f6"
 
 whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.3, whatwg-encoding@^1.0.5:
   version "1.0.5"

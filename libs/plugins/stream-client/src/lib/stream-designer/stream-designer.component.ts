@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { isEmpty } from 'lodash';
 
@@ -33,7 +33,18 @@ export class StreamDesignerComponent implements OnDestroy {
   backToAppHover = false;
   graph;
   currentSelection: DiagramSelection;
-  resourceMetadata: ResourceMetadata;
+  resourceMetadata: Partial<ResourceMetadata> = {
+    input: [
+      { name: 'ID', type: ValueType.String },
+      { name: 'timeslot', type: ValueType.Integer },
+      { name: 'pressure', type: ValueType.Integer },
+      { name: 'amps', type: ValueType.Integer },
+    ],
+    output: [
+      { name: 'out1', type: ValueType.Integer },
+      { name: 'out2', type: ValueType.Integer },
+    ],
+  };
   flowName: string;
   private ngOnDestroy$ = SingleEmissionSubject.create();
 
@@ -72,12 +83,12 @@ export class StreamDesignerComponent implements OnDestroy {
     this.isPanelOpen = !this.isPanelOpen;
 
     if (this.isPanelOpen) {
-      this.simulationService.startSimulation({
-        input: [{ name: 'field1', type: ValueType.Integer }],
-        output: [{ name: 'field2', type: ValueType.String }],
-      });
+      // this.simulationService.startSimulation({
+      //   input: [{ name: 'field1', type: ValueType.Integer }],
+      //   output: [{ name: 'field2', type: ValueType.String }],
+      // });
 
-      // this.simulationService.startSimulation(this.resourceMetadata || {});
+      this.simulationService.startSimulation(this.resourceMetadata || {});
     } else {
       this.simulationService.stopSimulation();
     }
@@ -124,7 +135,10 @@ export class StreamDesignerComponent implements OnDestroy {
   }
 
   onResourceMetadataSave(metadata) {
-    this.resourceMetadata = metadata;
+    this.resourceMetadata = { ...metadata };
+    if (this.isPanelOpen) {
+      this.simulationService.startSimulation(this.resourceMetadata);
+    }
   }
 
   public changeFlowDetailName(name, property) {

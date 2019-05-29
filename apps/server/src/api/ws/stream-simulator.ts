@@ -40,6 +40,7 @@ class Simulation {
   }
 
   start(metadata: Partial<Metadata>) {
+    this.stop();
     metadata = metadata || {};
     const valueGenerators: ValueGenerators = {
       nextInput: makeValueGenerator(metadata.input),
@@ -66,7 +67,7 @@ class Simulation {
       const nextValueOut = valueGenerators.nextOutput();
       this.emitValue(nextValueOut, Transport.Output);
       this.scheduleNext(valueGenerators);
-    }, 800); //getRandomInterval());
+    }, 900); //getRandomInterval());
   }
 
   private emitValue(value, transport: Transport) {

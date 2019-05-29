@@ -1,2 +1,14 @@
 <div class="is-starting" *ngIf="isStarting">Starting...</div>
+<div class="header">
+  <div class="header__title"><ng-content></ng-content></div>
+  <div *ngIf="!isStarting">
+    <!--  TODO: button icons-->
+    <button [disabled]="!view || view == 'hypergrid'" (click)="setView('hypergrid')">
+      G
+    </button>
+    <button [disabled]="!!view && view != 'hypergrid'" (click)="setView('d3_y_line')">
+      C
+    </button>
+  </div>
+</div>
 <perspective-viewer #viewer limit="25"></perspective-viewer>
