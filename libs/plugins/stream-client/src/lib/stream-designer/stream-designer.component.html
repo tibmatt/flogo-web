@@ -15,9 +15,9 @@
         [(fgContentEditable)]="flowState.name"
         (fgContentEditableChange)="changeFlowDetailName($event, 'name')"
       ></div>
-      <span>in</span>
+      <span class="details-content__app-name">in</span>
       <span
-        class="details-app-name"
+        class="details-app-name details-content__app-name"
         (click)="navigateToApp()"
         (mouseover)="onMouseOverBackControl()"
         (mouseout)="onMouseOutBackControl()"
