@@ -6,14 +6,14 @@ export const resourcePlugins: ResourcePluginManifest[] = [
     type: 'flow',
     path: 'flow',
     loadChildren: '@flogo-web/plugins/flow-client#FlowModule',
-    color: '#96a7f8',
+    color: '#33c6d8',
   },
   {
     label: 'Stream',
     type: 'stream',
     path: 'stream',
     loadChildren: '@flogo-web/plugins/stream-client#PluginsStreamClientModule',
-    color: '#33c6d8',
+    color: '#96a7f8',
   },
   // sample data
   // {
