@@ -64,12 +64,12 @@
       ></flogo-stream-params-schema-button>
     </div>
     <div class="content-layout__main">
-      <flogo-diagram
+      <flogo-diagram-stream
         diagramId="stream"
         [flow]="graph"
         [selection]="currentSelection"
         (action)="onDiagramAction($event)"
-      ></flogo-diagram>
+      ></flogo-diagram-stream>
       <flogo-context-panel-trigger
         (open)="togglePanel()"
         title="Stream Simulator"
