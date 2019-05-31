@@ -267,5 +267,19 @@ class Engine {
 Engine.TYPE_TEST = TYPE_TEST;
 Engine.TYPE_BUILD = TYPE_BUILD;
 
-export { Engine, TYPE_TEST, TYPE_BUILD };
-export default Engine;
+class NonBuildableEngine extends Engine {
+  build(options: Record<string, any>) {
+    return Promise.resolve(null);
+  }
+
+  buildOnly() {
+    return Promise.resolve(null);
+  }
+
+  start() {
+    return Promise.resolve(true);
+  }
+}
+
+export { NonBuildableEngine as Engine, TYPE_TEST, TYPE_BUILD };
+export default NonBuildableEngine;

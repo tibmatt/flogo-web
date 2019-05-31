@@ -23,6 +23,7 @@
     "github.com/project-flogo/contrib/function/coerce",
     "github.com/project-flogo/stream/activity/filter",
     "github.com/project-flogo/stream/activity/aggregate",
+    "github.com/project-flogo/ml/activity/inference",
     "github.com/project-flogo/edge-contrib/activity/mqtt"
   ]
 }
