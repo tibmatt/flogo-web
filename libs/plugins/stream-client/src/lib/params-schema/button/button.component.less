@@ -17,7 +17,7 @@
   flex-direction: column;
 
   background-color: @bg-color-default;
-  font-weight: bold;
+  font-weight: 600;
   text-align: center;
   font-size: 0.75em;
   box-shadow: 2px 0 1px 0 rgba(0, 0, 0, 0.1);
@@ -27,7 +27,7 @@
   &:after {
     position: absolute;
     left: 56px;
-    top: 80px;
+    top: 89px;
     z-index: 1;
     content: '';
     display: block;
@@ -67,19 +67,24 @@
     line-height: 1;
     height: 24px;
     width: 24px;
-    margin: 0 7px;
+    margin: 7px 0 0 7px;
   }
 }
 
-.shcema-label {
+.schema-input-output {
+  margin-left: 8px;
+}
+
+.schema-label {
   color: @color-dark-gray;
   font-size: 10px;
   margin: 2rem 0 0;
 }
 
-.shcema-grouped {
+.schema-grouped {
   width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  font-weight: 600;
 }
