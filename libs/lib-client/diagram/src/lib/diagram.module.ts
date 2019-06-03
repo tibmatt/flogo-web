@@ -11,6 +11,7 @@ import { TileBranchComponent } from './tiles/tile-branch.component';
 import { StreamDiagramComponent } from './diagram/stream-diagram.component';
 import { StreamDiagramRowComponent } from './diagram/stream-diagram-row.component';
 import { StreamTileTaskComponent } from './tiles/stream-tile-task.component';
+import { StreamTileInsertComponent } from './tiles/stream-tile-insert.component';
 
 @NgModule({
   imports: [CommonModule, LanguageModule],
@@ -21,6 +22,7 @@ import { StreamTileTaskComponent } from './tiles/stream-tile-task.component';
     DiagramRowComponent,
     StreamDiagramRowComponent,
     TileInsertComponent,
+    StreamTileInsertComponent,
     StreamTileTaskComponent,
     TileBranchComponent,
     TileTaskComponent,

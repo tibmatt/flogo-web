@@ -4,16 +4,20 @@
     @tileGeneric
     [@.disabled]="tile.type === tileTypes.Placeholder"
     class="tile tile--slot"
-    [class.tile--placeholder]="tile.type === tileTypes.Placeholder"
-  ></div>
-  <flogo-diagram-tile-insert
+  >
+    <div
+      class="tile__separator"
+      [class.tile--placeholder]="tile.type === tileTypes.Placeholder"
+    ></div>
+  </div>
+  <flogo-diagram-stream-tile-insert
     *ngIf="tile.type === tileTypes.Insert"
     @tileInsert
     class="tile--slot"
     [tile]="tile"
     [currentSelection]="selection"
     (select)="onInsertSelected($event)"
-  ></flogo-diagram-tile-insert>
+  ></flogo-diagram-stream-tile-insert>
   <flogo-diagram-stream-tile-task
     *ngIf="tile.type === tileTypes.Task && tile.task?.type === nodeTypes.Task"
     @tileTask
