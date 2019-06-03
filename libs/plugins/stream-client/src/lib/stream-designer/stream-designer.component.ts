@@ -294,6 +294,7 @@ function mockResource() {
           type: 'task',
           id: 'filter_2',
           title: 'Filter',
+          icon: 'filter',
           description: 'Simple Filter Activity',
           features: {
             selectable: true,
@@ -316,6 +317,7 @@ function mockResource() {
           type: 'task',
           id: 'aggregate_3',
           title: 'Aggregate',
+          icon: 'aggregate',
           description: 'Simple Aggregate Activity',
           features: {
             selectable: true,
@@ -338,6 +340,7 @@ function mockResource() {
           type: 'task',
           id: 'inference_4',
           title: 'Invoke ML Model',
+          icon: 'ml',
           description:
             'Basic inferencing activity to invoke ML model using the flogo-ml framework.',
           features: {
@@ -361,6 +364,7 @@ function mockResource() {
           type: 'task',
           id: 'mqtt_5',
           title: 'MQTT Activity',
+          icon: 'default',
           description: 'Send MQTT message',
           features: {
             selectable: true,
