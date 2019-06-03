@@ -19,7 +19,7 @@ import { rowAnimations } from './diagram-row.animations';
 @Component({
   selector: 'flogo-diagram-stream-row',
   templateUrl: './stream-diagram-row.component.html',
-  styleUrls: ['./stream-row.component.less'],
+  styleUrls: ['./stream-diagram-row.component.less'],
   animations: rowAnimations,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
