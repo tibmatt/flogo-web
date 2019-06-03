@@ -1,0 +1,47 @@
+@import '../_styles';
+
+:host {
+  .row();
+  height: auto;
+  align-items: center;
+  padding: 2em 10px;
+}
+
+.tile {
+  .tile-container();
+}
+
+.tile--slot {
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+  &.is-selected {
+    opacity: 1;
+  }
+}
+
+.tile--placeholder {
+  &::before {
+    background-color: rgba(170, 208, 232, 0.4);
+    display: block;
+    content: '';
+    .tile-placeholder();
+  }
+}
+
+.tile--branch {
+  z-index: 2;
+}
+
+:host:not(.is-readonly) {
+  .tile--slot.is-root {
+    opacity: 1;
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    .tile--slot {
+      opacity: 1;
+    }
+  }
+}
