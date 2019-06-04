@@ -1,3 +1,36 @@
+<div *ngIf="simulateActivity" class="activity column">
+  <div class="activity__details">
+    <div class="activity__icon">
+      <svg
+        class="activity__icon-img"
+        width="25"
+        height="20"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <use
+          [attr.xlink:href]="
+            '/assets/svg/activities/' + simulateActivity.icon + '.svg#icon'
+          "
+        ></use>
+      </svg>
+    </div>
+    <div class="activity__name">
+      <span>{{ simulateActivity.name }}</span>
+      <a
+        class="schema-homepage"
+        *ngIf="simulateActivity.schemaHomepage"
+        [href]="simulateActivity.schemaHomepage"
+        target="_blank"
+      >
+        <i class="flogo-icon-info"></i>
+      </a>
+    </div>
+    <div class="activity__id">{{ simulateActivity.id }}</div>
+  </div>
+  <div class="activity__description">{{ simulateActivity.description }}</div>
+</div>
+
 <div class="column">
   <flogo-stream-simulator-viz
     *ngIf="metadata?.input?.length > 0; else noInput"

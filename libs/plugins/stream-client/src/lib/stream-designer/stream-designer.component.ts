@@ -74,6 +74,7 @@ export class StreamDesignerComponent implements OnDestroy {
   };
   flowName: string;
   simulatorFields: Partial<ResourceMetadata> = SAMPLE_FIELDS.stream;
+  simulateActivity;
   private ngOnDestroy$ = SingleEmissionSubject.create();
 
   @ViewChild('metadataModal') metadataModal: ParamsSchemaComponent;
@@ -222,6 +223,14 @@ export class StreamDesignerComponent implements OnDestroy {
         taskId,
         type: DiagramSelectionType.Node,
       };
+      const selectedActivity = mockResource().mainGraph.nodes[taskId];
+      this.simulateActivity = {
+        id: selectedActivity.id,
+        name: selectedActivity.title,
+        description: selectedActivity.description,
+        icon: selectedActivity.icon,
+        schemaHomepage: selectedActivity.homepage,
+      };
       if (taskId === ML_ID) {
         this.simulatorFields = SAMPLE_FIELDS.ml;
       } else {
@@ -348,6 +357,7 @@ function mockResource() {
           title: 'Filter',
           icon: 'filter',
           description: 'Simple Filter Activity',
+          homepage: 'https://github.com/project-flogo/stream/tree/master/activity/filter',
           features: {
             selectable: true,
             canHaveChildren: true,
@@ -371,6 +381,8 @@ function mockResource() {
           title: 'Aggregate',
           icon: 'aggregate',
           description: 'Simple Aggregate Activity',
+          homepage:
+            'https://github.com/project-flogo/stream/tree/master/activity/aggregate',
           features: {
             selectable: true,
             canHaveChildren: true,
@@ -395,6 +407,7 @@ function mockResource() {
           icon: 'ml',
           description:
             'Basic inferencing activity to invoke ML model using the flogo-ml framework.',
+          homepage: 'https://github.com/project-flogo/ml/tree/master/activity/inference',
           features: {
             selectable: true,
             canHaveChildren: true,
@@ -418,6 +431,8 @@ function mockResource() {
           title: 'MQTT Activity',
           icon: 'default',
           description: 'Send MQTT message',
+          homepage:
+            'https://github.com/project-flogo/edge-contrib/tree/master/activity/mqtt',
           features: {
             selectable: true,
             canHaveChildren: true,

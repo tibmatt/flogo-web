@@ -33,6 +33,7 @@ interface Schemas {
 })
 export class SimulatorComponent implements OnInit, OnChanges, OnDestroy {
   @Input() metadata?: Metadata;
+  @Input() simulateActivity;
   private destroy$ = SingleEmissionSubject.create();
   private input$: Observable<any>;
   private output$: Observable<any>;
