@@ -1,10 +1,10 @@
+import { createReadStream } from 'fs';
+import { join } from 'path';
 import * as socketio from 'socket.io';
-import * as faker from 'faker';
-import { random } from 'lodash';
+import csvParser from 'csv-parse';
+import transform from 'stream-transform';
+import ReadStream = NodeJS.ReadStream;
 
-import { ValueType, Metadata, MetadataAttribute } from '@flogo-web/core';
-
-const INITIAL_SET_LENGTH = 10;
 enum Transport {
   Input = 'input',
   Output = 'output',
@@ -13,61 +13,98 @@ enum Transport {
 export class StreamSimulator {
   constructor(private server: socketio.Server) {
     server.of('/stream-simulator').on('connection', clientSocket => {
-      const simulation = new Simulation(clientSocket);
-      clientSocket.on('simulate-start', params => simulation.start(params));
-      clientSocket.on('simulate-stop', () => simulation.stop());
-      clientSocket.on('disconnect', () => simulation.stop());
+      let simulation: ValueStreamer;
+      const clearPrevious = () => {
+        if (simulation) {
+          simulation.destroy();
+          simulation = null;
+        }
+      };
+      clientSocket.on('simulate-start', params => {
+        clearPrevious();
+        simulation = new ValueStreamer(clientSocket);
+        simulation.start(params);
+      });
+      clientSocket.on('simulate-stop', clearPrevious);
+      clientSocket.on('disconnect', clearPrevious);
     });
   }
 }
 
-const getRandomInterval = random.bind(null, 800, 3000);
+const csvParse = () => csvParser({ skip_empty_lines: true, cast: true, columns: true });
 
-interface ValueGenerators {
-  nextInput: () => any;
-  nextOutput: () => any;
-}
-function makeValueGenerator(fromAttrs: MetadataAttribute[]) {
-  const fields = (fromAttrs || []).map(propToFieldGenerator).filter(Boolean);
-  return () => fields.reduce(fieldReducer, {});
-}
-
-class Simulation {
-  private currentTimeout;
-
+const SAMPLES = {
+  stream: {
+    in: 'SensorDataNormalStructure.csv',
+    out: 'model_output.csv',
+  },
+  ml: {
+    in: 'normalized_input.csv',
+    out: 'model_output.csv',
+  },
+};
+class ValueStreamer {
+  currentStreams: {
+    input: ReadStream;
+    output: ReadStream;
+  };
+  isDestroyed = false;
   constructor(private clientSocket: socketio.Socket) {
     console.log(`Created simulator instance for ${this.getClientId()}`);
   }
 
-  start(metadata: Partial<Metadata>) {
-    this.stop();
-    metadata = metadata || {};
-    const valueGenerators: ValueGenerators = {
-      nextInput: makeValueGenerator(metadata.input),
-      nextOutput: makeValueGenerator(metadata.output),
+  private getClientId() {
+    return this.clientSocket && this.clientSocket.id;
+  }
+
+  start(type: string) {
+    if (this.isDestroyed) {
+      return;
+    }
+    if (!type || !SAMPLES[type]) {
+      console.warn(`No sample of type ${type}`);
+      return;
+    }
+    this.currentStreams = {
+      input: this.configureStream(SAMPLES[type].in, Transport.Input),
+      output: this.configureStream(SAMPLES[type].out, Transport.Output),
     };
-    for (let i = 0; i < INITIAL_SET_LENGTH; i++) {
-      this.emitValue(valueGenerators.nextInput(), Transport.Input);
-      this.emitValue(valueGenerators.nextOutput(), Transport.Output);
-    }
-    this.scheduleNext(valueGenerators);
   }
 
-  stop() {
-    if (this.currentTimeout) {
-      console.log('[SIM]: stopping simulator ' + this.getClientId());
-      clearTimeout(this.currentTimeout);
+  destroy() {
+    this.isDestroyed = true;
+    if (this.currentStreams) {
+      this.currentStreams.input.destroy();
+      this.currentStreams.output.destroy();
+      this.currentStreams = null;
     }
   }
 
-  private scheduleNext(valueGenerators: ValueGenerators) {
-    this.currentTimeout = setTimeout(() => {
-      const nextValueIn = valueGenerators.nextInput();
-      this.emitValue(nextValueIn, Transport.Input);
-      const nextValueOut = valueGenerators.nextOutput();
-      this.emitValue(nextValueOut, Transport.Output);
-      this.scheduleNext(valueGenerators);
-    }, 900); //getRandomInterval());
+  private configureStream(fileName, transport: Transport): ReadStream {
+    const file = join(__dirname, 'samples', fileName);
+    const stream = createReadStream(file)
+      .pipe(csvParse())
+      .pipe(
+        transform({ parallel: 1 }, (record, callback) => {
+          const destroyHandler: {
+            destroy?: () => void;
+          } = {};
+          const timeout = setTimeout(() => {
+            callback(null, record);
+            stream.off('destroy', destroyHandler.destroy);
+          }, 900);
+          destroyHandler.destroy = () => clearTimeout(timeout);
+          stream.on('destroy', destroyHandler.destroy);
+        })
+      );
+
+    stream.on('data', record => {
+      if (!this.isDestroyed) {
+        this.emitValue(record, transport);
+      }
+    });
+
+    return stream;
   }
 
   private emitValue(value, transport: Transport) {
@@ -77,39 +114,4 @@ class Simulation {
       value,
     });
   }
-
-  private getClientId() {
-    return this.clientSocket && this.clientSocket.id;
-  }
-}
-
-function fieldReducer(
-  all: { [prop: string]: any },
-  field: { name: string; generate: () => any }
-) {
-  all[field.name] = field.generate();
-  return all;
-}
-
-const randomNumber = faker.random.number.bind(null, { min: 0, max: 115 });
-function propToFieldGenerator(prop: { name: string; type: ValueType }) {
-  if (!prop || !prop.name || !prop.type) {
-    return null;
-  }
-  let generate;
-  switch (prop.type) {
-    case ValueType.Double:
-    case ValueType.Integer:
-    case ValueType.Long:
-      generate = randomNumber;
-      break;
-    case ValueType.Boolean:
-      generate = faker.random.boolean;
-      break;
-    default:
-      generate = faker.random.word;
-      break;
-  }
-
-  return { name: prop.name, generate };
 }

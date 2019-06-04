@@ -20,6 +20,33 @@ import { SingleEmissionSubject } from '@flogo-web/lib-client/core';
 import { FlogoFlowService as FlowsService } from '../core/flow.service';
 import { NotificationsService } from '@flogo-web/lib-client/notifications';
 
+const SAMPLE_FIELDS = {
+  stream: {
+    input: [
+      { name: 'ID', type: ValueType.String },
+      { name: 'timeslot', type: ValueType.Long },
+      { name: 'pressure', type: ValueType.Long },
+      { name: 'amps', type: ValueType.Long },
+    ],
+    output: [
+      { name: 'err', type: ValueType.Long },
+      { name: 'pred', type: ValueType.Long },
+    ],
+  },
+  ml: {
+    input: [
+      { name: 'amps', type: ValueType.Long },
+      { name: 'pressure', type: ValueType.Long },
+    ],
+    output: [
+      { name: 'err', type: ValueType.Long },
+      { name: 'pred', type: ValueType.Long },
+    ],
+  },
+};
+
+const ML_ID = 'inference_4';
+
 @Component({
   selector: 'flogo-stream-designer',
   templateUrl: './stream-designer.component.html',
@@ -46,6 +73,7 @@ export class StreamDesignerComponent implements OnDestroy {
     ],
   };
   flowName: string;
+  simulatorFields: Partial<ResourceMetadata> = SAMPLE_FIELDS.stream;
   private ngOnDestroy$ = SingleEmissionSubject.create();
 
   @ViewChild('metadataModal') metadataModal: ParamsSchemaComponent;
@@ -82,25 +110,16 @@ export class StreamDesignerComponent implements OnDestroy {
   togglePanel() {
     this.isPanelOpen = !this.isPanelOpen;
 
-    if (this.isPanelOpen) {
-      // this.simulationService.startSimulation({
-      //   input: [{ name: 'field1', type: ValueType.Integer }],
-      //   output: [{ name: 'field2', type: ValueType.String }],
-      // });
-
-      this.simulationService.startSimulation(this.resourceMetadata || {});
-    } else {
+    if (!this.isPanelOpen) {
       this.simulationService.stopSimulation();
+      return;
     }
+    this.restartSimulation();
   }
 
   onDiagramAction(action: DiagramAction) {
     if (action.type === DiagramActionType.Select) {
-      this.currentSelection = {
-        diagramId: 'stream',
-        taskId: (action as DiagramActionSelf).id,
-        type: DiagramSelectionType.Node,
-      };
+      this.onDiagramSelection(action as DiagramActionSelf);
     }
   }
 
@@ -136,9 +155,9 @@ export class StreamDesignerComponent implements OnDestroy {
 
   onResourceMetadataSave(params: StreamParams) {
     this.resourceMetadata = { ...params.metadata };
-    if (this.isPanelOpen) {
-      this.simulationService.startSimulation(this.resourceMetadata);
-    }
+    // if (this.isPanelOpen) {
+    //   this.simulationService.startSimulation(this.resourceMetadata);
+    // }
     this.streamService.currentFlowDetails.updateMetadata(params);
   }
 
@@ -191,6 +210,39 @@ export class StreamDesignerComponent implements OnDestroy {
         });
         return Promise.reject(err);
       });
+  }
+
+  private onDiagramSelection(action: DiagramActionSelf) {
+    const isNewSelection =
+      !this.currentSelection || this.currentSelection.taskId !== action.id;
+    if (isNewSelection) {
+      const taskId = action.id;
+      this.currentSelection = {
+        diagramId: 'stream',
+        taskId,
+        type: DiagramSelectionType.Node,
+      };
+      if (taskId === ML_ID) {
+        this.simulatorFields = SAMPLE_FIELDS.ml;
+      } else {
+        this.simulatorFields = SAMPLE_FIELDS.stream;
+      }
+    } else {
+      this.currentSelection = null;
+      this.simulatorFields = SAMPLE_FIELDS.stream;
+    }
+
+    if (this.isPanelOpen) {
+      this.restartSimulation();
+    }
+  }
+
+  private restartSimulation() {
+    if (this.currentSelection && this.currentSelection.taskId === ML_ID) {
+      this.simulationService.startSimulation('ml');
+    } else {
+      this.simulationService.startSimulation('stream');
+    }
   }
 
   private _updateFlow() {
@@ -250,13 +302,13 @@ function mockResource() {
           value: null,
         },
       },
-      inference_4: {
+      [ML_ID]: {
         name: 'Invoke ML Model',
         description:
           'Basic inferencing activity to invoke ML model using the flogo-ml framework.',
         settings: {},
         ref: 'github.com/project-flogo/ml/activity/inference',
-        id: 'inference_4',
+        id: ML_ID,
         inputMappings: {
           sigDefName: 'serving_default',
           tag: 'serve',

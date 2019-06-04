@@ -20,8 +20,8 @@ export class SimulatorService implements OnDestroy {
     this.socket.disconnect();
   }
 
-  startSimulation(metadata: Partial<Metadata>) {
-    this.socket.emit('simulate-start', metadata);
+  startSimulation(type: string) {
+    this.socket.emit('simulate-start', type);
   }
 
   stopSimulation() {

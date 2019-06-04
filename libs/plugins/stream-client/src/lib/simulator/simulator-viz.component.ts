@@ -11,7 +11,7 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import { Observable, combineLatest, pipe } from 'rxjs';
+import { Observable, combineLatest, pipe, Subscription } from 'rxjs';
 import { SingleEmissionSubject } from '@flogo-web/lib-client/core';
 import { scan, filter, takeUntil, take } from 'rxjs/operators';
 import { PerspectiveWorker } from '@finos/perspective';
@@ -33,6 +33,7 @@ export class SimulatorVizComponent implements OnDestroy, AfterViewInit, OnChange
   @ViewChild('viewer') viewerElem: ElementRef;
   public isStarting = true;
   private destroy$ = SingleEmissionSubject.create();
+  private valueChangeSubscription: Subscription;
 
   constructor(
     private zone: NgZone,
@@ -45,17 +46,22 @@ export class SimulatorVizComponent implements OnDestroy, AfterViewInit, OnChange
   }
 
   ngOnChanges({ schema: schemaChanges, view: viewChanges }: SimpleChanges) {
-    if (schemaChanges && !this.isStarting) {
-      const viewer = this.getViewer();
-      viewer.load(this.schema);
-      this.setColumns();
+    if (this.isStarting) {
+      return;
+    }
+    if (schemaChanges) {
+      // const viewer = this.getViewer();
+      // viewer.load(this.schema);
+      // this.setColumns();
+      // this.listenForUpdates();
+      this.configure();
     }
     if (viewChanges && this.view) {
       this.getViewer().setAttribute('view', this.view);
     }
   }
 
-  ngAfterViewInit() {
+  private configure() {
     this.zone.runOutsideAngular(() => {
       combineLatest(
         this.perspectiveService.getWorker(),
@@ -67,7 +73,10 @@ export class SimulatorVizComponent implements OnDestroy, AfterViewInit, OnChange
         )
         .subscribe(([worker, values]: [PerspectiveWorker, any[]]) => {
           const viewer = this.getViewer();
-          viewer.load(<any>this.schema, <any>{ limit: VIZ_LIMIT });
+          const table = worker.table(this.schema, <any>{ limit: VIZ_LIMIT });
+          table.update(values);
+          // table.
+          viewer.load(<any>table, <any>{ limit: VIZ_LIMIT });
           if (this.view) {
             viewer.setAttribute('view', this.view);
           }
@@ -78,6 +87,10 @@ export class SimulatorVizComponent implements OnDestroy, AfterViewInit, OnChange
           this.cd.detectChanges();
         });
     });
+  }
+
+  ngAfterViewInit() {
+    this.configure();
   }
 
   setView(viewName: string) {
@@ -99,7 +112,10 @@ export class SimulatorVizComponent implements OnDestroy, AfterViewInit, OnChange
   }
 
   private listenForUpdates() {
-    this.values$
+    if (this.valueChangeSubscription) {
+      this.valueChangeSubscription.unsubscribe();
+    }
+    this.valueChangeSubscription = this.values$
       .pipe(
         takeUntil(this.destroy$),
         valueAccumulator()
