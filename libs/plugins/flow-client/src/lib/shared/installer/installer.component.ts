@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { has } from 'lodash';
 import { BsModalComponent } from 'ng2-bs3-modal';
-import { FLOGO_CONTRIB_TYPE } from '@flogo-web/lib-client/core';
 import { ContributionsService } from '@flogo-web/lib-client/core';
 
 import {
@@ -29,18 +28,13 @@ export class FlogoInstallerComponent implements OnChanges {
   @ViewChild('installerModal') modal: BsModalComponent;
 
   @Input()
-  installType: string;
-  @Input()
   isActivated: boolean;
 
-  @Output()
-  installTypeChange = new EventEmitter();
   @Output()
   isActivatedChange = new EventEmitter();
   @Output()
   installed = new EventEmitter();
 
-  _installType: FLOGO_CONTRIB_TYPE;
   _isActivated: boolean;
 
   showBlock = {
@@ -63,17 +57,9 @@ export class FlogoInstallerComponent implements OnChanges {
   }
 
   ngOnChanges(changes: { [key: string]: SimpleChange }) {
-    if (has(changes, 'installType')) {
-      this.onInstallTypeChange(changes['installType'].currentValue);
-    }
-
     if (has(changes, 'isActivated')) {
       this.onActivatedStatusChange(changes['isActivated'].currentValue);
     }
-  }
-
-  onInstallTypeChange(newVal) {
-    this._installType = newVal;
   }
 
   onActivatedStatusChange(newVal) {
@@ -105,15 +91,6 @@ export class FlogoInstallerComponent implements OnChanges {
   }
 
   onInstallAction(url: string) {
-    if (
-      this._installType !== FLOGO_CONTRIB_TYPE.TRIGGER &&
-      this._installType !== FLOGO_CONTRIB_TYPE.ACTIVITY
-    ) {
-      console.warn('Unknown installation type.');
-      console.groupEnd();
-      return;
-    }
-
     console.group(`[FlogoInstallerComponent] onInstallAction`);
     console.log(`Source URL: ${url} `);
 
@@ -123,7 +100,6 @@ export class FlogoInstallerComponent implements OnChanges {
 
     this.contributionsAPIs
       .installContributions({
-        installType: this._installType,
         url,
       })
       .toPromise()

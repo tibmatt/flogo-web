@@ -15,8 +15,6 @@ import { FLOGO_INSTALLER_STATUS_INSTALLING } from '../constants';
 })
 export class FlogoUrlInstallerComponent implements OnChanges {
   @Input()
-  installType: string;
-  @Input()
   sourceUrl: string;
   @Input()
   status: string;

@@ -6,11 +6,6 @@ import { ContributionSchema } from '@flogo-web/core';
 import { FLOGO_CONTRIB_TYPE } from '../../../constants';
 import { RestApiService } from '../rest-api.service';
 
-interface InstallationData {
-  url: string;
-  type?: string;
-}
-
 @Injectable()
 export class ContributionsService {
   constructor(private restApi: RestApiService) {}
@@ -35,17 +30,9 @@ export class ContributionsService {
   }
 
   installContributions({
-    installType,
     url,
   }): Observable<{ details: string; ref: string; originalUrl: string }> {
-    const body = this.prepareBodyData(installType, url);
-    return this.restApi.post(this.getApiPath(), body);
-  }
-
-  private prepareBodyData(type, url): InstallationData {
-    const data: InstallationData = { url };
-    data.type = type;
-    return data;
+    return this.restApi.post(this.getApiPath(), { url });
   }
 
   private getApiPath(): string {

@@ -11,6 +11,7 @@ import { buildPlugin } from './build/plugin';
 import { loader } from './loader';
 import { commander } from './commander';
 import { execController as exec } from './exec-controller';
+import { logger } from '../../common/logging';
 
 const DIR_TEST_BIN = 'bin-test';
 const DIR_BUILD_BIN = 'bin-build';
@@ -18,11 +19,6 @@ const DIR_BUILD_BIN = 'bin-build';
 const TYPE_TEST = 'test';
 const TYPE_BUILD = 'build';
 
-interface TaskCollections {
-  activities: object[];
-  triggers: object[];
-  functions: object[];
-}
 type Options = Record<string, any>;
 
 class Engine {
@@ -33,16 +29,12 @@ class Engine {
   private libVersion: string;
   private path: string;
   private runLogger: object;
-  private tasks: { activities: object[]; triggers: object[]; functions: object[] };
+  private installedContributions: object[];
 
   constructor(pathToEngine: string, libVersion: string, runLogger: object) {
     this.path = pathToEngine;
     this.hostExt = processHost.getExtensionForExecutables();
-    this.tasks = {
-      activities: [],
-      triggers: [],
-      functions: [],
-    };
+    this.installedContributions = [];
     this.libVersion = libVersion;
     this.runLogger = runLogger;
   }
@@ -53,8 +45,8 @@ class Engine {
       .then(installedContribs => {
         return loader.loadMetadata(installedContribs);
       })
-      .then((contribMetadata: TaskCollections) => {
-        this.tasks = contribMetadata;
+      .then((contribMetadata: object[]) => {
+        this.installedContributions = contribMetadata;
         return contribMetadata;
       });
   }
@@ -95,32 +87,12 @@ class Engine {
     return loader.exists(this.path);
   }
 
-  getTasks() {
-    return this.tasks;
+  getContributions() {
+    return this.installedContributions;
   }
 
-  setTasks(tasks: TaskCollections) {
-    this.tasks = tasks;
-  }
-
-  getActivities() {
-    return this.tasks.activities;
-  }
-
-  getTriggers() {
-    return this.tasks.triggers;
-  }
-
-  getFunctions() {
-    return this.tasks.functions;
-  }
-
-  hasActivity(nameOrPath: string) {
-    return this._hasItem(this.getActivities(), nameOrPath);
-  }
-
-  hasTrigger(nameOrPath: string) {
-    return this._hasItem(this.getTriggers(), nameOrPath);
+  hasContribution(nameOrPath: string) {
+    return this._hasItem(this.getContributions(), nameOrPath);
   }
 
   /**
@@ -209,23 +181,16 @@ class Engine {
   }
 
   /**
-   * Add/install a trigger
-   * @param triggerPath Remote url or use local://path for local items
-   * @param options
-   * @param options.version {string} trigger versions
+   * Install a contribution
+   * @param {string} nameOrPath Contribution name or path (remote url or local://path)
    */
-  addTrigger(triggerPath: string, options: Options) {
-    return this._installItem('trigger', triggerPath, options);
-  }
-
-  /**
-   * Add/install an activity
-   * @param activityPath Remote url or use local://path for local items
-   * @param options
-   * @param options.version {string} trigger versions
-   */
-  addActivity(activityPath: string, options: Options) {
-    return this._installItem('activity', activityPath, options);
+  installContribution(nameOrPath) {
+    if (this.hasContribution(nameOrPath)) {
+      logger.warn(`'${nameOrPath}' already exists. Updating it in the engine.`);
+      return this.updateContribution(nameOrPath);
+    } else {
+      return this._installItem('contribution', nameOrPath, { version: 'latest' });
+    }
   }
 
   /**
@@ -242,7 +207,7 @@ class Engine {
   }
 
   _installItem(
-    itemType: 'activity' | 'trigger' | 'contribBundle',
+    itemType: 'contribution' | 'contribBundle',
     ref: string,
     options: Options
   ) {

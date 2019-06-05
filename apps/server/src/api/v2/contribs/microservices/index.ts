@@ -1,36 +1,15 @@
-import { flatten } from 'lodash';
-
-import { TriggerManager } from '../../../../modules/triggers';
-import { ActivitiesManager } from '../../../../modules/activities';
-
+import { ContributionManager } from '../../../../modules/contributions';
 import { getContribInstallationController as getInstallationController } from '../../../../modules/engine';
 import { config } from '../../../../config/app-config';
 import { logger } from '../../../../common/logging';
 import { install as installContributionToEngine } from '../../../../modules/contrib-installer/microservice';
-import { TYPE_ACTIVITY, TYPE_TRIGGER, TYPE_FUNCTION } from '../../../../common/constants';
 import { ERROR_TYPES, ErrorManager } from '../../../../common/errors';
-import { FunctionManager } from '../../../../modules/functions';
 
-const contributionTypes = {
-  activity: {
-    manager: ActivitiesManager,
-    installerOpts: {
-      type: TYPE_ACTIVITY,
-    },
-  },
-  trigger: {
-    manager: TriggerManager,
-    installerOpts: {
-      type: TYPE_TRIGGER,
-    },
-  },
-  function: {
-    manager: FunctionManager,
-    installerOpts: {
-      type: TYPE_FUNCTION,
-    },
-  },
-};
+const CONTRIBUTION_TYPE = new Map([
+  ['activity', 'flogo:activity'],
+  ['trigger', 'flogo:trigger'],
+  ['function', 'flogo:function'],
+]);
 
 export function contribs(router) {
   router.get(`/contributions/microservices`, listContributions);
@@ -46,12 +25,11 @@ export function contribs(router) {
  *
  */
 async function listContributions(ctx) {
-  const searchTerms: { name?: string; ref?: string; shim?: string } = {};
+  const searchTerms: { name?: string; ref?: string; shim?: string; type?: string } = {};
   const filterName = ctx.request.query['filter[name]'];
   const filterRef = ctx.request.query['filter[ref]'];
   const filterShim = ctx.request.query['filter[shim]'];
-  const contributionType = contributionTypes[ctx.request.query['filter[type]']];
-  let foundContributions;
+  const filterType = CONTRIBUTION_TYPE.get(ctx.request.query['filter[type]']);
 
   if (filterName) {
     searchTerms.name = filterName;
@@ -62,18 +40,11 @@ async function listContributions(ctx) {
   if (filterShim) {
     searchTerms.shim = filterShim;
   }
-  if (contributionType) {
-    foundContributions = await contributionType.manager.find(searchTerms);
-  } else {
-    const contributionsFetcher = Object.keys(contributionTypes).reduce(
-      (getContribsArray, type) =>
-        getContribsArray.concat(contributionTypes[type].manager.find(searchTerms)),
-      []
-    );
-    const results = await Promise.all(contributionsFetcher);
-    foundContributions = flatten(results);
+  if (filterType) {
+    searchTerms.type = filterType;
   }
 
+  const foundContributions = await ContributionManager.find(searchTerms);
   ctx.body = {
     data: foundContributions || [],
   };
@@ -82,15 +53,14 @@ async function listContributions(ctx) {
 /**
  * Install new Trigger or Activity to the engine. The POST request need to have the following properties in the body:
  * url {string} Url to the contribution to be installed
- * type {string} Type of contribution to be installed. Should contain either 'activity' / 'trigger'
+ * type {string} Type of contribution to be installed.
  *
  */
 async function installContribution(ctx, next) {
   ctx.req.setTimeout(0);
   const url = ctx.request.body.url;
-  const contribType = contributionTypes[ctx.request.body.type];
 
-  if (!contribType) {
+  if (!url) {
     throw ErrorManager.createRestError('Unknown type of contribution', {
       type: ERROR_TYPES.ENGINE.INSTALL,
       message: 'Unknown type of contribution',
@@ -101,11 +71,10 @@ async function installContribution(ctx, next) {
     });
   }
 
-  logger.info(`[log] Install ${contribType.installerOpts.type}: '${url}'`);
+  logger.info(`[log] Install : '${url}'`);
   const installController = await getInstallationController(
     config.defaultEngine.path,
-    (contribRef, engine) =>
-      installContributionToEngine(contribRef, contribType.installerOpts.type, engine)
+    (contribRef, engine) => installContributionToEngine(contribRef, engine)
   );
 
   const result = await installController.install(url);

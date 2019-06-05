@@ -1,10 +1,7 @@
-import { activitiesDBService } from '../../common/db/activities';
-
 import { BaseRegistered } from '../base-registered/index';
 
 import { logger } from '../../common/logging/index';
-import { triggersDBService } from '../../common/db/triggers';
-import { functionsDBService } from '../../common/db/functions';
+import { contributionsDBService } from '../../common/db';
 
 /*
  * Server start logic
@@ -16,48 +13,16 @@ import { functionsDBService } from '../../common/db/functions';
  */
 
 export function syncTasks(engine) {
-  const activitiesRegistrator = new BaseRegistered(activitiesDBService);
-  const registerActivitiesPromise = activitiesRegistrator
+  const contributionsRegistrator = new BaseRegistered(contributionsDBService);
+  return contributionsRegistrator
     .clean()
-    .then(() => activitiesRegistrator.syncDb(engine.getActivities()))
+    .then(() => contributionsRegistrator.syncDb(engine.getContributions()))
     .then(() => {
-      logger.verbose('registerActivities success');
+      logger.verbose('registerContributions success');
       return true;
     })
     .catch(err => {
-      logger.error('registerActivities error');
+      logger.error('registerContributions error');
       return Promise.reject(err);
     });
-
-  const triggersRegistrator = new BaseRegistered(triggersDBService);
-  const registerTriggersPromise = triggersRegistrator
-    .clean()
-    .then(() => triggersRegistrator.syncDb(engine.getTriggers()))
-    .then(() => {
-      logger.verbose('registerTriggers success');
-      return true;
-    })
-    .catch(err => {
-      logger.error('registerTriggers error');
-      return Promise.reject(err);
-    });
-
-  const functionsRegistrator = new BaseRegistered(functionsDBService);
-  const registerFunctionsPromise = functionsRegistrator
-    .clean()
-    .then(() => functionsRegistrator.syncDb(engine.getFunctions()))
-    .then(() => {
-      logger.verbose('registerFunctions success');
-      return true;
-    })
-    .catch(err => {
-      logger.error('registerFunctions error');
-      return Promise.reject(err);
-    });
-
-  return Promise.all([
-    registerActivitiesPromise,
-    registerTriggersPromise,
-    registerFunctionsPromise,
-  ]);
 }
