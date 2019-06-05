@@ -1,11 +1,10 @@
-<div class="is-starting" *ngIf="isStarting">Starting...</div>
 <div class="header">
   <div class="header__title"><ng-content></ng-content></div>
   <div *ngIf="!isStarting">
     <button
       class="view-selector"
-      [class.is-selected]="!view || view == 'hypergrid'"
-      [disabled]="!view || view == 'hypergrid'"
+      [class.is-selected]="!currentView || currentView == 'hypergrid'"
+      [disabled]="!currentView || currentView == 'hypergrid'"
       (click)="setView('hypergrid')"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -19,9 +18,9 @@
 
     <button
       class="view-selector"
-      [class.is-selected]="!!view && view != 'hypergrid'"
-      [disabled]="!!view && view != 'hypergrid'"
-      (click)="setView('d3_y_line')"
+      [class.is-selected]="!!currentView && currentView != 'hypergrid'"
+      [disabled]="!!currentView && currentView != 'hypergrid'"
+      (click)="setView(graphView || 'd3_y_line')"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path
@@ -34,3 +33,4 @@
   </div>
 </div>
 <perspective-viewer #viewer></perspective-viewer>
+<flogo-loading-indicator *ngIf="isStarting" [active]="true"></flogo-loading-indicator>

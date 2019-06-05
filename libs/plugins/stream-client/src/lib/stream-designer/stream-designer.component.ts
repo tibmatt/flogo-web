@@ -22,6 +22,9 @@ import { NotificationsService } from '@flogo-web/lib-client/notifications';
 
 const SAMPLE_FIELDS = {
   stream: {
+    inputGraph: 'd3_y_bar',
+    outputGraph: 'd3_y_line',
+    inputGraphFields: ['pressure', 'amps'],
     input: [
       { name: 'ID', type: ValueType.String },
       { name: 'timeslot', type: ValueType.Long },
@@ -34,6 +37,8 @@ const SAMPLE_FIELDS = {
     ],
   },
   ml: {
+    inputGraph: 'd3_y_area',
+    outputGraph: 'd3_y_line',
     input: [
       { name: 'amps', type: ValueType.Long },
       { name: 'pressure', type: ValueType.Long },
@@ -75,6 +80,7 @@ export class StreamDesignerComponent implements OnDestroy {
   flowName: string;
   simulatorFields: Partial<ResourceMetadata> = SAMPLE_FIELDS.stream;
   simulateActivity;
+  simulationId = 0;
   private ngOnDestroy$ = SingleEmissionSubject.create();
 
   @ViewChild('metadataModal') metadataModal: ParamsSchemaComponent;
@@ -238,6 +244,7 @@ export class StreamDesignerComponent implements OnDestroy {
       }
     } else {
       this.currentSelection = null;
+      this.simulateActivity = null;
       this.simulatorFields = SAMPLE_FIELDS.stream;
     }
 
@@ -247,10 +254,12 @@ export class StreamDesignerComponent implements OnDestroy {
   }
 
   private restartSimulation() {
+    this.simulationId++;
+    console.log(this.simulationId);
     if (this.currentSelection && this.currentSelection.taskId === ML_ID) {
-      this.simulationService.startSimulation('ml');
+      this.simulationService.startSimulation(this.simulationId, 'ml');
     } else {
-      this.simulationService.startSimulation('stream');
+      this.simulationService.startSimulation(this.simulationId, 'stream');
     }
   }
 

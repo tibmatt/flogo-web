@@ -84,6 +84,7 @@
   <ng-template #simulator>
     <flogo-stream-simulator
       *ngIf="isPanelOpen"
+      [simulationId]="simulationId"
       [metadata]="simulatorFields"
       [simulateActivity]="simulateActivity"
     ></flogo-stream-simulator>

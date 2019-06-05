@@ -1,8 +1,5 @@
 import {
   Component,
-  ElementRef,
-  ViewChild,
-  AfterViewInit,
   ChangeDetectionStrategy,
   NgZone,
   OnInit,
@@ -32,8 +29,13 @@ interface Schemas {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimulatorComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() metadata?: Metadata;
+  @Input() metadata?: Metadata & {
+    inputGraph: string;
+    outputGraph: string;
+    inputGraphFields?: string[];
+  };
   @Input() simulateActivity;
+  @Input() simulationId: number;
   private destroy$ = SingleEmissionSubject.create();
   private input$: Observable<any>;
   private output$: Observable<any>;

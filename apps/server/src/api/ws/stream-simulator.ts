@@ -57,7 +57,7 @@ class ValueStreamer {
     return this.clientSocket && this.clientSocket.id;
   }
 
-  start(type: string) {
+  start({ simulationId, type }) {
     if (this.isDestroyed) {
       return;
     }
@@ -66,8 +66,8 @@ class ValueStreamer {
       return;
     }
     this.currentStreams = {
-      input: this.configureStream(SAMPLES[type].in, Transport.Input),
-      output: this.configureStream(SAMPLES[type].out, Transport.Output),
+      input: this.configureStream(simulationId, SAMPLES[type].in, Transport.Input),
+      output: this.configureStream(simulationId, SAMPLES[type].out, Transport.Output),
     };
   }
 
@@ -80,7 +80,11 @@ class ValueStreamer {
     }
   }
 
-  private configureStream(fileName, transport: Transport): ReadStream {
+  private configureStream(
+    simulationId: number,
+    fileName,
+    transport: Transport
+  ): ReadStream {
     const file = join(__dirname, 'samples', fileName);
     const stream = createReadStream(file)
       .pipe(csvParse())
@@ -90,7 +94,7 @@ class ValueStreamer {
             destroy?: () => void;
           } = {};
           const timeout = setTimeout(() => {
-            callback(null, record);
+            callback(null, { ...record, __simulationId: simulationId });
             stream.off('destroy', destroyHandler.destroy);
           }, 900);
           destroyHandler.destroy = () => clearTimeout(timeout);

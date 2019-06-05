@@ -30,7 +30,12 @@ export class SimulatorVizComponent implements OnDestroy, AfterViewInit, OnChange
   @Input() values$: Observable<any[]>;
   @Input() schema: { [name: string]: string };
   @Input() view: string;
+  @Input() simulationId: number;
+  @Input() graphView = 'd3_y_line';
+  @Input() graphFields?;
   @ViewChild('viewer') viewerElem: ElementRef;
+
+  public currentView;
   public isStarting = true;
   private destroy$ = SingleEmissionSubject.create();
   private valueChangeSubscription: Subscription;
@@ -62,10 +67,11 @@ export class SimulatorVizComponent implements OnDestroy, AfterViewInit, OnChange
   }
 
   private configure() {
+    this.isStarting = true;
     this.zone.runOutsideAngular(() => {
       combineLatest(
         this.perspectiveService.getWorker(),
-        this.values$.pipe(valueAccumulator())
+        this.values$.pipe(valueAccumulator(this.simulationId))
       )
         .pipe(
           takeUntil(this.destroy$),
@@ -75,8 +81,8 @@ export class SimulatorVizComponent implements OnDestroy, AfterViewInit, OnChange
           const viewer = this.getViewer();
           const table = worker.table(this.schema, <any>{ limit: VIZ_LIMIT });
           table.update(values);
-          // table.
           viewer.load(<any>table, <any>{ limit: VIZ_LIMIT });
+          (<any>this.getViewer()).reset();
           if (this.view) {
             viewer.setAttribute('view', this.view);
           }
@@ -90,6 +96,14 @@ export class SimulatorVizComponent implements OnDestroy, AfterViewInit, OnChange
   }
 
   ngAfterViewInit() {
+    const viewer = this.getViewer();
+    viewer.addEventListener('perspective-config-update', () => {
+      const currentView = viewer.getAttribute('view');
+      if (currentView !== this.currentView) {
+        this.currentView = viewer.getAttribute('view');
+        this.cd.markForCheck();
+      }
+    });
     this.configure();
   }
 
@@ -98,13 +112,18 @@ export class SimulatorVizComponent implements OnDestroy, AfterViewInit, OnChange
     const currentViewName = viewer.getAttribute('view');
     if (currentViewName !== viewName) {
       viewer.setAttribute('view', viewName);
-      this.view = viewName;
-      this.cd.markForCheck();
+      if (viewName === 'hypergrid') {
+        (<any>viewer).reset();
+        this.setColumns();
+      } else {
+        this.setColumns(this.graphFields);
+      }
     }
   }
 
-  private setColumns() {
-    this.getViewer().setAttribute('columns', JSON.stringify(Object.keys(this.schema)));
+  private setColumns(columns?) {
+    const stringifiedColumns = JSON.stringify(columns || Object.keys(this.schema));
+    this.getViewer().setAttribute('columns', stringifiedColumns);
   }
 
   private getViewer(): PerspectiveViewer {
@@ -118,7 +137,7 @@ export class SimulatorVizComponent implements OnDestroy, AfterViewInit, OnChange
     this.valueChangeSubscription = this.values$
       .pipe(
         takeUntil(this.destroy$),
-        valueAccumulator()
+        valueAccumulator(this.simulationId)
       )
       .subscribe(values => {
         this.getViewer().update(values);
@@ -135,8 +154,9 @@ function isNotEmpty(values) {
   return values && values.length > 0;
 }
 
-function valueAccumulator() {
+function valueAccumulator(simulationId) {
   return pipe(
+    filter((v: any) => v && v.__simulationId === simulationId),
     scan(accumulateValues, []),
     filter(isNotEmpty)
   );
