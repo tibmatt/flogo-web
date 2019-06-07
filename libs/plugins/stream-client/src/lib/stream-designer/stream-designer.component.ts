@@ -38,10 +38,10 @@ const SAMPLE_FIELDS = {
   },
   ml: {
     inputGraph: 'd3_y_area',
-    outputGraph: 'd3_y_line',
+    outputGraph: 'd3_y_bar',
     input: [
-      { name: 'amps', type: ValueType.Long },
-      { name: 'pressure', type: ValueType.Long },
+      { name: 'station', type: ValueType.Integer },
+      { name: 'visitor', type: ValueType.Integer },
     ],
     output: [
       { name: 'err', type: ValueType.Long },
@@ -414,8 +414,7 @@ function mockResource() {
           id: 'inference_4',
           title: 'Invoke ML Model',
           icon: 'ml',
-          description:
-            'Basic inferencing activity to invoke ML model using the flogo-ml framework.',
+          description: 'Load factor predictor.',
           homepage: 'https://github.com/project-flogo/ml/tree/master/activity/inference',
           features: {
             selectable: true,
@@ -437,9 +436,9 @@ function mockResource() {
         mqtt_5: {
           type: 'task',
           id: 'mqtt_5',
-          title: 'MQTT Activity',
+          title: 'Update Rules',
           icon: 'default',
-          description: 'Send MQTT message',
+          description: 'Update Rules',
           homepage:
             'https://github.com/project-flogo/edge-contrib/tree/master/activity/mqtt',
           features: {
