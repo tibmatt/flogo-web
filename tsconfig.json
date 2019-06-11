@@ -30,6 +30,7 @@
       "@flogo-web/lib-client/diagram": ["libs/lib-client/diagram/src/index.ts"],
       "@flogo-web/lib-client/contrib-installer": ["libs/lib-client/contrib-installer/src/index.ts"],
       "@flogo-web/lib-client/logs": ["libs/lib-client/logs/src/index.ts"],
+      "@flogo-web/lib-client/designer-header": ["libs/lib-client/header/src/index.ts"],
       "@flogo-web/plugins/flow-core": ["libs/plugins/flow-core/src/index.ts"],
       "@flogo-web/plugins/flow-server": ["libs/plugins/flow-server/src/index.ts"],
       "@flogo-web/plugins/flow-client": ["libs/plugins/flow-client/src/index.ts"]
