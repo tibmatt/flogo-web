@@ -9,7 +9,7 @@ import {
 import { FLOGO_INSTALLER_STATUS_INSTALLING } from '../constants';
 
 @Component({
-  selector: 'flogo-flow-url-installer',
+  selector: 'flogo-contrib-url-installer',
   templateUrl: 'url-installer.component.html',
   styleUrls: ['url-installer.component.less'],
 })

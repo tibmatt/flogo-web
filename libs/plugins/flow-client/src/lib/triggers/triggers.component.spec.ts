@@ -15,7 +15,7 @@ import {
 import { ConfirmationModalService } from '@flogo-web/lib-client/confirmation';
 import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
 
-import { InstallerModule } from '../shared/installer';
+import { InstallerModule, InstallerService } from '@flogo-web/lib-client/installer';
 import { MicroServiceModelConverter, FlogoProfileService } from '../core';
 import { featureReducer, FlowState, Init, INITIAL_STATE } from '../core/state';
 import { FlogoFlowTriggersPanelComponent } from './triggers.component';
@@ -195,6 +195,10 @@ describe('Component: TriggersComponent', () => {
         { provide: MicroServiceModelConverter, useClass: MockUIConverterService },
         { provide: ConfirmationModalService, useClass: MockConfirmationModal },
         HttpUtilsService,
+        {
+          provide: InstallerService,
+          useValue: InstallerService,
+        },
       ],
     }).compileComponents();
   }));

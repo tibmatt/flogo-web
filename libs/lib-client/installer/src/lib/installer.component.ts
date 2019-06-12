@@ -18,9 +18,10 @@ import {
   FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS,
   FLOGO_INSTALLER_STATUS_INSTALLING,
 } from './constants';
+import { InstallerService } from './installer.service';
 
 @Component({
-  selector: 'flogo-flow-installer',
+  selector: 'flogo-contrib-installer',
   templateUrl: 'installer.component.html',
   styleUrls: ['installer.component.less'],
 })
@@ -48,7 +49,10 @@ export class FlogoInstallerComponent implements OnChanges {
 
   _status = FLOGO_INSTALLER_STATUS_IDLE;
 
-  constructor(private contributionsAPIs: ContributionsService) {
+  constructor(
+    private contributionsAPIs: ContributionsService,
+    private installerService: InstallerService
+  ) {
     this.init();
   }
 
@@ -108,7 +112,10 @@ export class FlogoInstallerComponent implements OnChanges {
         console.groupEnd();
         return this.contributionsAPIs.getContributionDetails(result.ref);
       })
-      .then(contribDetails => this.installed.emit(contribDetails))
+      .then(contribDetails => {
+        this.installerService.afterContribInstalled(contribDetails);
+        this.installed.emit(contribDetails);
+      })
       .catch(err => {
         console.error(err);
         self._status = FLOGO_INSTALLER_STATUS_INSTALL_FAILED;

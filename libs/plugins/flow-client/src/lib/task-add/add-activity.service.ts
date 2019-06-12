@@ -99,8 +99,6 @@ export class AddActivityService {
       appAndFlowInfo$: this.appAndFlowInfo$,
       selectActivity: (ref: string, selectedSubFlow?: Resource) =>
         this.selectedActivity(ref, selectedSubFlow),
-      installedActivity: (schema: ActivitySchema) =>
-        this.store.dispatch(new FlowActions.ActivityInstalled(schema)),
       updateActiveState: (isOpen: boolean) => (this.shouldKeepPopoverActive = isOpen),
     };
     return new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>().set(

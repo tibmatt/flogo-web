@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
 import { TranslateModule } from '@ngx-translate/core';
-
-import { InstallerModule } from '../shared/installer';
+import { InstallerModule as ContribInstallerModule } from '@flogo-web/lib-client/installer';
 import { SubFlowModule } from '../sub-flow';
 import { AddActivityDirective } from './add-activity.directive';
 import { TaskAddComponent } from './task-add.component';
@@ -16,7 +15,7 @@ import { AddActivityService } from './add-activity.service';
     OverlayModule,
     PortalModule,
     TranslateModule,
-    InstallerModule,
+    ContribInstallerModule,
     SubFlowModule,
   ],
   declarations: [AddActivityDirective, TaskAddComponent],

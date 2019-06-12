@@ -1,7 +1,7 @@
 import { Component, Inject, InjectionToken, OnInit } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 
-import { ActivitySchema, Resource, CONTRIB_REFS } from '@flogo-web/core';
+import { Resource, CONTRIB_REFS } from '@flogo-web/core';
 
 import { filterActivitiesBy } from './core/filter-activities-by';
 import { Activity, TaskAddOptions } from './core/task-add-options';
@@ -53,10 +53,6 @@ export class TaskAddComponent implements OnInit {
       this.options.selectActivity(this.SUBFLOW_REF, selectedFlow);
     }
     this.setSubflowWindowState(false);
-  }
-
-  afterActivityInstalled(schema: ActivitySchema) {
-    this.options.installedActivity(schema);
   }
 
   private updateWindowState() {
