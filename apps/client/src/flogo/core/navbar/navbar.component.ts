@@ -9,6 +9,7 @@ import { FLOGO_VERSION } from '@flogo-web/lib-client/core';
 export class FlogoNavbarComponent {
   public currentYear: number;
   isOpenMenu = false;
+  installContribActivated = false;
 
   constructor(@Inject(FLOGO_VERSION) public version: string) {
     this.currentYear = new Date().getFullYear();
@@ -20,5 +21,9 @@ export class FlogoNavbarComponent {
 
   closeNavMenu() {
     this.isOpenMenu = false;
+  }
+
+  onInstallContrib() {
+    this.installContribActivated = true;
   }
 }

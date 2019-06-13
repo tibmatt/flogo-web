@@ -27,10 +27,12 @@ import {
   FlogoFlowService as FlowsService,
 } from './core';
 import { HandlerType, SelectionType, mergeItemWithSchema } from './core/models';
-import { FlowState } from './core/state';
+import { FlowActions, FlowState } from './core/state';
 import { FlowMetadata } from './task-configurator/models';
 import { ParamsSchemaComponent } from './params-schema';
 import { of } from 'rxjs';
+import { ContribInstallerService } from '@flogo-web/lib-client/contrib-installer';
+import { Store } from '@ngrx/store';
 
 interface TaskContext {
   isTrigger: boolean;
@@ -83,7 +85,9 @@ export class FlowComponent implements OnInit, OnDestroy {
     private _route: ActivatedRoute,
     private testRunner: TestRunnerService,
     private notifications: NotificationsService,
-    private monacoLoaderService: MonacoEditorLoaderService
+    private monacoLoaderService: MonacoEditorLoaderService,
+    private contribInstallerService: ContribInstallerService,
+    private store: Store<FlowState>
   ) {
     this._isDiagramEdited = false;
     this.loading = true;
@@ -114,6 +118,11 @@ export class FlowComponent implements OnInit, OnDestroy {
           this.loading = false;
         }
       });
+    this.contribInstallerService.contribInstalled$
+      .pipe(takeUntil(this.ngOnDestroy$))
+      .subscribe(contribDetails =>
+        this.store.dispatch(new FlowActions.ContributionInstalled(contribDetails))
+      );
   }
 
   toggleFlowMenu() {

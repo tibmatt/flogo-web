@@ -18,11 +18,12 @@ import {
   FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS,
   FLOGO_INSTALLER_STATUS_INSTALLING,
 } from './constants';
+import { ContribInstallerService } from './contrib-installer.service';
 
 @Component({
-  selector: 'flogo-flow-installer',
-  templateUrl: 'installer.component.html',
-  styleUrls: ['installer.component.less'],
+  selector: 'flogo-contrib-installer',
+  templateUrl: 'contrib-installer.component.html',
+  styleUrls: ['contrib-installer.component.less'],
 })
 export class FlogoInstallerComponent implements OnChanges {
   @ViewChild('installerModal') modal: BsModalComponent;
@@ -48,7 +49,10 @@ export class FlogoInstallerComponent implements OnChanges {
 
   _status = FLOGO_INSTALLER_STATUS_IDLE;
 
-  constructor(private contributionsAPIs: ContributionsService) {
+  constructor(
+    private contributionsAPIs: ContributionsService,
+    private contribInstallerService: ContribInstallerService
+  ) {
     this.init();
   }
 
@@ -108,7 +112,10 @@ export class FlogoInstallerComponent implements OnChanges {
         console.groupEnd();
         return this.contributionsAPIs.getContributionDetails(result.ref);
       })
-      .then(contribDetails => this.installed.emit(contribDetails))
+      .then(contribDetails => {
+        this.contribInstallerService.afterContribInstalled(contribDetails);
+        this.installed.emit(contribDetails);
+      })
       .catch(err => {
         console.error(err);
         self._status = FLOGO_INSTALLER_STATUS_INSTALL_FAILED;

@@ -5,7 +5,7 @@ import { CoreModule as FlogoCoreModule } from '@flogo-web/lib-client/core';
 import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
 
 import { CoreModule as FlowCoreModule } from '../core';
-import { InstallerModule as ContribInstallerModule } from '../shared/installer';
+import { ContribInstallerModule } from '@flogo-web/lib-client/contrib-installer';
 import { FlogoFlowTriggersPanelComponent } from './triggers.component';
 import { FlogoSelectTriggerComponent } from './select-trigger/select-trigger.component';
 import { TriggerBlockComponent } from './trigger-block';

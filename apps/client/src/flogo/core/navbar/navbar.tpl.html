@@ -9,6 +9,12 @@
       (fgClickOutside)="closeNavMenu()"
     >
       <button
+        class="flogo-button--secondary flogo-header__install-contrib"
+        (click)="onInstallContrib()"
+      >
+        {{ 'INSTALLER:DOWNLOAD-TITLE' | translate }}
+      </button>
+      <button
         class="flogo-btn-link flogo-header__help-menu-btn"
         type="button"
         (click)="toggleNavMenu()"
@@ -69,3 +75,6 @@
     </div>
   </div>
 </nav>
+<flogo-contrib-installer
+  [(isActivated)]="installContribActivated"
+></flogo-contrib-installer>

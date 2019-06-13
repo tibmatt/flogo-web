@@ -10,6 +10,7 @@ import { FlogoFlowService } from '../core';
 import { TASKADD_OPTIONS, TaskAddComponent } from './task-add.component';
 import { TaskAddModule } from './task-add.module';
 import { TaskAddOptions } from './core/task-add-options';
+import { ContribInstallerService } from '@flogo-web/lib-client/contrib-installer';
 
 describe('Component: TaskAddComponent', () => {
   let component: TaskAddComponent;
@@ -34,7 +35,6 @@ describe('Component: TaskAddComponent', () => {
       actionId: 'some_action',
     }),
     selectActivity: () => {},
-    installedActivity: () => {},
     updateActiveState: () => {},
   };
   const mockFlowService = {
@@ -60,6 +60,10 @@ describe('Component: TaskAddComponent', () => {
         {
           provide: ContributionsService,
           useValue: mockContribsAPIService,
+        },
+        {
+          provide: ContribInstallerService,
+          useValue: ContribInstallerService,
         },
       ],
     }).compileComponents();

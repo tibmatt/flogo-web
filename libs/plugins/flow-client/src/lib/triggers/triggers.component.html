@@ -48,10 +48,10 @@
     (installDialog)="openInstallTriggerWindow()"
   >
   </flogo-flow-select-trigger>
-  <flogo-flow-installer
+  <flogo-contrib-installer
     [(isActivated)]="installTriggerActivated"
     (isActivatedChange)="openAddTriggerModal()"
     (installed)="onTriggerInstalledAction()"
-  ></flogo-flow-installer>
+  ></flogo-contrib-installer>
   <flogo-triggers-configuration></flogo-triggers-configuration>
 </div>

@@ -119,7 +119,7 @@ export function flowReducer(
         isDebugPanelOpen: action.payload.isOpen,
       };
     }
-    case ActionType.ActivityInstalled: {
+    case ActionType.ContributionInstalled: {
       return {
         ...state,
         schemas: {

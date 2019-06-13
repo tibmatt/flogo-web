@@ -1,11 +1,10 @@
 import { Observable } from 'rxjs';
-import { Resource, ActivitySchema } from '@flogo-web/core';
+import { Resource } from '@flogo-web/core';
 
 export interface TaskAddOptions {
   activities$: Observable<Activity[]>;
   appAndFlowInfo$: Observable<AppAndFlowInfo>;
   selectActivity: (activityRef: string, selectedSubFlow?: Resource) => void;
-  installedActivity: (schema: ActivitySchema) => void;
   updateActiveState: (isOpen: boolean) => void;
 }
 
