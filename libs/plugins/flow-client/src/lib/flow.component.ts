@@ -31,7 +31,7 @@ import { FlowActions, FlowState } from './core/state';
 import { FlowMetadata } from './task-configurator/models';
 import { ParamsSchemaComponent } from './params-schema';
 import { of } from 'rxjs';
-import { InstallerService } from '@flogo-web/lib-client/installer';
+import { ContribInstallerService } from '@flogo-web/lib-client/contrib-installer';
 import { Store } from '@ngrx/store';
 
 interface TaskContext {
@@ -86,7 +86,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     private testRunner: TestRunnerService,
     private notifications: NotificationsService,
     private monacoLoaderService: MonacoEditorLoaderService,
-    private installerService: InstallerService,
+    private contribInstallerService: ContribInstallerService,
     private store: Store<FlowState>
   ) {
     this._isDiagramEdited = false;
@@ -118,10 +118,10 @@ export class FlowComponent implements OnInit, OnDestroy {
           this.loading = false;
         }
       });
-    this.installerService.contribInstalled
+    this.contribInstallerService.contribInstalled$
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(contribDetails =>
-        this.store.dispatch(new FlowActions.ActivityInstalled(contribDetails))
+        this.store.dispatch(new FlowActions.ContributionInstalled(contribDetails))
       );
   }
 

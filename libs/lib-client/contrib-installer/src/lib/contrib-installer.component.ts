@@ -18,12 +18,12 @@ import {
   FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS,
   FLOGO_INSTALLER_STATUS_INSTALLING,
 } from './constants';
-import { InstallerService } from './installer.service';
+import { ContribInstallerService } from './contrib-installer.service';
 
 @Component({
   selector: 'flogo-contrib-installer',
-  templateUrl: 'installer.component.html',
-  styleUrls: ['installer.component.less'],
+  templateUrl: 'contrib-installer.component.html',
+  styleUrls: ['contrib-installer.component.less'],
 })
 export class FlogoInstallerComponent implements OnChanges {
   @ViewChild('installerModal') modal: BsModalComponent;
@@ -51,7 +51,7 @@ export class FlogoInstallerComponent implements OnChanges {
 
   constructor(
     private contributionsAPIs: ContributionsService,
-    private installerService: InstallerService
+    private contribInstallerService: ContribInstallerService
   ) {
     this.init();
   }
@@ -113,7 +113,7 @@ export class FlogoInstallerComponent implements OnChanges {
         return this.contributionsAPIs.getContributionDetails(result.ref);
       })
       .then(contribDetails => {
-        this.installerService.afterContribInstalled(contribDetails);
+        this.contribInstallerService.afterContribInstalled(contribDetails);
         this.installed.emit(contribDetails);
       })
       .catch(err => {

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
 
-import { FlogoInstallerComponent } from './installer.component';
+import { FlogoInstallerComponent } from './contrib-installer.component';
 import { FlogoUrlInstallerComponent } from './url-installer/url-installer.component';
 
 @NgModule({
@@ -18,4 +18,4 @@ import { FlogoUrlInstallerComponent } from './url-installer/url-installer.compon
   exports: [FlogoInstallerComponent],
   providers: [],
 })
-export class InstallerModule {}
+export class ContribInstallerModule {}

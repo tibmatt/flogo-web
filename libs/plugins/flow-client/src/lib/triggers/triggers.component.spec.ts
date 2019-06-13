@@ -15,7 +15,10 @@ import {
 import { ConfirmationModalService } from '@flogo-web/lib-client/confirmation';
 import { FakeRootLanguageModule } from '@flogo-web/lib-client/language/testing';
 
-import { InstallerModule, InstallerService } from '@flogo-web/lib-client/installer';
+import {
+  ContribInstallerModule,
+  ContribInstallerService,
+} from '@flogo-web/lib-client/contrib-installer';
 import { MicroServiceModelConverter, FlogoProfileService } from '../core';
 import { featureReducer, FlowState, Init, INITIAL_STATE } from '../core/state';
 import { FlogoFlowTriggersPanelComponent } from './triggers.component';
@@ -171,7 +174,7 @@ describe('Component: TriggersComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         FakeRootLanguageModule,
-        InstallerModule,
+        ContribInstallerModule,
         BsModalModule,
         TriggersConfiguratorModule,
         OverlayModule,
@@ -196,8 +199,8 @@ describe('Component: TriggersComponent', () => {
         { provide: ConfirmationModalService, useClass: MockConfirmationModal },
         HttpUtilsService,
         {
-          provide: InstallerService,
-          useValue: InstallerService,
+          provide: ContribInstallerService,
+          useValue: ContribInstallerService,
         },
       ],
     }).compileComponents();

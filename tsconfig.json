@@ -28,7 +28,7 @@
       "@flogo-web/lib-client/notifications": ["libs/lib-client/notifications/src/index.ts"],
       "@flogo-web/lib-client/notifications/testing": ["libs/lib-client/notifications/testing/index.ts"],
       "@flogo-web/lib-client/diagram": ["libs/lib-client/diagram/src/index.ts"],
-      "@flogo-web/lib-client/installer": ["libs/lib-client/installer/src/index.ts"],
+      "@flogo-web/lib-client/contrib-installer": ["libs/lib-client/contrib-installer/src/index.ts"],
       "@flogo-web/lib-client/logs": ["libs/lib-client/logs/src/index.ts"],
       "@flogo-web/plugins/flow-core": ["libs/plugins/flow-core/src/index.ts"],
       "@flogo-web/plugins/flow-server": ["libs/plugins/flow-server/src/index.ts"],

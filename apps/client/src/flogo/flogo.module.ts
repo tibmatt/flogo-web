@@ -16,7 +16,7 @@ import {
   initializer,
 } from '@flogo-web/lib-client/core';
 import { LanguageService, createTranslateLoader } from '@flogo-web/lib-client/language';
-import { InstallerService } from '@flogo-web/lib-client/installer';
+import { ContribInstallerService } from '@flogo-web/lib-client/contrib-installer';
 
 import { SharedModule as FlogoSharedModule } from '@flogo-web/lib-client/common';
 import { LogsModule as FlogoLogsModule } from '@flogo-web/lib-client/logs';
@@ -78,7 +78,7 @@ import { resourcePlugins } from '../plugins';
     },
     { provide: APP_BASE_HREF, useValue: '/' },
     appRoutingProviders,
-    InstallerService,
+    ContribInstallerService,
   ],
 })
 export class FlogoModule {}

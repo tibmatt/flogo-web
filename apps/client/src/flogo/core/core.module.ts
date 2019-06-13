@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FlogoNavbarComponent } from './navbar/navbar.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
-import { InstallerModule as ContribInstallerModule } from '@flogo-web/lib-client/installer';
+import { ContribInstallerModule } from '@flogo-web/lib-client/contrib-installer';
 
 @NgModule({
   declarations: [FlogoNavbarComponent],

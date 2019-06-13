@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Resource, ActivitySchema } from '@flogo-web/core';
+import { Resource, ContributionSchema } from '@flogo-web/core';
 import { Dictionary, GraphNode, StepAttribute } from '@flogo-web/lib-client/core';
 import { FlowMetadata, Item, ItemTask } from '../../interfaces/flow';
 import { HandlerType } from '../../models';
@@ -28,7 +28,7 @@ export enum ActionType {
   ErrorPanelStatusChange = '[Flow] Error panel status change',
   DebugPanelStatusChange = '[Flow][Debug panel] Debug panel status change',
   FlowSaveSuccess = '[Flow] Save success',
-  ActivityInstalled = '[Flow] Activity installed',
+  ContributionInstalled = '[Flow] Contribution installed',
 }
 
 interface BaseFlowAction extends Action {
@@ -167,9 +167,9 @@ export class FlowSaveSuccess implements BaseFlowAction {
   readonly type = ActionType.FlowSaveSuccess;
 }
 
-export class ActivityInstalled implements BaseFlowAction {
-  readonly type = ActionType.ActivityInstalled;
-  constructor(public payload: ActivitySchema) {}
+export class ContributionInstalled implements BaseFlowAction {
+  readonly type = ActionType.ContributionInstalled;
+  constructor(public payload: ContributionSchema) {}
 }
 
 export class CancelCreateItem implements BaseFlowAction {
@@ -198,5 +198,5 @@ export type ActionsUnion =
   | ExecutionStateUpdated
   | ErrorPanelStatusChange
   | DebugPanelStatusChange
-  | ActivityInstalled
+  | ContributionInstalled
   | CancelCreateItem;
