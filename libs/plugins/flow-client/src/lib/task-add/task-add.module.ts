@@ -8,6 +8,7 @@ import { SubFlowModule } from '../sub-flow';
 import { AddActivityDirective } from './add-activity.directive';
 import { TaskAddComponent } from './task-add.component';
 import { AddActivityService } from './add-activity.service';
+import { ActivityComponent } from './activity/activity.component';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import { AddActivityService } from './add-activity.service';
     ContribInstallerModule,
     SubFlowModule,
   ],
-  declarations: [AddActivityDirective, TaskAddComponent],
+  declarations: [AddActivityDirective, TaskAddComponent, ActivityComponent],
   providers: [AddActivityService],
   entryComponents: [TaskAddComponent],
   exports: [AddActivityDirective],

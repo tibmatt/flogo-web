@@ -6,6 +6,7 @@ export interface TaskAddOptions {
   appAndFlowInfo$: Observable<AppAndFlowInfo>;
   selectActivity: (activityRef: string, selectedSubFlow?: Resource) => void;
   updateActiveState: (isOpen: boolean) => void;
+  cancel: () => void;
 }
 
 export interface Activity {

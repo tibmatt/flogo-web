@@ -56,10 +56,14 @@
 }
 
 .activities-list {
+  flex: 1;
   overflow-y: auto;
+  padding: 0;
+  margin: 0;
 }
 
 .list-item {
+  margin: 0;
   padding: 16px;
   color: @color-ink;
   line-height: 1.5;
@@ -70,11 +74,9 @@
   transition-duration: 200ms;
   transition-timing-function: ease;
 
-  &:last-child {
-    border: none;
-  }
-
-  &:hover {
+  &:hover,
+  &.is-active,
+  &:focus {
     background-color: #e0f0f9;
 
     .install-activity {
@@ -83,7 +85,12 @@
   }
 }
 
+.activities-list:not(:focus) .list-item.is-active {
+  background-color: transparent;
+}
+
 .install-item {
+  text-align: left;
   padding: 10px;
 }
 
