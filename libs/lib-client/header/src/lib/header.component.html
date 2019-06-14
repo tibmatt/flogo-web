@@ -6,7 +6,7 @@
     (mouseover)="onMouseOverBackControl()"
     (mouseout)="onMouseOutBackControl()"
   ></i>
-  <ng-content select="[header-resource-logo]"></ng-content>
+  <ng-content select="[header-role='resource-logo']"></ng-content>
   <div class="header-content">
     <div class="resource-app-details">
       <div
@@ -32,6 +32,6 @@
       placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
     ></p>
   </div>
-  <ng-content select="[header-right-block]"></ng-content>
+  <ng-content select="[header-role='right-block']"></ng-content>
 </div>
-<ng-content select="[header-bottom-block]"></ng-content>
+<ng-content select="[header-role='bottom-block']"></ng-content>
