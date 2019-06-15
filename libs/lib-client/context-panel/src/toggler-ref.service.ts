@@ -31,11 +31,11 @@ export class TogglerRefService {
       return null;
     }
     const element: Element = this.elementRef.nativeElement;
-    const nativeWindow = this.windowRef.nativeWindow;
+    const parent = element.parentElement && element.parentElement.getBoundingClientRect();
     const boundingRect = element.getBoundingClientRect();
     return {
-      minimizedHeight: nativeWindow.innerHeight - boundingRect.top,
-      minimizedLeftDistance: boundingRect.left,
+      minimizedHeight: boundingRect.height,
+      minimizedLeftDistance: boundingRect.left - parent.left,
     };
   }
 }

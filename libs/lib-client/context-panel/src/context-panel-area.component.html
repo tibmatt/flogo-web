@@ -5,6 +5,9 @@
   (@wrappedContentState.done)="onAnimationEnd($event)"
 >
   <ng-content select="[context-panel-role='primary-area']"></ng-content>
+  <flogo-context-panel-trigger title="Context panel" (open)="openPanel()">
+    {{ panelTitle }}
+  </flogo-context-panel-trigger>
 </div>
 <div
   class="context-panel-container"
