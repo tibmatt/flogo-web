@@ -37,6 +37,12 @@
     },
     "client": {
       "tags": ["client"]
+    },
+    "demo-libs": {
+      "tags": []
+    },
+    "demo-libs-e2e": {
+      "tags": []
     }
   }
 }
