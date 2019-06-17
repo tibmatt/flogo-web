@@ -1,81 +1,53 @@
 <div class="canvas-flow" *ngIf="flowState && !loading">
-  <div class="header header--microservice">
-    <section class="flogo-flow-detail">
-      <header class="flogo-flow-detail-header" [ngClass]="{ '--hover': backToAppHover }">
-        <i
-          class="flogo-icon flogo-icon-back flogo-flow-detail-header-back-icon"
-          (click)="navigateToApp()"
-          (mouseover)="onMouseOverBackControl()"
-          (mouseout)="onMouseOutBackControl()"
-        ></i>
-        <div
-          class="flogo-profile__tile flogo-profile-detail__thumb flogo-profile__microservice"
-        ></div>
-        <div class="header-content">
-          <div class="flow-detail-name">
-            <h3
-              class="flogo-flow-detail-name"
-              [(fgContentEditable)]="flowState.name"
-              (fgContentEditableChange)="changeFlowDetailName($event, 'name')"
-            ></h3>
-            <span>in</span>
-            <span
-              (click)="navigateToApp()"
-              class="flogo-flow-detail-header-back-app-name"
-              (mouseover)="onMouseOverBackControl()"
-              (mouseout)="onMouseOutBackControl()"
-              >{{ flowState?.app?.name }}</span
-            >
-          </div>
-          <p
-            class="flow-detail-description"
-            [(fgContentEditable)]="flowState.description"
-            [allowNewLines]="true"
-            placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
-            (fgContentEditableChange)="changeFlowDetail($event, 'description')"
-          ></p>
-        </div>
-      </header>
-
-      <div class="flogo-flow-detail-menu-container">
-        <!-- Temporarily removing run flow for v0.9.0 -->
-        <!--     <flogo-run-flow
-          [disableRun]="runnableInfo?.disabled"
-          disableReason="{{ runnableInfo?.disableReason | translate }}"
-          [flowInputs]="flowState?.metadata?.input"
-          (submit)="onRunFlow($event)"
-        ></flogo-run-flow>-->
-        <div class="flogo-flow-detail-log-button-container">
-          <flogo-logs></flogo-logs>
-        </div>
-        <div
-          class="flogo-flow-detail-menu"
-          [class.--active]="isflowMenuOpen"
-          (fgClickOutside)="closeFlowMenu()"
-        >
-          <i class="flogo-icon-kebabmenu kebabmenu-icon" (click)="toggleFlowMenu()"></i>
-          <div class="flogo-flow-detail-menu-list-wrapper">
-            <ul class="flogo-flow-detail-menu-list">
-              <!--
-                <li class="flogo-flow-detail-menu-item"><a disabled href="javascript:void(0);"><i class="fa fa-clone fa-fw"></i>{{ 'CANVAS:COPY' | translate }}</a></li>
-              -->
-              <li class="flogo-flow-detail-menu-item">
-                <a
-                  (click)="deleteFlow()"
-                  href="javascript:void(0);"
-                  class="flogo-flow-detail-menu-anchor"
-                >
-                  <i class="flogo-icon flogo-icon-delete"></i
-                  >{{ 'CANVAS:DELETE' | translate }}
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
+  <flogo-designer-header
+    [name]="flowState.name"
+    [appName]="flowState?.app?.name"
+    [description]="flowState.description"
+    (goBack)="navigateToApp()"
+    (changeName)="changeFlowDetailName($event, 'name')"
+    (changeDescription)="changeFlowDetail($event, 'description')"
+  >
+    <div
+      header-role="resource-logo"
+      class="flogo-profile__tile flogo-profile-detail__thumb flogo-profile__microservice"
+    ></div>
+    <!--Temporarily removing run flow for v0.9.0-->
+    <!--<flogo-run-flow
+        header-role="right-block"
+        [disableRun]="runnableInfo?.disabled"
+        disableReason="{{ runnableInfo?.disableReason | translate }}"
+        [flowInputs]="flowState?.metadata?.input"
+        (submit)="onRunFlow($event)"
+      ></flogo-run-flow>-->
+    <flogo-logs header-role="right-block"></flogo-logs>
+    <div
+      header-role="right-block"
+      class="menu-dropdown"
+      (fgClickOutside)="closeFlowMenu()"
+    >
+      <i
+        class="flogo-icon-kebabmenu kebabmenu-icon menu-dropdown-more-button"
+        [class.active]="isflowMenuOpen"
+        (click)="toggleFlowMenu()"
+        role="button"
+        id="flowMenuButton"
+        aria-haspopup="true"
+        [attr.aria-expanded]="isflowMenuOpen"
+      ></i>
+      <div
+        class="menu-dropdown__content menu-dropdown__content--more"
+        aria-labelledby="flowMenuButton"
+        [class.active]="isflowMenuOpen"
+      >
+        <ul class="dropdown-list">
+          <li class="dropdown-list__item" (click)="deleteFlow()">
+            <i class="flogo-icon flogo-icon-delete"></i>{{ 'CANVAS:DELETE' | translate }}
+          </li>
+        </ul>
       </div>
-    </section>
-    <flogo-flow-tabs class="tabs"></flogo-flow-tabs>
-  </div>
+    </div>
+    <flogo-flow-tabs header-role="bottom-block" class="tabs"></flogo-flow-tabs>
+  </flogo-designer-header>
 
   <flogo-flow-debug-panel class="debug-panel-container">
     <ng-container *ngTemplateOutlet="flowContent"></ng-container>

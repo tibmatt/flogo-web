@@ -228,6 +228,8 @@ export class FlowComponent implements OnInit, OnDestroy {
    *-------------------------------*/
 
   public changeFlowDetail($event, property) {
+    const oldDescription = this.flowState.description;
+    this.flowState.description = $event;
     return this._updateFlow()
       .then(wasSaved => {
         if (wasSaved) {
@@ -238,12 +240,13 @@ export class FlowComponent implements OnInit, OnDestroy {
         }
         return wasSaved;
       })
-      .catch(() =>
-        this.notifications.error({
+      .catch(() => {
+        this.flowState.description = oldDescription;
+        return this.notifications.error({
           key: 'CANVAS:ERROR-MESSAGE-UPDATE',
           params: { value: property },
-        })
-      );
+        });
+      });
   }
 
   /**
