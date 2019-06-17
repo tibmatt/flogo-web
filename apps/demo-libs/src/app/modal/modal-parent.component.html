@@ -1,0 +1,12 @@
+<h1>Modal</h1>
+
+<p>From module <code>@flogo-web/lib-client/modal</code></p>
+
+Name: <input #name data-testid="user-name" type="text" value="Jon Snow" /> <br />
+Open modal:
+<button data-testid="modal-trigger" (click)="openModal(name.value)">Show modal</button>
+
+<div data-testid="reply" *ngIf="lastReply">
+  {{ lastReply.user }}
+  {{ lastReply.reply ? 'replied "' + lastReply.reply + '"' : "didn't reply" }}
+</div>

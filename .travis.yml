@@ -6,20 +6,26 @@ cache:
   bundler: false
   yarn: true
   directories:
-  - .build-cache
+    - .build-cache
+    - ~/.cache
 git:
   submodules: false
-install: true
+install: yarn install --frozen-lockfile --non-interactive --audit --silent
 
 jobs:
   include:
+    - stage: cache
+      name: "Prepare cache"
+      script: true
     - stage: test
       name: "Unit tests and code checks"
-      install: yarn install --frozen-lockfile --non-interactive --audit --silent
       script:
         - yarn format:check
         - yarn lint
         - yarn test
+    - stage: test
+      name: "E2E tests"
+      script: yarn e2e:ci
     - stage: build
       language: bash
       name: "Build the docker image"
@@ -34,4 +40,3 @@ jobs:
           docker tag flogo/flogo-web:latest flogo/flogo-web:unstable
           docker push flogo/flogo-web:unstable
         fi
-
