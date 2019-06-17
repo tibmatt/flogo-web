@@ -517,7 +517,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "demo-libs:build"
+            "browserTarget": "demo-libs:build",
+            "port": 4201
           },
           "configurations": {
             "production": {
@@ -539,18 +540,6 @@
               "apps/demo-libs/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "apps/demo-libs/src/test.ts",
-            "tsConfig": "apps/demo-libs/tsconfig.spec.json",
-            "karmaConfig": "apps/demo-libs/karma.conf.js",
-            "polyfills": "apps/demo-libs/src/polyfills.ts",
-            "styles": [],
-            "scripts": [],
-            "assets": []
           }
         }
       }
