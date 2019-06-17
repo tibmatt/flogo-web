@@ -17,5 +17,6 @@ import { FlogoUrlInstallerComponent } from './url-installer/url-installer.compon
   declarations: [FlogoUrlInstallerComponent, FlogoInstallerComponent],
   exports: [FlogoInstallerComponent],
   providers: [],
+  entryComponents: [FlogoInstallerComponent],
 })
 export class ContribInstallerModule {}

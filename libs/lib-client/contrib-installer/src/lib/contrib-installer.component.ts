@@ -1,14 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  OnChanges,
-  SimpleChange,
-  ViewChild,
-  Input,
-  Output,
-} from '@angular/core';
-import { has } from 'lodash';
-import { BsModalComponent } from 'ng2-bs3-modal';
+import { Component, HostBinding } from '@angular/core';
 import { ContributionsService } from '@flogo-web/lib-client/core';
 
 import {
@@ -19,23 +9,16 @@ import {
   FLOGO_INSTALLER_STATUS_INSTALLING,
 } from './constants';
 import { ContribInstallerService } from './contrib-installer.service';
+import { modalAnimate, ModalControl } from '@flogo-web/lib-client/modal';
 
 @Component({
   selector: 'flogo-contrib-installer',
   templateUrl: 'contrib-installer.component.html',
   styleUrls: ['contrib-installer.component.less'],
+  animations: modalAnimate,
 })
-export class FlogoInstallerComponent implements OnChanges {
-  @ViewChild('installerModal') modal: BsModalComponent;
-
-  @Input()
-  isActivated: boolean;
-
-  @Output()
-  isActivatedChange = new EventEmitter();
-  @Output()
-  installed = new EventEmitter();
-
+export class FlogoInstallerComponent {
+  @HostBinding('@modalAnimate')
   _isActivated: boolean;
 
   showBlock = {
@@ -51,7 +34,8 @@ export class FlogoInstallerComponent implements OnChanges {
 
   constructor(
     private contributionsAPIs: ContributionsService,
-    private contribInstallerService: ContribInstallerService
+    private contribInstallerService: ContribInstallerService,
+    public control: ModalControl
   ) {
     this.init();
   }
@@ -60,38 +44,14 @@ export class FlogoInstallerComponent implements OnChanges {
     this._status = FLOGO_INSTALLER_STATUS_STANDBY;
   }
 
-  ngOnChanges(changes: { [key: string]: SimpleChange }) {
-    if (has(changes, 'isActivated')) {
-      this.onActivatedStatusChange(changes['isActivated'].currentValue);
-    }
-  }
-
-  onActivatedStatusChange(newVal) {
-    if (newVal !== this._isActivated) {
-      this._isActivated = newVal;
-
-      if (this._isActivated) {
-        this.openModal();
-      }
-    }
-  }
-
   openModal(event?: any) {
     console.log('Open Modal.');
     this._status = FLOGO_INSTALLER_STATUS_STANDBY;
-    this.modal.open();
   }
 
-  closeModal(event?: any) {
+  closeModal() {
     console.log('Close Modal.');
-    this.modal.close();
-  }
-
-  onModalCloseOrDismiss(event?: any) {
-    console.log('On Modal Close.');
-    this._isActivated = false;
-    this._status = FLOGO_INSTALLER_STATUS_IDLE;
-    this.isActivatedChange.emit(false);
+    this.control.close();
   }
 
   onInstallAction(url: string) {
@@ -114,7 +74,6 @@ export class FlogoInstallerComponent implements OnChanges {
       })
       .then(contribDetails => {
         this.contribInstallerService.afterContribInstalled(contribDetails);
-        this.installed.emit(contribDetails);
       })
       .catch(err => {
         console.error(err);

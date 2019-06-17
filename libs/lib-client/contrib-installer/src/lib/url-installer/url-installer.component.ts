@@ -38,21 +38,17 @@ export class FlogoUrlInstallerComponent implements OnChanges {
     this.sourceUrl = newUrl;
   }
 
-  onInstallAction(evt: any) {
+  onInstallAction() {
     if (!this.disableInstall) {
       this.install.emit(this.sourceUrl);
     }
   }
 
-  onCancelAction(evt: any) {
+  onCancelAction() {
     this.cancel.emit();
   }
 
   onInstallerStatusChange(status: string) {
-    if (status === FLOGO_INSTALLER_STATUS_INSTALLING) {
-      this.disableInstall = true;
-    } else {
-      this.disableInstall = false;
-    }
+    this.disableInstall = status === FLOGO_INSTALLER_STATUS_INSTALLING;
   }
 }

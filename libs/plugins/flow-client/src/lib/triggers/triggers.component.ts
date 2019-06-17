@@ -29,6 +29,8 @@ import * as TriggerActions from '../core/state/triggers/triggers.actions';
 import * as TriggerConfigureActions from '../core/state/triggers-configure/trigger-configure.actions';
 import { TriggerMenuSelectionEvent } from './trigger-block/models';
 import { RenderableTrigger } from './interfaces/renderable-trigger';
+import { ModalService } from '@flogo-web/lib-client/modal';
+import { FlogoInstallerComponent } from '@flogo-web/lib-client/contrib-installer';
 
 function settingsToObject(
   settings: { name: string; value?: any }[],
@@ -51,7 +53,6 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   triggersList: RenderableTrigger[] = [];
   currentTrigger: RenderableTrigger;
   showAddTrigger = false;
-  installTriggerActivated = false;
 
   private ngDestroy$ = SingleEmissionSubject.create();
 
@@ -61,7 +62,8 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
     private converterService: MicroServiceModelConverter,
     private translate: LanguageService,
     private store: Store<AppState>,
-    private confirmationService: ConfirmationModalService
+    private confirmationService: ConfirmationModalService,
+    private modalService: ModalService
   ) {}
 
   ngOnInit() {
@@ -91,13 +93,10 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   }
 
   openInstallTriggerWindow() {
-    this.installTriggerActivated = true;
+    this.modalService.openModal<void>(FlogoInstallerComponent).result.subscribe(() => {
+      this.openAddTriggerModal();
+    });
     this.closeAddTriggerModal(false);
-  }
-
-  onTriggerInstalledAction() {
-    this.installTriggerActivated = false;
-    this.openAddTriggerModal();
   }
 
   openAddTriggerModal() {

@@ -1,5 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FLOGO_VERSION } from '@flogo-web/lib-client/core';
+import { ModalService } from '@flogo-web/lib-client/modal';
+import { FlogoInstallerComponent } from '@flogo-web/lib-client/contrib-installer';
 
 @Component({
   selector: 'flogo-navbar',
@@ -9,9 +11,11 @@ import { FLOGO_VERSION } from '@flogo-web/lib-client/core';
 export class FlogoNavbarComponent {
   public currentYear: number;
   isOpenMenu = false;
-  installContribActivated = false;
 
-  constructor(@Inject(FLOGO_VERSION) public version: string) {
+  constructor(
+    @Inject(FLOGO_VERSION) public version: string,
+    private modalService: ModalService
+  ) {
     this.currentYear = new Date().getFullYear();
   }
 
@@ -24,6 +28,6 @@ export class FlogoNavbarComponent {
   }
 
   onInstallContrib() {
-    this.installContribActivated = true;
+    this.modalService.openModal<void>(FlogoInstallerComponent);
   }
 }

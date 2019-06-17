@@ -11,6 +11,7 @@ import { TASKADD_OPTIONS, TaskAddComponent } from './task-add.component';
 import { TaskAddModule } from './task-add.module';
 import { TaskAddOptions } from './core/task-add-options';
 import { ContribInstallerService } from '@flogo-web/lib-client/contrib-installer';
+import { ModalService } from '@flogo-web/lib-client/modal';
 
 describe('Component: TaskAddComponent', () => {
   let component: TaskAddComponent;
@@ -65,6 +66,7 @@ describe('Component: TaskAddComponent', () => {
           provide: ContribInstallerService,
           useValue: ContribInstallerService,
         },
+        { provide: ModalService, useValue: { openModal() {} } },
       ],
     }).compileComponents();
   }));
