@@ -5,6 +5,7 @@
 @flogo-header-background-color: #36bfbb;
 @flogo-header-height: 40px;
 @help-icon-active-color: @color-bg;
+@install-contrib-txt-color: @color-bg;
 
 :host {
   background-color: @flogo-header-background-color;
@@ -35,14 +36,31 @@
   bottom: 3px;
 }
 
-.flogo-header__install-contrib {
-  font-size: 14px;
-  border-radius: 20px;
-  height: auto;
-  line-height: initial;
+.flogo-header__install-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 1.3333333;
+  outline: none;
+  padding: 10px;
+  opacity: 0.75;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.flogo-icon-download {
   position: relative;
-  bottom: 4.5px;
-  padding: 5px 16px;
+  bottom: 2px;
+}
+
+.flogo-header__install-txt {
+  position: relative;
+  bottom: 3.5px;
+  left: 8px;
+  color: @install-contrib-txt-color;
 }
 
 .flogo-header__help-menu {
@@ -100,9 +118,11 @@
   padding: 0;
   margin: 10px 24px 5px;
   font-size: 1em;
+  opacity: 0.75;
 
   &:hover {
     color: @help-icon-active-color;
+    opacity: 1;
   }
 }
 

@@ -5,6 +5,9 @@ import { Resource, CONTRIB_REFS } from '@flogo-web/core';
 
 import { filterActivitiesBy } from './core/filter-activities-by';
 import { Activity, TaskAddOptions } from './core/task-add-options';
+import { ModalService } from '@flogo-web/lib-client/modal';
+import { FlogoInstallerComponent } from '@flogo-web/lib-client/contrib-installer';
+import { delay } from 'rxjs/operators';
 
 export const TASKADD_OPTIONS = new InjectionToken<TaskAddOptions>('flogo-flow-task-add');
 
@@ -19,7 +22,10 @@ export class TaskAddComponent implements OnInit {
   isSubflowOpen = false;
   SUBFLOW_REF = CONTRIB_REFS.SUBFLOW;
 
-  constructor(@Inject(TASKADD_OPTIONS) public options: TaskAddOptions) {
+  constructor(
+    @Inject(TASKADD_OPTIONS) public options: TaskAddOptions,
+    private modalService: ModalService
+  ) {
     this.filterText$ = new ReplaySubject<string>(1);
   }
 
@@ -44,7 +50,16 @@ export class TaskAddComponent implements OnInit {
   }
 
   handleInstallerWindow(state: boolean) {
-    this.isInstallOpen = state;
+    this.isInstallOpen = true;
+    if (state) {
+      this.modalService
+        .openModal<void>(FlogoInstallerComponent)
+        .detach.pipe(delay(100))
+        .subscribe(() => {
+          this.isInstallOpen = false;
+          this.updateWindowState();
+        });
+    }
     this.updateWindowState();
   }
 

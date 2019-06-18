@@ -25,6 +25,7 @@ import { FlogoFlowTriggersPanelComponent } from './triggers.component';
 import { FlogoSelectTriggerComponent } from './select-trigger/select-trigger.component';
 import { TriggerBlockComponent } from './trigger-block';
 import { ConfiguratorModule as TriggersConfiguratorModule } from './configurator';
+import { ModalService } from '@flogo-web/lib-client/modal';
 
 const TEST_STATE: FlowState = {
   ...INITIAL_STATE,
@@ -202,6 +203,7 @@ describe('Component: TriggersComponent', () => {
           provide: ContribInstallerService,
           useValue: ContribInstallerService,
         },
+        { provide: ModalService, useValue: { openModal() {} } },
       ],
     }).compileComponents();
   }));

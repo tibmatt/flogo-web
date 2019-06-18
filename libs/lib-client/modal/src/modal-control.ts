@@ -4,10 +4,12 @@ import { Observable, Subject } from 'rxjs';
 export class ModalControl {
   private resultSubscriber: Subject<any>;
   result: Observable<any>;
+  detach: Observable<any>;
 
   constructor(private overlayRef: OverlayRef) {
     this.resultSubscriber = new Subject<any>();
     this.result = this.resultSubscriber.asObservable();
+    this.detach = this.overlayRef.detachments();
   }
 
   public close(result?: any) {

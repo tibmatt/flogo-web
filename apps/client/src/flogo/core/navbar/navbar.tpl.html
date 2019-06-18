@@ -8,11 +8,11 @@
       [class.--active]="isOpenMenu"
       (fgClickOutside)="closeNavMenu()"
     >
-      <button
-        class="flogo-button--secondary flogo-header__install-contrib"
-        (click)="onInstallContrib()"
-      >
-        {{ 'INSTALLER:DOWNLOAD-TITLE' | translate }}
+      <button class="flogo-header__install-btn" (click)="onInstallContrib()">
+        <i class="flogo-icon-download"></i>
+        <span class="flogo-header__install-txt"
+          >{{ 'INSTALLER:DOWNLOAD-TITLE' | translate }}</span
+        >
       </button>
       <button
         class="flogo-btn-link flogo-header__help-menu-btn"
@@ -75,6 +75,3 @@
     </div>
   </div>
 </nav>
-<flogo-contrib-installer
-  [(isActivated)]="installContribActivated"
-></flogo-contrib-installer>

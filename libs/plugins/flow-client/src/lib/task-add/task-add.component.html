@@ -32,10 +32,6 @@
     <p class="empty-text qa-no-tasks">{{ 'ADD:NO-TASKS' | translate }}</p>
   </ng-template>
 </div>
-<flogo-contrib-installer
-  [isActivated]="isInstallOpen"
-  (isActivatedChange)="handleInstallerWindow($event)"
-></flogo-contrib-installer>
 <flogo-flow-sub-flow
   *ngIf="isSubflowOpen"
   [appId]="(options.appAndFlowInfo$ | async).appId"

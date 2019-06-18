@@ -18,7 +18,7 @@ export class ModalService {
 
   openModal<T>(
     contentComponent: ComponentType<ModalContent>,
-    componentData: T
+    componentData?: T
   ): ModalControl {
     const data = new WeakMap<any, any>();
     data.set(MODAL_TOKEN, componentData);
