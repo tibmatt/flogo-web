@@ -66,7 +66,14 @@ describe('Component: TaskAddComponent', () => {
           provide: ContribInstallerService,
           useValue: ContribInstallerService,
         },
-        { provide: ModalService, useValue: { openModal() {} } },
+        {
+          provide: ModalService,
+          useValue: {
+            openModal() {
+              return { detach: of() };
+            },
+          },
+        },
       ],
     }).compileComponents();
   }));

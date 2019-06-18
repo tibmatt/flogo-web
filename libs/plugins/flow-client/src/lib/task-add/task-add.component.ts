@@ -7,6 +7,7 @@ import { filterActivitiesBy } from './core/filter-activities-by';
 import { Activity, TaskAddOptions } from './core/task-add-options';
 import { ModalService } from '@flogo-web/lib-client/modal';
 import { FlogoInstallerComponent } from '@flogo-web/lib-client/contrib-installer';
+import { delay } from 'rxjs/operators';
 
 export const TASKADD_OPTIONS = new InjectionToken<TaskAddOptions>('flogo-flow-task-add');
 
@@ -51,7 +52,13 @@ export class TaskAddComponent implements OnInit {
   handleInstallerWindow(state: boolean) {
     this.isInstallOpen = true;
     if (state) {
-      this.modalService.openModal<void>(FlogoInstallerComponent);
+      this.modalService
+        .openModal<void>(FlogoInstallerComponent)
+        .detach.pipe(delay(100))
+        .subscribe(() => {
+          this.isInstallOpen = false;
+          this.updateWindowState();
+        });
     }
     this.updateWindowState();
   }
