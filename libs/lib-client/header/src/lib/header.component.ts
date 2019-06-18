@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ContentChild,
+  ElementRef,
+} from '@angular/core';
 
 /**
  * Header component is used to provide a similar structure of the header in the resource designer
@@ -15,21 +22,12 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
  *            right side block
  *
  *  - bottom block (selector: `header-role="bottom-block"`): This will allow users add any additional items to the bottom of
- *            the header. For example, in flows, the flow and error tabs are added to the bottom of the header
+ *            the header. It is mandatory to add #bottomBlock reference to the bottom component area.
+ *            For example, in flows, the flow and error tabs are added to the bottom of the header.
  *
  *  Inputs and Outputs:
  *    Like all components this one also has a set of inputs and outputs which will allow the consumers to provide dynamic
  *    values using inputs and respond to few user actions by subscribing to the outputs
- *
- *    Inputs:
- *      - name <string> : It is the name of the resource which can be changed
- *      - appName <string> : It is the name of the application to which the resource belongs to
- *      - description <string> (Optional): It is the description of the resource which is displayed in the header.
- *
- *    Outputs:
- *      - goBack()(void) : It is an event which emits when user clicks on the back icon or application name.
- *      - changeName() (string) : It is an event which emits the changed name of the resource.
- *      - changeDescription() (string): It is an event which emits the changed description of the resource.
  *
  * Example of usage:
  *  <flogo-designer-header [name]="Get Employee Details" [appName]="Employee Manager"
@@ -39,7 +37,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
  *       <logs></logs>
  *       <menu></menu>
  *   </ng-container>
- *   <div header-role="bottom-block">Caption to my resource designer page / tabs</div>
+ *   <div header-role="bottom-block" #bottomBlock>Caption to my resource designer page / tabs</div>
  *  </flogo-designer-header>
  **/
 @Component({
@@ -48,30 +46,52 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['header.component.less'],
 })
 export class HeaderComponent {
-  // Resource name to be displayed in the header
+  /**
+   * Resource name to be displayed in the header. It can be changed by clicking on it
+   **/
   @Input()
   name: string;
 
-  // Application name to which the resource belongs
+  /**
+   * Application name to which the resource belongs
+   **/
   @Input()
   appName: string;
 
-  // Description of the resource
+  /**
+   * (Optional)
+   * Description of the resource displayed in the header. It can be changed by clicking on it
+   **/
   @Input()
   description: string;
 
-  // Event handler of click event on application name or back icon
+  /**
+   * Event emitted when click on application name or back icon
+   * @emits void
+   **/
   @Output()
   goBack: EventEmitter<void> = new EventEmitter<void>();
 
-  // Event handler to handle change of the resource name
+  /**
+   * Event emits change of the resource name
+   * @emits string
+   **/
   @Output()
   changeName: EventEmitter<string> = new EventEmitter<string>();
 
-  // Event handler to handle change of the resource description
+  /**
+   * Event emits change of the resource description
+   * @emits string
+   **/
   @Output()
   changeDescription: EventEmitter<string> = new EventEmitter<string>();
   isHoveredOnBack = false;
+
+  /**
+   * Reference handler to the bottom block based on whose availability the styling to the header changes
+   **/
+  @ContentChild('bottomBlock')
+  bottomAreaContent: ElementRef;
 
   onMouseOverBackControl() {
     this.isHoveredOnBack = true;
