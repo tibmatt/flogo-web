@@ -7,10 +7,9 @@
     (changeName)="changeFlowDetailName($event, 'name')"
     (changeDescription)="changeFlowDetail($event, 'description')"
   >
-    <div
-      header-role="resource-logo"
-      class="flogo-profile__tile flogo-profile-detail__thumb flogo-profile__microservice"
-    ></div>
+    <svg class="flow-logo" viewBox="-3 -11 48 48" header-role="resource-logo">
+      <use xlink:href="/assets/svg/plugin-flows.svg#flowIcon"></use>
+    </svg>
     <!--Temporarily removing run flow for v0.9.0-->
     <!--<flogo-run-flow
         header-role="right-block"
