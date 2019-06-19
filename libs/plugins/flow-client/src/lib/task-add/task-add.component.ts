@@ -1,12 +1,21 @@
-import { Component, Inject, InjectionToken, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  InjectionToken,
+  OnInit,
+  ElementRef,
+  AfterViewInit,
+  HostListener,
+} from '@angular/core';
+import { FocusTrapFactory } from '@angular/cdk/a11y';
 import { Observable, ReplaySubject } from 'rxjs';
 
 import { Resource, CONTRIB_REFS } from '@flogo-web/core';
+import { FlogoInstallerComponent } from '@flogo-web/lib-client/contrib-installer';
 
 import { filterActivitiesBy } from './core/filter-activities-by';
 import { Activity, TaskAddOptions } from './core/task-add-options';
 import { ModalService } from '@flogo-web/lib-client/modal';
-import { FlogoInstallerComponent } from '@flogo-web/lib-client/contrib-installer';
 import { delay } from 'rxjs/operators';
 
 export const TASKADD_OPTIONS = new InjectionToken<TaskAddOptions>('flogo-flow-task-add');
@@ -15,23 +24,29 @@ export const TASKADD_OPTIONS = new InjectionToken<TaskAddOptions>('flogo-flow-ta
   templateUrl: 'task-add.component.html',
   styleUrls: ['task-add.component.less'],
 })
-export class TaskAddComponent implements OnInit {
+export class TaskAddComponent implements OnInit, AfterViewInit {
   filteredActivities$: Observable<Activity[]>;
   filterText$: ReplaySubject<string>;
   isInstallOpen = false;
   isSubflowOpen = false;
-  SUBFLOW_REF = CONTRIB_REFS.SUBFLOW;
 
   constructor(
-    @Inject(TASKADD_OPTIONS) public options: TaskAddOptions,
-    private modalService: ModalService
+    @Inject(TASKADD_OPTIONS) public control: TaskAddOptions,
+    private modalService: ModalService,
+    private elementRef: ElementRef,
+    private focusTrap: FocusTrapFactory
   ) {
     this.filterText$ = new ReplaySubject<string>(1);
   }
 
+  ngAfterViewInit() {
+    const focusTrap = this.focusTrap.create(this.elementRef.nativeElement);
+    focusTrap.focusInitialElement();
+  }
+
   ngOnInit() {
     this.filteredActivities$ = filterActivitiesBy(
-      this.options.activities$,
+      this.control.activities$,
       this.filterText$
     );
     this.filterText$.next('');
@@ -42,10 +57,10 @@ export class TaskAddComponent implements OnInit {
   }
 
   selectActivity(ref: string) {
-    if (ref === this.SUBFLOW_REF) {
+    if (ref === CONTRIB_REFS.SUBFLOW) {
       this.setSubflowWindowState(true);
     } else {
-      this.options.selectActivity(ref);
+      this.control.selectActivity(ref);
     }
   }
 
@@ -65,13 +80,18 @@ export class TaskAddComponent implements OnInit {
 
   handleFlowSelection(selectedFlow: Resource | string) {
     if (typeof selectedFlow !== 'string') {
-      this.options.selectActivity(this.SUBFLOW_REF, selectedFlow);
+      this.control.selectActivity(CONTRIB_REFS.SUBFLOW, selectedFlow);
     }
     this.setSubflowWindowState(false);
   }
 
+  @HostListener('keyup.escape')
+  cancel() {
+    this.control.cancel();
+  }
+
   private updateWindowState() {
-    this.options.updateActiveState(this.isInstallOpen || this.isSubflowOpen);
+    this.control.updateActiveState(this.isInstallOpen || this.isSubflowOpen);
   }
 
   private setSubflowWindowState(state: boolean) {

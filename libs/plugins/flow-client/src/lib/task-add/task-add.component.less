@@ -55,26 +55,23 @@
   border-radius: 3px;
 }
 
-.activities-list {
-  overflow-y: auto;
-}
 
-.list-item {
+::ng-deep .list-item {
+  margin: 0;
   padding: 16px;
   color: @color-ink;
   line-height: 1.5;
   letter-spacing: 0.3px;
   cursor: pointer;
+  border: none;
   border-bottom: 1px solid @gainsboro-two;
   transition-property: border, background-color;
   transition-duration: 200ms;
   transition-timing-function: ease;
 
-  &:last-child {
-    border: none;
-  }
-
-  &:hover {
+  &:hover,
+  &.is-active,
+  &:focus {
     background-color: #e0f0f9;
 
     .install-activity {
@@ -84,6 +81,7 @@
 }
 
 .install-item {
+  text-align: left;
   padding: 10px;
 }
 

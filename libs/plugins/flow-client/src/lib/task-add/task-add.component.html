@@ -1,6 +1,7 @@
 <div class="head">
   <h2 class="title">{{ 'TASKS:ADD-ACTIVITY' | translate }}</h2>
   <input
+    cdkFocusRegionStart
     type="text"
     class="search"
     placeholder="{{ 'ADD:SEARCH-ACTIVITIES' | translate }}"
@@ -9,7 +10,7 @@
   <span class="flogo-icon-search icon-search"></span>
 </div>
 <div class="content" *ngIf="(filteredActivities$ | async) as activities">
-  <div
+  <button
     class="list-item install-item qa-install-item"
     (click)="handleInstallerWindow(true)"
   >
@@ -17,24 +18,21 @@
       <i class="install-icon flogo-icon-add"></i>
       <span>{{ 'FLOWS-DETAILS-TASKS:INSTALL-NEW-ACTIVITY' | translate }}</span>
     </div>
-  </div>
-  <div *ngIf="activities.length > 0; else emptyCase" class="activities-list">
-    <div
-      class="list-item activity qa-activities"
-      [class.activity--subflow]="activity.ref === SUBFLOW_REF"
-      *ngFor="let activity of activities"
-      (click)="selectActivity(activity.ref)"
-    >
-      <span>{{ activity.title }}</span>
-    </div>
-  </div>
+  </button>
+
+  <flogo-flow-activity-list
+    *ngIf="activities.length > 0; else emptyCase"
+    [activities]="activities"
+    (selectActivity)="selectActivity($event.ref)"
+  ></flogo-flow-activity-list>
   <ng-template #emptyCase>
     <p class="empty-text qa-no-tasks">{{ 'ADD:NO-TASKS' | translate }}</p>
   </ng-template>
+  <input type="hidden" cdkFocusRegionEnd />
 </div>
 <flogo-flow-sub-flow
   *ngIf="isSubflowOpen"
-  [appId]="(options.appAndFlowInfo$ | async).appId"
-  [currentFlow]="(options.appAndFlowInfo$ | async).actionId"
+  [appId]="(control.appAndFlowInfo$ | async).appId"
+  [currentFlow]="(control.appAndFlowInfo$ | async).actionId"
   (flowSelected)="handleFlowSelection($event)"
 ></flogo-flow-sub-flow>

@@ -35,6 +35,7 @@ export class AddActivityService {
   }
 
   cancel() {
+    this.close();
     this.store.dispatch(new FlowActions.CancelCreateItem({ parentId: this.parentId }));
   }
 
@@ -100,6 +101,7 @@ export class AddActivityService {
       selectActivity: (ref: string, selectedSubFlow?: Resource) =>
         this.selectedActivity(ref, selectedSubFlow),
       updateActiveState: (isOpen: boolean) => (this.shouldKeepPopoverActive = isOpen),
+      cancel: () => this.cancel(),
     };
     return new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>().set(
       TASKADD_OPTIONS,

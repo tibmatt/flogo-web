@@ -305,14 +305,14 @@ export const getInstalledActivities = createSelector(
       .map(schema => ({
         title: schema.title,
         ref: schema.ref,
-      }));
-    const subflowActivity = remove(
-      activities,
-      activity => activity.ref === CONTRIB_REFS.SUBFLOW
-    ).pop();
-    if (subflowActivity) {
-      activities.unshift(subflowActivity);
-    }
+      }))
+      .sort((activity1, activity2) => {
+        const isSubflow = activity1.ref === CONTRIB_REFS.SUBFLOW;
+        if (isSubflow) {
+          return -1;
+        }
+        return ('' + activity1.title).localeCompare(activity2.title);
+      });
     return activities;
   }
 );

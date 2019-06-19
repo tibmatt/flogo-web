@@ -16,6 +16,7 @@ import { ModalService } from '@flogo-web/lib-client/modal';
 describe('Component: TaskAddComponent', () => {
   let component: TaskAddComponent;
   let fixture: ComponentFixture<TaskAddComponent>;
+  const noOp = () => {};
   const mockOptions: TaskAddOptions = {
     activities$: of([
       {
@@ -35,8 +36,9 @@ describe('Component: TaskAddComponent', () => {
       appId: 'some_app',
       actionId: 'some_action',
     }),
-    selectActivity: () => {},
-    updateActiveState: () => {},
+    selectActivity: noOp,
+    updateActiveState: noOp,
+    cancel: noOp,
   };
   const mockFlowService = {
     listFlowsForApp: () => of([]),
