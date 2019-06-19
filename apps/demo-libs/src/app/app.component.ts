@@ -10,6 +10,7 @@ export class AppComponent {
     { label: 'Home', path: ['/'] },
     { label: 'Notifications', path: ['/notifications'] },
     { label: 'Modals', path: ['/modals'] },
+    { label: 'Context Panel', path: ['/context-panel'] },
   ];
 }
 

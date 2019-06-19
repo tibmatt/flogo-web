@@ -1,0 +1,19 @@
+<flogo-context-panel-area
+  class="debug-panel-container"
+  [isOpen]="isOpen"
+  panelTitle="Context panel"
+  contextElementSelector=".scroll-to-me"
+  (open)="setPanelState(true)"
+  (close)="setPanelState(false)"
+>
+  <div context-panel-role="primary-area" class="primary-area">
+    <h2>Click the panel to open it</h2>
+    <p class="context-pusher">It should reveal more content</p>
+    <div data-testid="context-element" class="scroll-to-me">
+      It will automatically scroll to reveal this element!
+    </div>
+  </div>
+  <div context-panel-role="panel-content" class="panel-content">
+    Inside the context panel
+  </div>
+</flogo-context-panel-area>

@@ -22,6 +22,7 @@
       "@flogo-web/lib-client/core/testing": ["libs/lib-client/core/src/testing/index.ts"],
       "@flogo-web/lib-client/common": ["libs/lib-client/common/src/index.ts"],
       "@flogo-web/lib-client/confirmation": ["libs/lib-client/confirmation/src/index.ts"],
+      "@flogo-web/lib-client/context-panel": ["libs/lib-client/context-panel/src/index.ts"],
       "@flogo-web/lib-client/modal": ["libs/lib-client/modal/src/index.ts"],
       "@flogo-web/lib-client/language": ["libs/lib-client/language/src/index.ts"],
       "@flogo-web/lib-client/language/testing": ["libs/lib-client/language/testing/index.ts"],
