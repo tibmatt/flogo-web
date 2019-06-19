@@ -13,6 +13,7 @@
     <!--Temporarily removing run flow for v0.9.0-->
     <!--<flogo-run-flow
         header-role="right-block"
+        class="flow-debugging"
         [disableRun]="runnableInfo?.disabled"
         disableReason="{{ runnableInfo?.disableReason | translate }}"
         [flowInputs]="flowState?.metadata?.input"
@@ -45,11 +46,7 @@
         </ul>
       </div>
     </div>
-    <flogo-flow-tabs
-      header-role="bottom-block"
-      #bottomBlock
-      class="tabs"
-    ></flogo-flow-tabs>
+    <flogo-flow-tabs header-role="bottom-block" class="tabs"></flogo-flow-tabs>
   </flogo-designer-header>
 
   <flogo-flow-debug-panel class="debug-panel-container">

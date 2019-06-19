@@ -6,6 +6,7 @@ import {
   ContentChild,
   ElementRef,
 } from '@angular/core';
+import { BottomBlockDirective } from './bottom-block.directive';
 
 /**
  * Header component is used to provide a similar structure of the header in the resource designer
@@ -22,8 +23,7 @@ import {
  *            right side block
  *
  *  - bottom block (selector: `header-role="bottom-block"`): This will allow users add any additional items to the bottom of
- *            the header. It is mandatory to add #bottomBlock reference to the bottom component area.
- *            For example, in flows, the flow and error tabs are added to the bottom of the header.
+ *            the header. For example, in flows, the flow and error tabs are added to the bottom of the header.
  *
  *  Inputs and Outputs:
  *    Like all components this one also has a set of inputs and outputs which will allow the consumers to provide dynamic
@@ -37,7 +37,7 @@ import {
  *       <logs></logs>
  *       <menu></menu>
  *   </ng-container>
- *   <div header-role="bottom-block" #bottomBlock>Caption to my resource designer page / tabs</div>
+ *   <div header-role="bottom-block">Caption to my resource designer page / tabs</div>
  *  </flogo-designer-header>
  **/
 @Component({
@@ -90,7 +90,7 @@ export class HeaderComponent {
   /**
    * Reference handler to the bottom block based on whose availability the styling to the header changes
    **/
-  @ContentChild('bottomBlock')
+  @ContentChild(BottomBlockDirective)
   bottomAreaContent: ElementRef;
 
   onMouseOverBackControl() {
