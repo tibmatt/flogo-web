@@ -19,24 +19,12 @@
       <span>{{ 'FLOWS-DETAILS-TASKS:INSTALL-NEW-ACTIVITY' | translate }}</span>
     </div>
   </button>
-  <div
-    #activityList
+
+  <flogo-flow-activity-list
     *ngIf="activities.length > 0; else emptyCase"
-    role="listbox"
-    class="activities-list"
-    tabindex="0"
-    (focus)="onFocusList()"
-    (keydown)="listKeyDown($event)"
-  >
-    <flogo-flow-task-add-activity
-      *ngFor="let activity of activities"
-      role="option"
-      class="list-item qa-activities"
-      [activity]="activity"
-      (selected)="selectActivity(activity.ref)"
-    >
-    </flogo-flow-task-add-activity>
-  </div>
+    [activities]="activities"
+    (selectActivity)="selectActivity($event.ref)"
+  ></flogo-flow-activity-list>
   <ng-template #emptyCase>
     <p class="empty-text qa-no-tasks">{{ 'ADD:NO-TASKS' | translate }}</p>
   </ng-template>
