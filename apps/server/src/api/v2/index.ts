@@ -26,5 +26,10 @@ export function createRouter(container: Container): Router {
   mountServices(router);
   mountEngine(router);
   mountTestRunner(router);
+
+  router.get('/_/features', context => {
+    context.body = config.features;
+  });
+
   return router;
 }

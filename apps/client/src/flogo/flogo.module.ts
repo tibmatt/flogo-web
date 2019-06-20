@@ -1,8 +1,9 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule, Injector } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Router } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -14,6 +15,7 @@ import {
   FLOGO_VERSION,
   HOSTNAME,
   initializer,
+  FEATURE_TOGGLES_APP_INITIALIZER,
 } from '@flogo-web/lib-client/core';
 import { LanguageService, createTranslateLoader } from '@flogo-web/lib-client/language';
 import { ContribInstallerService } from '@flogo-web/lib-client/contrib-installer';
@@ -76,6 +78,7 @@ import { resourcePlugins } from '../plugins';
       deps: [TranslateService],
       multi: true,
     },
+    FEATURE_TOGGLES_APP_INITIALIZER,
     { provide: APP_BASE_HREF, useValue: '/' },
     appRoutingProviders,
     ContribInstallerService,

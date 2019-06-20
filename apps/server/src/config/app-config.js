@@ -1,6 +1,8 @@
 import * as path from 'path';
 
 import './load-env';
+import { parseFeatureToggles } from './parse-features-toggles';
+const features = parseFeatureToggles(process.env);
 
 const rootPath = path.resolve(__dirname, '..');
 const PUBLIC_DIR =
@@ -41,6 +43,7 @@ const config = {
   logsPath: path.join(LOCAL_DIR, 'logs'),
   logLevel,
   localPath: LOCAL_DIR,
+  features,
   defaultAppJsonPath: path.join(rootPath, 'config', 'sample-app.json'),
   defaultFlogoDescriptorPath:
     process.env.FLOGO_WEB_DEFAULT_DESCRIPTOR ||
