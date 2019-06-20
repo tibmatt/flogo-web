@@ -12,7 +12,8 @@ export class FeatureToggleService {
   }
 }
 
-function featureToggleServiceFactory(
+// needed to be exported because of AoT
+export function featureToggleServiceFactory(
   apiService: RestApiService,
   featureService: FeatureToggleService
 ) {
