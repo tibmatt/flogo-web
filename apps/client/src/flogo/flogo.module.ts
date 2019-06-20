@@ -14,6 +14,7 @@ import {
   FLOGO_VERSION,
   HOSTNAME,
   initializer,
+  FEATURE_TOGGLES_APP_INITIALIZER,
 } from '@flogo-web/lib-client/core';
 import { LanguageService, createTranslateLoader } from '@flogo-web/lib-client/language';
 import { ContribInstallerService } from '@flogo-web/lib-client/contrib-installer';
@@ -76,6 +77,7 @@ import { resourcePlugins } from '../plugins';
       deps: [TranslateService],
       multi: true,
     },
+    FEATURE_TOGGLES_APP_INITIALIZER,
     { provide: APP_BASE_HREF, useValue: '/' },
     appRoutingProviders,
     ContribInstallerService,
