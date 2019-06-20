@@ -12,7 +12,7 @@ export class FeatureToggleService {
   }
 }
 
-export function featureToggleServiceFactory(
+function featureToggleServiceFactory(
   apiService: RestApiService,
   featureService: FeatureToggleService
 ) {
