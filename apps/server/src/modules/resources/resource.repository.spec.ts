@@ -10,7 +10,7 @@ describe('Resource repository', () => {
   let resourceRepository: ResourceRepository;
   let appsCollection: Collection<App>;
 
-  beforeAll(() => initDb(false));
+  beforeAll(() => initDb({ persist: false }));
 
   beforeEach(async () => {
     collections.apps.clear({ removeIndices: true });

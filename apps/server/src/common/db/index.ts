@@ -1,4 +1,4 @@
 export { contributionsDBService } from './contributions';
 
-export { initDb } from './db';
+export { initDb, flushAndCloseDb } from './db';
 export { collections } from './collections-registry';

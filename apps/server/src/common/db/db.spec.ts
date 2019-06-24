@@ -3,7 +3,7 @@ import { initDb, persistedDb } from './db';
 let collection: Collection<any>;
 
 beforeEach(async () => {
-  await initDb(false);
+  await initDb({ persist: false });
   collection = persistedDb.addCollection('test');
 });
 

@@ -14,10 +14,9 @@ const APP_ID = 'some-app-id';
 let appsCollection: Collection<App>;
 
 beforeEach(async () => {
-  await initDb(false);
   mockDate(NOW_ISO);
 
-  await initDb(false);
+  await initDb({ persist: false });
   appsCollection = collections.apps;
   appsCollection.insert(getSeedApp());
   triggerService = new AppTriggersService(appsCollection, ({

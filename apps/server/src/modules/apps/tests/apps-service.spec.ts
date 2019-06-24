@@ -8,7 +8,7 @@ const NOW_ISO = '2019-06-21T21:34:16.051Z';
 let appsService: AppsService;
 
 beforeEach(async () => {
-  await initDb(false);
+  await initDb({ persist: false });
   mockDate(NOW_ISO);
   appsService = new AppsService(
     collections.apps,

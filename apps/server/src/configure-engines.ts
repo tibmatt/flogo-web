@@ -3,7 +3,7 @@ import { config } from './config';
 import { getInitializedEngine } from './modules/engine';
 import { syncTasks } from './modules/contrib-install-controller/sync-tasks';
 import { AppsService } from './modules/apps';
-import { initDb } from './common/db';
+import { initDb, flushAndCloseDb } from './common/db';
 
 initDb()
   .then(() => getInitializedEngine(config.defaultEngine.path, { forceCreate: false }))
@@ -12,6 +12,7 @@ initDb()
     console.log('[log] init test engine done');
     return installDefaults(rootContainer.resolve(AppsService));
   })
+  .then(() => flushAndCloseDb())
   .catch(error => {
     console.error(error);
     console.error(error.stack);

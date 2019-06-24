@@ -12,7 +12,7 @@ let handlersService: HandlersService;
 let appsCollection: Collection<App>;
 
 beforeEach(async () => {
-  await initDb(false);
+  await initDb({ persist: false });
   appsCollection = collections.apps;
   appsCollection.insert(getSeedApp());
   handlersService = new HandlersService(appsCollection);
