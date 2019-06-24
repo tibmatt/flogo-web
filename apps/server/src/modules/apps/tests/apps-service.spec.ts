@@ -1,5 +1,5 @@
-import { rootContainer } from '../../../init';
-import { initDb } from '../../../common/db';
+import { initDb, collections } from '../../../common/db';
+import { ResourceService } from '../../resources';
 
 import { AppsService } from '../apps-service';
 import { mockDate, restoreDate } from './utils';
@@ -10,7 +10,16 @@ let appsService: AppsService;
 beforeEach(async () => {
   await initDb(false);
   mockDate(NOW_ISO);
-  appsService = rootContainer.get(AppsService);
+  appsService = new AppsService(
+    collections.apps,
+    null,
+    ({
+      removeFromRecentByAppId: appId => Promise.resolve(),
+    } as Partial<ResourceService>) as any,
+    null,
+    null,
+    null
+  );
 });
 
 afterEach(() => {
