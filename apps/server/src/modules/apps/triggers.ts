@@ -1,19 +1,18 @@
 import pick from 'lodash/pick';
-import mapKeys from 'lodash/mapKeys';
 import { injectable, inject } from 'inversify';
+import { Collection } from 'lokijs';
+
+import { App, Trigger } from '@flogo-web/core';
 
 import { TOKENS } from '../../core';
-import { ContributionManager } from '../contributions';
-import { Database } from '../../common/database.service';
+import { ContributionsService } from '../contribs';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { generateShortId, ISONow } from '../../common/utils';
 import { findGreatestNameIndex } from '../../common/utils/collection';
-
 import { Validator } from './validator';
 
 const EDITABLE_FIELDS_CREATION = ['name', 'ref', 'description', 'settings'];
-
 const EDITABLE_FIELDS_UPDATE = ['name', 'description', 'settings'];
 
 const getComparableTriggerName = fromName => fromName.trim().toLowerCase();
@@ -78,9 +77,13 @@ const nameExists = (triggerId, name, triggers) => {
  */
 @injectable()
 export class AppTriggersService {
-  constructor(@inject(TOKENS.AppsDb) private appsDb: Database) {}
+  constructor(
+    @inject(TOKENS.AppsDb) private appsDb: Collection<App>,
+    @inject(TOKENS.ContributionsManager)
+    private contributionsService: ContributionsService
+  ) {}
 
-  create(appId, triggerData) {
+  async create(appId, newTrigger): Promise<Trigger & { appId: string }> {
     if (!appId) {
       return Promise.reject(
         ErrorManager.makeError('App not found', {
@@ -89,156 +92,142 @@ export class AppTriggersService {
       );
     }
 
-    return this.appsDb
-      .findOne({ _id: appId }, { triggers: 1 })
-      .then(app => {
-        if (!app) {
-          throw ErrorManager.makeError('App not found', {
-            type: ERROR_TYPES.COMMON.NOT_FOUND,
-          });
-        }
+    const app = this.appsDb.findOne({ id: appId });
 
-        const errors = Validator.validateTriggerCreate(triggerData);
-        if (errors) {
-          throw ErrorManager.createValidationError('Validation error', errors);
-        }
-
-        return ContributionManager.findByRef(triggerData.ref).then(contribTrigger => {
-          if (!contribTrigger) {
-            throw ErrorManager.createValidationError('Validation error', [
-              {
-                property: 'ref',
-                title: 'Trigger not installed',
-                detail: 'The specified ref for contrib is not installed',
-                value: triggerData.ref,
-                type: CONSTRAINTS.NOT_INSTALLED_TRIGGER,
-              },
-            ]);
-          }
-          triggerData.name = ensureUniqueName(app.triggers, triggerData.name);
-          return triggerData;
-        });
-      })
-      .then(newTrigger => {
-        newTrigger = cleanInput(triggerData, EDITABLE_FIELDS_CREATION);
-        newTrigger.id = generateShortId();
-        newTrigger.name = newTrigger.name.trim();
-        newTrigger.createdAt = ISONow();
-        newTrigger.updatedAt = null;
-        newTrigger.handlers = [];
-
-        return this.appsDb
-          .update({ _id: appId }, { $push: { triggers: newTrigger } })
-          .then(() => {
-            newTrigger.appId = appId;
-            return newTrigger;
-          });
+    if (!app) {
+      throw ErrorManager.makeError('App not found', {
+        type: ERROR_TYPES.COMMON.NOT_FOUND,
       });
+    }
+
+    const errors = Validator.validateTriggerCreate(newTrigger);
+    if (errors) {
+      throw ErrorManager.createValidationError('Validation error', errors);
+    }
+
+    const contribTrigger = await this.contributionsService.findByRef(newTrigger.ref);
+    if (!contribTrigger) {
+      throw ErrorManager.createValidationError('Validation error', [
+        {
+          property: 'ref',
+          title: 'Trigger not installed',
+          detail: 'The specified ref for contrib is not installed',
+          value: newTrigger.ref,
+          type: CONSTRAINTS.NOT_INSTALLED_TRIGGER,
+        },
+      ]);
+    }
+
+    newTrigger = cleanInput(newTrigger, EDITABLE_FIELDS_CREATION);
+    newTrigger.id = generateShortId();
+    newTrigger.name = ensureUniqueName(app.triggers, newTrigger.name.trim());
+    newTrigger.createdAt = ISONow();
+    newTrigger.updatedAt = null;
+    newTrigger.handlers = [];
+
+    app.triggers.push(newTrigger);
+    this.appsDb.update(app);
+
+    return { ...newTrigger, appId };
   }
 
-  update(triggerId, triggerData) {
-    const appsDb = this.appsDb;
+  async update(triggerId, triggerData) {
     const appNotFound = ErrorManager.makeError('App not found', {
       type: ERROR_TYPES.COMMON.NOT_FOUND,
     });
 
-    return this.findOne(triggerId).then(trigger => {
-      if (!trigger) {
-        throw appNotFound;
-      }
-      const errors = Validator.validateTriggerUpdate(triggerData);
-      if (errors) {
-        throw ErrorManager.createValidationError('Validation error', errors);
-      }
-
-      triggerData = cleanInput(triggerData, EDITABLE_FIELDS_UPDATE);
-
-      return _atomicUpdate(triggerData, trigger.appId).then(updatedCount =>
-        updatedCount > 0 ? this.findOne(triggerId) : null
-      );
-    });
-
-    function _atomicUpdate(triggerFields, appId) {
-      return new Promise((resolve, reject) => {
-        const appQuery = { _id: appId };
-        const updateQuery: any = {};
-
-        appsDb
-          .findOne(appQuery, { triggers: 1 })
-          .then(app => {
-            if (!app) {
-              return reject(appNotFound);
-            }
-
-            if (triggerFields.name) {
-              if (nameExists(triggerId, triggerFields.name, app.triggers)) {
-                // do nothing
-                return reject(
-                  ErrorManager.createValidationError('Validation error', [
-                    {
-                      property: 'name',
-                      title: 'Name already exists',
-                      detail: "There's another trigger in the app with this name",
-                      value: {
-                        triggerId,
-                        appId: app.id,
-                        name: triggerFields.name,
-                      },
-                      type: CONSTRAINTS.UNIQUE,
-                    },
-                  ])
-                );
-              }
-            }
-
-            const triggerIndex = app.triggers.findIndex(t => t.id === triggerId);
-            const modifierPrefix = `triggers.${triggerIndex}`;
-            triggerFields.updatedAt = ISONow();
-            // makes { $set: { 'triggers.1.name': 'my trigger' } };
-            updateQuery.$set = mapKeys(
-              triggerFields,
-              (v, fieldName) => `${modifierPrefix}.${fieldName}`
-            );
-            return appsDb.update(appQuery, updateQuery);
-          })
-          .then(count => resolve(count))
-          .catch(e => reject(e));
-      });
+    const trigger = await this.findOne(triggerId);
+    if (!trigger) {
+      throw appNotFound;
     }
+    const errors = Validator.validateTriggerUpdate(triggerData);
+    if (errors) {
+      throw ErrorManager.createValidationError('Validation error', errors);
+    }
+
+    triggerData = cleanInput(triggerData, EDITABLE_FIELDS_UPDATE);
+
+    const app = this.appsDb.findOne({ id: trigger.appId });
+    if (!app) {
+      throw appNotFound;
+    }
+
+    if (triggerData.name) {
+      validateNameUnique(triggerData.name, app, triggerId);
+    }
+
+    const triggerToUpdate = app.triggers.find(t => t.id === triggerId);
+    Object.assign(triggerToUpdate, triggerData);
+    triggerToUpdate.updatedAt = ISONow();
+
+    this.appsDb.update(app);
+
+    return this.findOne(triggerId);
   }
 
-  findOne(triggerId) {
-    return this.appsDb
-      .findOne({ 'triggers.id': triggerId }, { triggers: 1 })
-      .then(app => {
+  async findOne(triggerId): Promise<Trigger & { appId: string }> {
+    const [trigger] = this.appsDb
+      .chain()
+      .find(<LokiQuery<any>>{ 'triggers.id': triggerId }, true)
+      .map(app => {
         if (!app) {
           return null;
         }
-        const trigger = app.triggers.find(t => t.id === triggerId);
-        trigger.appId = app._id;
-        return trigger;
-      });
+        const foundTrigger = app.triggers.find(t => t.id === triggerId);
+        return { ...foundTrigger, appId: app.id };
+      })
+      .data({ removeMeta: true });
+
+    return trigger || null;
   }
 
-  list(appId, { name }: { name?: string }) {
-    return this.appsDb
-      .findOne({ _id: appId })
-      .then(app => (app && app.triggers ? app.triggers : []))
-      .then(triggers => {
-        if (name) {
-          const findName = getComparableTriggerName(name);
-          return triggers.filter(
-            trigger => findName === getComparableTriggerName(trigger.name)
-          );
-        }
-        return triggers;
-      });
+  async list(appId, { name }: { name?: string } = {}) {
+    const app = this.appsDb.findOne({ id: appId });
+    let triggers = app && app.triggers ? app.triggers : [];
+    if (name) {
+      const findName = getComparableTriggerName(name);
+      triggers = triggers.filter(
+        trigger => findName === getComparableTriggerName(trigger.name)
+      );
+    }
+    return triggers;
   }
 
-  remove(triggerId) {
-    return this.appsDb
-      .update({ 'triggers.id': triggerId }, { $pull: { triggers: { id: triggerId } } })
-      .then(numRemoved => numRemoved > 0);
+  async remove(triggerId) {
+    const [app] = this.appsDb
+      .chain()
+      .find(<LokiQuery<any>>{ 'triggers.id': triggerId }, true)
+      .data();
+    if (!app) {
+      return false;
+    }
+
+    const triggerIndex = app.triggers.findIndex(trigger => trigger.id === triggerId);
+    if (triggerIndex >= 0) {
+      app.triggers.splice(triggerIndex, 1);
+      this.appsDb.update(app);
+      return true;
+    }
+    return false;
+  }
+}
+
+function validateNameUnique(name: string, app: App, triggerId: string) {
+  if (nameExists(triggerId, name, app.triggers)) {
+    // do nothing
+    throw ErrorManager.createValidationError('Validation error', [
+      {
+        property: 'name',
+        title: 'Name already exists',
+        detail: "There's another trigger in the app with this name",
+        value: {
+          triggerId,
+          appId: app.id,
+          name: name,
+        },
+        type: CONSTRAINTS.UNIQUE,
+      },
+    ]);
   }
 }
 

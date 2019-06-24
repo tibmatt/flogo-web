@@ -21,8 +21,6 @@ const FLOW_TESTER_PORT = process.env.FLOGO_FLOW_TESTER_PORT || '8080';
 
 const DB_DIR = process.env.FLOGO_WEB_DBDIR || path.resolve(LOCAL_DIR, 'db');
 
-console.log(`localDir=${LOCAL_DIR},publicDir=${PUBLIC_DIR}`);
-
 const logLevel = process.env.FLOGO_WEB_LOGLEVEL || 'debug';
 
 const appPort = process.env.PORT || 3303;
@@ -69,7 +67,7 @@ const config = {
   /* apps module config */
   // TODO: consolidate and cleanup
   apps: {
-    dbPath: path.resolve(DB_DIR, 'apps.db'),
+    dbPath: path.resolve(DB_DIR, 'flogo.db'),
   },
   indexer: {
     dbPath: path.resolve(DB_DIR, 'indexer.db'),

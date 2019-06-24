@@ -31,6 +31,6 @@ export class AppImporter {
       shortid.generate,
       contributions
     );
-    return { _id: id, ...newApp };
+    return { id, ...newApp };
   }
 }

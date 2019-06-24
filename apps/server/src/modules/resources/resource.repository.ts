@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify';
+import { Collection } from 'lokijs';
 import { App } from '@flogo-web/core';
 import { Resource } from '@flogo-web/lib-server/core';
 import { TOKENS } from '../../core';
@@ -7,7 +8,6 @@ import { Database } from '../../common/database.service';
 import { Logger } from '../../common/logging';
 import { CONSTRAINTS } from '../../common/validation';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
-import { prepareUpdateQuery } from './prepare-update-query';
 
 const RECENT_RESOURCES_ID = 'resources:recent';
 const MAX_RECENT = 10;
@@ -15,69 +15,97 @@ const MAX_RECENT = 10;
 @injectable()
 export class ResourceRepository {
   constructor(
-    @inject(TOKENS.AppsDb) private appsDb: Database,
+    @inject(TOKENS.AppsDb) private appsCollection: Collection<App>,
     @inject(TOKENS.ResourceIndexerDb) private indexerDb: Database,
     @inject(TOKENS.Logger) private logger: Logger
   ) {}
 
-  getApp(appId): Promise<App> {
-    return this.appsDb.findOne({ _id: appId }, { resources: 1 });
+  async getApp(appId): Promise<App> {
+    return this.appsCollection.findOne({ id: appId });
   }
 
-  async create(appId: string, resource: Resource): Promise<number> {
+  async create(appId: string, resource: Resource): Promise<void> {
     resource.createdAt = ISONow();
     resource.updatedAt = null;
-    return this.appsDb.update(
-      { _id: appId },
-      {
-        $push: {
-          resources: {
-            ...resource,
-            createdAt: ISONow(),
-            updatedAt: null,
-          },
-        },
-      }
-    );
+
+    this.appsCollection.findAndUpdate({ id: appId }, app => {
+      app.resources.push({
+        ...resource,
+        createdAt: ISONow(),
+        updatedAt: null,
+      });
+    });
   }
 
   async update(
     appId: string,
     resource: Partial<Resource> & { id: string }
   ): Promise<boolean> {
-    const updateCount = await atomicUpdate(this.appsDb, {
-      resource,
-      appId,
-    });
-    if (updateCount <= 0) {
-      return Promise.reject(new Error('Error while saving flow'));
+    const app = this.appsCollection.findOne({ id: appId });
+    if (!app) {
+      ErrorManager.makeError('App not found', {
+        type: ERROR_TYPES.COMMON.NOT_FOUND,
+      });
     }
+
+    if (resource.name) {
+      this.throwIfNameNotUnique(app, resource);
+    }
+
+    const resourceIndex = app.resources.findIndex(t => t.id === resource.id);
+    if (resourceIndex < 0) {
+      throw new Error('Error while saving flow');
+    }
+
+    const newResource = Object.assign({}, app.resources[resourceIndex], resource, {
+      updatedAt: ISONow(),
+    });
+
+    app.resources[resourceIndex] = newResource;
+    this.appsCollection.update(app);
     storeAsRecent(this.indexerDb, { id: resource.id, appId }).catch(e =>
       this.logger.error(e)
     );
     return true;
   }
 
-  findAppByResourceId(resourceId: string) {
-    return this.appsDb.findOne({ 'resources.id': resourceId });
+  async findAppByResourceId(resourceId: string) {
+    const [app] = this.appsCollection
+      .chain()
+      .find(<LokiQuery<any>>{ 'resources.id': resourceId }, true)
+      .data();
+    return app;
   }
 
-  listRecent() {
+  async listRecent() {
     return this.indexerDb
       .findOne({ _id: RECENT_RESOURCES_ID })
       .then(all => (all && all.resources ? all.resources : []));
   }
 
   async remove(resourceId: string) {
-    const removedCount = await this.appsDb.update(
-      { 'resources.id': resourceId },
-      { $pull: { resources: { id: resourceId } } }
-    );
-    const wasDeleted = removedCount > 0;
-    if (wasDeleted) {
-      this.logIfFailed(removeFromRecent(this.indexerDb, 'id', resourceId));
+    const [app] = this.appsCollection
+      .chain()
+      .find(
+        <LokiQuery<any>>{
+          'resources.id': resourceId,
+        },
+        true
+      )
+      .data();
+    if (!app) {
+      return false;
     }
-    return wasDeleted;
+
+    const resourceIndex = app.resources.findIndex(r => r.id === resourceId);
+    if (resourceIndex < 0) {
+      return false;
+    }
+
+    app.resources.splice(resourceIndex, 1);
+    this.appsCollection.update(app);
+    this.logIfFailed(removeFromRecent(this.indexerDb, 'id', resourceId));
+    return true;
   }
 
   removeFromRecent(compareField: string, fieldVal: any) {
@@ -87,68 +115,29 @@ export class ResourceRepository {
   private logIfFailed(promise: Promise<any>) {
     promise.catch(e => this.logger.error(e));
   }
-}
 
-function atomicUpdate(appsDb: Database, { resource, appId }) {
-  return new Promise((resolve, reject) => {
-    const appQuery = { _id: appId };
-    const updateQuery = {};
-
-    const createUpdateQuery = (err, app) => {
-      if (err) {
-        return reject(err);
-      } else if (!app) {
-        return reject(
-          ErrorManager.makeError('App not found', {
-            type: ERROR_TYPES.COMMON.NOT_FOUND,
-          })
-        );
-      }
-
-      if (resource.name) {
-        const isNameUnique = !(app.resources || []).find(
-          resourceNameComparator(resource)
-        );
-        if (!isNameUnique) {
-          // do nothing
-          return reject(
-            ErrorManager.createValidationError('Validation error', [
-              {
-                property: 'name',
-                title: 'Name already exists',
-                detail: "There's another resource in the app with this name",
-                value: {
-                  resourceId: resource.id,
-                  appId: app.id,
-                  name: resource.name,
-                },
-                type: CONSTRAINTS.UNIQUE,
-              },
-            ])
-          );
-        }
-      }
-
-      const resourceIndex = app.resources.findIndex(t => t.id === resource.id);
-      resource.updatedAt = ISONow();
-      Object.assign(
-        updateQuery,
-        prepareUpdateQuery(resource, app.resources[resourceIndex], resourceIndex)
-      );
-      return null;
-    };
-
-    // queue find and update operation to nedb to make sure they execute one after the other
-    // and no other operation is mixed between them
-    appsDb.collection.findOne(appQuery, { resources: 1 }, createUpdateQuery);
-    appsDb.collection.update(appQuery, updateQuery, {}, (err, updatedCount) =>
-      err ? reject(err) : resolve(updatedCount)
-    );
-  });
+  private throwIfNameNotUnique(app, resource: Partial<Resource> & { id: string }) {
+    const isNameUnique = !(app.resources || []).find(resourceNameComparator(resource));
+    if (!isNameUnique) {
+      ErrorManager.createValidationError('Validation error', [
+        {
+          property: 'name',
+          title: 'Name already exists',
+          detail: "There's another resource in the app with this name",
+          value: {
+            resourceId: resource.id,
+            appId: app.id,
+            name: resource.name,
+          },
+          type: CONSTRAINTS.UNIQUE,
+        },
+      ]);
+    }
+  }
 }
 
 const comparableName = name => name.trim().toLowerCase();
-function resourceNameComparator(resource: Resource) {
+function resourceNameComparator(resource: Partial<Resource>) {
   const resourceName = comparableName(resource.name);
   return (r: Resource) => comparableName(r.name) === resourceName && r.id !== resource.id;
 }

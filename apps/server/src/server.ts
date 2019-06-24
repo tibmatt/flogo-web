@@ -1,12 +1,14 @@
 import { rootContainer, createApp as createServerApp } from './init';
 
+import { initDb } from './common/db';
 import { logger } from './common/logging';
 import { config } from './config/app-config';
 import { init as initWebsocketApi } from './api/ws';
 import { getInitializedEngine } from './modules/engine';
 import { syncTasks } from './modules/contrib-install-controller/sync-tasks';
 
-initEngine(config.defaultEngine.path)
+initDb()
+  .then(() => initEngine(config.defaultEngine.path))
   .then(() =>
     createServerApp({
       port: config.app.port as string,
