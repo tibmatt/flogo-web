@@ -1,5 +1,5 @@
 const expectedApp = {
-  _id: expect.any(String),
+  id: expect.any(String),
   name: 'RestApp',
   type: 'flogo:app',
   version: '0.0.1',

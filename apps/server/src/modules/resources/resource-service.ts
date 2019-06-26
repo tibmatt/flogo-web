@@ -119,10 +119,10 @@ export class ResourceService {
     const context = this.createHookContext(foundResource);
     await this.resourceHooks.wrapAndRun('list', context, hookContext => {
       const resource = hookContext.resource as any;
-      resource.appId = app._id;
-      app.id = app._id;
+      resource.appId = app.id;
+      app.id = app.id;
       const triggers = app.triggers.filter(isTriggerForResource(resource.id));
-      app = omit(app, ['triggers', 'resources', '_id']);
+      app = omit(app, ['triggers', 'resources']);
       hookContext.resource = { ...resource, app, triggers };
     });
     return context.resource as ExtendedResource;

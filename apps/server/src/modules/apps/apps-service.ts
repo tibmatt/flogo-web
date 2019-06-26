@@ -1,5 +1,6 @@
 import { inject, injectable } from 'inversify';
-import { escapeRegExp, fromPairs, isEqual, pick } from 'lodash';
+import { escapeRegExp, pick } from 'lodash';
+import { Collection } from 'lokijs';
 import shortid from 'shortid';
 
 import { App, CONTRIB_REFS } from '@flogo-web/core';
@@ -10,7 +11,6 @@ import { normalizeName } from '../transfer/export/utils/normalize-name';
 import { AppImporter } from './app-importer';
 import { AppExporter, ExportAppOptions } from './app-exporter';
 
-import { Database } from '../../common/database.service';
 import { ErrorManager, ERROR_TYPES as GENERAL_ERROR_TYPES } from '../../common/errors';
 import { Logger } from '../../common/logging';
 import { CONSTRAINTS } from '../../common/validation';
@@ -41,7 +41,7 @@ const PUBLISH_FIELDS: Array<keyof App> = [
 @injectable()
 export class AppsService {
   constructor(
-    @inject(TOKENS.AppsDb) private appsDb: Database,
+    @inject(TOKENS.AppsDb) private appsDb: Collection,
     @inject(TOKENS.Logger) private logger: Logger,
     private resourceService: ResourceService,
     private triggersService: AppTriggersService,
@@ -66,7 +66,7 @@ export class AppsService {
   async importApp(app) {
     const appToSave = await this.appImporter.import(app);
     const savedApp = await saveNew(appToSave, this.appsDb);
-    return this.findOne(savedApp._id);
+    return this.findOne(savedApp.id);
   }
 
   /**
@@ -74,50 +74,28 @@ export class AppsService {
    * @param appId if not provided will try to use app.id
    * @param newData {object}
    */
-  update(appId, newData) {
+  async update(appId, newData) {
     const inputData = cleanInput(newData);
-    return (
-      this.appsDb
-        // fetch editable fields only
-        .findOne(
-          { _id: appId },
-          fromPairs(EDITABLE_FIELDS.concat('_id').map(field => [field, 1]))
-        )
-        .then(app => {
-          if (!app) {
-            throw ErrorManager.makeError('App not found', {
-              type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND,
-            });
-          }
+    const storedApp = this.appsDb.by('id', appId);
 
-          const mergedData = Object.assign({}, app, inputData);
-          if (isEqual(mergedData, app)) {
-            // no changes, we don't need to update anything
-            return false;
-          }
+    if (!storedApp) {
+      throw ErrorManager.makeError('App not found', {
+        type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND,
+      });
+    }
 
-          const errors = Validator.validateSimpleApp(mergedData);
-          if (errors) {
-            throw ErrorManager.createValidationError('Validation error', errors);
-          }
-          if (inputData.name) {
-            inputData.name = inputData.name.trim();
-            return validateUniqueName(inputData.name, appId, this.appsDb);
-          }
-          return true;
-        })
-        .then(shouldUpdate => {
-          if (shouldUpdate) {
-            delete inputData._id;
-            return this.appsDb.update(
-              { _id: appId },
-              { $set: Object.assign({ updatedAt: nowISO() }, inputData) }
-            );
-          }
-          return null;
-        })
-        .then(() => this.findOne(appId, { withFlows: true }))
-    );
+    const appToValidate = { ...storedApp, ...inputData };
+    const errors = Validator.validateSimpleApp(appToValidate);
+    if (errors) {
+      throw ErrorManager.createValidationError('Validation error', errors);
+    }
+    if (inputData.name) {
+      appToValidate.name = appToValidate.name.trim();
+      throwIfNameNotUnique(appToValidate.name, appId, this.appsDb);
+    }
+    this.appsDb.update({ ...storedApp, ...appToValidate });
+
+    return this.findOne(appId, { withFlows: true });
   }
 
   /**
@@ -126,12 +104,12 @@ export class AppsService {
    * @param appId {string} appId
    */
   async remove(appId) {
-    const numRemoved = await this.appsDb.remove({ _id: appId });
-    const wasRemoved = numRemoved > 0;
-    if (wasRemoved) {
+    const appToRemove = await this.appsDb.by('id', appId);
+    if (appToRemove) {
+      this.appsDb.remove(appToRemove);
       await this.resourceService.removeFromRecentByAppId(appId);
     }
-    return wasRemoved;
+    return !!appToRemove;
   }
 
   /**
@@ -152,13 +130,18 @@ export class AppsService {
    * @param options
    * @param options.withFlows: retrieveFlows
    */
-  find(terms: { name?: string | RegExp } = {}, { withFlows } = { withFlows: false }) {
+  async find(
+    terms: { name?: string | RegExp } = {},
+    { withFlows } = { withFlows: false }
+  ) {
+    const queryOptions: { [prop: string]: any } = {};
     if (terms.name) {
       const name = getAppNameForSearch(terms.name);
-      terms.name = new RegExp(`^${name}$`, 'i');
+      queryOptions.name = { $regex: [`^${name}$`, 'i'] };
     }
 
-    return this.appsDb.find(terms).then(apps => apps.map(cleanForOutput));
+    const result = this.appsDb.find(queryOptions);
+    return result.map(cleanForOutput);
   }
 
   /**
@@ -174,10 +157,12 @@ export class AppsService {
    * @param options
    * @param options.withFlows retrieve flows
    */
-  findOne(appId, { withFlows }: { withFlows: string | boolean } = { withFlows: false }) {
-    return this.appsDb
-      .findOne({ _id: appId })
-      .then(app => (app ? cleanForOutput(app) : null));
+  async findOne(
+    appId,
+    { withFlows }: { withFlows: string | boolean } = { withFlows: false }
+  ) {
+    const app = this.appsDb.by('id', appId);
+    return app ? cleanForOutput(app) : null;
   }
 
   /**
@@ -234,7 +219,7 @@ export class AppsService {
     appId,
     { format, flowIds }: { appModel?: string; format?: string; flowIds?: string[] } = {}
   ) {
-    const app = await this.appsDb.findOne({ _id: appId });
+    const app = this.appsDb.by('id', appId);
     if (!app) {
       throw ErrorManager.makeError('Application not found', {
         type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND,
@@ -279,33 +264,31 @@ function cleanInput(app) {
 }
 
 function cleanForOutput(app) {
-  const cleanedApp = Object.assign({ id: app._id }, app);
-  return pick(cleanedApp, PUBLISH_FIELDS);
+  return pick(app, PUBLISH_FIELDS);
 }
 
-function nowISO() {
-  return new Date().toISOString();
-}
-
-function validateUniqueName(inputName, appId: string, appsDb: Database) {
+function throwIfNameNotUnique(inputName, appId: string, appsDb: Collection) {
   const name = getAppNameForSearch(inputName);
-  return appsDb
-    .findOne(
-      { _id: { $ne: appId }, name: new RegExp(`^${name}$`, 'i') },
-      { _id: 1, name: 1 }
+  const [existing] = appsDb
+    .chain()
+    .find(
+      {
+        id: { $ne: appId },
+        name: { $regex: [`^${name}$`, 'i'] },
+      },
+      true
     )
-    .then(nameExists => {
-      if (nameExists) {
-        throw ErrorManager.createValidationError('Validation error', [
-          {
-            property: 'name',
-            title: 'Name already exists',
-            detail: "There's another app with that name",
-            value: inputName,
-            type: CONSTRAINTS.UNIQUE,
-          },
-        ]);
-      }
-      return true;
-    });
+    .data();
+
+  if (existing) {
+    throw ErrorManager.createValidationError('Validation error', [
+      {
+        property: 'name',
+        title: 'Name already exists',
+        detail: "There's another app with that name",
+        value: inputName,
+        type: CONSTRAINTS.UNIQUE,
+      },
+    ]);
+  }
 }

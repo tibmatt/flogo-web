@@ -153,7 +153,7 @@ function cleanAndValidateApp(
   validator.validate(rawApp);
   rawApp = rawApp as FlogoAppModel.App;
   return constructApp({
-    _id: getNextId(),
+    id: getNextId(),
     name: rawApp.name,
     type: rawApp.type,
     description: rawApp.description,

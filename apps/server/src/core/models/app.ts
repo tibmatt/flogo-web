@@ -5,7 +5,7 @@ export function constructApp(inputData, generateId?: () => string): App {
   const now = new Date().toISOString();
   return {
     ...inputData,
-    _id: inputData._id || generateId(),
+    id: inputData.id || generateId(),
     name: inputData.name.trim(),
     createdAt: now,
     updatedAt: null,

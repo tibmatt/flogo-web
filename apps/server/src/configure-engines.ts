@@ -1,22 +1,18 @@
 import { rootContainer, installDefaults } from './init';
-import { config } from './config/app-config';
-import { TOKENS } from './core';
-import { Database } from './common/database.service';
+import { config } from './config';
 import { getInitializedEngine } from './modules/engine';
 import { syncTasks } from './modules/contrib-install-controller/sync-tasks';
 import { AppsService } from './modules/apps';
+import { initDb, flushAndCloseDb } from './common/db';
 
-getInitializedEngine(config.defaultEngine.path, { forceCreate: false })
+initDb()
+  .then(() => getInitializedEngine(config.defaultEngine.path, { forceCreate: false }))
   .then(engine => syncTasks(engine))
   .then(() => {
     console.log('[log] init test engine done');
     return installDefaults(rootContainer.resolve(AppsService));
   })
-  .then(() => {
-    const apps = rootContainer.get<Database>(TOKENS.AppsDb);
-    const indexer = rootContainer.get<Database>(TOKENS.ResourceIndexerDb);
-    return Promise.all([apps.compact(), indexer.compact()]);
-  })
+  .then(() => flushAndCloseDb())
   .catch(error => {
     console.error(error);
     console.error(error.stack);

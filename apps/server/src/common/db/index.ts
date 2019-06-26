@@ -1,3 +1,4 @@
-export { apps } from './apps';
-export { indexer } from './indexer';
 export { contributionsDBService } from './contributions';
+
+export { initDb, flushAndCloseDb } from './db';
+export { collections } from './collections-registry';
