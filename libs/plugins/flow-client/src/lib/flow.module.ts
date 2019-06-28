@@ -31,6 +31,7 @@ import { SaveEffects, TriggerMappingsEffects } from './core/effects';
 
 import { DebugPanelModule } from './debug-panel';
 import { TaskAddModule } from './task-add';
+import { DefineParamsModule } from '@flogo-web/lib-client/define-params';
 
 @NgModule({
   imports: [
@@ -53,6 +54,7 @@ import { TaskAddModule } from './task-add';
     DebugPanelModule,
     BranchMapperModule,
     FlogoDesignerHeader,
+    DefineParamsModule,
   ],
   declarations: [
     FlogoRunFlowComponent,
