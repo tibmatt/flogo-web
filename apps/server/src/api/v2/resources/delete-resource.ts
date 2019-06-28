@@ -1,6 +1,7 @@
-import { Context } from 'koa';
 import { ErrorManager } from '../../../common/errors';
-export async function deleteResource(ctx: Context, next) {
+import { ResourceServiceContext } from './resource-service-middleware';
+
+export async function deleteResource(ctx: ResourceServiceContext) {
   const resourceId = ctx.params.resourceId;
   const removed = await ctx.resourceService.remove(resourceId);
   if (!removed) {

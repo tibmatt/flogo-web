@@ -88,7 +88,8 @@ describe('FlogoApplicationDetailComponent component', () => {
               label: 'Flow',
               type: 'flow',
               path: 'flow',
-              loadChildren: '@flogo-web/plugins/flow-client#FlowModule',
+              loadChildren: () =>
+                import('@flogo-web/plugins/flow-client').then(m => m.FlowModule),
               color: '#96a7f8',
             },
           ],

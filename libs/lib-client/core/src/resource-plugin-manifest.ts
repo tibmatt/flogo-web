@@ -1,3 +1,5 @@
+import { LoadChildren } from '@angular/router';
+
 export interface ResourcePluginManifest {
   type: string;
   /**
@@ -9,7 +11,7 @@ export interface ResourcePluginManifest {
    * Needs to match @angular/router Route.loadChildren to enable bundling
    * Example:
    */
-  loadChildren: string;
+  loadChildren: LoadChildren;
   /**
    * Label/title to be displayed in the UI for this type of resources.
    */

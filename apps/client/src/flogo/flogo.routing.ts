@@ -8,11 +8,11 @@ import { ResourceGuard } from './core/resource.guard';
 export const appRoutes: Routes = [
   {
     path: '',
-    loadChildren: './home/home.module#FlogoHomeModule',
+    loadChildren: () => import('./home/home.module').then(m => m.FlogoHomeModule),
   },
   {
     path: 'apps',
-    loadChildren: './app/app.module#FlogoApplicationModule',
+    loadChildren: () => import('./app/app.module').then(m => m.FlogoApplicationModule),
   },
   {
     path: 'logs',
@@ -28,7 +28,7 @@ export const appRoutes: Routes = [
   },
   {
     path: '_config',
-    loadChildren: './config/config.module#ConfigModule',
+    loadChildren: () => import('./config/config.module').then(m => m.ConfigModule),
   },
   {
     path: '**',

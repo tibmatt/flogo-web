@@ -69,7 +69,7 @@ const mapFormInputChangesToSaveAction = (
   ],
 })
 export class DebugPanelComponent implements OnInit, OnDestroy {
-  @ViewChild('content') content: ElementRef;
+  @ViewChild('content', { static: true }) content: ElementRef;
   panelStatus: 'open' | 'closed' = STATUS_CLOSED;
   activity$: Observable<DebugActivityTask>;
   fields$: Observable<FieldsInfo>;

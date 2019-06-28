@@ -12,7 +12,7 @@ import { ValueType } from '@flogo-web/core';
   styleUrls: ['params-schema.component.less'],
 })
 export class ParamsSchemaComponent implements OnInit {
-  @ViewChild('modal')
+  @ViewChild('modal', { static: true })
   modal: BsModalComponent;
   @Input()
   paramsForm: FormGroup;

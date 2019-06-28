@@ -431,7 +431,7 @@ export class FlogoApplicationDetailComponent implements OnDestroy, OnChanges, On
     }
     const secondsSinceCreation = differenceInSeconds(
       Date.now(),
-      this.application.createdAt
+      new Date(this.application.createdAt)
     );
     const isNewApp = secondsSinceCreation <= MAX_SECONDS_TO_ASK_APP_NAME;
     this.nameUiState = { inEditMode: isNewApp, value: this.application.name };

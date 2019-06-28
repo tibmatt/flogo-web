@@ -1,6 +1,7 @@
-import { Context } from 'koa';
 import { ErrorManager } from '../../../common/errors';
-export async function getResource(ctx: Context, next) {
+import { ResourceServiceContext } from './resource-service-middleware';
+
+export async function getResource(ctx: ResourceServiceContext) {
   const resourceId = ctx.params.resourceId;
   const resource = await ctx.resourceService.findOne(resourceId);
   if (!resource) {

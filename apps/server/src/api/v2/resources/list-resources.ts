@@ -1,6 +1,7 @@
 import { Context } from 'koa';
+import { ResourceServiceContext } from './resource-service-middleware';
 
-export async function listResources(ctx: Context, next) {
+export async function listResources(ctx: ResourceServiceContext, next) {
   const appId = ctx.params.appId;
   const options = getOptions(ctx);
   const resourceList = await ctx.resourceService.list(appId, options);

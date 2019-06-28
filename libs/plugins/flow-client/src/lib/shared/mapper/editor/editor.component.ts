@@ -41,7 +41,7 @@ interface EditorHint {
   styleUrls: ['editor.component.less'],
 })
 export class EditorComponent implements OnInit, OnDestroy {
-  @ViewChild(MonacoEditorComponent) editor: MonacoEditorComponent;
+  @ViewChild(MonacoEditorComponent, { static: true }) editor: MonacoEditorComponent;
   expression = '';
   valueHints$: Observable<null | Array<EditorHint>>;
 

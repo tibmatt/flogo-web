@@ -1,10 +1,10 @@
 import * as Router from 'koa-router';
-import { Context } from 'koa';
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
 import { buildTrigger } from './triggers/build';
 import {
   appTriggersServiceMiddleware,
   appsServiceMiddleware,
+  AppsContext,
 } from './shared/apps-service-middleware';
 
 export function triggers(router: Router, container) {
@@ -22,7 +22,7 @@ export function triggers(router: Router, container) {
   router.del(`/triggers/:triggerId`, triggersServiceMiddleware, deleteTrigger);
 }
 
-async function listTriggers(ctx: Context) {
+async function listTriggers(ctx: AppsContext) {
   const appId = ctx.params.appId;
   const searchTerms: { name?: string } = {};
   const filterName = ctx.request.query['filter[name]'];
@@ -35,7 +35,7 @@ async function listTriggers(ctx: Context) {
   };
 }
 
-async function createTrigger(ctx: Context) {
+async function createTrigger(ctx: AppsContext) {
   const appId = ctx.params.appId;
   const body = ctx.request.body;
   try {
@@ -61,7 +61,7 @@ async function createTrigger(ctx: Context) {
   }
 }
 
-async function getTrigger(ctx: Context) {
+async function getTrigger(ctx: AppsContext) {
   const triggerId = ctx.params.triggerId;
 
   const trigger = await ctx.appTriggersService.findOne(triggerId);
@@ -79,7 +79,7 @@ async function getTrigger(ctx: Context) {
   };
 }
 
-async function updateTrigger(ctx: Context) {
+async function updateTrigger(ctx: AppsContext) {
   const triggerId = ctx.params.triggerId;
   const data = ctx.request.body || {};
   try {
@@ -109,7 +109,7 @@ async function updateTrigger(ctx: Context) {
   }
 }
 
-async function deleteTrigger(ctx: Context) {
+async function deleteTrigger(ctx: AppsContext) {
   const triggerId = ctx.params.triggerId;
   const removed = await ctx.appTriggersService.remove(triggerId);
 

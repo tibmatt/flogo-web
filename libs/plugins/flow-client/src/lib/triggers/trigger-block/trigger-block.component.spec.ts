@@ -17,7 +17,7 @@ import { TriggerBlockComponent } from './trigger-block.component';
 })
 class FlogoContainerComponent {
   triggerEntity: Trigger;
-  @ViewChild('triggerBlock') triggerBlock: TriggerBlockComponent;
+  @ViewChild('triggerBlock', { static: true }) triggerBlock: TriggerBlockComponent;
 
   constructor() {
     this.triggerEntity = {

@@ -10,7 +10,7 @@ const addPrefixForExpressions = ({ parsedValue }) =>
   isExpression(parsedValue) ? EXPR_PREFIX + parsedValue : parsedValue;
 
 export function convertSettingsFormValues(formGroup: FormGroup) {
-  let values = mapValues<SettingValue, SettingValue['parsedValue']>(
+  let values: { [proo: string]: string } = mapValues<SettingValue, string>(
     formGroup.value,
     addPrefixForExpressions
   );
