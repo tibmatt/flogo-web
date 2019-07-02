@@ -18,7 +18,7 @@ import { FlogoProfileService } from '../../core';
   styleUrls: ['select-trigger.component.less'],
 })
 export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
-  @ViewChild('addTriggerModal') modal: BsModalComponent;
+  @ViewChild('addTriggerModal', { static: true }) modal: BsModalComponent;
   @Input() appDetails: any;
   @Input() isAddTriggerActivated: boolean;
   @Output() addTriggerToAction: EventEmitter<any> = new EventEmitter<any>();

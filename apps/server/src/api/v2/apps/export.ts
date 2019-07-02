@@ -1,7 +1,7 @@
 import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
-import { Context } from 'koa';
+import { AppsContext } from '../shared/apps-service-middleware';
 
-export async function exportApp(ctx: Context) {
+export async function exportApp(ctx: AppsContext) {
   const appId = ctx.params.appId;
   const options = extractOptions(ctx.request.query);
   try {

@@ -1,11 +1,9 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc/apps/client",
+    "outDir": "../../dist/out-tsc",
     "types": []
   },
   "exclude": ["test.ts", "**/*.spec.ts", "**/*.mock.ts", "**/testing/*"],
-  "include": [
-     "**/*.ts", "../../libs/plugins/flow-client/src/index.ts"
-  ]
+  "include": ["**/*.ts", "../../libs/plugins/flow-client/src/index.ts"]
 }

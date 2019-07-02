@@ -1,16 +1,19 @@
-// const Router = require('koa-router');
+import { Container } from 'inversify';
+import 'koa-body';
+
 import Router from 'koa-router';
+
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
 import { exportApp } from './apps/export';
 import { buildApp } from './apps/build';
-
-import { Container } from 'inversify';
-import { Context } from 'koa';
-import 'koa-body';
-import { appsServiceMiddleware } from './shared/apps-service-middleware';
+import {
+  appsServiceMiddleware,
+  AppsContext,
+  CustomContextData as AppsCustonContextData,
+} from './shared/apps-service-middleware';
 
 export function apps(router: Router, container: Container) {
-  const appsRouter = new Router();
+  const appsRouter = new Router<any, AppsCustonContextData>();
   appsRouter
     .use(appsServiceMiddleware(container))
     .get('/', listApps)
@@ -27,7 +30,7 @@ export function apps(router: Router, container: Container) {
   router.use('/apps', appsRouter.routes(), appsRouter.allowedMethods());
 }
 
-async function listApps(ctx: Context) {
+async function listApps(ctx: AppsContext) {
   const searchTerms: { name?: string } = {};
   const filterName = ctx.request.query['filter[name]'];
   if (filterName) {
@@ -40,7 +43,7 @@ async function listApps(ctx: Context) {
   };
 }
 
-async function createApp(ctx: Context) {
+async function createApp(ctx: AppsContext) {
   const body = ctx.request.body;
   try {
     const app = await ctx.appsService.create(body);
@@ -60,7 +63,7 @@ async function createApp(ctx: Context) {
   }
 }
 
-async function getApp(ctx: Context) {
+async function getApp(ctx: AppsContext) {
   const appId = ctx.params.appId;
 
   const app = await ctx.appsService.findOne(appId, { withFlows: 'short' });
@@ -77,7 +80,7 @@ async function getApp(ctx: Context) {
   };
 }
 
-async function updateApp(ctx: Context) {
+async function updateApp(ctx: AppsContext) {
   try {
     const appId = ctx.params.appId;
     const data = ctx.request.body || {};
@@ -107,7 +110,7 @@ async function updateApp(ctx: Context) {
   }
 }
 
-async function deleteApp(ctx: Context) {
+async function deleteApp(ctx: AppsContext) {
   const appId = ctx.params.appId;
   const removed = await ctx.appsService.remove(appId);
 
@@ -121,7 +124,7 @@ async function deleteApp(ctx: Context) {
   ctx.status = 204;
 }
 
-async function importApp(ctx: Context) {
+async function importApp(ctx: AppsContext) {
   try {
     ctx.body = await ctx.appsService.importApp(ctx.request.body);
   } catch (error) {
@@ -137,7 +140,7 @@ async function importApp(ctx: Context) {
   }
 }
 
-async function validateApp(ctx: Context) {
+async function validateApp(ctx: AppsContext) {
   const data = ctx.request.body || {};
   const errors = await ctx.appsService.validate(data, { clean: true });
   ctx.status = 200;

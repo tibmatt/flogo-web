@@ -20,7 +20,7 @@ export class ResourceComponent {
   @Input() public resource: ResourceWithPlugin;
   @Output() public resourceSelected = new EventEmitter<ResourceWithPlugin>();
   @Output() public deleteResource = new EventEmitter<ResourceWithPlugin>();
-  @ViewChild('deleteBox') removeBox: ElementRef;
+  @ViewChild('deleteBox', { static: true }) removeBox: ElementRef;
 
   @HostListener('click', ['$event'])
   onSelect(event: Event) {

@@ -67,7 +67,7 @@ export class ContextPanelAreaComponent implements OnChanges {
   /**  Event emitted when an intent to close the panel has been triggered  */
   @Output() close = new EventEmitter<void>();
 
-  @ViewChild('content') content: ElementRef;
+  @ViewChild('content', { static: true }) content: ElementRef;
   panelStatus: 'open' | 'closed' = STATUS_CLOSED;
   toggleButtonAnimationParams = {
     minimizedLeftDistance: 1,

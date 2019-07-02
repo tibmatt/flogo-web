@@ -177,7 +177,7 @@ export const DEFAULT_EDITOR_OPTIONS: EditorConstructOptions = {
 })
 export class MonacoEditorComponent
   implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor {
-  @ViewChild('editor') editorRef: ElementRef;
+  @ViewChild('editor', { static: true }) editorRef: ElementRef;
 
   @Input() editorOptions: EditorConstructOptions = {};
   @Input() hoverProvider: HoverProvider = null;

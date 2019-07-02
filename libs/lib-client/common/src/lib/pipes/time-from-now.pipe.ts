@@ -6,6 +6,9 @@ import { formatDistance } from 'date-fns';
 })
 export class TimeFromNowPipe implements PipeTransform {
   transform(value: any): string {
+    if (typeof value === 'string') {
+      value = new Date(value);
+    }
     return formatDistance(value, new Date(), { addSuffix: true });
   }
 }

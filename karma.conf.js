@@ -18,6 +18,10 @@ module.exports = () => {
     ],
     client: {
       clearContext: false, // leave Jasmine Spec Runner output visible in browser
+      jasmine: {
+        // todo: ideally this should be set to true but some of our test specs are currently order dependent
+        random: false,
+      },
     },
     coverageIstanbulReporter: {
       dir: join(__dirname, '../../coverage'),

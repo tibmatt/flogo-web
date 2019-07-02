@@ -1,6 +1,6 @@
-import { Context } from 'koa';
-export async function listRecent(ctx: Context, next) {
-  const appId = ctx.params.appId;
+import { ResourceServiceContext } from './resource-service-middleware';
+
+export async function listRecent(ctx: ResourceServiceContext) {
   const resourceList = await ctx.resourceService.listRecent();
   ctx.body = {
     data: resourceList || [],

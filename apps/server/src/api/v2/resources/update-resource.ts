@@ -1,7 +1,7 @@
-import { Context } from 'koa';
 import { ErrorManager, RestError, ERROR_TYPES } from '../../../common/errors';
+import { ResourceServiceContext } from './resource-service-middleware';
 
-export async function updateResource(ctx: Context, next) {
+export async function updateResource(ctx: ResourceServiceContext, next) {
   const resourceId = ctx.params.resourceId;
   const data = ctx.request.body || {};
   try {

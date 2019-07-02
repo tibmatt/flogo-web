@@ -16,11 +16,11 @@ module.exports = {
     '^.+\\.(ts|js|html)$': 'ts-jest',
   },
   preset: 'ts-jest',
-  resolver: '@nrwl/builders/plugins/jest/resolver',
+  resolver: '@nrwl/jest/plugins/resolver',
   moduleFileExtensions: ['ts', 'js', 'html'],
   collectCoverage: false,
   coverageReporters: ['html'],
-  setupTestFrameworkScriptFile: '<rootDir>/jest.setup.ts',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
 
 function getJestProjectsRoots(projectsConfig) {

@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc/libs/server/core",
+    "outDir": "../../dist/out-tsc",
     "module": "commonjs",
     "types": ["jest", "node"],
     "target": "es2018",
@@ -11,5 +11,5 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["**/*.spec.ts",  "**/tests/*", "**/*.d.ts"]
+  "include": ["**/*.spec.ts", "**/tests/*", "**/*.d.ts"]
 }

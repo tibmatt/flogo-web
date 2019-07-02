@@ -26,7 +26,7 @@ export class SubFlowComponent implements AfterViewInit, OnInit {
   @Output()
   flowSelected: EventEmitter<Resource | string> = new EventEmitter<Resource | string>();
 
-  @ViewChild('listModal') modal: BsModalComponent;
+  @ViewChild('listModal', { static: true }) modal: BsModalComponent;
   flowsList: Resource[];
 
   constructor(private flowService: FlowsService) {}

@@ -34,6 +34,12 @@ describe('Pipe: timeFromNow', () => {
     expect(directiveHost.nativeElement.innerHTML).toEqual('less than a minute ago');
   });
 
+  it('Should work with strings', () => {
+    directiveHost.componentInstance.dateCreated = new Date().toISOString();
+    fixture.detectChanges();
+    expect(directiveHost.nativeElement.innerHTML).toEqual('less than a minute ago');
+  });
+
   it('When date changes the text should update', () => {
     const container = fixture.componentInstance;
     const anHourAgo = new Date(container.dateCreated.getTime());

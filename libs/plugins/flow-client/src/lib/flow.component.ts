@@ -57,7 +57,8 @@ interface TaskContext {
 })
 export class FlowComponent implements OnInit, OnDestroy {
   @HostBinding('@initialAnimation') initialAnimation = true;
-  @ViewChild('inputSchemaModal') defineInputSchema: ParamsSchemaComponent;
+  @ViewChild('inputSchemaModal', { static: true })
+  defineInputSchema: ParamsSchemaComponent;
   public flowState: FlowState;
   public runnableInfo: {
     disabled: boolean;

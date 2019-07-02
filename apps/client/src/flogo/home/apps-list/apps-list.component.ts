@@ -19,7 +19,7 @@ import { ImportErrorsComponent } from '../import-errors/import-errors.component'
   styleUrls: ['apps-list.component.less'],
 })
 export class FlogoAppsListComponent implements OnInit {
-  @ViewChild('importInput') importInput: ElementRef;
+  @ViewChild('importInput', { static: true }) importInput: ElementRef;
   @Output() appSelected: EventEmitter<App> = new EventEmitter<App>();
 
   applications: Array<App> = [];
