@@ -43,6 +43,24 @@
     },
     "demo-libs-e2e": {
       "tags": []
+    },
+    "plugins-stream-client": {
+      "tags": [
+        "client",
+        "plugins",
+        "streams"
+      ]
+    },
+    "plugins-stream-core": {
+      "tags": [
+        "streams"
+      ]
+    },
+    "plugins-stream-server": {
+      "tags": [
+        "streams",
+        "server"
+      ]
     }
   }
 }

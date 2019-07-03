@@ -570,6 +570,89 @@
           }
         }
       }
+    },
+    "plugins-stream-client": {
+      "projectType": "library",
+      "root": "libs/plugins/stream-client",
+      "sourceRoot": "libs/plugins/stream-client/src",
+      "prefix": "flogo-stream",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/stream-client/tsconfig.lib.json",
+              "libs/plugins/stream-client/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/plugins/stream-client/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/plugins/stream-client/jest.config.js",
+            "tsConfig": "libs/plugins/stream-client/tsconfig.spec.json",
+            "setupFile": "libs/plugins/stream-client/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "less"
+        }
+      }
+    },
+    "plugins-stream-core": {
+      "root": "libs/plugins/stream-core",
+      "sourceRoot": "libs/plugins/stream-core/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/stream-core/tsconfig.lib.json",
+              "libs/plugins/stream-core/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/plugins/stream-core/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "passWithNoTests": true,
+            "jestConfig": "libs/plugins/stream-core/jest.config.js",
+            "tsConfig": "libs/plugins/stream-core/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "plugins-stream-server": {
+      "root": "libs/plugins/stream-server",
+      "sourceRoot": "libs/plugins/stream-server/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/stream-server/tsconfig.lib.json",
+              "libs/plugins/stream-server/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/plugins/stream-server/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "passWithNoTests": true,
+            "jestConfig": "libs/plugins/stream-server/jest.config.js",
+            "tsConfig": "libs/plugins/stream-server/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {

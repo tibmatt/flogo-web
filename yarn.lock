@@ -1104,6 +1104,17 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
+"@nrwl/angular@^8.2.0":
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/@nrwl/angular/-/angular-8.2.0.tgz#56bfd812d1bdcccf796323e92ffba47bfc425cba"
+  integrity sha512-xYSOq/y9CyAnrYTaxgBW/RSuBkFxn+f1YaoE7FRfk4sy0UaBEsXfREVPVgx3NnDasaTMYObjQYXPNzzKDMc91Q==
+  dependencies:
+    "@angular-devkit/schematics" "8.0.1"
+    "@nrwl/cypress" "8.2.0"
+    "@nrwl/jest" "8.2.0"
+    "@schematics/angular" "8.0.1"
+    jasmine-marbles "~0.5.0"
+
 "@nrwl/cypress@8.2.0":
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/@nrwl/cypress/-/cypress-8.2.0.tgz#70d0f16eec8ba58fbbfbe3f03bbf15a742910752"
@@ -1169,6 +1180,14 @@
     viz.js "^1.8.1"
     yargs "^11.0.0"
     yargs-parser "10.0.0"
+
+"@schematics/angular@8.0.1":
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/@schematics/angular/-/angular-8.0.1.tgz#8d5bfb00c0ba79cc248c6d17b4782b00b6453d79"
+  integrity sha512-/FyFJbHuxWfvVgTBSnEa0fiDgeLhAmfK7NeT8Owj2xDAqvVMxfSxupfdr7a9cDr82WImW09SX7PUlv2EomcGLA==
+  dependencies:
+    "@angular-devkit/core" "8.0.1"
+    "@angular-devkit/schematics" "8.0.1"
 
 "@schematics/angular@8.0.6":
   version "8.0.6"
@@ -6127,6 +6146,13 @@ jasmine-marbles@0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/jasmine-marbles/-/jasmine-marbles-0.6.0.tgz#f78dc1a3bc452976de10ee8b47c73d616532a954"
   integrity sha512-1uzgjEesEeCb+r+v46qn5x326TiGqk5SUZa+A3O+XnMCjG/pGcUOhL9Xsg5L7gLC6RFHyWGTkB5fei4rcvIOiQ==
+  dependencies:
+    lodash "^4.5.0"
+
+jasmine-marbles@~0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/jasmine-marbles/-/jasmine-marbles-0.5.0.tgz#5d4c51082fcf619bb8dbc85583cb11718a32b200"
+  integrity sha512-hkSYy7VJpcxaKE48s/CasVpGyheElp5ZegguFi5kpYAaUWsyOko6RnMZS1kv14ThMtlJVNqCW5z16f1q6HqbEg==
   dependencies:
     lodash "^4.5.0"
 

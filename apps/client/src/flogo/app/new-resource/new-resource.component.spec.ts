@@ -75,8 +75,8 @@ describe('Component: app/NewResourceComponent', () => {
             },
             {
               label: 'Another resource type',
-              type: 'stream',
-              path: 'stream',
+              type: 'anotherType',
+              path: 'anotherType',
               loadChildren: () => null,
               color: '#96a7f8',
             },
@@ -139,7 +139,7 @@ describe('Component: app/NewResourceComponent', () => {
     setNameAndDescriptionAndAssertState()
       .then(() => {
         const resourceTypeOptionEl = fixture.debugElement.query(
-          By.css('#resource-type-stream')
+          By.css('#resource-type-anotherType')
         );
         resourceTypeOptionEl.nativeElement.click();
         submitBtn.nativeElement.click();
@@ -147,7 +147,7 @@ describe('Component: app/NewResourceComponent', () => {
         return fixture.whenStable();
       })
       .then(() => {
-        assertSavedResource({ ...testFlow, type: 'stream' });
+        assertSavedResource({ ...testFlow, type: 'anotherType' });
       });
   }));
 

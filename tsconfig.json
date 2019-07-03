@@ -46,7 +46,10 @@
       "@flogo-web/lib-client/designer-header": ["libs/lib-client/header/src/index.ts"],
       "@flogo-web/plugins/flow-core": ["libs/plugins/flow-core/src/index.ts"],
       "@flogo-web/plugins/flow-server": ["libs/plugins/flow-server/src/index.ts"],
-      "@flogo-web/plugins/flow-client": ["libs/plugins/flow-client/src/index.ts"]
+      "@flogo-web/plugins/flow-client": ["libs/plugins/flow-client/src/index.ts"],
+      "@flogo-web/plugins/stream-client": ["libs/plugins/stream-client/src/index.ts"],
+      "@flogo-web/plugins/stream-core": ["libs/plugins/stream-core/src/index.ts"],
+      "@flogo-web/plugins/stream-server": ["libs/plugins/stream-server/src/index.ts"]
     },
     "rootDir": "."
   },

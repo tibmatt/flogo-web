@@ -20,7 +20,8 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js', 'html'],
   collectCoverage: false,
   coverageReporters: ['html'],
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  // todo: switch for setupFilesAfterEnv after https://github.com/nrwl/nx/issues/1343 is fixed
+  setupTestFrameworkScriptFile: '<rootDir>/jest.setup.ts',
 };
 
 function getJestProjectsRoots(projectsConfig) {
