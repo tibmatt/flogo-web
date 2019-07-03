@@ -1,27 +1,20 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder } from '@angular/forms';
-import { ValueType } from '@flogo-web/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { MetadataAttribute, ValueType } from '@flogo-web/core';
 import { isEmpty } from 'lodash';
 
 @Injectable()
-export class DefineParamsService {
+export class ResourceInterfaceBuilderService {
   constructor(private _fb: FormBuilder) {}
 
-  getInitForm() {
+  createForm(input?: MetadataAttribute[], output?: MetadataAttribute[]): FormGroup {
     return this._fb.group({
-      input: this._fb.array([]),
-      output: this._fb.array([]),
+      input: input ? this.mapAttributesToFormArray(input) : this._fb.array([]),
+      output: output ? this.mapAttributesToFormArray(output) : this._fb.array([]),
     });
   }
 
-  getFormWithData(input, output) {
-    return this._fb.group({
-      input: this.mapAttributesToFormArray(input),
-      output: this.mapAttributesToFormArray(output),
-    });
-  }
-
-  private mapAttributesToFormArray(attributes: { name: string; type: string }[]) {
+  private mapAttributesToFormArray(attributes: MetadataAttribute[]): FormArray {
     const formArray = this._fb.array(
       attributes.map(attribute => this.createParamFormRow(attribute)),
       this.uniqueNameInGroupValidator
@@ -33,7 +26,7 @@ export class DefineParamsService {
     return formArray;
   }
 
-  createParamFormRow(data?: { name: string; type: string }) {
+  createParamFormRow(data?: MetadataAttribute): FormGroup {
     return this._fb.group({
       name: [data ? data.name : ''],
       type: [data ? data.type : ValueType.String],

@@ -4,7 +4,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { BsModalComponent } from 'ng2-bs3-modal';
 
 import { ValueType } from '@flogo-web/core';
-import { DefineParamsService } from '@flogo-web/lib-client/define-params';
+import { ResourceInterfaceBuilderService } from '@flogo-web/lib-client/resource-interface-builder';
 
 @Component({
   selector: 'flogo-flow-params-schema',
@@ -20,12 +20,12 @@ export class ParamsSchemaComponent implements OnInit {
   selectTypes: ValueType[] = [];
   displayInputParams: boolean;
 
-  constructor(private defineParamsService: DefineParamsService) {
+  constructor(private resourceInterfaceBuilderService: ResourceInterfaceBuilderService) {
     this.selectTypes = Array.from(ValueType.allTypes);
   }
 
   ngOnInit() {
-    this.paramsForm = this.defineParamsService.getInitForm();
+    this.paramsForm = this.resourceInterfaceBuilderService.createForm();
   }
 
   showOutputParams() {
@@ -38,7 +38,7 @@ export class ParamsSchemaComponent implements OnInit {
 
   openInputSchemaModel() {
     this.displayInputParams = true;
-    this.paramsForm = this.defineParamsService.getFormWithData(
+    this.paramsForm = this.resourceInterfaceBuilderService.createForm(
       this.flow.metadata.input,
       this.flow.metadata.output
     );
@@ -52,7 +52,7 @@ export class ParamsSchemaComponent implements OnInit {
 
   addParams(fromParams: string) {
     const control = <FormArray>this.paramsForm.controls[fromParams];
-    const paramControl = this.defineParamsService.createParamFormRow();
+    const paramControl = this.resourceInterfaceBuilderService.createParamFormRow();
     control.push(paramControl);
   }
 
