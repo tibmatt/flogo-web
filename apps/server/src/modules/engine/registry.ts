@@ -70,11 +70,7 @@ async function createEngine(engine, defaultFlogoDescriptorPath, skipBundleInstal
     if (skipBundleInstall) {
       return true;
     }
-    const contribBundlePath = path.resolve(
-      'src',
-      'config',
-      config.defaultEngine.defaultContribBundle
-    );
+    const contribBundlePath = config.defaultEngine.defaultContribBundle;
     logger.info(`Will install contrib bundle at ${contribBundlePath}`);
     await installResourceTypes(engine, defaultResourceTypes);
     await engine.installContribBundle(contribBundlePath);
