@@ -1,7 +1,11 @@
 module.exports = {
-  name: 'plugins-flow-core',
+  name: 'plugins-stream-core',
   preset: '../../../jest.config.js',
-  coverageDirectory: '../../../coverage/libs/plugins/flow-core',
+  transform: {
+    '^.+\\.[tj]sx?$': 'ts-jest',
+  },
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
+  coverageDirectory: '../../../coverage/libs/plugins/stream-core',
   // todo: switch for setupFilesAfterEnv after https://github.com/nrwl/nx/issues/1343 is fixed
   setupTestFrameworkScriptFile: '../../../jest.setup.ts',
 };

@@ -2,7 +2,11 @@ import { Component, HostBinding, Inject, HostListener } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 
 import { MODAL_TOKEN, modalAnimate, ModalControl } from '@flogo-web/lib-client/modal';
-import { ResourceService, ResourcePluginManifest } from '@flogo-web/lib-client/core';
+import {
+  ResourceService,
+  ResourcePluginManifest,
+  FeatureToggleService,
+} from '@flogo-web/lib-client/core';
 
 import { RESOURCE_PLUGINS_CONFIG } from '../../core';
 import { UniqueNameValidator } from './unique-name.validator';
@@ -26,10 +30,14 @@ export class NewResourceComponent {
   constructor(
     @Inject(RESOURCE_PLUGINS_CONFIG) public resourceTypes: ResourcePluginManifest[],
     @Inject(MODAL_TOKEN) private newFlowData: NewResourceData,
+    public control: ModalControl,
     private resourceService: ResourceService,
     private formBuilder: FormBuilder,
-    public control: ModalControl
+    private featureToggleService: FeatureToggleService
   ) {
+    if (!featureToggleService.isFeatureEnabled('STREAMS')) {
+      this.resourceTypes = this.resourceTypes.filter(t => t.type !== 'stream');
+    }
     this.resetForm();
   }
 
