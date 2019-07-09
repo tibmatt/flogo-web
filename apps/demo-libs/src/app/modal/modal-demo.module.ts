@@ -1,13 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ModalParentComponent } from './modal-parent.component';
+import { ModalModule } from '@flogo-web/lib-client/modal';
+import {
+  ModalParentComponent,
+  DynamicSizeModalComponent,
+} from './modal-parent.component';
 import { ModalContentComponent } from './modal-content.component';
 
 @NgModule({
-  imports: [CommonModule],
+  imports: [CommonModule, ModalModule],
   exports: [],
-  declarations: [ModalParentComponent, ModalContentComponent],
+  declarations: [ModalParentComponent, ModalContentComponent, DynamicSizeModalComponent],
   providers: [],
-  entryComponents: [ModalContentComponent],
+  entryComponents: [ModalContentComponent, DynamicSizeModalComponent],
 })
 export class ModalDemoModule {}
