@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { ModalControl, MODAL_TOKEN } from '@flogo-web/lib-client/modal';
+import { ModalInstance, MODAL_TOKEN } from '@flogo-web/lib-client/modal';
 
 export interface UserParams {
   name: string;
@@ -8,28 +8,46 @@ export interface UserParams {
 @Component({
   selector: 'demo-modal-content',
   template: `
-    <h2>Hello {{ user.name || 'stranger' }}, do you like this modal?</h2>
-
-    <button data-testid="modal-response-yes" (click)="reply('yup!')">Yup!</button>
-    <button data-testid="modal-response-no" (click)="reply('meh')">Meh</button>
+    <flogo-modal size="small" (close)="modalInstance.close()">
+      <flogo-modal-header>
+        <h2 data-flogo-modal-title>
+          Hello {{ user.name || 'stranger' }}, do you like this modal?
+        </h2>
+      </flogo-modal-header>
+      <flogo-modal-body> Please choose an answer</flogo-modal-body>
+      <flogo-modal-footer [stretchChildren]="true">
+        <button class="action" data-testid="modal-response-yes" (click)="reply('yup!')">
+          Yup!
+        </button>
+        <button class="action" data-testid="modal-response-no" (click)="reply('meh')">
+          Meh
+        </button>
+      </flogo-modal-footer>
+    </flogo-modal>
   `,
   styles: [
     `
       :host {
         display: block;
-        background-color: #fff;
-        padding: 1.5rem;
+      }
+
+      .action {
+        width: 2.5rem;
+      }
+
+      .action + .action {
+        margin-left: 0.5rem;
       }
     `,
   ],
 })
 export class ModalContentComponent {
-  constructor(
-    @Inject(MODAL_TOKEN) public user: UserParams,
-    public control: ModalControl
-  ) {}
+  user: UserParams;
+  constructor(public modalInstance: ModalInstance<UserParams>) {
+    this.user = this.modalInstance.data;
+  }
 
   reply(message: string) {
-    this.control.close(message);
+    this.modalInstance.close(message);
   }
 }

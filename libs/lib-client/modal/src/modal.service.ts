@@ -1,14 +1,13 @@
 import { Injectable, InjectionToken, Injector } from '@angular/core';
 import { ComponentType, Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
-import { ModalControl } from './modal-control';
+import { ModalInstance } from './modal-instance';
 import { ModalModule } from './modal.module';
 
+/**
+ * @deprecated should be replaced by ModalInstance.data
+ */
 export const MODAL_TOKEN = new InjectionToken<any>('flogo/core/modal-token');
-
-export interface ModalContent {
-  control: ModalControl;
-}
 
 @Injectable({
   providedIn: ModalModule,
@@ -16,22 +15,20 @@ export interface ModalContent {
 export class ModalService {
   constructor(private injector: Injector, private overlay: Overlay) {}
 
-  openModal<T>(
-    contentComponent: ComponentType<ModalContent>,
-    componentData?: T
-  ): ModalControl {
+  openModal<T>(contentComponent: ComponentType<any>, componentData?: T): ModalInstance {
     const data = new WeakMap<any, any>();
     data.set(MODAL_TOKEN, componentData);
     const overlayRef = this.createModalOverlay();
-    return this.buildAndAttach(overlayRef, contentComponent, data);
+    const modalInstance = new ModalInstance(overlayRef, componentData);
+    return this.buildAndAttach(overlayRef, contentComponent, modalInstance, data);
   }
 
   private buildAndAttach<T>(
     overlayRef: OverlayRef,
     contentComponent: ComponentType<T>,
+    control: ModalInstance,
     customTokens?: WeakMap<any, any>
-  ): ModalControl {
-    const control = new ModalControl(overlayRef);
+  ): ModalInstance {
     const portal = this.createPortal(contentComponent, customTokens, control);
     overlayRef.attach(portal);
     overlayRef.backdropClick().subscribe(() => control.close());
@@ -41,7 +38,7 @@ export class ModalService {
   private createPortal<T>(
     componentType: ComponentType<T>,
     customTokens: WeakMap<any, any>,
-    control: ModalControl
+    control: ModalInstance
   ) {
     const injector = this.createInjector(customTokens, control);
     return new ComponentPortal(componentType, null, injector);
@@ -49,10 +46,10 @@ export class ModalService {
 
   private createInjector(
     customTokens: WeakMap<any, any>,
-    control: ModalControl
+    control: ModalInstance
   ): PortalInjector {
     const injectionTokens = customTokens || new WeakMap<any, any>();
-    injectionTokens.set(ModalControl, control);
+    injectionTokens.set(ModalInstance, control);
     return new PortalInjector(this.injector, injectionTokens);
   }
 
