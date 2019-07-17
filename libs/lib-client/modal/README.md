@@ -87,7 +87,7 @@ import { ParentComponent } from './parent.component';
 export class MyModule {}
 ```
 
-3. Instantiate your modal
+4. Instantiate your modal
 
 ```typescript
 // parent.component.ts
