@@ -45,22 +45,13 @@
       "tags": []
     },
     "plugins-stream-client": {
-      "tags": [
-        "client",
-        "plugins",
-        "streams"
-      ]
+      "tags": ["client", "plugins", "streams"]
     },
     "plugins-stream-core": {
-      "tags": [
-        "streams"
-      ]
+      "tags": ["streams"]
     },
     "plugins-stream-server": {
-      "tags": [
-        "streams",
-        "server"
-      ]
+      "tags": ["streams", "server"]
     }
   }
 }

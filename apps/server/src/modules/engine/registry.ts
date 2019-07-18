@@ -1,18 +1,18 @@
-import path from 'path';
-
+import { ContributionType, __DEV_RESOURCE_REF_PLACEHOLDER } from '@flogo-web/core';
 import { Engine } from './engine';
 import { logger, engineLogger } from '../../common/logging';
 import { config } from '../../config/app-config';
 import { ContribInstallController } from '../contrib-install-controller';
 import { installResourceTypes } from './install-resource-types';
-import { ContributionType } from '@flogo-web/core';
 
 const CONTRIB_INSTALLER = 'contribInstaller';
 const engineRegistry: { [key: string]: any } = {};
 let defaultResourceTypes: string[] = [];
 
 export function setDefaultResourceTypes(resourceTypes: string[]) {
-  defaultResourceTypes = [...resourceTypes];
+  defaultResourceTypes = [...resourceTypes].filter(
+    ref => ref !== __DEV_RESOURCE_REF_PLACEHOLDER
+  );
 }
 
 /**
