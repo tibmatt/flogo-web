@@ -128,6 +128,10 @@ docker run -it -p 5033:3303 flogo/flogo-web:dev-build
 You can navigate to `http://localhost:5033` once the container starts. Note that you can change
 the port `5033` in the command to a different port if needed.
 
+## Plugins Documentation
+
+[Available in /docs/plugins](./docs/plugins.md)
+
 ## More docs?
 
 [Available in /docs](./docs)

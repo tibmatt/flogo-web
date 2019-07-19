@@ -1,5 +1,16 @@
 # Plugins
 
+- [Plugins](#plugins)
+  - [Note About The Tooling](#note-about-the-tooling)
+  - [Location and Naming Conventions](#location-and-naming-conventions)
+  - [Generating Plugins](#generating-plugins)
+  - [Example: Create a Demo Resource](#example--create-a-demo-resource)
+  - [Client Plugins](#client-plugins)
+    - [API](#api)
+  - [Server Plugins](#server-plugins)
+    - [The Development ref Placeholder](#the-development-ref-placeholder)
+    - [API](#api-1)
+
 The Flogo Web project implements a plugin based architecture to allow easier extensibility and integration of new types
 of Flogo Resources. Flogo Resources are also referred as Action Types.
 
@@ -18,7 +29,7 @@ Two types of plugins are need for each type of resource:
 The Flogo Web project plugin setup relies heavily on the [Angular CLI](https://cli.angular.io/) and [Nrwl's Nx](https://github.com/nrwl/nx) tools.
 Being familiar with those tools is not necessary to start contribution to the project but it will be helpful to navigate the structure.
 
-## Location and naming Conventions
+## Location and Naming Conventions
 
 Plugins are located in `libs/plugins` and the naming convention is as following:
 
@@ -105,7 +116,7 @@ Among the most relevant configuration files are:
    ![New Action Modal](img/plugins-demo-create-resource.png)
 6. Click on the resource we just created
    ![Created Resource](img/plugins-demo-resource-created.png)
-7. The sample designer for the demo resource should be loaded in the screen. Tou can add more tasks/links to the demo on the left
+7. The sample designer for the demo resource should be loaded on the screen. You can add more tasks/links to the demo on the left
    and save your changes. This sample designer uses the core client services and the common diagram component.
    ![Demo designer](img/plugins-demo-editor.png)
 
@@ -125,7 +136,7 @@ TBA
 Registers a resource type with the server app and instructs how to import and export that type of resource.
 It optionally registers resource hooks to tap into resource events such as creation and update.
 
-### The development ref placeholder
+### The Development ref Placeholder
 
 During the iitial development of a new resource type instead of using a ref of an actual Flogo contribution
 you can use the special `__DEV_RESOURCE_REF_PLACEHOLDER` available in the core package (`@flogo-web/core`).
