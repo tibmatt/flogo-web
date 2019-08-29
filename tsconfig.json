@@ -52,7 +52,9 @@
       "@flogo-web/plugins/flow-client": ["libs/plugins/flow-client/src/index.ts"],
       "@flogo-web/plugins/stream-client": ["libs/plugins/stream-client/src/index.ts"],
       "@flogo-web/plugins/stream-core": ["libs/plugins/stream-core/src/index.ts"],
-      "@flogo-web/plugins/stream-server": ["libs/plugins/stream-server/src/index.ts"]
+      "@flogo-web/plugins/stream-server": ["libs/plugins/stream-server/src/index.ts"],
+      "@flogo-web/plugins/organic-client": ["libs/plugins/organic-client/src/index.ts"],
+      "@flogo-web/plugins/organic-server": ["libs/plugins/organic-server/src/index.ts"]
     },
     "rootDir": "."
   },

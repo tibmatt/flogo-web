@@ -33,7 +33,7 @@ const IdentifierName = createToken({
   label: 'Identifier',
   // TODO: should we change this regex for manual parsing to avoid perf issues?
   pattern: new RegExp(
-    `[_${UnicodeCategory.Letter}][_${UnicodeCategory.Letter}${
+    `([_${UnicodeCategory.Letter}]|[.])[_${UnicodeCategory.Letter}${
       UnicodeCategory.DecimalDigit
     }]*`
   ),
@@ -222,7 +222,7 @@ const WhiteSpace = createToken({
 const Lookup = createToken({
   name: 'Lookup',
   label: '$',
-  pattern: /\$/,
+  pattern: /\$+/,
 });
 
 const RESOLVER_PATTERN = new RegExp(

@@ -51,12 +51,14 @@ function validateResolver(value: SettingValue) {
     return null;
   }
   const resolverName = resolverDetails.name || '';
+  /*
   if (!ALLOWED_RESOLVERS.includes(resolverName)) {
     errors.push([
       ErrorTypes.UnknownResolverName,
       { name: resolverName, allowed: [...ALLOWED_RESOLVERS] },
     ]);
   }
+  */
   const elementToResolve = resolverDetails.sel;
   if (elementToResolve) {
     // todo: check if resolvable property exists for $property resolvers example: check if myAppProp exists for $property[myProp]

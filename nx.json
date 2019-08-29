@@ -52,6 +52,12 @@
     },
     "plugins-stream-server": {
       "tags": ["streams", "server"]
+    },
+    "plugins-organic-client": {
+      "tags": ["client", "plugins"]
+    },
+    "plugins-organic-server": {
+      "tags": ["server", "plugins"]
     }
   }
 }

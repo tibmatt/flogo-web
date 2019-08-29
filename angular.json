@@ -653,6 +653,62 @@
           }
         }
       }
+    },
+    "plugins-organic-client": {
+      "projectType": "library",
+      "root": "libs/plugins/organic-client",
+      "sourceRoot": "libs/plugins/organic-client/src",
+      "prefix": "flogo-organic",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/organic-client/tsconfig.lib.json",
+              "libs/plugins/organic-client/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/plugins/organic-client/**"]
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/plugins/organic-client/src/test.ts",
+            "tsConfig": "libs/plugins/organic-client/tsconfig.spec.json",
+            "karmaConfig": "libs/plugins/organic-client/karma.conf.js"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "less"
+        }
+      }
+    },
+    "plugins-organic-server": {
+      "root": "libs/plugins/organic-server",
+      "sourceRoot": "libs/plugins/organic-server/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/plugins/organic-server/tsconfig.lib.json",
+              "libs/plugins/organic-server/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/plugins/organic-server/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/plugins/organic-server/jest.config.js",
+            "tsConfig": "libs/plugins/organic-server/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
